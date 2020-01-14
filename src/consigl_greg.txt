@@ -1,0 +1,10 @@
+react-router-dom 
+nel router chiamo componenti che riutilizzo, header, menu etc e tramite context ( global o header )
+per ogni route la componente di riferimento che sarebbe la view
+
+
+context global: quello che gestisce stato se sono loggato o no 
+context api: funzioni che fa chiamate, se salva 
+idea socket context nome data context 
+
+counter label value
