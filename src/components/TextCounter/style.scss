@@ -1,0 +1,14 @@
+.TextCounter{
+    font-size: 2em;
+    color: $ovr-purple;
+    .TextCounter__text, .TextCounter__label{
+        float: left;
+    }
+    .TextCounter__text{
+        font-weight: 700;
+    }
+    .TextCounter__label{
+        font-weight: 100;
+        margin-left: 8px;
+    }
+}

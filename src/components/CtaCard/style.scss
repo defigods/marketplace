@@ -1,0 +1,20 @@
+
+.CtaCard{
+    background: #FFFFFF;
+    padding: 30px 35px;
+    display: inline-block;
+    box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.05);
+    .ArrowLink, .HexButton{
+        float: left;
+    }
+}
+.CtaCard__text_line{
+    line-height: 15px;
+}
+.CtaCard__button_line{
+    margin-top: 25px;
+    .ArrowLink{
+        margin-left: 35px;
+    }
+}
+

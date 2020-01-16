@@ -1,43 +1,20 @@
-.App {
-  text-align: center;
+$ovr-purple : #1D0333;
+$ovr-sideral-grey: #282D32; 
+$ovr-light-grey: #f3f3f5;
+
+.c-line{
+  display: block;
+  width: 100%;
+  clear: both;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
 body{
   font-family: 'Poppins', sans-serif;
+  font-weight: 200;
+  font-size: 16px;
+  background-color: $ovr-light-grey;
 }
+
+@import "./src/components/CtaCard/style.scss";
+@import "./src/components/TextCounter/style.scss";
+@import "./src/components/ArrowLink/style.scss";
+@import "./src/components/HexButton/style.scss";

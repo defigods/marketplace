@@ -1,0 +1,23 @@
+.HexButton{
+    display: inline-block;
+    transition: all 250ms ease-in-out;
+    position: relative;
+    &:hover{
+        transform: scale(0.98);
+        opacity: 0.95;
+    }
+}
+
+.HexButton__cont{
+    position: relative;
+}
+
+.HexButton__text{
+    position: absolute;
+    font-size: 14px;
+    top: 0px;
+    line-height: 35px;
+    text-align: center;
+    width: 100%;
+    color: #fff;
+}

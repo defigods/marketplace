@@ -1,0 +1,16 @@
+.ArrowLink__text{
+    text-decoration:none;
+    color: $ovr-sideral-grey;
+    font-size: 0.8rem;
+    span{
+        transition: all 250ms ease-in-out;
+        position: relative;
+        display: inline-block;
+    }
+    &:hover{
+        span{
+            transform: translateX(3px);;
+        }
+    }
+}
+
