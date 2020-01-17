@@ -1,0 +1,15 @@
+.ValueCounter{
+    line-height: 22px;
+    display: block;
+    height: 19px;
+    .Icon{
+        margin-right: 4px;
+    }
+    .Icon, .ValueCounter__value{
+        float: left;
+    }
+    .ValueCounter__value{
+        color:$ovr-orange;
+    }
+}
+

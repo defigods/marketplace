@@ -1,8 +1,11 @@
 .TextCounter{
-    font-size: 2em;
+    font-size: 2.5em;
     color: $ovr-purple;
+    display: inline-block;
+
     .TextCounter__text, .TextCounter__label{
         float: left;
+        line-height: 1;
     }
     .TextCounter__text{
         font-weight: 700;

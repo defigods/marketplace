@@ -1,0 +1,14 @@
+.TimeCounter{
+    line-height: 18px;
+    color: $ovr_sideral_grey;
+    font-size: 18px;
+    display: inline-block;
+    text-align: right;
+    float: right;
+    
+    span{
+        font-weight: bold;
+        margin-right: 3px;
+        display: inline;
+    }
+}

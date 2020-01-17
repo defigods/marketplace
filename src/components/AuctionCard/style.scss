@@ -1,0 +1,173 @@
+
+.AuctionCard{
+    background: #FFFFFF;
+    display: inline-block;
+    box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.05);
+    min-width: 220px;
+    @include column(1/4);
+    .LandName__name {
+      width: 100%;
+      &:after{
+          opacity: 0;
+      }
+    }
+    .LandName__name:hover {
+        span {
+            transform: translateX(0);
+        }
+
+    }
+}
+
+.AuctionCard__header{
+    height: 140px;
+    width: 100%;
+    background-position: center center;
+    display: block;
+    position: relative;
+}
+
+.AuctionCard__ping_container{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.c-ping-layer{
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+
+    &:before {
+      content: '';
+      position: relative;
+      display: block;
+      width: 300%;
+      height: 300%;
+      box-sizing: border-box;
+      margin-left: -100%;
+      margin-top: -100%;
+      border-radius: 100%;
+      background-color: #000;
+      animation: pulse-ring 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0; 
+      top: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 15px;
+      background-color: #000;
+      animation: pulse-dot 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -.4s infinite;
+    }
+}
+
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(.33);
+  }
+  80%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(.8);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(.8);
+  }
+}
+
+.c-ping-layer-1{
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    z-index: 1;
+    &:before, &:after{
+        opacity: 0.25;
+    }
+}
+.c-ping-layer-2{
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    opacity: .15;
+}
+.c-ping-layer-3{
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    opacity: .15;
+}
+
+
+.AuctionCard__text_line{
+    line-height: 1;
+    margin-top: 5px;
+}
+.AuctionCard__button_line{
+    margin-top: 25px;
+    .ArrowLink{
+        margin-left: 35px;
+    }
+}
+
+.AuctionCard__body{
+    padding: 25px 25px;
+}
+
+.AuctionCard__bottom_line{
+    margin-top: 20px;
+    display: flex;
+}
+
+.AuctionCard__status{
+  background: #fff;
+  display: block;
+  padding: 5px 15px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0,0,0,0.08);
+}
+
+// Variations
+
+.AuctionCard.--best{
+  .AuctionCard__status{
+    color: $ovr_green;
+  }
+  .c-ping-layer:before, .c-ping-layer:after, .c-ping-layer-1 {
+    background-color: $ovr_green;
+  }
+}
+
+.AuctionCard.--out{
+  .AuctionCard__status{
+    color: #fff;
+    background: linear-gradient(-141deg, #F5515F 0%, #9F041B 100%);
+  }
+  .c-ping-layer:before, .c-ping-layer:after, .c-ping-layer-1 {
+    background-color: $ovr_red;
+  }
+}

@@ -1,12 +1,22 @@
+@import 'node_modules/jeet/jeet';
+
+
 $ovr-purple : #1D0333;
 $ovr-sideral-grey: #282D32; 
 $ovr-light-grey: #f3f3f5;
+$ovr-orange: #EC663C;
+$ovr-green: #49B6AE;
+$ovr-red: #C32438;
 
-.c-line{
+.c-line, .c-line__in{
   display: block;
   width: 100%;
   clear: both;
 }
+.c-line__in{
+  display: inline-block;
+}
+
 body{
   font-family: 'Poppins', sans-serif;
   font-weight: 200;
@@ -14,7 +24,22 @@ body{
   background-color: $ovr-light-grey;
 }
 
+.o-half{
+  @include column(1/2);
+}
+.c-one-third{
+  @include column(1/3);
+}
+.c-two-third{
+  @include column(2/3);
+}
+
+
 @import "./src/components/CtaCard/style.scss";
 @import "./src/components/TextCounter/style.scss";
 @import "./src/components/ArrowLink/style.scss";
 @import "./src/components/HexButton/style.scss";
+@import "./src/components/LandName/style.scss";
+@import "./src/components/AuctionCard/style.scss";
+@import "./src/components/ValueCounter/style.scss";
+@import "./src/components/TimeCounter/style.scss";

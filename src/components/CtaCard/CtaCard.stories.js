@@ -10,17 +10,8 @@ export default {
 };
 
 export const Text = () => <CtaCard onClick={action('clicked')} 
-                            value="300" 
-                            label="OVR" 
-                            button_text="Buy OVR" 
-                            button_url="/" 
-                            arrow_link_text="Transaction History" 
-                            arrow_link_url="">My Account Balance</CtaCard>;
-
-// export const Emoji = () => (
-//   <CtaCard onClick={action('clicked')}>
-//     <span role="img" aria-label="so cool">
-//       😀 😎 👍 💯
-//     </span>
-//   </CtaCard>
-// );
+                            counter={{value:"300",label:"OVR"}}
+                            icon={{url: "./assets/icons/icon_deal.png", isSvg: false}}
+                            button={{text: "Buy OVR", url: "/"}}
+                            arrow_link={{text: "Transaction History", url:"/"}}
+                            >My Account Balance</CtaCard>;
