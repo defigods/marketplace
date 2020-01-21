@@ -10,13 +10,13 @@ class NavBar extends Component {
         return <div className="NavBar">
             <Link to="/" className="Logo__link"><Icon src="./assets/icons/logo_ovr_white.svg" className='NavBar__logo' isSvg={true}></Icon></Link>
             <div className="Navbar__link_container">
-                <NavLink className="NavBar__link" to="/">
+                <NavLink className="NavBar__link" to="/discover">
                     Discover
                 </NavLink>
-                <NavLink className="NavBar__link" to="/">
+                <NavLink className="NavBar__link" to="/overview">
                     Overview
                 </NavLink>
-                <NavLink className="NavBar__link" to="/">
+                <NavLink className="NavBar__link" to="/profile">
                     Profile
                 </NavLink>
             </div>

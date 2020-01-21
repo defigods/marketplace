@@ -32,7 +32,13 @@ body{
 .c-two-third{
   @include column(2/3);
 }
-
+.o-container{
+   margin: 0 auto;
+   max-width: calc(100% - 140px);
+}
+.App{
+  padding-top:70px;
+}
 
 @import "./src/components/CtaCard/style.scss";
 @import "./src/components/TextCounter/style.scss";
@@ -44,3 +50,5 @@ body{
 @import "./src/components/TimeCounter/style.scss";
 @import "./src/components/LandCard/style.scss";
 @import "./src/components/NavBar/style.scss";
+@import "./src/components/Map/style.scss";
+
