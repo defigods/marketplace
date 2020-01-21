@@ -1,0 +1,19 @@
+
+.LandCard{
+    background: #FFFFFF;
+    display: inline-block;
+    box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.05);
+    min-width: 220px;
+    padding: 25px 25px;
+    @include column(1/4);
+    .Icon{
+      float: left;
+      margin-right: 10px;
+    }
+    .LandCard__body{
+      float: left;
+    }
+    .TimeCounter{
+      margin-top: 10px;
+    }
+}

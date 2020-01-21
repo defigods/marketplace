@@ -1,0 +1,124 @@
+.NavBar{
+    background: #fff;
+    height: 70px;
+    overflow: hidden;
+
+}
+
+.Profile__link{
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    float: left;
+    text-align: center;
+}
+
+.Profile__img{
+    width: 36px;
+    height: 36px;
+    background-position: center center;
+    background-size: cover;
+    display: block;
+    margin: 17px auto;
+    border-radius: 50%;
+}
+
+
+.Logo__link{
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    border-right: rgba(43, 48, 52, 0.1) solid 1px;
+    float: left;
+    svg{
+        width: 36px;
+        height: 36px;
+        display: block;
+        margin: 17px auto;
+    }
+}
+
+.Navbar__link_container{
+    text-align: center;
+    width: calc(100% - 141px);
+    display: block;
+    float: left;
+}
+
+.NavBar__link{
+    text-align: center;
+    line-height: 70px;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 15px;
+    color: rgba(40, 45, 50, 0.5);
+    display: inline-block;
+    position: relative;
+    transition: ease-in-out 250ms all;
+    &::after{
+        position: absolute;
+        bottom: 0px;
+        height: 0px;
+        content: "";
+        display: block;
+        width: 100%;
+        background-color: rgba(40, 45, 50, 0.5);
+        transition: ease-in-out 250ms all;
+    }
+    
+    &:hover{
+        color: rgba(40, 45, 50, 1);
+        &::after{
+            height: 2px;
+        }
+    }
+}
+
+
+.Funds__link{
+    float: left;
+}
+.Navbar__right_container{
+    position: absolute;
+    right: 70px;
+    .ValueCounter{
+        line-height: 70px;
+        margin-right: 15px;
+    }
+    .ValueCounter__icon{
+        margin-top:5px;
+    }
+    .ValueCounter__icon, .ValueCounter__value{
+        float: left;
+    }
+    .Notifications__link{
+        margin-right: 36px;
+        float: left;
+        line-height: 70px;
+        position: relative;
+        display: inline-flex;
+        text-decoration: none;
+        svg{
+            width: auto;
+            height: 1em;
+            top: .325em;
+            position: relative;
+        }
+    }
+}
+
+.Notifications__counter{
+    margin-top: 18px;
+    right: -15px;
+    font-size: 9px;
+    font-weight: bold;
+    background-color: #7521C8;
+    border-radius: 50%;
+    display: block;
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    color: #fff;
+    line-height: 16px;
+    text-align: center;
+}

@@ -8,14 +8,12 @@ class Icon extends Component {
         let icon;
 
         if (isSVG === true ) {
-            icon = <ReactSVG className="Icon" alt={this.props.alt} src={this.props.src} />
+            icon = <ReactSVG className={`Icon ${this.props.className}`} alt={this.props.alt} src={this.props.src} />
         } else {
-            icon = <img className="Icon" alt={this.props.alt} src={this.props.src}></img>
+            icon = <img className={`Icon ${this.props.className}`} alt={this.props.alt} src={this.props.src}></img>
         }
 
-        return <div className="Icon">
-            {icon}
-        </div>;
+        return icon;
     }
 }
 

@@ -16,6 +16,7 @@ export const BestBid = () => <AuctionCard onClick={action('clicked')}
                             name={{ sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"}}
                             location="Venice, Italy"
                             bid_status={{className: "--best", sentence:"BEST BID"}}
+                            date_end="2020-01-17T15:44-0000"
                             ></AuctionCard>;
 
 export const OutBid = () => <AuctionCard onClick={action('clicked')} 
@@ -25,4 +26,5 @@ export const OutBid = () => <AuctionCard onClick={action('clicked')}
                             name={{ sentence:"country.connect.overflow", hex: "8cbcc350c0ab5ff"}}
                             location="Melbourne, Australia"
                             bid_status={{className: "--out", sentence:"OUTBIDDED"}}
+                            date_end="2020-01-19T15:44-0000"
                             ></AuctionCard>;

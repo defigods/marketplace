@@ -1,6 +1,5 @@
 @import 'node_modules/jeet/jeet';
 
-
 $ovr-purple : #1D0333;
 $ovr-sideral-grey: #282D32; 
 $ovr-light-grey: #f3f3f5;
@@ -43,3 +42,5 @@ body{
 @import "./src/components/AuctionCard/style.scss";
 @import "./src/components/ValueCounter/style.scss";
 @import "./src/components/TimeCounter/style.scss";
+@import "./src/components/LandCard/style.scss";
+@import "./src/components/NavBar/style.scss";

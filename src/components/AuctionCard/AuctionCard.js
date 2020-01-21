@@ -1,38 +1,51 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import LandName from '../LandName/LandName';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import TimeCounter from '../TimeCounter/TimeCounter';
 
 
-class AuctionCard extends Component {
+const AuctionCard = props => {
 
-  
+  const { bid_status, background_image, name, value, location, date_end} = props
+  const { sentence, hex} = name
+  const { className, sentence: status } = bid_status
 
-  render() {
-    return <div className={`AuctionCard ${this.props.bid_status.className}`}>
-              <div className="AuctionCard__header" style={{ backgroundImage: this.props.background_image }}>
-                <div className="AuctionCard__status">{this.props.bid_status.sentence}</div>
-                <div className="AuctionCard__ping_container">
-                  <div className="c-ping-layer c-ping-layer-1"> </div>
-                  <div className="c-ping-layer c-ping-layer-2"> </div>
-                  <div className="c-ping-layer c-ping-layer-3"> </div>
-                  <div className="c-ping-layer c-ping-layer-4"> </div>
-                </div>
-              </div>
-              <div className="AuctionCard__body">
-                <LandName name={{ sentence: this.props.name.sentence, hex: this.props.name.hex }} location={this.props.location}></LandName>
-                <div className="AuctionCard__bottom_line">
-                  <div className="o-half">
-                    <ValueCounter value={this.props.value}></ValueCounter>
-                  </div>
-                  <div className="o-half">
-                    <TimeCounter time={20} signature="mins"></TimeCounter>
-                  </div>
-                </div>
-              </div>
-            </div>;
-  }
+  // const changeValue = (value) => {
+  //   if ( value > 300) {
+  //     return 'this'
+  //   }
+  // }
+
+  return (
+    <div className={`AuctionCard ${className}`}>
+      <div className="AuctionCard__header" style={{ backgroundImage: background_image }}>
+        <div className="AuctionCard__status">{status}</div>
+        <div className="AuctionCard__ping_container">
+          <div className="c-ping-layer c-ping-layer-1"> </div>
+          <div className="c-ping-layer c-ping-layer-2"> </div>
+          <div className="c-ping-layer c-ping-layer-3"> </div>
+          <div className="c-ping-layer c-ping-layer-4"> </div>
+        </div>
+      </div>
+      <div className="AuctionCard__body">
+        <LandName name={{ sentence: sentence, hex: hex }} location={location}></LandName>
+        <div className="AuctionCard__bottom_line">
+          <div className="o-half">
+            <ValueCounter value={value}></ValueCounter> 
+            {/* className={changeValue} */}
+          </div>
+          <div className="o-half">
+            <TimeCounter time={20} signature="mins" date_end={date_end}></TimeCounter>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  )
+
 }
 
 export default AuctionCard
