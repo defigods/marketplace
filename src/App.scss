@@ -3,18 +3,20 @@
 $ovr-purple : #1D0333;
 $ovr-sideral-grey: #282D32; 
 $ovr-light-grey: #f3f3f5;
+$ovr-aqua-marine: #c9d2d3;
 $ovr-orange: #EC663C;
 $ovr-green: #49B6AE;
 $ovr-red: #C32438;
 
-.c-line, .c-line__in{
+.o-line, .o-line--in{
   display: block;
   width: 100%;
   clear: both;
 }
-.c-line__in{
+.o-line--in{
   display: inline-block;
 }
+
 
 body{
   font-family: 'Poppins', sans-serif;
@@ -36,6 +38,7 @@ body{
    margin: 0 auto;
    max-width: calc(100% - 140px);
 }
+
 .App{
   padding-top:70px;
 }
