@@ -6,9 +6,10 @@ export class MapProvider extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            onSingleView: false,
+            displayMap: false,
+            onSingleView: true,
             hex_id: '8c81326dda43dff',
-            type: 'AUCTION'
+            isAuction: false
         }
         this.config = {
             lat: 46.0922495,
@@ -20,12 +21,16 @@ export class MapProvider extends Component {
     }
 
     changeHexId = (hex_id) => {
-        this.setState({ onSingleView: true, hex_id: hex_id })
+        this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true})
+    }
+
+    changeDisplayMap = (displayMap) => {
+        this.setState({ displayMap: displayMap})
     }
 
     render() {
         return (
-            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId }, config: this.config}}>
+            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId, changeDisplayMap: this.changeDisplayMap }, config: this.config}}>
                 {this.props.children}
             </MapContext.Provider>
         )

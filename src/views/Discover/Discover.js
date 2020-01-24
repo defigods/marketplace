@@ -1,18 +1,16 @@
 import React from 'react';
 import './style.scss';
-import Map from '../../components/Map/Map';
-import ChangeHex from '../../components/ChangeHex/ChangeHex';
+import { withMapContext } from '../../context/MapContext'
 
-function Discover() {
+const Discover = (props) => {
 
   return (
       <div className="Discover">
         <div className="o-container">
-          <Map></Map>
-          <ChangeHex/>
+          Discover
         </div>
       </div>
   );
 }
 
-export default Discover;
+export default withMapContext(Discover);

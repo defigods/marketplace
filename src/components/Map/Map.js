@@ -1,6 +1,7 @@
 
 import React, { Component, useState, useContext, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
+import geojson2h3 from 'geojson2h3';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { MapContext } from '../../context/MapContext';
@@ -10,10 +11,61 @@ const h3 = require("h3-js");
 class Map extends Component {
   static contextType = MapContext
   
+  focusMapAndPlotHex(hex_id, isAuction){
+    // Hex to geo
+    let hexCenterCoordinates = h3.h3ToGeo(hex_id);
+    // Move map focus
+    this.map.flyTo({
+      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]], 
+      zoom:18
+    });
+    // Plot graphic point into map
+    let singleHexGeojson = geojson2h3.h3ToFeature(hex_id)
+
+    const selected_sourceId = 'h3-hexes_selected'
+    const selected_layerId = `${selected_sourceId}-layer`
+    let selected_source = this.map.getSource(selected_sourceId)
+    if (!selected_source) {
+      this.map.addSource(selected_sourceId, {
+        type: 'geojson',
+        data: singleHexGeojson,
+      })
+      this.map.addLayer({
+        id: selected_layerId,
+        source: selected_sourceId,
+        type: 'fill',
+        interactive: false,
+        paint: {
+          'fill-outline-color': '#4A90E2',
+          'fill-color': 'rgba(74,144,226,0.20)',
+          'fill-opacity': 1
+        },
+      })
+      selected_source = this.map.getSource(selected_sourceId)
+    }
+
+    // Update the h3Geo data
+    selected_source.setData(singleHexGeojson)
+
+    this.map.setLayoutProperty(selected_layerId, 'visibility', 'visible');
+
+    if (isAuction === true){
+      let el = document.createElement('div');
+      el.className = 'Map__ping_container --best';
+      el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"> </div><div class="c-ping-layer c-ping-layer-2"> </div><div class="c-ping-layer c-ping-layer-3"> </div><div class="c-ping-layer c-ping-layer-4"> </div>');
+
+      new mapboxgl.Marker(el)
+          .setLngLat([hexCenterCoordinates[1], hexCenterCoordinates[0]])
+          .addTo(this.map);
+    }
+
+  }
+
   componentDidMount() {
 
     const config = this.context.config
     const state = this.context.state
+
     //
     // Mapbox init
     //
@@ -53,7 +105,7 @@ class Map extends Component {
       this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
 
       var switchy = document.getElementById('js-map-view');
-      switchy.addEventListener("click", function(){
+      switchy.addEventListener("click", () => {
           if (switchy.className === 'on') {
               switchy.setAttribute('class', 'off');
               this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
@@ -64,27 +116,21 @@ class Map extends Component {
               switchy.innerHTML = 'Streets';
           }
       });
-    })
 
-    //
-    // View single point
-    //
-    if( state.onSingleView === true){
-      let hexCenterCoordinates = h3.h3ToGeo(state.hex_id);
-      this.map.flyTo({
-        center: [hexCenterCoordinates[1], hexCenterCoordinates[0]], 
-        zoom:18
-      });
-    }
+      //
+      // View single point
+      //
+      if( state.onSingleView === true){
+        this.focusMapAndPlotHex(state.hex_id, state.isAuction)
+      }
+    })
   }
 
   componentDidUpdate() {
     const state = this.context.state
-    let hexCenterCoordinates = h3.h3ToGeo(state.hex_id);
-    this.map.flyTo({
-      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]], 
-      zoom:18
-    });
+    if( state.onSingleView === true){
+      this.focusMapAndPlotHex(state.hex_id, state.isAuction)
+    }
   }
 
 
