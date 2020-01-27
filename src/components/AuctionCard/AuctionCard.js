@@ -3,7 +3,7 @@ import React from 'react';
 import LandName from '../LandName/LandName';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import TimeCounter from '../TimeCounter/TimeCounter';
-
+import { Link } from "react-router-dom";
 
 const AuctionCard = props => {
 
@@ -19,6 +19,7 @@ const AuctionCard = props => {
 
   return (
     <div className={`AuctionCard ${className}`}>
+      <Link to={`/map/land/${hex}`}>
       <div className="AuctionCard__header" style={{ backgroundImage: background_image }}>
         <div className="AuctionCard__status">{status}</div>
         <div className="AuctionCard__ping_container">
@@ -28,6 +29,7 @@ const AuctionCard = props => {
           <div className="c-ping-layer c-ping-layer-4"> </div>
         </div>
       </div>
+      </Link>
       <div className="AuctionCard__body">
         <LandName name={{ sentence: sentence, hex: hex }} location={location}></LandName>
         <div className="AuctionCard__bottom_line">

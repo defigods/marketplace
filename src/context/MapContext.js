@@ -1,42 +1,87 @@
-import React, { useState, createContext, Component } from 'react';
+import React, { createContext, Component } from 'react';
 
 export const MapContext = createContext();
 
 export class MapProvider extends Component {
     constructor(props) {
         super(props)
+
         this.state = {
-            displayMap: false,
-            onSingleView: true,
+            onSingleView: false,
             hex_id: '8c81326dda43dff',
-            isAuction: false
+            isAuction: false,
         }
-        this.config = {
-            lat: 46.0922495,
-            lng: 13.2312417,
-            zoom: 0,
-            fillOpacity: 0.4,
-            colorScale: ['#5F39BE', '#ffffff','#1a0731', '#EC663C', '#0081DD'],
-        }
+        
+        this.overviewList = [
+            {
+                key: "8cbcc350c0ab5ff",
+                value:"300",
+                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
+                name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
+                location:"Venice, Italy",
+                bid_status:{className: "--best", sentence:"BEST BID"},
+                date_end:"2020-01-17T15:44-0000",
+            },
+            {
+                key: "8c81326dda43dff",
+                value:"300",
+                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
+                name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
+                location:"Venice, Italy",
+                bid_status:{className: "--out", sentence:"BEST BID"},
+                date_end:"2020-01-17T15:44-0000"
+            },
+            {
+                key: "8cbcc350c0ab5ff",
+                value:"300",
+                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
+                name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
+                location:"Venice, Italy",
+                bid_status:{className: "--best", sentence:"BEST BID"},
+                date_end:"2020-01-17T15:44-0000",
+            },
+            {
+                key: "8c81326dda43dff",
+                value:"300",
+                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
+                name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
+                location:"Venice, Italy",
+                bid_status:{className: "--out", sentence:"BEST BID"},
+                date_end:"2020-01-17T15:44-0000"
+            },
+            {
+                key: "8cbcc350c0ab5ff",
+                value:"300",
+                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
+                name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
+                location:"Venice, Italy",
+                bid_status:{className: "--best", sentence:"BEST BID"},
+                date_end:"2020-01-17T15:44-0000",
+            },
+            {
+                key: "8c81326dda43dff",
+                value:"300",
+                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
+                name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
+                location:"Venice, Italy",
+                bid_status:{className: "--out", sentence:"BEST BID"},
+                date_end:"2020-01-17T15:44-0000"
+            }
+        ]
     }
 
     changeHexId = (hex_id) => {
         this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true})
     }
 
-    changeDisplayMap = (displayMap) => {
-        this.setState({ displayMap: displayMap})
-    }
-
     render() {
         return (
-            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId, changeDisplayMap: this.changeDisplayMap }, config: this.config}}>
+            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId }, overviewList: this.overviewList}}>
                 {this.props.children}
             </MapContext.Provider>
         )
     }
 }
-
 
 export function withMapContext(Component) {
     class ComponentWithContext extends React.Component {

@@ -3,8 +3,9 @@
   height: 350px;
   background: $ovr-aqua-marine;
   &:focus {outline:none;}
-
+  margin-top: 50px;
   position: relative;
+  box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.03);
 }
 
 #js-map-view {
@@ -24,8 +25,12 @@
   height: 21px; 
   z-index: 9;
 }
-  #js-map-view.on {
-    background-position: bottom; }
+#js-map-view.on {
+  background-position: bottom; }
 
 #js-map-view:hover {
   background-color: #ccc; }
+
+.mapboxgl-ctrl-geocoder, .mapboxgl-ctrl-geocoder .suggestions{
+  box-shadow: 0 0 4px rgba(0,0,0,.1);
+}

@@ -34,13 +34,31 @@ body{
 .c-two-third{
   @include column(2/3);
 }
+.o-fourth{
+  @include column(1/4);
+}
+.o-fifth{
+  @include column(1/5);
+}
+.Land__heading__1{
+    @include column(2/5);
+}
+.Land__heading__2{
+    @include column(3/5);
+}
 .o-container{
    margin: 0 auto;
    max-width: calc(100% - 140px);
+   display: flex;
 }
 
 .App{
   padding-top:70px;
+}
+
+.o-section-title{
+  margin-top: 30px;
+  color: $ovr-sideral-grey;
 }
 
 @import "./src/components/CtaCard/style.scss";
@@ -53,5 +71,7 @@ body{
 @import "./src/components/TimeCounter/style.scss";
 @import "./src/components/LandCard/style.scss";
 @import "./src/components/NavBar/style.scss";
+@import "./src/components/Footer/style.scss";
 @import "./src/components/Map/style.scss";
 
+@import "./src/views/Land/style.scss";

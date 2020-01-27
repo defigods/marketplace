@@ -1,0 +1,38 @@
+.Footer{
+    background: #fff;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 70px;
+    padding-top: 50px;
+    padding-bottom: 60px;
+    z-index: 9;
+    font-size: 14px;
+}
+
+.Footer__logo svg{
+    width: 50px;
+    height: auto;
+    margin: 0 auto;
+}
+.Footer__copyright{
+    font-size: 12px;
+    margin-top: 10px;
+}
+.Footer__title{
+    font-weight: 400;
+    color: $ovr-sideral-grey;
+    opacity: 0.3;
+}
+.Footer_link{
+    color: $ovr-sideral-grey;
+    text-decoration: none;
+    clear: both;
+    display: block;
+}
+.Footer__container{
+    max-width: 120px;
+    margin: 0 auto;
+    &.--large{
+        max-width: 153px;
+    }
+}
