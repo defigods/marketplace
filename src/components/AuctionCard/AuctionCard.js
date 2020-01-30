@@ -21,7 +21,7 @@ const AuctionCard = props => {
     <div className={`AuctionCard ${className}`}>
       <Link to={`/map/land/${hex}`}>
       <div className="AuctionCard__header" style={{ backgroundImage: background_image }}>
-        <div className="AuctionCard__status">{status}</div>
+        <div className="c-status-badge AuctionCard__status">{status}</div>
         <div className="AuctionCard__ping_container">
           <div className="c-ping-layer c-ping-layer-1"> </div>
           <div className="c-ping-layer c-ping-layer-2"> </div>

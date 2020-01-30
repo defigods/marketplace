@@ -1,8 +1,10 @@
 .o-fifth{
     display: inline-block;
 }
-.Land  .o-container{
-    overflow: hidden;
+.Land{
+    .o-container{
+        overflow: hidden;
+    }
     h2, h3{
         margin-bottom: 5px;
         margin-top: 30px;
@@ -17,8 +19,58 @@
     .TimeCounter{
         margin-top: 5px;
     }
+    .c-status-badge{
+        margin-top: 10px;
+        width: fit-content;
+    }
+    .Land__heading__2 .HexButton{
+        margin-top:50px;
+    }
 }
 .o-detail-container{
     max-width: 220px;
     margin: 0 auto;
+}
+
+
+.Table__container,.Title__container{
+    width: 100%;
+    clear: both;
+}
+.Table__container{
+    margin-top: 20px;
+    background: #fff;
+    padding: 30px 50px;
+    border-radius: 3px;
+}
+.Table{
+    width: 80%;
+    text-align: left;
+    border-collapse: collapse; 
+    th{
+        text-transform: uppercase;
+        font-weight: 400;
+        color:#9B9B9B;
+        padding-bottom: 10px;
+    }
+    .Table__line{
+        border-bottom: 1px solid rgb(235, 229, 229);
+        &:last-child{
+            border-bottom: none;
+        }
+    }
+}
+
+.MuiFormLabel-root{
+    color: #d9d9d9!important;
+    font-weight: 200!important;
+}
+.MuiInput-underline:before{
+    border-bottom: 1px solid #d9d9d9!important;
+}
+.MuiInputBase-input{
+    color: #fff!important;
+}
+.MuiInput-underline:after {
+    border-bottom: 2px solid #fff!important;
 }

@@ -34,6 +34,7 @@
     height: 140px;
     width: 100%;
     background-position: center center;
+    background-size: cover;
     display: block;
     position: relative;
 }
@@ -151,33 +152,39 @@
     display: flex;
 }
 
-.AuctionCard__status{
+.c-status-badge{
   background: #fff;
   display: block;
   padding: 5px 15px;
   font-size: 10px;
   font-weight: bold;
   letter-spacing: 1px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.08);
+}
+
+.AuctionCard__status{
   position: absolute;
   right: 10px;
   top: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px 0 rgba(0,0,0,0.08);
 }
 
 // Variations
 
-.AuctionCard.--best, .Map__ping_container.--best{
-  .AuctionCard__status{
+.AuctionCard.--bestbid, .Map__ping_container.--bestbid{
+  .c-status-badge{
     color: $ovr_green;
   }
   .c-ping-layer:before, .c-ping-layer:after, .c-ping-layer-1 {
     background-color: $ovr_green;
   }
 }
+.c-status-badge.--bestbid{
+  color: $ovr_green;
+}
 
-.AuctionCard.--out, .Map__ping_container.--out{
-  .AuctionCard__status{
+.AuctionCard.--outbidded, .Map__ping_container.--outbidded{
+  .c-status-badge{
     color: #fff;
     background: linear-gradient(-141deg, #F5515F 0%, #9F041B 100%);
   }
@@ -185,6 +192,12 @@
     background-color: $ovr_red;
   }
 }
+
+.c-status-badge.--outbidded{
+  color: #fff;
+  background: linear-gradient(-141deg, #F5515F 0%, #9F041B 100%);
+}
+
 
 
 // List

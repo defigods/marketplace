@@ -49,7 +49,6 @@ body{
 .o-container{
    margin: 0 auto;
    max-width: calc(100% - 140px);
-   display: flex;
 }
 
 .App{
@@ -73,5 +72,6 @@ body{
 @import "./src/components/NavBar/style.scss";
 @import "./src/components/Footer/style.scss";
 @import "./src/components/Map/style.scss";
+@import "./src/components/BidOverlay/style.scss";
 
 @import "./src/views/Land/style.scss";

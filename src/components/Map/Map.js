@@ -122,7 +122,7 @@ class Map extends Component {
 
     if (isAuction === true){
       let el = document.createElement('div');
-      el.className = 'Map__ping_container --best';
+      el.className = 'Map__ping_container --bestbid';
       el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"> </div><div class="c-ping-layer c-ping-layer-2"> </div><div class="c-ping-layer c-ping-layer-3"> </div><div class="c-ping-layer c-ping-layer-4"> </div>');
 
       new mapboxgl.Marker(el)

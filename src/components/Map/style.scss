@@ -31,6 +31,6 @@
 #js-map-view:hover {
   background-color: #ccc; }
 
-.mapboxgl-ctrl-geocoder, .mapboxgl-ctrl-geocoder .suggestions{
-  box-shadow: 0 0 4px rgba(0,0,0,.1);
+.mapboxgl-ctrl-geocoder{
+  box-shadow: 0 0 0px rgba(0, 0, 0, 0.1)!important;
 }

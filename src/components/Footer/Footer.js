@@ -24,16 +24,16 @@ class Footer extends Component {
             <div className="o-fourth">
                 <div className="Footer__container">
                     <div className="Footer__title">Legal</div>
-                    <Link to="/" className="Footer_link">Terms of Service</Link>
-                    <Link to="/" className="Footer_link">Privacy</Link>
+                    <Link to="/" className="Footer__link">Terms of Service</Link>
+                    <Link to="/" className="Footer__link">Privacy</Link>
                 </div>
             </div>
             <div className="o-fourth">
                 <div className="Footer__container">
                     <div className="Footer__title">Community</div>
-                    <Link to="/" className="Footer_link">Telegram</Link>
-                    <Link to="/" className="Footer_link">Medium</Link>
-                    <Link to="/" className="Footer_link">Facebook</Link>
+                    <Link to="/" className="Footer__link">Telegram</Link>
+                    <Link to="/" className="Footer__link">Medium</Link>
+                    <Link to="/" className="Footer__link">Facebook</Link>
                 </div>
             </div>
         </div>;

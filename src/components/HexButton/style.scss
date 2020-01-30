@@ -15,9 +15,37 @@
 .HexButton__text{
     position: absolute;
     font-size: 14px;
+    font-weight: 400;
     top: 0px;
     line-height: 35px;
     text-align: center;
     width: 100%;
     color: #fff;
+}
+
+.--purple{
+    .first-stop {
+      stop-color: rgb(163, 84, 177);
+    }
+    .last-stop {
+      stop-color: #1D0333;
+    }
+}
+
+.--outline{
+    svg{
+        
+    }
+    svg path{
+        fill: transparent;
+        stroke-width: 2px;
+        stroke:#fff;
+    }
+
+}
+.--disabled{
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+    filter: grayscale(100%);
 }

@@ -10,6 +10,7 @@ export class MapProvider extends Component {
             onSingleView: false,
             hex_id: '8c81326dda43dff',
             isAuction: false,
+            activeBidOverlay: false
         }
         
         this.overviewList = [
@@ -19,7 +20,7 @@ export class MapProvider extends Component {
                 background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
                 name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
                 location:"Venice, Italy",
-                bid_status:{className: "--best", sentence:"BEST BID"},
+                bid_status:{className: "--bestbid", sentence:"BEST BID"},
                 date_end:"2020-01-17T15:44-0000",
             },
             {
@@ -28,7 +29,7 @@ export class MapProvider extends Component {
                 background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
                 name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
                 location:"Venice, Italy",
-                bid_status:{className: "--out", sentence:"BEST BID"},
+                bid_status:{className: "--outbidded", sentence:"BEST BID"},
                 date_end:"2020-01-17T15:44-0000"
             },
             {
@@ -37,7 +38,7 @@ export class MapProvider extends Component {
                 background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
                 name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
                 location:"Venice, Italy",
-                bid_status:{className: "--best", sentence:"BEST BID"},
+                bid_status:{className: "--bestbid", sentence:"BEST BID"},
                 date_end:"2020-01-17T15:44-0000",
             },
             {
@@ -46,7 +47,7 @@ export class MapProvider extends Component {
                 background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
                 name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
                 location:"Venice, Italy",
-                bid_status:{className: "--out", sentence:"BEST BID"},
+                bid_status:{className: "--outbidded", sentence:"BEST BID"},
                 date_end:"2020-01-17T15:44-0000"
             },
             {
@@ -55,7 +56,7 @@ export class MapProvider extends Component {
                 background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
                 name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
                 location:"Venice, Italy",
-                bid_status:{className: "--best", sentence:"BEST BID"},
+                bid_status:{className: "--bestbid", sentence:"BEST BID"},
                 date_end:"2020-01-17T15:44-0000",
             },
             {
@@ -64,7 +65,7 @@ export class MapProvider extends Component {
                 background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
                 name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
                 location:"Venice, Italy",
-                bid_status:{className: "--out", sentence:"BEST BID"},
+                bid_status:{className: "--outbidded", sentence:"BEST BID"},
                 date_end:"2020-01-17T15:44-0000"
             }
         ]
@@ -74,9 +75,13 @@ export class MapProvider extends Component {
         this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true})
     }
 
+    changeActiveBidOverlay = (activeVal) =>{
+        this.setState({ activeBidOverlay: activeVal })
+    }
+
     render() {
         return (
-            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId }, overviewList: this.overviewList}}>
+            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId, changeActiveBidOverlay: this.changeActiveBidOverlay }, overviewList: this.overviewList}}>
                 {this.props.children}
             </MapContext.Provider>
         )
