@@ -45,29 +45,6 @@ const BidOverlay = (props) => {
     props.mapProvider.actions.changeActiveBidOverlay(false)
   }
   
-  if (bidInputError !== false) {
-    input = <TextField
-      id="quantity"
-      label="Your Bid"
-      type="number"
-      value={newBidValue} 
-      onFocus={updateNewBidValue}
-      onChange={updateNewBidValue}
-      onKeyUp={updateNewBidValue}
-      error
-      helperText={bidInputError}
-    />
-  } else {
-    input = <TextField
-      id="quantity"
-      label="Your Bid"
-      type="number"
-      value={newBidValue} 
-      onFocus={updateNewBidValue}
-      onChange={updateNewBidValue}
-      onKeyUp={updateNewBidValue}
-    />
-  }
 
   if (!props.mapProvider.state.activeBidOverlay) return null
 
@@ -107,7 +84,17 @@ const BidOverlay = (props) => {
                   </div>
                 </div>
                 <div className="Overlay__input">
-                  {input}
+                  <TextField
+                    id="quantity"
+                    label="Your Bid"
+                    type="number"
+                    error={bidInputError !== false ? true : false}
+                    helperText={bidInputError !== false ? bidInputError : ""}
+                    value={newBidValue} 
+                    onFocus={updateNewBidValue}
+                    onChange={updateNewBidValue}
+                    onKeyUp={updateNewBidValue}
+                  />
                 </div>
                 <div className="Overlay__buttons_container">
                   <HexButton url="" text="Place Bid" className={`--purple ${bidValid ? '':'--disabled'}`}></HexButton>
