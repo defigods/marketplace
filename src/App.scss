@@ -2,6 +2,7 @@
 
 $ovr-purple : #1D0333;
 $ovr-sideral-grey: #282D32; 
+$ovr-grey: #857f7c;
 $ovr-light-grey: #f3f3f5;
 $ovr-aqua-marine: #c9d2d3;
 $ovr-orange: #EC663C;
@@ -75,3 +76,4 @@ body{
 @import "./src/components/BidOverlay/style.scss";
 
 @import "./src/views/Land/style.scss";
+@import "./src/views/Login/style.scss";

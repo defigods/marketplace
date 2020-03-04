@@ -1,45 +1,58 @@
 import React from 'react';
 import './App.scss';
+import 'react-notifications-component/dist/theme.css'
+
 import Home from './views/Home/Home';
 import Discover from './views/Discover/Discover';
 import Overview from './views/Overview/Overview';
 import Land from './views/Land/Land'
+import Login from './views/Login/Login';
+
 import NavBar from './components/NavBar/NavBar';
 import Map from './components/Map/Map';
 import Footer from './components/Footer/Footer';
-import ChangeHex from './components/ChangeHex/ChangeHex';
 
+import ReactNotification from 'react-notifications-component'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { MapProvider, MapContext } from './context/MapContext'
+import { UserProvider, UserContext } from './context/UserContext';
 
 function App() {
   return (
-    <MapProvider>
-
-      <Router>
-        <div className="App">
-          <NavBar></NavBar>
-          <div className="o-container">
-            <MapContext.Consumer>
-              {(mapValue) => { 
-                return(
-                  <Route path="/map/" component={Map}></Route>
-                )
-              }}
-            </MapContext.Consumer>
-            {/* <ChangeHex/> */}
-          </div>
-          <Switch>
-            <Route path="/" exact component={Home}></Route>
-            <Route path="/map/discover" component={Discover}></Route>
-            <Route path="/map/overview" component={Overview}></Route>
-            <Route path="/map/land/:id" component={Land}></Route>
-          </Switch>
-          <Footer></Footer>
-        </div>
-      </Router>
-      
-    </MapProvider>
+    <UserProvider>
+      <MapProvider>
+        <UserContext.Consumer>
+          {(userValue) => { 
+            return(
+              <Router>
+                <div className="App">
+                  <ReactNotification />
+                  <NavBar></NavBar>
+                  <div className="o-container">
+                    <MapContext.Consumer>
+                      {(mapValue) => { 
+                        return(
+                          <Route path="/map/" component={Map}></Route>
+                        )
+                      }}
+                    </MapContext.Consumer>
+                    {/* <ChangeHex/> */}
+                  </div>
+                  <Switch>
+                    <Route path="/" exact component={Home}></Route>
+                    <Route path="/map/discover" component={Discover}></Route>
+                    <Route path="/map/overview" component={Overview}></Route>
+                    <Route path="/map/land/:id" component={Land}></Route>
+                    <Route path="/login" component={Login}></Route>
+                  </Switch>
+                  <Footer></Footer>
+                </div>
+              </Router>
+            )
+          }}
+        </UserContext.Consumer>
+      </MapProvider>
+    </UserProvider>
   );
 }
 

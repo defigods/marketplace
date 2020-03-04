@@ -18,6 +18,7 @@
     width: 600px;
     margin: 0 auto;
     color: #fff;
+    height: 300px;
 }
 
 .Overlay__title{
@@ -38,6 +39,32 @@
     max-width: 40%;
     float: left;
     padding: 50px 60px;
+    svg{
+    //   -webkit-animation: shrinking-cog .3s 1 ease forwards;
+    //   -moz-animation: shrinking-cog .3s 1 ease forwards;
+    //   -ms-animation: shrinking-cog .3s 1 ease forwards;
+    //   -o-animation: shrinking-cog .3s 1 ease forwards;
+    //   animation: shrinking-cog .3s 1 ease forwards;
+
+    }
+    .--activeStep-1 &{
+        svg{
+            -webkit-animation: spinning-cog 1550ms infinite ease;
+            -moz-animation: spinning-cog 1550ms infinite ease;
+            -ms-animation: spinning-cog 1550ms infinite ease;
+            -o-animation: spinning-cog 1550ms infinite ease;
+            animation: spinning-cog 1550ms infinite ease;
+        }
+    }
+    .--activeStep-2 &{
+        svg{
+            -webkit-animation: shrinking-cog 1550ms forwards ease;
+            -moz-animation: shrinking-cog 1550ms forwards ease;
+            -ms-animation: shrinking-cog 1550ms forwards ease;
+            -o-animation: shrinking-cog 1550ms forwards ease;
+            animation: shrinking-cog 1550ms forwards ease;
+        }
+    }
 }
 .Overlay__current_bid, .Overlay__minimum_bid{
     margin-top:20px;
@@ -52,6 +79,14 @@
     border-radius: 3px;
     .ValueCounter{
         padding: 8px 15px;
+    }
+}
+.Overlay__close_button{
+    position: absolute;
+    transition: 350ms ease-in-out all;
+    cursor: pointer;
+    &:hover{
+        transform: scale(0.9);
     }
 }
 .Overlay__arrow{
@@ -72,6 +107,11 @@
     }
 }
 
+.Overlay__message__container{
+    margin-top: 40px;
+    animation: 1s blink infinite 1550ms;
+}
+
 .Overlay__input{
     margin-top: 20px;
 }
@@ -83,10 +123,24 @@
   opacity: 0.01;
 }
 
+
+.overlay-leave {
+	opacity: 1;
+	transform: scaleX(1) translateY(0);
+}
+
+.overlay-leave-active {
+	opacity: 01;
+	transform: scaleX(0) translateY(100px);
+	transition: all 300ms ease-in-out
+}
+
 .overlay-appear.overlay-appear-active {
   opacity: 1;
   transition: opacity 350ms ease-in-out;
+  
 }
+
 
 .BidOverlay{
     background: linear-gradient(138deg, #1d0333, #805e9d);
@@ -113,3 +167,52 @@
     }
 }
 
+
+@keyframes blink {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spinning-cog {
+  0% { transform: rotate(0deg) }
+  20% { transform: rotate(-45deg) }
+  100% { transform: rotate(360deg) }
+}
+
+@keyframes shrinking-cog {
+  0% { transform: scale(1) rotate(0deg) }
+  20% { transform: scale(1.2) rotate(-45deg) }
+  100% { transform: scale(0) rotate(360deg)}
+}
+
+
+.WhiteInputs{
+  .MuiFormLabel-root{
+      color: #d9d9d9!important;
+      font-weight: 200!important;
+  }
+  .MuiInput-underline:before{
+      border-bottom: 1px solid #d9d9d9!important;
+  }
+  .MuiInputBase-input{
+      color: #fff!important;
+  }
+  .MuiInput-underline:after {
+      border-bottom: 2px solid #fff!important;
+  }
+}
+
+.MuiFormLabel-root{
+    color: $ovr-sideral-grey!important;
+    font-weight: 200!important;
+}
+.MuiInput-underline:before{
+    border-bottom: 1px solid $ovr-sideral-grey!important;
+}
+.MuiInputBase-input{
+    color: $ovr-sideral-grey!important;
+}
+.MuiInput-underline:after {
+    border-bottom: 2px solid #000!important;
+}

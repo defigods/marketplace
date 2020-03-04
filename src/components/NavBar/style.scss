@@ -125,3 +125,19 @@
     line-height: 16px;
     text-align: center;
 }
+
+.General__link{
+    color: $ovr-sideral-grey;
+    text-decoration: none;
+    clear: both;
+    display: block;   
+}
+
+.AuthLogin__link{
+  top: 0px;
+  position: absolute;
+  line-height: 70px;
+  right: 0px;
+  margin: 0px 70px;
+  font-size: 15px;
+}

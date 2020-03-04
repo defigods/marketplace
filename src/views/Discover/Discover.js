@@ -2,7 +2,7 @@ import React from 'react';
 import './style.scss';
 import { withMapContext } from '../../context/MapContext'
 
-export class Discover extends React.Component {
+class Discover extends React.Component {
 
   render(){
     return (

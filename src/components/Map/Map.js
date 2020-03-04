@@ -1,5 +1,5 @@
 
-import React, { Component, useState, useContext, useEffect } from 'react';
+import React, { Component } from 'react';
 import mapboxgl from 'mapbox-gl';
 import geojson2h3 from 'geojson2h3';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -146,7 +146,7 @@ class Map extends Component {
 
   componentDidUpdate() {
     const state = this.context.state
-    if( state.onSingleView == true){
+    if( state.onSingleView === true){
       this.waitMapStyle();
     }
   }
