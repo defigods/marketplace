@@ -7,6 +7,7 @@ import Discover from './views/Discover/Discover';
 import Overview from './views/Overview/Overview';
 import Land from './views/Land/Land'
 import Login from './views/Login/Login';
+import Signup from './views/Signup/Signup';
 
 import NavBar from './components/NavBar/NavBar';
 import Map from './components/Map/Map';
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/map/overview" component={Overview}></Route>
                     <Route path="/map/land/:id" component={Land}></Route>
                     <Route path="/login" component={Login}></Route>
+                    <Route path="/signup" component={Signup}></Route>
                   </Switch>
                   <Footer></Footer>
                 </div>

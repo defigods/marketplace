@@ -1,0 +1,47 @@
+.Signup{
+  text-align: center;
+  padding-top: 50px;
+  h2{
+    color: $ovr_purple;
+  }
+}
+.Signup__sub-title{
+  font-size: 16px;
+  margin-top: 5px;
+  margin: 0 auto;
+  max-width: 350px;
+}
+.Signup__form-container{
+  margin-top: 20px;
+}
+.Signup__input{
+  margin-top: 10px;
+  text-align: center;
+  .HexButton{
+    margin-top: 20px;
+  }
+  &:first-child{
+    margin-top: 0px;
+  }
+}
+.Signup__signup, .Signup__forgot{
+  margin-top: 30px;
+  font-size: 12px;
+  font-weight: 400;
+  color: $ovr-grey;
+  a{
+    color: $ovr-grey;
+  }
+}
+.Signup__forgot{
+  margin-top: 20px;
+}
+
+.Signup__footer{
+  margin-top: 50px;
+  a{
+    color: #000;
+    text-decoration: none;
+    font-weight: 400;
+  }
+}

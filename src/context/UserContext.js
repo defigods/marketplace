@@ -15,8 +15,8 @@ export class UserProvider extends Component {
     }
   }
 
-  loginUser = (token) => {
-    this.setState({ isLoggedIn: true, token: token })
+  loginUser = (token, user) => {
+    this.setState({ isLoggedIn: true, token: token, user: user })
   }
 
   render() {

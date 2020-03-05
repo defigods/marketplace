@@ -21,6 +21,7 @@
     "node-sass": "^4.13.1",
     "react": "^16.12.0",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-blockies": "^1.4.1",
     "react-dom": "^16.12.0",
     "react-moment": "^0.9.7",
     "react-notifications-component": "^2.3.0",

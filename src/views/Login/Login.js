@@ -54,7 +54,7 @@ const Login = (props) => {
       if (response.data.result === true) {
 
         // Load user data in context store
-        context.actions.loginUser(response.data.token)
+        context.actions.loginUser(response.data.token, response.data.user )
 
         // Redirect
         history.push('/map/overview')
@@ -119,39 +119,41 @@ const Login = (props) => {
           We're so pleased you're here. You can browse the OVRLands and track your auctions using your account. 
         </div>
         <div className="Login__form-container">
-          <div className="Login__input">
-            <TextField
-              id="loginName"
-              label="Username"
-              type="text"
-              error={inputNameError !== false ? true : false}
-              helperText={inputNameError !== false ? inputNameError : ""}
-              onFocus={changeLoginName}
-              onChange={changeLoginName}
-              onKeyUp={changeLoginName}
-            />
-          </div>
-          <div className="Login__input">
-            <TextField
-              id="loginPassword"
-              label="Password"
-              type="password"
-              error={inputPasswordError !== false ? true : false}
-              helperText={inputPasswordError !== false ? inputPasswordError : ""}
-              onFocus={changeLoginPassword}
-              onChange={changeLoginPassword}
-              onKeyUp={changeLoginPassword}
-            />
-          </div>
-          <div className="Login__input">
-            <HexButton url="#" text="Login" className={`--purple ${isFormValid ? '' : '--disabled'}`} onClick={submitLogin}></HexButton>
-          </div>
+          <form>
+            <div className="Login__input">
+              <TextField
+                id="loginName"
+                label="Username"
+                type="text"
+                error={inputNameError !== false ? true : false}
+                helperText={inputNameError !== false ? inputNameError : ""}
+                onFocus={changeLoginName}
+                onChange={changeLoginName}
+                onKeyUp={changeLoginName}
+              />
+            </div>
+            <div className="Login__input">
+              <TextField
+                id="loginPassword"
+                label="Password"
+                type="password"
+                error={inputPasswordError !== false ? true : false}
+                helperText={inputPasswordError !== false ? inputPasswordError : ""}
+                onFocus={changeLoginPassword}
+                onChange={changeLoginPassword}
+                onKeyUp={changeLoginPassword}
+              />
+            </div>
+            <div className="Login__input">
+              <HexButton url="#" text="Login" className={`--purple ${isFormValid ? '' : '--disabled'}`} onClick={submitLogin}></HexButton>
+            </div>
+          </form>
         </div>
         <div className="Login__signup">
-          You don't have an account? <Link to="/register">Signup</Link>
+          You don't have an account? <Link to="/signup">Signup</Link>
         </div>
         <div className="Login__forgot">
-          <Link to="/register">Forgot your password?</Link>
+          <Link to="/signup">Forgot your password?</Link>
         </div>
         <div className="Login__footer">
         If you have any question about your account visit <Link to="/FAQs">FAQs</Link> or contact <Link to="mailto:info@ovr.ai">info@ovr.ai</Link>

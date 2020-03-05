@@ -7,22 +7,36 @@ import { UserContext, withUserContext } from '../../context/UserContext';
 
 import logo from '../../assets/icons/logo_ovr_white.svg'
 import icon_notification from '../../assets/icons/icon_notification.svg'
+import Blockies from 'react-blockies';
 
 class NavBar extends Component {
   static contextType = UserContext
 
   render() {
     let rightContainer = <div></div>
-    if (this.context.state.isLoggedIn === true) {
+    let state = this.context.state
+
+    if (state.isLoggedIn === true) {
       rightContainer = <>
       <div className="Navbar__right_container">
         <Link to="/" className="Notifications__link">
           <Icon src={icon_notification} className='Notifications__icon' isSvg={true}></Icon>
-          <div className="Notifications__counter">2</div>
+          <div className="Notifications__counter">0</div>
         </Link>
-        <Link to="/" className="Funds__link"><ValueCounter value="150"></ValueCounter></Link>
+        <Link to="/" className="Funds__link"><ValueCounter value={state.user.balance}></ValueCounter></Link>
       </div>
-      <Link to="/" className="Profile__link"><div className="Profile__img" style={{ backgroundImage: 'url(../../assets/img/auction-map.png)' }}></div></Link>
+      <Link to="/" className="Profile__link">
+        <div id="Profile__img" className="Profile__img" style={{ backgroundImage: 'url(../../assets/img/auction-map.png)' }}>
+          <Blockies
+            seed={state.user.uuid}
+            size={12}
+            scale={3}
+            color="#7521c8"
+            bgColor="#EC663C"
+            spotColor="#F9B426"
+          />
+        </div>
+      </Link>
       </>
       
     } else {

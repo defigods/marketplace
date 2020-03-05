@@ -1,12 +1,15 @@
 @import 'node_modules/jeet/jeet';
 
 $ovr-purple : #1D0333;
+$ovr-light-purple: #C81D5E;
 $ovr-sideral-grey: #282D32; 
 $ovr-grey: #857f7c;
 $ovr-light-grey: #f3f3f5;
 $ovr-aqua-marine: #c9d2d3;
 $ovr-orange: #EC663C;
+$ovr-yellow: #F9B426;
 $ovr-green: #49B6AE;
+$ovr-light-blue: #2FD7FF;
 $ovr-red: #C32438;
 
 .o-line, .o-line--in{
@@ -77,3 +80,4 @@ body{
 
 @import "./src/views/Land/style.scss";
 @import "./src/views/Login/style.scss";
+@import "./src/views/Signup/style.scss";

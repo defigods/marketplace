@@ -60,17 +60,19 @@ class Map extends Component {
       this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
 
       var switchy = document.getElementById('js-map-view');
-      switchy.addEventListener("click", () => {
-          if (switchy.className === 'on') {
-              switchy.setAttribute('class', 'off');
-              this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
-              switchy.innerHTML = 'Satellite';
-          } else {
-              switchy.setAttribute('class', 'on');
-              this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'visible');
-              switchy.innerHTML = 'Streets';
-          }
-      });
+      if (switchy){
+        switchy.addEventListener("click", () => {
+            if (switchy.className === 'on') {
+                switchy.setAttribute('class', 'off');
+                this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
+                switchy.innerHTML = 'Satellite';
+            } else {
+                switchy.setAttribute('class', 'on');
+                this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'visible');
+                switchy.innerHTML = 'Streets';
+            }
+        });
+      }
 
       //
       // View single point

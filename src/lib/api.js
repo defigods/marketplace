@@ -25,6 +25,17 @@ export function signIn(userName, password) {
   return request({ url: '/authentication/login', method: 'POST'}, { username: userName, password: password }, null)
 }
 
+// USER REGISTRATION
+// ----------------------------------------------------------------------------------------
+
+/**
+ * @function signIn
+ * @param {*}
+ */
+export function signUp(userName, password, email) {
+  return request({ url: '/user/registration', method: 'POST' }, { username: userName, password: password, email: email }, null)
+}
+
 
 
 // GENERAL REQUEST
@@ -36,12 +47,12 @@ export function signIn(userName, password) {
  * @param {object} params
  * @param {string} token
  */
-export function request(endpoint, params = {}, req_config = { headers: { 'Content-Type': 'application/json' } }) {
+export function request(endpoint, params , req_config = { headers: { 'Content-Type': 'application/json' } }) {
   // const token = getToken('userToken')
   // if (token) {
   //   axios.defaults.headers.common['Authorization'] = token // eslint-disable-line
   // }
-
+  console.log("params", params)
   return new Promise((resolve, reject) => {
     let req
     if (endpoint.method === 'POST') {
@@ -51,7 +62,7 @@ export function request(endpoint, params = {}, req_config = { headers: { 'Conten
     }
     req.then((response) => {
       resolve(camelCaseKeys(response))
-    }).catch((err) => reject(err))
+    }).catch((err) => {reject(err); console.log(err)})
   })
 }
 
