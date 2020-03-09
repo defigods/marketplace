@@ -6,3 +6,14 @@
 .--hidden{
     display: none;
 }
+
+.o-pagination{
+  width: 100%;
+  clear: both;
+  .MuiPagination-ul{
+    justify-content: center;
+  }
+}
+.MuiPaginationItem-root{
+  font-weight: 200;
+}

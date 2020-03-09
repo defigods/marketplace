@@ -37,6 +37,12 @@ export function signUp(userName, password, email) {
 }
 
 
+// AUCTIONS
+// ----------------------------------------------------------------------------------------
+export function indexOpenAuctions(sort = null, page = 1) {
+  return request({ url: '/auctions/open', method: 'GET' }, { sort: sort, page: page }, null)
+}
+
 
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------
