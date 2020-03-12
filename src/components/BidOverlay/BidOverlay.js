@@ -11,7 +11,7 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 
 import { bidAuction } from '../../lib/api'
-import { networkError, warningNotification } from '../../lib/notifications'
+import { networkError, warningNotification, dangerNotification } from '../../lib/notifications'
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 
@@ -31,7 +31,9 @@ const BidOverlay = (props) => {
         warningNotification("Invalid authentication", "Please Log In to partecipate")
       } else {
         setActiveStep(prevActiveStep => prevActiveStep + 1);
-        sendBid();
+        //  TODO Remove timeout
+        setTimeout(function () { sendBid(); }, 1500);
+        
       }
     } else {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
@@ -73,8 +75,12 @@ const BidOverlay = (props) => {
       
       if (response.data.result === true) {
         console.log('responseTrue', response.data)
+        setActiveStep(2);
       } else {
-        console.log('responseFalse', response.data)
+        // response.data.errors[0].message
+        console.log('responseFalse')
+        dangerNotification("Unable to place requested bid", response.data.errors[0].message)
+        setActiveStep(0);
       }
     }).catch(() => {
       // Notify user if network error
@@ -85,6 +91,12 @@ const BidOverlay = (props) => {
   function setDeactiveOverlay(e){
     e.preventDefault()
     props.mapProvider.actions.changeActiveBidOverlay(false)
+    // Bring the step at 0
+    setTimeout(function(){ 
+      setActiveStep(0)
+      setNewBidValue('')
+    }, 200);
+
   }
   
   function getStepContent(step) {
@@ -137,8 +149,8 @@ const BidOverlay = (props) => {
         return <div className="Overlay__body_cont">
           <div className="Overlay__upper">
             <div className="Overlay__title">Bidding the OVRLand</div>
-            <div className="Overlay__land_title">director.connect.overflow</div>
-            <div className="Overlay__land_hex">Venice, Italy</div>
+            <div className="Overlay__land_title">{props.land.name.sentence}</div>
+            <div className="Overlay__land_hex">{props.land.location}</div>
           </div>
           <div className="Overlay__lower">
             <div className="Overlay__bid_container">
@@ -166,7 +178,31 @@ const BidOverlay = (props) => {
           </div>
         </div>
       case 2:
-        return 'This is the bit I really care about!';
+        return <div className="Overlay__body_cont">
+          <div className="Overlay__upper">
+            <div className="Overlay__title">Bidding the OVRLand</div>
+            <div className="Overlay__land_title">{props.land.name.sentence}</div>
+            <div className="Overlay__land_hex">{props.land.location}</div>
+          </div>
+          <div className="Overlay__lower">
+            <div className="Overlay__bid_container">
+              <div className="Overlay__current_bid">
+                <div className="Overlay__bid_title">Current bid</div>
+                <div className="Overlay__bid_cont">
+                <ValueCounter value={props.currentBid}></ValueCounter> 
+                </div>
+              </div>
+            </div>
+            <div className="Overlay__message__container">
+              <span>
+                Transaction confirmed
+              </span>
+            </div>
+            <div className="Overlay__buttons_container">
+              <HexButton url="#" text="Close" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+            </div>
+          </div>
+        </div>
       default:
         return 'Unknown step';
     }

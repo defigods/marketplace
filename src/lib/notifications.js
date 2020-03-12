@@ -32,3 +32,20 @@ export function warningNotification(title,message) {
     }
   })
 }
+
+
+export function dangerNotification(title, message) {
+  store.addNotification({
+    title: title,
+    message: message,
+    type: "danger",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"],
+    showIcon: true,
+    dismiss: {
+      duration: 5000
+    }
+  })
+}
