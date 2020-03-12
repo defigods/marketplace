@@ -74,6 +74,11 @@ class Map extends Component {
       if( state.onSingleView === true){
         this.focusMap(state.hex_id, state.isAuction)
       }
+
+      //
+      //
+      //
+      
     })
   }
 

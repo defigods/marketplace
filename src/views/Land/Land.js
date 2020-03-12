@@ -105,15 +105,21 @@ export class Land extends Component {
   }
 
   renderBadge(){
-    if (this.state.marketStatus === 1){
-    return (
-    <>
-      <h3 className="o-small-title">Status</h3>
-      <div className="c-status-badge  --open">OPEN</div>
-    </>
-    ) 
-    } else {
-      return <div>&nbsp;</div>
+    switch (this.state.marketStatus) {
+      case 0:
+        return <div>&nbsp;</div>
+      case 1:
+        return <>
+          <h3 className="o-small-title">Status</h3>
+          <div className="c-status-badge  --open">OPEN</div>
+        </>
+      case 2:
+        return <>
+          <h3 className="o-small-title">Status</h3>
+          <div className="c-status-badge  --owned">OWNED</div>
+        </>
+      default:
+        return <div>&nbsp;</div>
     }
   }
 
@@ -124,7 +130,7 @@ export class Land extends Component {
       case 1:
         return <HexButton url="/" text="Place bid" className="--purple" onClick={(e) => this.setActiveBidOverlay(e)}></HexButton>
       case 2:
-        break
+        return <div>&nbsp;</div>
       default:
         return <div>&nbsp;</div>
     }
