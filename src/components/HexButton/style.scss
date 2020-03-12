@@ -23,12 +23,21 @@
     color: #fff;
 }
 
-.--purple{
-    .first-stop {
+.HexButton.--purple{
+    &.first-stop {
       stop-color: rgb(163, 84, 177);
     }
-    .last-stop {
+    &.last-stop {
       stop-color: #1D0333;
+    }
+}
+
+.HexButton.--blue{
+    .first-stop {
+      stop-color:#0081DD!important;
+    }
+    .last-stop {
+      stop-color: #2FD7FF!important;
     }
 }
 

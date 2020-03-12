@@ -10,9 +10,10 @@ export class MapProvider extends Component {
             onSingleView: false,
             hex_id: '8c81326dda43dff',
             isAuction: false,
-            activeBidOverlay: false
+            activeBidOverlay: false,
+            activeMintOverlay: false,
+            auctionList: []
         }
-        
         this.overviewList = [
             {
                 key: "8cbcc350c0ab5ff",
@@ -74,16 +75,34 @@ export class MapProvider extends Component {
     changeHexId = (hex_id) => {
         this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true})
     }
-
+    disableSingleView = () => {
+        this.setState({ onSingleView: false })
+    }
+    changeAuctionList = (list) => {
+      this.setState({ auctionList: list })
+    }
     changeActiveBidOverlay = (activeVal) =>{
         this.setState({ activeBidOverlay: activeVal })
+    }
+    changeActiveMintOverlay = (activeVal) =>{
+        this.setState({ activeMintOverlay: activeVal })
     }
 
     render() {
         return (
-            <MapContext.Provider value={{ state: this.state, actions: { changeHexId: this.changeHexId, changeActiveBidOverlay: this.changeActiveBidOverlay }, overviewList: this.overviewList}}>
-                {this.props.children}
-            </MapContext.Provider>
+          <MapContext.Provider value={
+            { state: this.state, 
+              actions: { 
+                  changeHexId: this.changeHexId, 
+                  changeActiveBidOverlay: this.changeActiveBidOverlay, 
+                  changeActiveMintOverlay: this.changeActiveMintOverlay, 
+                  changeAuctionList: this.changeAuctionList, 
+                  disableSingleView: this.disableSingleView 
+              }, 
+              overviewList: this.overviewList
+              }}>
+              {this.props.children}
+          </MapContext.Provider>
         )
     }
 }
@@ -93,7 +112,7 @@ export function withMapContext(Component) {
         render() {
             return (
                 <MapContext.Consumer>
-                    {(value) => <Component {...this.props} mapProvider={value} />}
+                    {(value) => <Component {...this.props} mapProvider={{...value}} />}
                 </MapContext.Consumer>
             )
         }

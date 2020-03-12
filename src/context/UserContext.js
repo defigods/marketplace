@@ -1,5 +1,5 @@
 import React, { createContext, Component } from 'react';
-
+import { saveToken, isLogged, getToken } from '../lib/auth'
 export const UserContext = createContext();
 
 export class UserProvider extends Component {
@@ -15,8 +15,18 @@ export class UserProvider extends Component {
     }
   }
 
+  componentDidMount(){
+    console.log('montatoProvider')
+    if(isLogged()){
+      this.loginUser(getToken('userToken'), getToken('userUuid'))      
+    }
+  }
+
   loginUser = (token, user) => {
     this.setState({ isLoggedIn: true, token: token, user: user })
+    // Cookie management 
+    saveToken('userToken', token)
+    saveToken('userUuid', user)
   }
 
   render() {
@@ -33,7 +43,7 @@ export function withUserContext(Component) {
     render() {
       return (
         <UserContext.Consumer>
-          {(value) => <Component {...this.props} mapProvider={value} />}
+          {(value) => <Component {...this.props} userProvider={{...value}} />}
         </UserContext.Consumer>
       )
     }

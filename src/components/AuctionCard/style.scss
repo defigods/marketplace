@@ -6,18 +6,18 @@
     transition: all 250ms ease-in-out;
     min-width: 200px;
     @include column(1/5, $cycle: 5);
-    .LandName__name {
-      width: 100%;
-      &:after{
-          opacity: 0;
-      }
-    }
-    .LandName__name:hover {
-        span {
-            transform: translateX(0);
-        }
+    // .LandName__name {
+    //   width: 100%;
+    //   &:after{
+    //       opacity: 0;
+    //   }
+    // }
+    // .LandName__name:hover {
+    //     span {
+    //         transform: translateX(0);
+    //     }
 
-    }
+    // }
     .TimeCounter{
       text-align: right;
       float: right;
@@ -69,7 +69,7 @@
       margin-left: -100%;
       margin-top: -100%;
       border-radius: 100%;
-      background-color: #000;
+      background-color: #EC663C;
       animation: pulse-ring 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     }
 
@@ -82,7 +82,7 @@
       width: 100%;
       height: 100%;
       border-radius: 15px;
-      background-color: #000;
+      background-color: #EC663C;
       animation: pulse-dot 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -.4s infinite;
     }
 }
@@ -148,7 +148,7 @@
 }
 
 .AuctionCard__bottom_line{
-    margin-top: 20px;
+    margin-top: 35px;
     display: flex;
 }
 
@@ -158,6 +158,7 @@
   padding: 5px 15px;
   font-size: 10px;
   font-weight: bold;
+  color:#EC663C;
   letter-spacing: 1px;
   border-radius: 5px;
   box-shadow: 0 0 5px 0 rgba(0,0,0,0.08);
@@ -170,6 +171,17 @@
 }
 
 // Variations
+.AuctionCard.--open, .Map__ping_container.--open{
+  .c-status-badge{
+    color: #8851b4;
+  }
+  .c-ping-layer:before, .c-ping-layer:after, .c-ping-layer-1 {
+    background-color: #8851b4;
+  }
+}
+.c-status-badge.--open{
+  color: #8851b4;
+}
 
 .AuctionCard.--bestbid, .Map__ping_container.--bestbid{
   .c-status-badge{
@@ -182,6 +194,7 @@
 .c-status-badge.--bestbid{
   color: $ovr_green;
 }
+
 
 .AuctionCard.--outbidded, .Map__ping_container.--outbidded{
   .c-status-badge{

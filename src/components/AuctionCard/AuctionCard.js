@@ -9,19 +9,33 @@ const AuctionCard = props => {
 
   const { bid_status, background_image, name, value, location, date_end} = props
   const { sentence, hex} = name
-  const { className, sentence: status } = bid_status
+  let statusClassName = "--open"
+  let statusText = "OPEN"
 
-  // const changeValue = (value) => {
-  //   if ( value > 300) {
-  //     return 'this'
-  //   }
-  // }
+  switch (bid_status) {
+    case "best":
+      statusClassName = "--bestbid"
+      statusText = "BEST BID"
+      break;
+    case "open":
+      statusClassName = "--open"
+      statusText = "OPEN"
+      break;
+    case "outbidded":
+      statusClassName = "--outbidded"
+      statusText = "OUTBIDDED"
+      break
+    default:
+      statusClassName = "--open"
+      statusText = "OPEN"
+  }
+
 
   return (
-    <div className={`AuctionCard ${className}`}>
+    <div className={`AuctionCard ${statusClassName}`}>
       <Link to={`/map/land/${hex}`}>
       <div className="AuctionCard__header" style={{ backgroundImage: background_image }}>
-        <div className="c-status-badge AuctionCard__status">{status}</div>
+        <div className="c-status-badge AuctionCard__status">{statusText}</div>
         <div className="AuctionCard__ping_container">
           <div className="c-ping-layer c-ping-layer-1"> </div>
           <div className="c-ping-layer c-ping-layer-2"> </div>

@@ -1,16 +1,34 @@
 import _ from 'lodash'
 
+// 
+// General Configs 
+// 
+
+
 const apisDevelopment = true
 const apis = {
   hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'https://mws.ovr.ai/'
 }
+const map = {
+  lat: 46.0922495,
+  lng: 13.2312417,
+  zoom: 0,
+  fillOpacity: 0.4,
+  colorScale: ['#5F39BE', '#ffffff','#1a0731', '#EC663C', '#0081DD'],
+}
+
 let config = {
-  apis: apis 
+  apis: apis,
+  map: map
 }
 
 export default config 
 
 
+
+// 
+//  Lib Functions
+// 
 
 export function camelCaseKeys(object) {
   let camelCaseObject = _.cloneDeep(object)

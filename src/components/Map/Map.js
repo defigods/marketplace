@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import mapboxgl from 'mapbox-gl';
 import geojson2h3 from 'geojson2h3';
+import config from '../../lib/config';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { MapContext, withMapContext } from '../../context/MapContext';
@@ -16,22 +17,15 @@ class Map extends Component {
     // Mapbox init
     //
     const state = this.context.state
-    const config = {
-        lat: 46.0922495,
-        lng: 13.2312417,
-        zoom: 0,
-        fillOpacity: 0.4,
-        colorScale: ['#5F39BE', '#ffffff','#1a0731', '#EC663C', '#0081DD'],
-    }
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw';
     this.map = new mapboxgl.Map({
       container: 'Map',
       center: [
-        config.lng,
-        config.lat,
+        config.map.lng,
+        config.map.lat,
       ],
-      zoom: config.zoom,
+      zoom: config.map.zoom,
       style: 'mapbox://styles/mapbox/light-v9',
     })
 
@@ -78,12 +72,12 @@ class Map extends Component {
       // View single point
       //
       if( state.onSingleView === true){
-        this.focusMapAndPlotHex(state.hex_id, state.isAuction)
+        this.focusMap(state.hex_id, state.isAuction)
       }
     })
   }
 
-  focusMapAndPlotHex(hex_id, isAuction){
+  focusMap(hex_id, isAuction){
     // Hex to geo
     let hexCenterCoordinates = h3.h3ToGeo(hex_id);
     // Move map focus
@@ -119,26 +113,57 @@ class Map extends Component {
 
     // Update the h3Geo data
     selected_source.setData(singleHexGeojson)
-
     this.map.setLayoutProperty(selected_layerId, 'visibility', 'visible');
 
-    if (isAuction === true){
+    // Plot pin
+    if(isAuction){
+      // Add pin
       let el = document.createElement('div');
-      el.className = 'Map__ping_container --bestbid';
-      el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"> </div><div class="c-ping-layer c-ping-layer-2"> </div><div class="c-ping-layer c-ping-layer-3"> </div><div class="c-ping-layer c-ping-layer-4"> </div>');
-
+      el.className = `Map__ping_container --open`;
+      el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
       new mapboxgl.Marker(el)
           .setLngLat([hexCenterCoordinates[1], hexCenterCoordinates[0]])
           .addTo(this.map);
     }
+  }
 
+  plotAuctions(){
+    // Delete all displayed markers
+    var paras = document.getElementsByClassName('Map__ping_container');
+    while(paras[0]) {
+        paras[0].parentNode.removeChild(paras[0]);
+    }
+
+    // Add all markers on map 
+    for (const auction of this.context.state.auctionList) {
+      let statusClassName = 0
+      switch (auction.status) {
+        case 0:
+          statusClassName = "--open"
+          break;
+        case 1:
+          statusClassName = "--outbidded"
+          break
+        default:
+          statusClassName = "--open"
+      }
+
+      // Add pin
+      let el = document.createElement('div');
+      el.className = `Map__ping_container ${statusClassName}`;
+      el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
+      new mapboxgl.Marker(el)
+          .setLngLat([auction.land.address.geocenter[1], auction.land.address.geocenter[0]])
+          .addTo(this.map);
+          
+    }
   }
 
   waitMapStyle = () => {
     if (!this.map.isStyleLoaded()) {
       setTimeout(this.waitMapStyle, 200);
     } else {
-      this.focusMapAndPlotHex(this.context.state.hex_id, this.context.state.isAuction)
+      this.focusMap(this.context.state.hex_id, this.context.state.isAuction)
     }
   };
 
@@ -146,10 +171,30 @@ class Map extends Component {
     this.initMap();
   }
 
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    if (this.context.state.onSingleView !== nextContext.state.onSingleView) {
+      return true;
+    }
+    if (this.context.state.auctionList.map(a => a.uuid) !== nextContext.state.auctionList.map(a => a.uuid)) {
+      return true;
+    }
+    return false;
+  }
+
   componentDidUpdate() {
     const state = this.context.state
     if( state.onSingleView === true){
       this.waitMapStyle();
+    } else {
+      this.plotAuctions();
+      this.map.flyTo({
+        center: [
+          config.map.lng,
+          config.map.lat,
+        ],
+        zoom: config.map.zoom,
+        speed: 1.8
+      });
     }
   }
 

@@ -55,7 +55,7 @@ const Login = (props) => {
 
         // Load user data in context store
         context.actions.loginUser(response.data.token, response.data.user )
-
+        
         // Redirect
         history.push('/map/overview')
 

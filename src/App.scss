@@ -77,7 +77,17 @@ body{
 @import "./src/components/Footer/style.scss";
 @import "./src/components/Map/style.scss";
 @import "./src/components/BidOverlay/style.scss";
+@import "./src/components/MintOverlay/style.scss";
 
 @import "./src/views/Land/style.scss";
 @import "./src/views/Login/style.scss";
 @import "./src/views/Signup/style.scss";
+
+
+.notification-danger{
+  background-color: $ovr-red!important;
+}
+.notification-warning{
+  border-left: #1d0333!important;
+  background: linear-gradient(138deg, #1d0333, #805e9d)!important;
+}

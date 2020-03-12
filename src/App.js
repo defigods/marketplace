@@ -25,31 +25,30 @@ function App() {
         <UserContext.Consumer>
           {(userValue) => { 
             return(
-              <Router>
-                <div className="App">
-                  <ReactNotification />
-                  <NavBar></NavBar>
-                  <div className="o-container">
-                    <MapContext.Consumer>
-                      {(mapValue) => { 
-                        return(
-                          <Route path="/map/" component={Map}></Route>
-                        )
-                      }}
-                    </MapContext.Consumer>
-                    {/* <ChangeHex/> */}
-                  </div>
-                  <Switch>
-                    <Route path="/" exact component={Home}></Route>
-                    <Route path="/map/discover" component={Discover}></Route>
-                    <Route path="/map/overview" component={Overview}></Route>
-                    <Route path="/map/land/:id" component={Land}></Route>
-                    <Route path="/login" component={Login}></Route>
-                    <Route path="/signup" component={Signup}></Route>
-                  </Switch>
-                  <Footer></Footer>
-                </div>
-              </Router>
+              <MapContext.Consumer>
+              {(mapValue) => { 
+                return(
+                  <Router>
+                    <div className="App">
+                      <ReactNotification />
+                      <NavBar></NavBar>
+                      <div className="o-container">
+                              <Route path="/map/" component={Map}></Route>
+                      </div>
+                      <Switch>
+                        <Route path="/" exact component={Home}></Route>
+                        <Route path="/map/discover" component={Discover}></Route>
+                        <Route path="/map/overview" component={Overview}></Route>
+                        <Route path="/map/land/:id" component={Land}></Route>
+                        <Route path="/login" component={Login}></Route>
+                        <Route path="/signup" component={Signup}></Route>
+                      </Switch>
+                      <Footer></Footer>
+                    </div>
+                  </Router>
+                )
+              }}
+            </MapContext.Consumer>
             )
           }}
         </UserContext.Consumer>

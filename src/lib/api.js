@@ -1,4 +1,5 @@
 import config, {camelCaseKeys} from '../lib/config'
+import {getToken} from '../lib/auth'
 import axios from 'axios'
 
 
@@ -29,7 +30,7 @@ export function signIn(userName, password) {
 // ----------------------------------------------------------------------------------------
 
 /**
- * @function signIn
+ * @function signUp
  * @param {*}
  */
 export function signUp(userName, password, email) {
@@ -40,8 +41,24 @@ export function signUp(userName, password, email) {
 // AUCTIONS
 // ----------------------------------------------------------------------------------------
 export function indexOpenAuctions(sort = null, page = 1) {
-  return request({ url: '/auctions/open', method: 'GET' }, { sort: sort, page: page }, null)
+  return request({ url: '/auctions/open', method: 'GET' }, { sort: sort, page: page
+   }, null)
 }
+
+export function bidAuction(landUuid = null, worth = 10) {
+  return request({ url: '/auction/bid', method: 'POST' }, {
+    land_uuid: landUuid, worth: worth
+  }, null)
+}
+
+
+// LANDS
+export function getLand(hex_id = null) {
+  return request({ url: '/land', method: 'GET' }, {
+    hex_id: hex_id
+  }, null)
+}
+
 
 
 // GENERAL REQUEST
@@ -53,12 +70,12 @@ export function indexOpenAuctions(sort = null, page = 1) {
  * @param {object} params
  * @param {string} token
  */
-export function request(endpoint, params , req_config = { headers: { 'Content-Type': 'application/json' } }) {
-  // const token = getToken('userToken')
-  // if (token) {
-  //   axios.defaults.headers.common['Authorization'] = token // eslint-disable-line
-  // }
-  console.log("params", params)
+export function request(endpoint, params, req_config = { headers: { 'Content-Type': 'application/json' } }) {
+  const token = getToken('userToken')
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = token // eslint-disable-line
+  }
+
   return new Promise((resolve, reject) => {
     let req
     if (endpoint.method === 'POST') {

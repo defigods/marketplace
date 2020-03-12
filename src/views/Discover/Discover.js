@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './style.scss';
-import { withMapContext } from '../../context/MapContext'
+import { withMapContext, MapContext } from '../../context/MapContext'
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 
 import { indexOpenAuctions } from '../../lib/api'
-import { store } from 'react-notifications-component';
-
+import { networkError } from '../../lib/notifications'
 import Pagination from '@material-ui/lab/Pagination';
 
 
@@ -13,50 +12,41 @@ const Discover = (props) => {
   const [listAuctions, setListAuctions] = useState('');
   const [numberOfPages, setNumberOfPages] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-
-  function loadAuctionPage(page){
+  const { actions } = useContext(MapContext)
+  
+  function loadAuctionsByPage(page){
     // Call API function 
     indexOpenAuctions(null, page)
     .then((response) => {
-
+      // Load Auctions in MapContext
+      actions.changeAuctionList(response.data.auctions)
+      console.log(response.data.auctions[0])
       // Load user data in context store
-      // context.actions.loginUser(response.data.token, response.data.user )
-      setListAuctions(response.data.auctions.map((auction) =>
-        <AuctionCard key={auction.land.uuid}
-          value={auction.currentWorth}
-          background_image={`url(${auction.land.mapTileUrl}`}
-          name={{sentence: auction.land.sentenceId, hex: auction.land.uuid}}
-          location={auction.land.address.full}
-          bid_status={{ className: "--bestbid", sentence: "BEST BID" }}
-          date_end={auction.closeAt}
+      setListAuctions(response.data.auctions.map((obj) =>
+        <AuctionCard key={obj.land.uuid}
+          value={obj.land.auction.currentWorth}
+          background_image={`url(${obj.land.mapTileUrl}`}
+          name={{sentence: obj.land.sentenceId, hex: obj.land.uuid}}
+          location={obj.land.address.full}
+          bid_status={"open"}
+          date_end={obj.land.auction.closeAt}
         />
       ))
       setNumberOfPages(response.data.numberOfPages)
     }).catch(() => {
       // Notify user if network error
-       store.addNotification({
-         title: "Connection error",
-         message: "Check your internet connection or try again later",
-         type: "danger",
-         insert: "top",
-         container: "top-right",
-         animationIn: ["animated", "fadeIn"],
-         animationOut: ["animated", "fadeOut"],
-         showIcon: true,
-         dismiss: {
-           duration: 5000
-         }
-       })
+      networkError()
     });
   }
 
   function handlePageClick(event, number) {
-    loadAuctionPage(number)
+    loadAuctionsByPage(number)
     setCurrentPage(number)
   };
 
   useEffect(() => {
-    loadAuctionPage()
+    actions.disableSingleView()
+    loadAuctionsByPage()
   }, [])
 
   return (

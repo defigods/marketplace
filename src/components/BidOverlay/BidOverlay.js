@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 // import { makeStyles } from '@material-ui/core/styles';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 
 import { withMapContext } from '../../context/MapContext'
+import { withUserContext } from '../../context/UserContext'
 
 import Icon from '../Icon/Icon';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
+
+import { bidAuction } from '../../lib/api'
+import { networkError, warningNotification } from '../../lib/notifications'
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 
@@ -15,17 +19,28 @@ import white_hex from '../../assets/icons/white_hex.svg'
 import left_arrow from '../../assets/icons/left_arrow.svg'
 import close_overlay from '../../assets/icons/close_overlay.svg'
 
-const BidOverlay = (props) => {
-  
-  const [currentBid] = useState(30000);
+const BidOverlay = (props) => {  
   const [newBidValue, setNewBidValue] = useState('');
   const [bidInputError, setBidInputError] = useState(false);
   const [bidValid, setBidValid] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  
+
   const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    if ((activeStep +1) === 1){
+      if(!props.userProvider.state.isLoggedIn){
+        warningNotification("Invalid authentication", "Please Log In to partecipate")
+      } else {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        sendBid();
+      }
+    } else {
+      setActiveStep(prevActiveStep => prevActiveStep + 1);
+    }
   };
+
+  useEffect(() => {
+    console.log('bidoverlayuseeffect')
+  }, [])
 
   // const handleBack = () => {
   //   setActiveStep(prevActiveStep => prevActiveStep - 1);
@@ -34,7 +49,7 @@ const BidOverlay = (props) => {
   const updateNewBidValue = (e) => {
     //Setup first time value
     if (newBidValue === ''){
-      setNewBidValue(currentBid * 2); 
+      setNewBidValue(props.currentBid * 2); 
       setBidValid(true)
       return
     } else{
@@ -42,13 +57,29 @@ const BidOverlay = (props) => {
     }
 
     //Check value if valid
-    if (newBidValue < currentBid * 2){
+    if (newBidValue < props.currentBid * 2){
       setBidInputError('Should be equal to or greater than Minimum bid')
       setBidValid(false)
     } else{
       setBidInputError(false)
       setBidValid(true)
     }
+  }
+
+  function sendBid(){
+    // Call API function 
+    bidAuction(props.land.key, newBidValue)
+    .then((response) => {
+      
+      if (response.data.result === true) {
+        console.log('responseTrue', response.data)
+      } else {
+        console.log('responseFalse', response.data)
+      }
+    }).catch(() => {
+      // Notify user if network error
+      networkError()
+    });
   }
 
   function setDeactiveOverlay(e){
@@ -62,15 +93,15 @@ const BidOverlay = (props) => {
         return <div className="Overlay__body_cont">
               <div className="Overlay__upper">
                 <div className="Overlay__title">Place a bid for the OVRLand</div>
-                <div className="Overlay__land_title">director.connect.overflow</div>
-                <div className="Overlay__land_hex">Venice, Italy</div>
+                <div className="Overlay__land_title">{props.land.name.sentence}</div>
+                <div className="Overlay__land_hex">{props.land.location}</div>
               </div>
               <div className="Overlay__lower">
                 <div className="Overlay__bid_container">
                   <div className="Overlay__current_bid">
                     <div className="Overlay__bid_title">Current bid</div>
                     <div className="Overlay__bid_cont">
-                    <ValueCounter value={currentBid}></ValueCounter> 
+                    <ValueCounter value={props.currentBid}></ValueCounter> 
                     </div>
                   </div>
                   <div className="Overlay__arrow">
@@ -79,7 +110,7 @@ const BidOverlay = (props) => {
                   <div className="Overlay__minimum_bid">
                     <div className="Overlay__bid_title">Minimum bid</div>
                     <div className="Overlay__bid_cont">
-                    <ValueCounter value={currentBid * 2}></ValueCounter> 
+                    <ValueCounter value={props.currentBid * 2}></ValueCounter> 
                     </div>
                   </div>
                 </div>
@@ -114,7 +145,7 @@ const BidOverlay = (props) => {
               <div className="Overlay__current_bid">
                 <div className="Overlay__bid_title">Current bid</div>
                 <div className="Overlay__bid_cont">
-                <ValueCounter value={currentBid}></ValueCounter> 
+                <ValueCounter value={props.currentBid}></ValueCounter> 
                 </div>
               </div>
               <div className="Overlay__arrow">
@@ -163,4 +194,4 @@ const BidOverlay = (props) => {
 }
 
 
-export default withMapContext(BidOverlay);
+export default withUserContext(withMapContext(BidOverlay));
