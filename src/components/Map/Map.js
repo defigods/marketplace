@@ -12,10 +12,72 @@ const h3 = require("h3-js");
 class Map extends Component {
   static contextType = MapContext
 
-  initMap(){
-    //
-    // Mapbox init
-    //
+  renderHexes(hexagons) {
+    const geojson = geojson2h3.h3SetToFeatureCollection(
+      Object.keys(hexagons),
+      hex => ({ value: hexagons[hex] })
+    )
+    const sourceId = 'h3-hexes'
+    const layerId = `${sourceId}-layer`
+    let source = this.map.getSource(sourceId)
+    
+    if (!source) {
+      this.map.addSource(sourceId, {
+        type: 'geojson',
+        data: geojson,
+      })
+      this.map.addLayer({
+        id: layerId,
+        source: sourceId,
+        type: 'fill',
+        interactive: false,
+        paint: {
+          'fill-outline-color': 'rgba(255,255,255,1)',
+        },
+      })
+      source = this.map.getSource(sourceId)
+    }
+
+    // Update the geojson data
+    source.setData(geojson)
+
+    // Update the layer paint properties, using the current config values
+    this.map.setPaintProperty(layerId, 'fill-opacity', config.map.fillOpacity);
+    
+    this.map.setPaintProperty(layerId, 'fill-color', {
+      property: 'value',
+      stops: [
+        [0, config.map.colorScale[0]],
+        [0.5, config.map.colorScale[0]],
+        [1, config.map.colorScale[0]]
+      ]
+    });
+
+    
+  }
+
+  hexagons = () => {
+    var center = this.map.getCenter()
+    //console.log (center)
+    const centerHex = h3.geoToH3(center['lat'], center['lng'], 12)
+    const kRing = h3.kRing(centerHex, 20)
+    // console.log('kRing', kRing)
+    var data = Object.assign({}, kRing);
+    // console.log('data', data)
+    var newData = Object.keys(data).reduce(function (obj, key) {
+      obj[data[key]] = Math.random();
+      return obj;
+    }, {});
+    // console.log('newData', newData)
+    return newData;
+  }
+
+
+  //
+  // Mapbox init
+  //
+
+  initMap = () => {
     const state = this.context.state
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw';
@@ -68,27 +130,42 @@ class Map extends Component {
         });
       }
 
-      //
       // View single point
-      //
       if( state.onSingleView === true){
         this.focusMap(state.hex_id, state.isAuction)
       }
-
-      //
-      //
-      //
-      
     })
+
+    // Show grid on high zoom 
+    const zoomThreshold = 16;
+    let that = this 
+    this.map.on('moveend', function(){
+      if (that.map.getZoom() > zoomThreshold) {
+        that.renderHexes(that.hexagons())
+      } 
+    });
+
+    // Click hexagon
+    this.map.on('click', function (e) {
+      // change focus of map
+      const hex_id = h3.geoToH3(e.lngLat['lat'], e.lngLat['lng'], 12)
+      that.focusMap(hex_id, state.isAuction)
+      that.props.history.push(`/map/land/${hex_id}`)
+    });
   }
 
+
+  //
+  // Focus on single point
+  // Used when accessing directly to a single land view or when clicked on a land
+  //
   focusMap(hex_id, isAuction){
     // Hex to geo
     let hexCenterCoordinates = h3.h3ToGeo(hex_id);
     // Move map focus
     this.map.flyTo({
       center: [hexCenterCoordinates[1], hexCenterCoordinates[0]], 
-      zoom:18,
+      zoom: 17,
       speed: 1.8
     });
     // Plot graphic point into map
@@ -123,14 +200,20 @@ class Map extends Component {
     // Plot pin
     if(isAuction){
       // Add pin
-      let el = document.createElement('div');
-      el.className = `Map__ping_container --open`;
-      el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
-      new mapboxgl.Marker(el)
-          .setLngLat([hexCenterCoordinates[1], hexCenterCoordinates[0]])
-          .addTo(this.map);
+      // TODO
+      // let el = document.createElement('div');
+      // el.className = `Map__ping_container --open`;
+      // el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
+      // new mapboxgl.Marker(el)
+      //     .setLngLat([hexCenterCoordinates[1], hexCenterCoordinates[0]])
+      //     .addTo(this.map);
     }
   }
+
+
+  //
+  // Plot auctions from MapContext data
+  //
 
   plotAuctions(){
     // Delete all displayed markers
@@ -163,6 +246,10 @@ class Map extends Component {
           
     }
   }
+
+  //
+  // Used for safely load the map
+  //
 
   waitMapStyle = () => {
     if (!this.map.isStyleLoaded()) {
