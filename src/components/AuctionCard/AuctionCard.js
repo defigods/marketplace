@@ -49,7 +49,7 @@ const AuctionCard = props => {
         <div className="AuctionCard__bottom_line">
           <div className="o-half">
             <ValueCounter value={value}></ValueCounter> 
-            {/* className={changeValue} */}
+            {/* className={realodLandStatefromApi} */}
           </div>
           <div className="o-half">
             <TimeCounter time={20} signature="mins" date_end={date_end}></TimeCounter>

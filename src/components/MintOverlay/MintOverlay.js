@@ -4,18 +4,18 @@ import TextField from '@material-ui/core/TextField';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 
 import { withMapContext } from '../../context/MapContext'
+import { withUserContext } from '../../context/UserContext'
 
 import Icon from '../Icon/Icon';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { bidAuction } from '../../lib/api'
-import { networkError } from '../../lib/notifications'
+import { mintLand } from '../../lib/api'
+import { networkError, warningNotification, dangerNotification } from '../../lib/notifications'
 
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 
 import white_hex from '../../assets/icons/white_hex.svg'
-import left_arrow from '../../assets/icons/left_arrow.svg'
 import close_overlay from '../../assets/icons/close_overlay.svg'
 
 const MintOverlay = (props) => {
@@ -26,10 +26,16 @@ const MintOverlay = (props) => {
   const [activeStep, setActiveStep] = useState(0);
   
   const handleNext = () => {
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
-    console.log(activeStep)
-    if(activeStep === 1){
-      sendBid();
+    if ((activeStep +1) === 1){
+      if(!props.userProvider.state.isLoggedIn){
+        warningNotification("Invalid authentication", "Please Log In to partecipate")
+      } else {
+        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        //  TODO Remove timeout
+        setTimeout(function () { sendMint(); }, 1500);
+      }
+    } else {
+      setActiveStep(prevActiveStep => prevActiveStep + 1);
     }
   };
 
@@ -60,16 +66,31 @@ const MintOverlay = (props) => {
   function setDeactiveOverlay(e) {
     e.preventDefault()
     props.mapProvider.actions.changeActiveMintOverlay(false)
+    setActiveStep(0)
   }
 
-  function sendBid(){
+  function sendMint(){
     // Call API function 
-    bidAuction(props.land.key, newBidValue)
+    mintLand(props.land.key, newBidValue)
     .then((response) => {
-      console.log('response',response)
 
-    }).catch(() => {
+      if (response.data.result === true) {
+        console.log('responseTrue', response.data)
+        props.realodLandStatefromApi(props.land.key)
+        console.log("props.land.key",props)
+        setActiveStep(2);
+      } else {
+        // response.data.errors[0].message
+        console.log('responseFalse')
+        // if (response.data.errors){
+        //   dangerNotification("Unable to mint land", response.data.errors[0].message)
+        // }
+        dangerNotification("Unable to mint land", response.data.errors[0].message)
+        setActiveStep(0);
+      }
+    }).catch((error) => {
       // Notify user if network error
+      console.log(error)
       networkError()
     });
   }
@@ -115,20 +136,11 @@ const MintOverlay = (props) => {
         return <div className="Overlay__body_cont">
           <div className="Overlay__upper">
             <div className="Overlay__title">Bidding the OVRLand</div>
-            <div className="Overlay__land_title">director.connect.overflow</div>
-            <div className="Overlay__land_hex">Venice, Italy</div>
+            <div className="Overlay__land_title">{props.land.name.sentence}</div>
+            <div className="Overlay__land_hex">{props.land.location}</div>
           </div>
           <div className="Overlay__lower">
             <div className="Overlay__bid_container">
-              <div className="Overlay__current_bid">
-                <div className="Overlay__bid_title">Current bid</div>
-                <div className="Overlay__bid_cont">
-                  <ValueCounter value={currentBid}></ValueCounter>
-                </div>
-              </div>
-              <div className="Overlay__arrow">
-                <Icon src={left_arrow} isSvg={true}></Icon>
-              </div>
               <div className="Overlay__minimum_bid">
                 <div className="Overlay__bid_title">Your bid</div>
                 <div className="Overlay__bid_cont">
@@ -144,7 +156,31 @@ const MintOverlay = (props) => {
           </div>
         </div>
       case 2:
-        return 'This is the bit I really care about!';
+        return <div className="Overlay__body_cont">
+          <div className="Overlay__upper">
+            <div className="Overlay__title">Minting the OVRLand</div>
+            <div className="Overlay__land_title">{props.land.name.sentence}</div>
+            <div className="Overlay__land_hex">{props.land.location}</div>
+          </div>
+          <div className="Overlay__lower">
+            <div className="Overlay__bid_container">
+              <div className="Overlay__current_bid">
+                <div className="Overlay__bid_title">Current bid</div>
+                <div className="Overlay__bid_cont">
+                  <ValueCounter value={newBidValue}></ValueCounter> 
+                </div>
+              </div>
+            </div>
+            <div className="Overlay__message__container">
+              <span>
+                Mint confirmed
+              </span>
+            </div>
+            <div className="Overlay__buttons_container">
+              <HexButton url="#" text="Close" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+            </div>
+          </div>
+        </div>
       default:
         return 'Unknown step';
     }
@@ -172,4 +208,4 @@ const MintOverlay = (props) => {
 }
 
 
-export default withMapContext(MintOverlay);
+export default withUserContext(withMapContext(MintOverlay));

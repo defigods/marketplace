@@ -189,7 +189,7 @@ const BidOverlay = (props) => {
               <div className="Overlay__current_bid">
                 <div className="Overlay__bid_title">Current bid</div>
                 <div className="Overlay__bid_cont">
-                <ValueCounter value={props.currentBid}></ValueCounter> 
+                  <ValueCounter value={newBidValue}></ValueCounter> 
                 </div>
               </div>
             </div>

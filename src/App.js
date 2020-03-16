@@ -14,7 +14,7 @@ import Map from './components/Map/Map';
 import Footer from './components/Footer/Footer';
 
 import ReactNotification from 'react-notifications-component'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { MapProvider, MapContext } from './context/MapContext'
 import { UserProvider, UserContext } from './context/UserContext';
 
@@ -36,7 +36,10 @@ function App() {
                               <Route path="/map/" component={Map}></Route>
                       </div>
                       <Switch>
-                        <Route path="/" exact component={Home}></Route>
+                        {/* <Route path="/" exact component={Home}></Route> */}
+                        <Route exact path="/">
+                          <Redirect to="/map/discover" />
+                        </Route>
                         <Route path="/map/discover" component={Discover}></Route>
                         <Route path="/map/overview" component={Overview}></Route>
                         <Route path="/map/land/:id" component={Land}></Route>

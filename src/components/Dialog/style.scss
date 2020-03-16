@@ -1,0 +1,28 @@
+.c-dialog{
+  background-color: #fff;
+  padding: 25px;
+  .c-status-badge{
+    display: inline;
+    margin: 0px 5px;
+  }
+}
+
+.c-dialog.--dark{
+  background-color: #1D0333;
+  color: #fff;
+}
+
+.c-dialog.--centered{
+  text-align: center;
+}
+
+.c-dialog-main-title{
+  font-weight: 600;
+  font-size: 20px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+.c-dialog-sub-title{
+  font-size: 18px;
+  margin-bottom: 15px;
+}

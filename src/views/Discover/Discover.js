@@ -20,7 +20,8 @@ const Discover = (props) => {
     .then((response) => {
       // Load Auctions in MapContext
       actions.changeAuctionList(response.data.auctions)
-      console.log(response.data.auctions[0])
+
+      if (response.data.auctions.length > 0){
       // Load user data in context store
       setListAuctions(response.data.auctions.map((obj) =>
         <AuctionCard key={obj.land.uuid}
@@ -32,6 +33,18 @@ const Discover = (props) => {
           date_end={obj.land.auction.closeAt}
         />
       ))
+      } else {
+        setListAuctions(
+          <div className="c-dialog --centered">
+            <div className="c-dialog-main-title">
+              There is currently no <div class="c-status-badge">OPEN</div> auction  ⚡️
+            </div>
+            <div className="c-dialog-sub-title">
+              Browse the OVRLands: search for a location or click a point in the map and mint a land now.
+            </div>
+          </div>
+        )
+      }
       setNumberOfPages(response.data.numberOfPages)
     }).catch(() => {
       // Notify user if network error

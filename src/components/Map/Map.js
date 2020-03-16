@@ -137,7 +137,7 @@ class Map extends Component {
     })
 
     // Show grid on high zoom 
-    const zoomThreshold = 16;
+    const zoomThreshold = 17;
     let that = this 
     this.map.on('moveend', function(){
       if (that.map.getZoom() > zoomThreshold) {
@@ -165,7 +165,7 @@ class Map extends Component {
     // Move map focus
     this.map.flyTo({
       center: [hexCenterCoordinates[1], hexCenterCoordinates[0]], 
-      zoom: 17,
+      zoom: 18,
       speed: 1.8
     });
     // Plot graphic point into map

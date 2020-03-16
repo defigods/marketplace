@@ -51,6 +51,12 @@ export function bidAuction(landUuid = null, worth = 10) {
   }, null)
 }
 
+export function mintLand(landUuid = null, worth = 10) {
+  return request({ url: '/land/mint', method: 'POST' }, {
+    land_uuid: landUuid, worth: worth
+  }, null)
+}
+
 
 // LANDS
 export function getLand(hex_id = null) {

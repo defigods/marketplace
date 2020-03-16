@@ -27,8 +27,9 @@ export class Land extends Component {
     this.mapActions = this.props.mapProvider.actions
   }
 
-  loadHexParamLandFromApi(hex_id) {
+  loadLandStateFromApi(hex_id) {
     // Call API function 
+    console.log('reload api')
     getLand(hex_id)
       .then((response) => {
 
@@ -47,13 +48,15 @@ export class Land extends Component {
           key: data.uuid,
           name: { sentence: data.sentenceId, hex: data.uuid },
           location: data.address.full,
-          marketStatus: data.marketStatus
+          marketStatus: data.marketStatus,
+          value: data.value
           // bid_status:{className: "--bestbid", sentence:"BEST BID"},
         })
 
 
-      }).catch(() => {
+      }).catch((error) => {
         // Notify user if network error
+        console.log(error)
         networkError()
       });
   }
@@ -63,16 +66,24 @@ export class Land extends Component {
     // Focus map on hex_id 
     this.mapActions.changeHexId(hex_id)
     // Load data from API
-    this.loadHexParamLandFromApi(hex_id)
+    this.loadLandStateFromApi(hex_id)
   }
 
   componentDidUpdate(prevProps) {
     // If param change load data from API
-    if (this.props.location !== prevProps.location) {
+    if (this.props.location !== prevProps.location ||
+      this.props.value !== prevProps.value) {
       const hex_id = this.props.match.params.id
-      this.loadHexParamLandFromApi(hex_id)
+      this.loadLandStateFromApi(hex_id)
       this.mapActions.changeHexId(hex_id)
+      console.log('didupdateinsideif')
     }
+    console.log('didupdate')
+  }
+
+  componentWillUnmount(){
+    this.mapActions.changeActiveBidOverlay(false)
+    this.mapActions.changeActiveMintOverlay(false)
   }
 
   setActiveBidOverlay(e) {
@@ -98,6 +109,14 @@ export class Land extends Component {
     }
 
     this.mapActions.changeActiveMintOverlay(true) // TODO COMMENT
+  }
+
+  realodLandStatefromApi = (value) => {
+    // TODO Change with socket
+    let that = this
+    setTimeout(function(){
+      that.loadLandStateFromApi(value)
+    }, 250)
   }
 
   // 
@@ -152,8 +171,8 @@ export class Land extends Component {
   render() {
     return (
       <div className="Land">
-        <BidOverlay currentBid={this.state.value} land={this.state}></BidOverlay>
-        <MintOverlay currentBid={this.state.value} land={this.state}></MintOverlay>
+        <BidOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></BidOverlay>
+        <MintOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></MintOverlay>
         <div className="o-container">
           <div className="Land__heading__1">
             <h2>{this.state.name.sentence}</h2>
@@ -177,7 +196,7 @@ export class Land extends Component {
         </div>
         <div className="Land__section">
           <div className="o-container">
-            <div className="Title__container"> <h3 className="o-small-title">Bid History</h3></div>
+            {/* <div className="Title__container"> <h3 className="o-small-title">Bid History</h3></div>
             <div className="Table__container">
               <table className="Table">
                 <thead>
@@ -209,6 +228,15 @@ export class Land extends Component {
                   </tr>
                 </tbody>
               </table>
+            </div> */}
+            <div className="Title__container"> <h3 className="o-small-title">History</h3></div>
+            <div className="c-dialog --centered">
+              <div className="c-dialog-main-title">
+                Coming on staging soon 🔥  
+              </div>
+              <div className="c-dialog-sub-title">
+                Bid history and transaction history are coming soon. 
+              </div>
             </div>
           </div>
         </div>
