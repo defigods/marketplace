@@ -36,6 +36,10 @@ export class Land extends Component {
         let data = response.data
         console.log("landApiData", data)
 
+        this.setState({
+          value: data.value
+        })
+
         if (data.auction != null) {
           this.setState({
             value: data.auction.currentWorth,
@@ -49,7 +53,6 @@ export class Land extends Component {
           name: { sentence: data.sentenceId, hex: data.uuid },
           location: data.address.full,
           marketStatus: data.marketStatus,
-          value: data.value
           // bid_status:{className: "--bestbid", sentence:"BEST BID"},
         })
 

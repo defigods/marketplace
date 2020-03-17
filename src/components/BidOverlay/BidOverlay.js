@@ -75,6 +75,7 @@ const BidOverlay = (props) => {
       
       if (response.data.result === true) {
         console.log('responseTrue', response.data)
+        props.realodLandStatefromApi(props.land.key)
         setActiveStep(2);
       } else {
         // response.data.errors[0].message

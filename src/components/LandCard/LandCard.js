@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react';
+import React from 'react';
 import LandName from '../LandName/LandName';
 import Icon from '../Icon/Icon';
 import TimeCounter from '../TimeCounter/TimeCounter';

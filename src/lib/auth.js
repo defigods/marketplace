@@ -25,6 +25,7 @@ export function getUser(cookieName = 'userToken') {
   return Cookies.get(cookieName)
 }
 
+
 export function removeUser(cookieName = 'userToken') {
   Cookies.remove(cookieName)
 }

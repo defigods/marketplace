@@ -1,5 +1,8 @@
 import React, { createContext, Component } from 'react';
-import { saveToken, isLogged, getToken } from '../lib/auth'
+import { saveToken, isLogged, getToken, removeUser } from '../lib/auth'
+import { userProfile } from '../lib/api'
+import { networkError, dangerNotification } from '../lib/notifications' 
+
 export const UserContext = createContext();
 
 export class UserProvider extends Component {
@@ -16,8 +19,21 @@ export class UserProvider extends Component {
   }
 
   componentDidMount(){
-    console.log('montatoProvider')
     if(isLogged()){
+      userProfile()
+      .then((response) => {
+
+        if (response.data.result === true) {
+          this.setState({ user: response.data.user })
+        } else {
+          dangerNotification('Session expired', 'Please login again')
+          removeUser()
+        }
+      }).catch(() => {
+        // Notify user if network error
+        networkError()
+      });
+
       this.loginUser(getToken('userToken'), getToken('userUuid'))      
     }
   }

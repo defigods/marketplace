@@ -1,5 +1,5 @@
 import config, {camelCaseKeys} from '../lib/config'
-import {getToken} from '../lib/auth'
+import { getToken, saveUser} from '../lib/auth'
 import axios from 'axios'
 
 
@@ -26,6 +26,11 @@ export function signIn(userName, password) {
   return request({ url: '/authentication/login', method: 'POST'}, { username: userName, password: password }, null)
 }
 
+export function userProfile(userToken) {
+  saveUser('user',userToken)
+  return request({ url: '/user/profile', method: 'GET' }, {}, null)
+}
+
 // USER REGISTRATION
 // ----------------------------------------------------------------------------------------
 
@@ -43,6 +48,12 @@ export function signUp(userName, password, email) {
 export function indexOpenAuctions(sort = null, page = 1) {
   return request({ url: '/auctions/open', method: 'GET' }, { sort: sort, page: page
    }, null)
+}
+
+export function indexMyOpenAuctions(sort = null, page = 1) {
+  return request({ url: '/user/auctions', method: 'GET' }, {
+    sort: sort, page: page
+  }, null)
 }
 
 export function bidAuction(landUuid = null, worth = 10) {
@@ -71,6 +82,11 @@ export function indexLands(sort = null, page = 1) {
   }, null)
 }
 
+export function indexMyLands(sort = null, page = 1) {
+  return request({ url: '/user/lands', method: 'GET' }, {
+    sort: sort, page: page
+  }, null)
+}
 
 
 
