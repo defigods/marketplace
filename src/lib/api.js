@@ -65,6 +65,13 @@ export function getLand(hex_id = null) {
   }, null)
 }
 
+export function indexLands(sort = null, page = 1) {
+  return request({ url: '/lands', method: 'GET' }, {
+    sort: sort, page: page
+  }, null)
+}
+
+
 
 
 // GENERAL REQUEST

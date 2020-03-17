@@ -116,7 +116,7 @@ export class Land extends Component {
     let that = this
     setTimeout(function(){
       that.loadLandStateFromApi(value)
-    }, 250)
+    }, 1500)
   }
 
   // 

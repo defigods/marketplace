@@ -1,14 +1,19 @@
 
 .LandCard{
     background: #FFFFFF;
-    display: inline-block;
+    display: block;
     box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.05);
-    min-width: 220px;
-    padding: 25px 25px;
-    @include column(1/4);
+    @include column(1/4, $cycle: 4);
+  
+    float: left;
     .Icon{
       float: left;
-      margin-right: 10px;
+      margin-right: 15px;
+
+      height: 60px;
+      width: 60px;
+      padding: 5px;
+      padding-left: 0px;
     }
     .LandCard__body{
       float: left;
@@ -16,4 +21,49 @@
     .TimeCounter{
       margin-top: 10px;
     }
+    margin-bottom: 40px;
+}
+.LandCard__cont{
+  margin: 25px 25px;
+  display: flow-root;
+}
+
+.o-land-list{
+  .o-container{
+    flex-flow: row wrap;
+  }
+}
+
+
+// .LandCard{
+//     background: #FFFFFF;
+//     display: block;
+//     box-shadow: -8px 8px 10px 0 rgba(30,30,30,0.03);
+//     transition: all 250ms ease-in-out;
+//     min-width: 200px;
+//     @include column(1/5, $cycle: 5);
+
+//     .TimeCounter{
+//       text-align: right;
+//       float: right;
+      
+//     }
+
+//     &:hover{
+//       box-shadow: 0px 0px 0px 0 rgba(30,30,30,0.00);
+//       transform: scale(0.98);
+//     }
+// }
+
+
+@media screen and (max-width: 1000px){
+  .LandCard{
+      @include column(1/2, $cycle: 2);
+  }
+}
+
+@media screen and (max-width: 780px){
+  .LandCard{
+      @include column(1/1, $cycle: 1);
+  }
 }
