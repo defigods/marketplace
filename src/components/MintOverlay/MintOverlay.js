@@ -17,6 +17,8 @@ import { networkError, warningNotification, dangerNotification } from '../../lib
 
 import white_hex from '../../assets/icons/white_hex.svg'
 import close_overlay from '../../assets/icons/close_overlay.svg'
+import { ReactSVG } from 'react-svg'
+
 
 const MintOverlay = (props) => {
   const [currentBid] = useState(10);
@@ -197,9 +199,9 @@ const MintOverlay = (props) => {
     transitionLeaveTimeout={300}>
     <div key="mint-overlay-" to={props.url} className={`Overlay MintOverlay WhiteInputs ${props.className ? props.className : ''} --activeStep-${activeStep}`}>
       <div className="Overlay__cont">
-        <Icon src={close_overlay} isSvg={true} className="Overlay__close_button" onClick={setDeactiveOverlay}></Icon>
+        <ReactSVG className={`Icon Overlay__close_button`} src={close_overlay} onClick={setDeactiveOverlay}/>
         <div className="Overlay__hex_cont">
-          <Icon src={white_hex} className='Overlay__hex' isSvg={true}></Icon>
+          <ReactSVG className={`Icon Overlay__hex`} src={white_hex} />
         </div>
         {getStepContent(activeStep)}
       </div>

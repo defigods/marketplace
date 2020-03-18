@@ -19,6 +19,8 @@ import white_hex from '../../assets/icons/white_hex.svg'
 import left_arrow from '../../assets/icons/left_arrow.svg'
 import close_overlay from '../../assets/icons/close_overlay.svg'
 
+import { ReactSVG } from 'react-svg'
+
 const BidOverlay = (props) => {  
   const [newBidValue, setNewBidValue] = useState('');
   const [bidInputError, setBidInputError] = useState(false);
@@ -220,9 +222,9 @@ const BidOverlay = (props) => {
     transitionLeaveTimeout={300}>
     <div key="bid-overlay-" to={props.url} className={`Overlay BidOverlay WhiteInputs ${props.className ? props.className : ''} --activeStep-${activeStep}`}>
           <div className="Overlay__cont">
-            <Icon src={close_overlay} isSvg={true} className="Overlay__close_button" onClick={setDeactiveOverlay}></Icon>
+            <ReactSVG className={`Icon Overlay__close_button`} src={close_overlay} onClick={setDeactiveOverlay}/>
             <div className="Overlay__hex_cont">
-              <Icon src={white_hex} className='Overlay__hex' isSvg={true}></Icon>
+              <ReactSVG className={`Icon Overlay__hex`} src={white_hex} />
             </div>
             {getStepContent(activeStep)}
           </div>
