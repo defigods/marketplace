@@ -3,7 +3,7 @@ import React from 'react';
 import LandName from '../LandName/LandName';
 import Icon from '../Icon/Icon';
 import TimeCounter from '../TimeCounter/TimeCounter';
-import ovr_land from '../../ovr_land.svg'
+import ovr_land from '../../assets/icons/ovr_land.svg'
 import { Link } from "react-router-dom";
 
 const LandCard = props => {

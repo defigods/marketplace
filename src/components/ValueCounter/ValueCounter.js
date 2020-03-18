@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Icon from '../Icon/Icon';
-import ovr_token from '../../ovr_token.svg'
+import ovr_token from '../../assets/icons/ovr_token.svg'
 
 class ValueCounter extends Component {
     render() {

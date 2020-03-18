@@ -15,9 +15,9 @@ import { networkError, warningNotification, dangerNotification } from '../../lib
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 
-import white_hex from '../../white_hex.svg'
-import left_arrow from '../../left_arrow.svg'
-import close_overlay from '../../close_overlay.svg'
+import white_hex from '../../assets/icons/white_hex.svg'
+import left_arrow from '../../assets/icons/left_arrow.svg'
+import close_overlay from '../../assets/icons/close_overlay.svg'
 
 import { ReactSVG } from 'react-svg'
 
