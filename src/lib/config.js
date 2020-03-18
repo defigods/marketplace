@@ -7,7 +7,7 @@ import _ from 'lodash'
 
 const apisDevelopment = false
 const apis = {
-  hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003/'
+  hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003'
 }
 const map = {
   lat: 46.0922495,
