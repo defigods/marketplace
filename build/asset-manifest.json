@@ -1,32 +1,28 @@
 {
   "files": {
-    "main.css": "./static/css/main.d9376b18.chunk.css",
-    "main.js": "./static/js/main.46bf6db4.chunk.js",
-    "main.js.map": "./static/js/main.46bf6db4.chunk.js.map",
+    "main.css": "./static/css/main.ee0f66b1.chunk.css",
+    "main.js": "./static/js/main.25b14290.chunk.js",
+    "main.js.map": "./static/js/main.25b14290.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.8388affd.js",
     "runtime-main.js.map": "./static/js/runtime-main.8388affd.js.map",
     "static/css/2.913bfbdb.chunk.css": "./static/css/2.913bfbdb.chunk.css",
-    "static/js/2.9735b325.chunk.js": "./static/js/2.9735b325.chunk.js",
-    "static/js/2.9735b325.chunk.js.map": "./static/js/2.9735b325.chunk.js.map",
+    "static/js/2.4351908a.chunk.js": "./static/js/2.4351908a.chunk.js",
+    "static/js/2.4351908a.chunk.js.map": "./static/js/2.4351908a.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.998782c61b49508e6806e7b83735b01b.js": "./precache-manifest.998782c61b49508e6806e7b83735b01b.js",
+    "precache-manifest.0c5782b809ddbadd4f523aba1f252eea.js": "./precache-manifest.0c5782b809ddbadd4f523aba1f252eea.js",
     "service-worker.js": "./service-worker.js",
     "static/css/2.913bfbdb.chunk.css.map": "./static/css/2.913bfbdb.chunk.css.map",
-    "static/css/main.d9376b18.chunk.css.map": "./static/css/main.d9376b18.chunk.css.map",
-    "static/js/2.9735b325.chunk.js.LICENSE.txt": "./static/js/2.9735b325.chunk.js.LICENSE.txt",
-    "static/media/close_overlay.svg": "./static/media/close_overlay.593d922c.svg",
+    "static/css/main.ee0f66b1.chunk.css.map": "./static/css/main.ee0f66b1.chunk.css.map",
+    "static/js/2.4351908a.chunk.js.LICENSE.txt": "./static/js/2.4351908a.chunk.js.LICENSE.txt",
     "static/media/icon_notification.svg": "./static/media/icon_notification.d82e0b14.svg",
-    "static/media/left_arrow.svg": "./static/media/left_arrow.dc238df4.svg",
-    "static/media/logo_ovr_white.svg": "./static/media/logo_ovr_white.e860621e.svg",
-    "static/media/ovr_land.svg": "./static/media/ovr_land.a40b240d.svg",
-    "static/media/ovr_token.svg": "./static/media/ovr_token.1201be09.svg",
-    "static/media/white_hex.svg": "./static/media/white_hex.c06b890a.svg"
+    "static/media/logo_ovr_white.svg": "./static/media/logo_ovr_white.eb26a6e4.svg",
+    "static/media/ovr_land.svg": "./static/media/ovr_land.a40b240d.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.8388affd.js",
     "static/css/2.913bfbdb.chunk.css",
-    "static/js/2.9735b325.chunk.js",
-    "static/css/main.d9376b18.chunk.css",
-    "static/js/main.46bf6db4.chunk.js"
+    "static/js/2.4351908a.chunk.js",
+    "static/css/main.ee0f66b1.chunk.css",
+    "static/js/main.25b14290.chunk.js"
   ]
 }
