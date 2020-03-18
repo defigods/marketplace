@@ -1,0 +1,86 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" x="0px" y="0px" width="548.4px" height="260px" viewBox="0 0 548.4 260" style="enable-background:new 0 0 548.4 260;" xml:space="preserve">
+   <style type="text/css">
+      .hst0{fill:url(#h_viola_2_);}
+      .hst1{fill:url(#h_org_2_);}
+      .hst2{fill:url(#h_blu_2_);}
+      .hst3{opacity:0.45;fill:url(#h_hex-trasp_2_);mix-blend-mode: color-burn;}
+      .hst4{fill:url(#h_sphere_2_);}
+      .hst5{opacity:0.76;fill:url(#h_top_2_);mix-blend-mode: soft-light;}
+      .hst6{fill:url(#h_left_2_); mix-blend-mode: soft-light;}
+      .hst7{fill:#1D1D1B;}
+      .hst8{fill:url(#h_viola_3_);}
+      .hst9{fill:url(#h_org_3_);}
+      .hst10{fill:url(#h_blu_3_);}
+      .hst11{opacity:0.45;fill:url(#h_hex-trasp_3_);}
+      .hst12{fill:url(#h_sphere_3_);}
+      .hst13{opacity:0.76;fill:url(#h_top_3_);}
+      .hst14{fill:url(#h_left_3_);}
+   </style>
+   <defs>
+   </defs>
+   <g>
+      <linearGradient id="h_viola_2_" gradientUnits="userSpaceOnUse" x1="146.6618" y1="105.1949" x2="242.4816" y2="105.1949">
+         <stop offset="0" style="stop-color:#6B32C1"></stop>
+         <stop offset="0.996" style="stop-color:#C81D5E"></stop>
+      </linearGradient>
+      <path id="h_viola_1_" class="hst0" d="M228.9,48.9c-2.9-4-6.9-7.3-11.6-9.2L182.3,25L127.6,2.1c-3.4-1.4-7-2.1-10.6-2.1v96.6v67
+         l111.9,46.9c3.3-4.6,5.1-10.1,5.1-16V64.9C234.1,59.1,232.2,53.5,228.9,48.9z"></path>
+      <linearGradient id="h_org_2_" gradientUnits="userSpaceOnUse" x1="0" y1="105.1949" x2="117.0383" y2="105.1949">
+         <stop offset="0" style="stop-color:#EC663C"></stop>
+         <stop offset="1" style="stop-color:#F9B426"></stop>
+      </linearGradient>
+      <path id="h_org_1_" class="hst1" d="M106.5,2.1L19.8,38.4l-3,1.3c-4.8,2-8.7,5.2-11.6,9.2C1.9,53.5,0,59.1,0,64.9v129.5
+         c0,5.9,1.9,11.4,5.1,16L117,163.5v-67V0C113.4,0,109.8,0.7,106.5,2.1z"></path>
+      <linearGradient id="h_blu_2_" gradientUnits="userSpaceOnUse" x1="123.4958" y1="172.9373" x2="108.8807" y2="257.7048">
+         <stop offset="0" style="stop-color:#0081DD"></stop>
+         <stop offset="0.1855" style="stop-color:#0589E0"></stop>
+         <stop offset="0.4785" style="stop-color:#11A0E9"></stop>
+         <stop offset="0.8403" style="stop-color:#25C5F8"></stop>
+         <stop offset="0.9972" style="stop-color:#2FD7FF"></stop>
+      </linearGradient>
+      <path id="h_blu_1_" class="hst2" d="M117,163.5L5.1,210.4c2.9,4,6.8,7.2,11.5,9.2l72.1,30.7l17.5,7.5c3.4,1.5,7.1,2.2,10.7,2.2
+         c3.7,0,7.3-0.7,10.7-2.2l12.2-5.2l77.4-33c4.7-2,8.7-5.2,11.5-9.2L117,163.5z"></path>
+      <linearGradient id="h_hex-trasp_2_" gradientUnits="userSpaceOnUse" x1="117.0385" y1="198.0114" x2="117.0385" y2="29.899">
+         <stop offset="0" style="stop-color:#4E4D4C"></stop>
+         <stop offset="0.1243" style="stop-color:#5A5858"></stop>
+         <stop offset="0.4661" style="stop-color:#747273"></stop>
+         <stop offset="0.7691" style="stop-color:#848183"></stop>
+         <stop offset="1" style="stop-color:#8A8789"></stop>
+      </linearGradient>
+      <path id="h_hex-trasp_1_" class="hst3" d="M198.7,67.6c-2.1-3.1-5-5.6-8.5-7.1l-25.5-11.3l-39.9-17.6c-2.5-1.1-5.1-1.6-7.7-1.6
+         s-5.3,0.5-7.7,1.6L46.1,59.5l-2.2,1c-3.5,1.5-6.4,4-8.5,7.1c-2.4,3.5-3.8,7.8-3.8,12.3v99.7c0,4.5,1.4,8.8,3.7,12.3
+         c2.1,3.1,5,5.6,8.4,7.1l52.6,23.6l12.8,5.8c2.5,1.1,5.2,1.7,7.8,1.7s5.3-0.6,7.8-1.7l8.9-4l56.5-25.4c3.4-1.5,6.3-4,8.4-7.1
+         c2.4-3.5,3.7-7.8,3.7-12.3V79.9C202.5,75.4,201.1,71.1,198.7,67.6z"></path>
+      <radialGradient id="h_sphere_2_" cx="100.8912" cy="112.4717" r="73.1778" gradientUnits="userSpaceOnUse">
+         <stop offset="0" style="stop-color:#FFFFFF"></stop>
+         <stop offset="0.3527" style="stop-color:#FDFDFC;stop-opacity:0.8589"></stop>
+         <stop offset="0.644" style="stop-color:#F6F6F2;stop-opacity:0.7424"></stop>
+         <stop offset="0.9126" style="stop-color:#EAEBE0;stop-opacity:0.635"></stop>
+         <stop offset="1" style="stop-color:#E5E6D9;stop-opacity:0.6"></stop>
+      </radialGradient>
+      <circle id="h_sphere_1_" class="hst4" cx="117" cy="129.6" r="55.2"></circle>
+      <linearGradient id="h_top_2_" gradientUnits="userSpaceOnUse" x1="52.7302" y1="17.5387" x2="186.8157" y2="78.8646">
+         <stop offset="0" style="stop-color:#FFFFFF"></stop>
+         <stop offset="0.9999" style="stop-color:#FFFFFF;stop-opacity:0.5"></stop>
+      </linearGradient>
+      <path id="h_top_1_" class="hst5" d="M217.3,39.7L182.3,25L127.6,2.1c-3.4-1.4-7-2.1-10.6-2.1c-3.6,0-7.2,0.7-10.6,2.1L19.8,38.4
+         l-3,1.3c-4.8,2-8.7,5.2-11.6,9.2L117,96.6l111.9-47.6C226,44.9,222,41.7,217.3,39.7z"></path>
+      <linearGradient id="h_left_2_" gradientUnits="userSpaceOnUse" x1="160.498" y1="85.4091" x2="190.8033" y2="237.7698">
+         <stop offset="0" style="stop-color:#FFFFFF"></stop>
+         <stop offset="0.9999" style="stop-color:#FFFFFF;stop-opacity:0.3"></stop>
+      </linearGradient>
+      <path id="h_left_1_" class="hst6" d="M228.9,48.9L117,96.6v67V260c3.7,0,7.3-0.7,10.7-2.2l12.2-5.2l77.4-33c4.7-2,8.7-5.2,11.5-9.2
+         c3.3-4.6,5.1-10.1,5.1-16V64.9C234.1,59.1,232.2,53.5,228.9,48.9z"></path>
+   </g>
+   <g class="main-logo-letters">
+      <path id="h_o-letter_1_" class="hst7" d="M333.4,102.3c15,0,27.2,12.2,27.2,27.2s-12.2,27.2-27.2,27.2s-27.2-12.2-27.2-27.2
+         S318.4,102.3,333.4,102.3 M333.4,84.9c-24.6,0-44.6,20-44.6,44.6c0,24.6,20,44.6,44.6,44.6c24.6,0,44.6-20,44.6-44.6
+         C378,104.9,358,84.9,333.4,84.9"></path>
+      <path id="h_v-letter_1_" class="hst7" d="M450.7,126.4c-0.7,1.2-2.6,4.6-5.9,10.6c-2.9,5.2-7.5,12.6-10.4,17.6l-19-31
+         c-9.3-15.1-23.7-26.5-40.6-31.9l45.4,74.4c3.4,5.1,9.1,8.1,14.9,8.1c3,0,5.9-0.8,8.6-2.5c2.6-1.6,3.1-0.4,17.1-26
+         c2.4-4.5,5-9.1,5.5-10c2.5-4.1,5.2-7.7,8.1-10.8V101C464.9,107.5,456.9,116,450.7,126.4"></path>
+      <path id="h_r-letter_1_" class="hst7" d="M522.9,85c-5.8,0-11.4,0.6-16.8,1.7c-0.3,0.1-0.6,0.1-0.9,0.2c-0.3,0.1-0.6,0.1-0.9,0.2
+         c-5.7,1.3-11.2,3.1-16.4,5.5c-0.3,0.1-0.6,0.3-0.9,0.4c-0.3,0.1-0.6,0.3-0.9,0.4v21.8v59.9h19.3v-70c5.4-1.4,11.9-2.1,17.7-2.1
+         c5.7,0,11.3,0.7,16.7,2.1l8.8-16.2C540.4,86.3,531.8,85,522.9,85"></path>
+   </g>
+</svg>

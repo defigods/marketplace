@@ -5,8 +5,8 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 
 import { UserContext, withUserContext } from '../../context/UserContext';
 
-import logo from '../../assets/icons/logo_ovr_white.svg'
-import icon_notification from '../../assets/icons/icon_notification.svg'
+import logo from '../../logo_ovr_white.svg'
+import icon_notification from '../../icon_notification.svg'
 import Blockies from 'react-blockies';
 
 class NavBar extends Component {
