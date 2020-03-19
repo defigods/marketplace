@@ -10,11 +10,11 @@ import Pagination from '@material-ui/lab/Pagination';
 
 const Overview = (props) => {
   const [listAuctions, setListAuctions] = useState('');
-  const [numberOfAuctionPages, setNumberOfAuctionPages] = useState(1);
+  const [numberOfAuctionPages, setNumberOfAuctionPages] = useState(0);
   const [currentAuctionPage, setCurrentAuctionPage] = useState(1);
 
   const [listLands, setListLands] = useState('');
-  const [numberOfLandPages, setNumberOfLandPages] = useState(1);
+  const [numberOfLandPages, setNumberOfLandPages] = useState(0);
   const [currentLandPage, setCurrentLandPage] = useState(1);
   const [userAuthenticated, setUserAuthenticated] = useState(true);
 
@@ -41,6 +41,7 @@ const Overview = (props) => {
                 date_end={obj.land.auction.closeAt}
               />
             ))
+            setNumberOfAuctionPages(response.data.numberOfPages)
           } else {
             setListAuctions(
               <div className="c-dialog --centered">
@@ -53,7 +54,6 @@ const Overview = (props) => {
               </div>
             )
           }
-          setNumberOfAuctionPages(response.data.numberOfAuctionPages)
         } else {
           setUserAuthenticated(false)
         }
@@ -82,6 +82,7 @@ const Overview = (props) => {
                 date_end={obj.auction.closeAt}
               ></LandCard>
             ))
+            setNumberOfLandPages(response.data.numberOfPages)
           } else {
             setListLands(
               <div className="c-dialog --centered">
@@ -94,7 +95,6 @@ const Overview = (props) => {
               </div>
             )
           }
-          setNumberOfLandPages(response.data.numberOfPages)
         }
       }).catch((error) => {
         // Notify user if network error
