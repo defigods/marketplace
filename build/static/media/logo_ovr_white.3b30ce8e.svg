@@ -3,41 +3,41 @@
     <desc>Created with Sketch.</desc>
     <defs>
         <linearGradient x1="25.3511512%" y1="49.9738242%" x2="107.245785%" y2="49.9738242%" id="linearGradient-1">
-            <stop stopColor="#6B32C1" offset="0%"></stop>
-            <stop stopColor="#C81D5E" offset="99.6%"></stop>
+            <stop stop-color="#6B32C1" offset="0%"></stop>
+            <stop stop-color="#C81D5E" offset="99.6%"></stop>
         </linearGradient>
         <linearGradient x1="0%" y1="49.997576%" x2="100.032735%" y2="49.997576%" id="linearGradient-2">
-            <stop stopColor="#EC663C" offset="0%"></stop>
-            <stop stopColor="#F9B426" offset="100%"></stop>
+            <stop stop-color="#EC663C" offset="0%"></stop>
+            <stop stop-color="#F9B426" offset="100%"></stop>
         </linearGradient>
         <linearGradient x1="52.9498211%" y1="9.77958549%" x2="46.413551%" y2="97.6215544%" id="linearGradient-3">
-            <stop stopColor="#0081DD" offset="0%"></stop>
-            <stop stopColor="#0589E0" offset="18.55%"></stop>
-            <stop stopColor="#11A0E9" offset="47.85%"></stop>
-            <stop stopColor="#25C5F8" offset="84.03%"></stop>
-            <stop stopColor="#2FD7FF" offset="99.72%"></stop>
+            <stop stop-color="#0081DD" offset="0%"></stop>
+            <stop stop-color="#0589E0" offset="18.55%"></stop>
+            <stop stop-color="#11A0E9" offset="47.85%"></stop>
+            <stop stop-color="#25C5F8" offset="84.03%"></stop>
+            <stop stop-color="#2FD7FF" offset="99.72%"></stop>
         </linearGradient>
         <linearGradient x1="50.0693857%" y1="83.9637181%" x2="50.0693857%" y2="-0.0504747626%" id="linearGradient-4">
-            <stop stopColor="#4E4D4C" offset="0%"></stop>
-            <stop stopColor="#5A5858" offset="12.43%"></stop>
-            <stop stopColor="#747273" offset="46.61%"></stop>
-            <stop stopColor="#848183" offset="76.91%"></stop>
-            <stop stopColor="#8A8789" offset="100%"></stop>
+            <stop stop-color="#4E4D4C" offset="0%"></stop>
+            <stop stop-color="#5A5858" offset="12.43%"></stop>
+            <stop stop-color="#747273" offset="46.61%"></stop>
+            <stop stop-color="#848183" offset="76.91%"></stop>
+            <stop stop-color="#8A8789" offset="100%"></stop>
         </linearGradient>
         <radialGradient cx="35.4086957%" cy="34.4852355%" fx="35.4086957%" fy="34.4852355%" r="66.2842391%" id="radialGradient-5">
-            <stop stopColor="#FFFFFF" offset="0%"></stop>
-            <stop stopColor="#FDFDFC" stop-opacity="0.8589" offset="35.27%"></stop>
-            <stop stopColor="#F6F6F2" stop-opacity="0.7424" offset="64.4%"></stop>
-            <stop stopColor="#EAEBE0" stop-opacity="0.635" offset="91.26%"></stop>
-            <stop stopColor="#E5E6D9" stop-opacity="0.6" offset="100%"></stop>
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FDFDFC" stop-opacity="0.8589" offset="35.27%"></stop>
+            <stop stop-color="#F6F6F2" stop-opacity="0.7424" offset="64.4%"></stop>
+            <stop stop-color="#EAEBE0" stop-opacity="0.635" offset="91.26%"></stop>
+            <stop stop-color="#E5E6D9" stop-opacity="0.6" offset="100%"></stop>
         </radialGradient>
         <linearGradient x1="21.2472955%" y1="18.1560041%" x2="81.1871703%" y2="81.6403727%" id="linearGradient-6">
-            <stop stopColor="#FFFFFF" offset="0%"></stop>
-            <stop stopColor="#FFFFFF" stop-opacity="0.5" offset="99.99%"></stop>
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0.5" offset="99.99%"></stop>
         </linearGradient>
         <linearGradient x1="37.2050099%" y1="17.2946945%" x2="63.1259484%" y2="89.469351%" id="linearGradient-7">
-            <stop stopColor="#FFFFFF" offset="0%"></stop>
-            <stop stopColor="#FFFFFF" stop-opacity="0.3" offset="99.99%"></stop>
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0.3" offset="99.99%"></stop>
         </linearGradient>
     </defs>
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
