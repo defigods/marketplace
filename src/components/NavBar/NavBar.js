@@ -6,7 +6,6 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 import { UserContext, withUserContext } from '../../context/UserContext';
 
 import logo from '../../assets/icons/logo_ovr_white.svg'
-import icon_notification from '../../assets/icons/icon_notification.svg'
 import Blockies from 'react-blockies';
 
 class NavBar extends Component {
@@ -67,7 +66,7 @@ class NavBar extends Component {
           Discover
         </NavLink>
         <NavLink className="NavBar__link" to="/map/overview">
-          Overview
+          My Assets
         </NavLink>
         <NavLink className="NavBar__link" to="/profile">
           Profile

@@ -171,6 +171,21 @@ export class Land extends Component {
     }
   }
 
+  renderPrice() {
+    switch (this.state.marketStatus) {
+      case 2:
+        return <>
+          <h3 className="o-small-title">Closing price</h3>
+          <ValueCounter value={this.state.value}></ValueCounter>
+        </>
+      default:
+        return <>
+          <h3 className="o-small-title">Price</h3>
+          <ValueCounter value={this.state.value}></ValueCounter>
+        </>
+    }
+  }
+
   render() {
     return (
       <div className="Land">
@@ -183,8 +198,7 @@ export class Land extends Component {
           </div>
           <div className="Land__heading__2">
             <div className="o-fourth">
-              <h3 className="o-small-title">Price</h3>
-              <ValueCounter value={this.state.value}></ValueCounter>
+              {this.renderPrice()}
             </div>
             <div className="o-fourth">
               {this.renderTimer()}

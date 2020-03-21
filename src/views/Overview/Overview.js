@@ -134,7 +134,7 @@ const Overview = (props) => {
         </div>
       </div>
       <div className="o-container">
-        <h2 className="o-section-title">Lands</h2>
+        <h2 className="o-section-title">Closed Auctions</h2>
       </div>
       <div className="o-container">
         <div className="o-land-list">
@@ -150,7 +150,7 @@ const Overview = (props) => {
       <div className="o-container">
         <div className="c-dialog --centered">
           <div className="c-dialog-main-title">
-            You have to log in to visit Overview 😎
+            You have to log in to visit My Assets 😎
           </div>
           <div className="c-dialog-sub-title">
             Browse your OVRLands and ongoing Auctions. Login now.

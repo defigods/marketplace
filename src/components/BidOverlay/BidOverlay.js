@@ -44,23 +44,14 @@ const BidOverlay = (props) => {
   // };
 
   const updateNewBidValue = (e) => {
-    //Setup first time value
-    if (newBidValue === ''){
-      setNewBidValue(props.currentBid * 2); 
+
+    if (newBidValue >= props.currentBid * 2) {
       setBidValid(true)
-      return
-    } else{
-      setNewBidValue(e.target.value);  
+    } else {
+      setBidValid(false)
     }
 
-    //Check value if valid
-    if (newBidValue < props.currentBid * 2){
-      setBidInputError('Should be equal to or greater than Minimum bid')
-      setBidValid(false)
-    } else{
-      setBidInputError(false)
-      setBidValid(true)
-    }
+    setNewBidValue(e.target.value);
   }
 
   function sendBid(){

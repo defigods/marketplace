@@ -41,23 +41,13 @@ const MintOverlay = (props) => {
   // };
 
   const updateNewBidValue = (e) => {
-    //Setup first time value
-    if (newBidValue === '') {
-      setNewBidValue(currentBid);
+    if (newBidValue >= 10) {
       setBidValid(true)
-      return
     } else {
-      setNewBidValue(e.target.value);
+      setBidValid(false)
     }
 
-    //Check value if valid
-    if (newBidValue < 10) {
-      setBidInputError('Should be equal to or greater than Minimum bid')
-      setBidValid(false)
-    } else {
-      setBidInputError(false)
-      setBidValid(true)
-    }
+    setNewBidValue(e.target.value);
   }
 
   function setDeactiveOverlay(e) {
@@ -67,6 +57,13 @@ const MintOverlay = (props) => {
   }
 
   function sendMint(){
+    // //Check value if valid
+    // if (newBidValue < 10) {
+    //   setBidInputError('Should be equal to or greater than Minimum bid')
+    //   setBidValid(false)
+    //   return false
+    // } 
+
     // Call API function 
     mintLand(props.land.key, newBidValue)
     .then((response) => {

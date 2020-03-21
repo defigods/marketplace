@@ -5,7 +5,7 @@ import _ from 'lodash'
 // 
 
 
-const apisDevelopment = false
+const apisDevelopment = true
 const apis = {
   hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003/api/v1'
 }
@@ -31,6 +31,7 @@ export default config
 // 
 
 export function camelCaseKeys(object) {
+
   let camelCaseObject = _.cloneDeep(object)
 
   if (_.isArray(camelCaseObject)) {
