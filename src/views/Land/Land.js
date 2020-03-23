@@ -22,7 +22,9 @@ export class Land extends Component {
       name: { sentence: "director.connect.overflow", hex: "8cbcc350c0ab5ff" },
       location: "Venice, Italy",
       marketStatus: 0,
-      auction: null
+      userPerspective: 0,
+      auction: null,
+      bidHistory: []
     }
     this.mapActions = this.props.mapProvider.actions
   }
@@ -36,16 +38,17 @@ export class Land extends Component {
         let data = response.data
         console.log("landApiData", data)
 
-        this.setState({
-          value: data.value
-        })
-
         if (data.auction != null) {
           this.setState({
             value: data.auction.currentWorth,
-            auction: data.auction
+            auction: data.auction,
+            bidHistory: data.auction.bidHistory
           })
-          console.log('there is auction')
+        } else {
+          this.setState({
+            value: data.value,
+            bidHistory: []
+          })
         }
 
         this.setState({
@@ -53,7 +56,7 @@ export class Land extends Component {
           name: { sentence: data.sentenceId, hex: data.uuid },
           location: data.address.full,
           marketStatus: data.marketStatus,
-          // bid_status:{className: "--bestbid", sentence:"BEST BID"},
+          userPerspective: data.userPerspective
         })
 
 
@@ -130,7 +133,7 @@ export class Land extends Component {
     if (this.state.marketStatus === 1) {
       return (
         <>
-          <h3 className="o-small-title">Time Left</h3>
+          <h3 className="o-small-title">Closes</h3>
           <TimeCounter date_end={this.state.auction.closeAt}></TimeCounter>
         </>
       )
@@ -140,28 +143,39 @@ export class Land extends Component {
   }
 
   renderBadge() {
+    let badge = <div>&nbsp;</div>
     switch (this.state.marketStatus) {
-      case 0:
-        return <div>&nbsp;</div>
       case 1:
-        return <>
-          <h3 className="o-small-title">Status</h3>
-          <div className="c-status-badge  --open">OPEN</div>
-        </>
+        badge = <div><h3 className="o-small-title">Status</h3><div className="c-status-badge  --open">OPEN</div></div>
+        break
       case 2:
-        return <>
-          <h3 className="o-small-title">Status</h3>
-          <div className="c-status-badge  --owned">OWNED</div>
-        </>
+        badge = <div><h3 className="o-small-title">Status</h3><div className="c-status-badge  --owned">OWNED</div></div>
+        break
       default:
-        return <div>&nbsp;</div>
+        badge = <div>&nbsp;</div>
     }
+
+    switch (this.state.userPerspective) {
+      case 1:
+        badge = <div><h3 className="o-small-title">Status</h3><div className="c-status-badge --bestbid">OWNER</div></div>
+        break
+      case 2:
+        badge = <div><h3 className="o-small-title">Status</h3><div className="c-status-badge  --bestbid">BEST BID</div></div>
+        break
+      case 3:
+        badge = <div><h3 className="o-small-title">Status</h3><div className="c-status-badge  --outbidded">OUTBIDDED</div></div>
+        break
+      default:
+        break
+    }
+
+    return badge
   }
 
   renderOverlayButton() {
     switch (this.state.marketStatus) {
       case 0:
-        return <HexButton url="/" text="Mint Land" className="" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
+        return <HexButton url="/" text="Init Auction" className="" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
       case 1:
         return <HexButton url="/" text="Place bid" className="--purple" onClick={(e) => this.setActiveBidOverlay(e)}></HexButton>
       case 2:
@@ -183,6 +197,46 @@ export class Land extends Component {
           <h3 className="o-small-title">Price</h3>
           <ValueCounter value={this.state.value}></ValueCounter>
         </>
+    }
+  }
+
+  renderBidHistory(){
+    if(this.state.bidHistory.length === 0){
+      return <div className="o-container">
+        <div className="Title__container"> <h3 className="o-small-title">History</h3></div>
+        <div className="c-dialog --centered">
+          <div className="c-dialog-main-title">
+            Be the one to start an auction <span role="img" aria-label="fire-emoji">🔥</span>
+          </div>
+          <div className="c-dialog-sub-title">
+            The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own it.
+          </div>
+        </div>
+      </div>
+    } else {
+      return <div className="o-container">
+        <div className="Title__container"> <h3 className="o-small-title">Bid History</h3></div>
+        <div className="Table__container">
+          <table className="Table">
+            <thead>
+              <tr>
+                <th>Price</th>
+                <th>When</th>
+                <th>From</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.bidHistory.map((bid) =>
+                <tr className="Table__line">
+                  <td><ValueCounter value={bid.worth}></ValueCounter> </td>
+                  <td><TimeCounter date_end={bid.when}></TimeCounter></td>
+                  <td>{bid.from}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div> 
+      </div>
     }
   }
 
@@ -212,50 +266,7 @@ export class Land extends Component {
           </div>
         </div>
         <div className="Land__section">
-          <div className="o-container">
-            {/* <div className="Title__container"> <h3 className="o-small-title">Bid History</h3></div>
-            <div className="Table__container">
-              <table className="Table">
-                <thead>
-                  <tr>
-                    <th>Price</th>
-                    <th>When</th>
-                    <th>From</th>
-                    <th>To</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="Table__line">
-                    <td><ValueCounter value="200000"></ValueCounter> </td>
-                    <td><TimeCounter date_end={this.state.date_end}></TimeCounter></td>
-                    <td>0x83b7</td>
-                    <td>0x83b7</td>
-                  </tr>
-                  <tr className="Table__line">
-                    <td><ValueCounter value="200000"></ValueCounter> </td>
-                    <td><TimeCounter date_end={this.state.date_end}></TimeCounter></td>
-                    <td>0x83b7</td>
-                    <td>0x83b7</td>
-                  </tr>
-                  <tr className="Table__line">
-                    <td><ValueCounter value="200000"></ValueCounter> </td>
-                    <td><TimeCounter date_end={this.state.date_end}></TimeCounter></td>
-                    <td>0x83b7</td>
-                    <td>0x83b7</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div> */}
-            <div className="Title__container"> <h3 className="o-small-title">History</h3></div>
-            <div className="c-dialog --centered">
-              <div className="c-dialog-main-title">
-                Coming on staging soon 🔥  
-              </div>
-              <div className="c-dialog-sub-title">
-                Bid history and transaction history are coming soon. 
-              </div>
-            </div>
-          </div>
+          {this.renderBidHistory()}
         </div>
       </div>
     );

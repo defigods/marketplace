@@ -37,7 +37,8 @@ const Overview = (props) => {
                 background_image={`url(${obj.land.mapTileUrl}`}
                 name={{ sentence: obj.land.sentenceId, hex: obj.land.uuid }}
                 location={obj.land.address.full}
-                bid_status={"open"}
+                market_status={obj.land.marketStatus}
+                user_perspective={obj.land.userPerspective}
                 date_end={obj.land.auction.closeAt}
               />
             ))

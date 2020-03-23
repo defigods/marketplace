@@ -1,7 +1,6 @@
 
 import React from 'react';
 import LandName from '../LandName/LandName';
-import Icon from '../Icon/Icon';
 import TimeCounter from '../TimeCounter/TimeCounter';
 import { Link } from "react-router-dom";
 

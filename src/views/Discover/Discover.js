@@ -26,6 +26,7 @@ const Discover = (props) => {
     .then((response) => {
       // Load Auctions in MapContext
       actions.changeAuctionList(response.data.auctions)
+      console.log(response.data.auctions)
 
       if (response.data.auctions.length > 0){
       // Load user data in context store
@@ -35,7 +36,8 @@ const Discover = (props) => {
           background_image={`url(${obj.land.mapTileUrl}`}
           name={{sentence: obj.land.sentenceId, hex: obj.land.uuid}}
           location={obj.land.address.full}
-          bid_status={"open"}
+          market_status={obj.land.marketStatus}
+          user_perspective={obj.land.userPerspective}
           date_end={obj.land.auction.closeAt}
         />
       ))
@@ -74,7 +76,6 @@ const Discover = (props) => {
                   background_image={`url(${obj.mapTileUrl}`}
                   name={{sentence: obj.sentenceId, hex: obj.uuid}}
                   location={obj.address.full}
-                  icon={{url: "./assets/icons/icon_deal.png", isSvg: false}}
                   date_end={obj.auction.closeAt}
                   ></LandCard>
       ))

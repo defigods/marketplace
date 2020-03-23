@@ -4,7 +4,7 @@ class ValueCounter extends Component {
         return <div className="ValueCounter">
             <div className="ValueCounter__icon">
               <div className="Icon" >
-                <svg width={18} height={20} viewBox="0 0 18 20">
+                <svg width={18} height={20} viewBox="0 0 18 20" xmlns="http://www.w3.org/2000/svg" x="0" y="0" >
                   <defs>
                     <linearGradient x1="109.444%" y1="100%" x2="0%" y2="0%" id="prefix__a">
                       <stop stopColor="#EB663B" offset="0%" />

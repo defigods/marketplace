@@ -7,27 +7,28 @@ import { Link } from "react-router-dom";
 
 const AuctionCard = props => {
 
-  const { bid_status, background_image, name, value, location, date_end} = props
+  const { user_perspective, background_image, name, value, location, date_end} = props
   const { sentence, hex} = name
   let statusClassName = "--open"
   let statusText = "OPEN"
 
-  switch (bid_status) {
-    case "best":
+  switch (user_perspective) {
+    case 1:
+      statusClassName = "--open"
+      statusText = "OPEN"
+      break;
+    case 2:
       statusClassName = "--bestbid"
       statusText = "BEST BID"
       break;
-    case "open":
-      statusClassName = "--open"
-      statusText = "OPEN"
-      break;
-    case "outbidded":
+    case 3:
       statusClassName = "--outbidded"
       statusText = "OUTBIDDED"
-      break
+      break;
     default:
       statusClassName = "--open"
       statusText = "OPEN"
+      break;
   }
 
 
