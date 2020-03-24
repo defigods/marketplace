@@ -12,64 +12,9 @@ export class MapProvider extends Component {
             isAuction: false,
             activeBidOverlay: false,
             activeMintOverlay: false,
+            activeSellOverlay: false,
             auctionList: []
         }
-        this.overviewList = [
-            {
-                key: "8cbcc350c0ab5ff",
-                value:"300",
-                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
-                name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
-                location:"Venice, Italy",
-                bid_status:{className: "--bestbid", sentence:"BEST BID"},
-                date_end:"2020-01-17T15:44-0000",
-            },
-            {
-                key: "8c81326dda43dff",
-                value:"300",
-                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
-                name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
-                location:"Venice, Italy",
-                bid_status:{className: "--outbidded", sentence:"BEST BID"},
-                date_end:"2020-01-17T15:44-0000"
-            },
-            {
-                key: "8cbcc350c0ab5ff",
-                value:"300",
-                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
-                name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
-                location:"Venice, Italy",
-                bid_status:{className: "--bestbid", sentence:"BEST BID"},
-                date_end:"2020-01-17T15:44-0000",
-            },
-            {
-                key: "8c81326dda43dff",
-                value:"300",
-                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
-                name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
-                location:"Venice, Italy",
-                bid_status:{className: "--outbidded", sentence:"BEST BID"},
-                date_end:"2020-01-17T15:44-0000"
-            },
-            {
-                key: "8cbcc350c0ab5ff",
-                value:"300",
-                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
-                name:{sentence:"director.connect.overflow", hex: "8cbcc350c0ab5ff"},
-                location:"Venice, Italy",
-                bid_status:{className: "--bestbid", sentence:"BEST BID"},
-                date_end:"2020-01-17T15:44-0000",
-            },
-            {
-                key: "8c81326dda43dff",
-                value:"300",
-                background_image:"url(https://www.ovr.ai/wp-content/uploads/static/auction-map.png)",
-                name: { sentence: "director.connect.overflow", hex: "8c81326dda43dff"},
-                location:"Venice, Italy",
-                bid_status:{className: "--outbidded", sentence:"BEST BID"},
-                date_end:"2020-01-17T15:44-0000"
-            }
-        ]
     }
 
     changeHexId = (hex_id) => {
@@ -87,6 +32,9 @@ export class MapProvider extends Component {
     changeActiveMintOverlay = (activeVal) =>{
         this.setState({ activeMintOverlay: activeVal })
     }
+    changeActiveSellOverlay = (activeVal) =>{
+        this.setState({ activeSellOverlay: activeVal })
+    }
 
     render() {
         return (
@@ -97,7 +45,8 @@ export class MapProvider extends Component {
                   changeActiveBidOverlay: this.changeActiveBidOverlay, 
                   changeActiveMintOverlay: this.changeActiveMintOverlay, 
                   changeAuctionList: this.changeAuctionList, 
-                  disableSingleView: this.disableSingleView 
+                  disableSingleView: this.disableSingleView,
+                  changeActiveSellOverlay: this.changeActiveSellOverlay
               }, 
               overviewList: this.overviewList
               }}>

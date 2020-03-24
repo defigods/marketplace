@@ -89,6 +89,12 @@ export function indexMyLands(sort = null, page = 1) {
 }
 
 
+// SELL 
+export function sellLand(landUuid = null, worth = null) {
+  return request({ url: '/land/sell', method: 'POST' }, {
+    land_uuid: landUuid, worth: worth
+  }, null)
+}
 
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------

@@ -7,6 +7,7 @@ import TimeCounter from '../../components/TimeCounter/TimeCounter';
 import HexButton from '../../components/HexButton/HexButton';
 import BidOverlay from '../../components/BidOverlay/BidOverlay';
 import MintOverlay from '../../components/MintOverlay/MintOverlay';
+import SellOverlay from '../../components/SellOverlay/SellOverlay';
 
 import { getLand } from '../../lib/api'
 import { networkError, warningNotification } from '../../lib/notifications'
@@ -106,15 +107,13 @@ export class Land extends Component {
 
   setActiveMintOverlay(e) {
     e.preventDefault()
-    if (this.props.userProvider.state.isLoggedIn === false) {
-      // TODO remove comment
-      // warningNotification("Invalid authentication", "Please Log In to partecipate")
-      // this.props.history.push("/login")
-    } else {
-      // this.mapActions.changeActiveMintOverlay(true)
-    }
+    this.mapActions.changeActiveMintOverlay(true)
+  }
 
-    this.mapActions.changeActiveMintOverlay(true) // TODO COMMENT
+
+  setActiveSellOverlay(e) {
+    e.preventDefault()
+    this.mapActions.changeActiveSellOverlay(true)
   }
 
   realodLandStatefromApi = (value) => {
@@ -172,17 +171,32 @@ export class Land extends Component {
     return badge
   }
 
+  
   renderOverlayButton() {
+    let button = <div>&nbsp;</div>
     switch (this.state.marketStatus) {
       case 0:
-        return <HexButton url="/" text="Init Auction" className="" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
+        button = <HexButton url="/" text="Init Auction" className="" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
+        break  
       case 1:
-        return <HexButton url="/" text="Place bid" className="--purple" onClick={(e) => this.setActiveBidOverlay(e)}></HexButton>
+        button = <HexButton url="/" text="Place bid" className="--purple" onClick={(e) => this.setActiveBidOverlay(e)}></HexButton>
+        break  
       case 2:
-        return <div>&nbsp;</div>
+        button = <div>&nbsp;</div>
+        break
       default:
-        return <div>&nbsp;</div>
+        button = <div>&nbsp;</div>
+        break
     }
+
+    switch (this.state.userPerspective) {
+      case 1:
+        button = <HexButton url="/" text="Sell Land" className="--purple" onClick={(e) => this.setActiveSellOverlay(e)}></HexButton>
+        break
+      default:
+        break
+    }
+    return button
   }
 
   renderPrice() {
@@ -227,7 +241,7 @@ export class Land extends Component {
             </thead>
             <tbody>
               {this.state.bidHistory.map((bid) =>
-                <tr className="Table__line">
+                <tr key={bid.when} className="Table__line">
                   <td><ValueCounter value={bid.worth}></ValueCounter> </td>
                   <td><TimeCounter date_end={bid.when}></TimeCounter></td>
                   <td>{bid.from}</td>
@@ -245,6 +259,7 @@ export class Land extends Component {
       <div className="Land">
         <BidOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></BidOverlay>
         <MintOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></MintOverlay>
+        <SellOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></SellOverlay>
         <div className="o-container">
           <div className="Land__heading__1">
             <h2>{this.state.name.sentence}</h2>

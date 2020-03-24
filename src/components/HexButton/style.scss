@@ -24,10 +24,10 @@
 }
 
 .HexButton.--purple{
-    &.first-stop {
+    .first-stop {
       stop-color: rgb(163, 84, 177);
     }
-    &.last-stop {
+    .last-stop {
       stop-color: #1D0333;
     }
 }
