@@ -44,13 +44,11 @@ const SellOverlay = (props) => {
   // };
 
   const updateNewSellWorth = (e) => {
-
-    if (sellWorth >= props.currentBid * 2) {
-      setBidValid(true)
-    } else {
+    if (sellWorth === '') {
       setBidValid(false)
+    } else {
+      setBidValid(true)
     }
-
     setNewSellWorth(e.target.value);
   }
 
@@ -133,7 +131,7 @@ const SellOverlay = (props) => {
           <div className="Overlay__lower">
             <div className="Overlay__bid_container">
               <div className="Overlay__current_bid">
-                <div className="Overlay__bid_title">Sell at</div>
+                <div className="Overlay__bid_title">Bought at</div>
                 <div className="Overlay__bid_cont">
                 <ValueCounter value={props.currentBid}></ValueCounter> 
                 </div>

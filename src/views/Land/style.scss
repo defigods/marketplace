@@ -13,18 +13,20 @@
     time{
         font-size: 16px;
     }
-    .ValueCounter{
-        margin-top: 10px;
-    }
-    .TimeCounter{
-        margin-top: 5px;
-    }
     .c-status-badge{
         margin-top: 10px;
         width: fit-content;
     }
-    .Land__heading__2 .HexButton{
-        margin-top:50px;
+    .Land__heading__2{
+        .HexButton{
+          margin-top:50px;
+        }
+        .ValueCounter{
+            margin-top: 10px;
+        }
+        .TimeCounter{
+            margin-top: 5px;
+        }
     }
     .Title__container .o-small-title{
       margin-bottom: 30px;

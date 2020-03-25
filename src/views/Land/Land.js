@@ -10,7 +10,7 @@ import MintOverlay from '../../components/MintOverlay/MintOverlay';
 import SellOverlay from '../../components/SellOverlay/SellOverlay';
 
 import { getLand } from '../../lib/api'
-import { networkError, warningNotification } from '../../lib/notifications'
+import { networkError } from '../../lib/notifications'
 
 
 export class Land extends Component {
@@ -25,7 +25,8 @@ export class Land extends Component {
       marketStatus: 0,
       userPerspective: 0,
       auction: null,
-      bidHistory: []
+      bidHistory: [],
+      openSellOrder: null
     }
     this.mapActions = this.props.mapProvider.actions
   }
@@ -57,7 +58,8 @@ export class Land extends Component {
           name: { sentence: data.sentenceId, hex: data.uuid },
           location: data.address.full,
           marketStatus: data.marketStatus,
-          userPerspective: data.userPerspective
+          userPerspective: data.userPerspective,
+          openSellOrder: data.openSellOrder
         })
 
 
@@ -91,6 +93,7 @@ export class Land extends Component {
   componentWillUnmount(){
     this.mapActions.changeActiveBidOverlay(false)
     this.mapActions.changeActiveMintOverlay(false)
+    this.mapActions.changeActiveSellOverlay(false)
   }
 
   setActiveBidOverlay(e) {
@@ -109,7 +112,6 @@ export class Land extends Component {
     e.preventDefault()
     this.mapActions.changeActiveMintOverlay(true)
   }
-
 
   setActiveSellOverlay(e) {
     e.preventDefault()
@@ -254,6 +256,34 @@ export class Land extends Component {
     }
   }
 
+  renderActiveOpenSellOrder(){
+    let custom_return = <></>
+    console.log('we', this.state.openSellOrder)
+    if (this.state.openSellOrder != null && this.state.userPerspective === 1){
+      custom_return = <div className="Land__section"><div className="o-container">
+        <div className="Title__container"> <h3 className="o-small-title">Open Orders</h3></div>
+        <div className="Body__container">
+          <div className="SellOrderTile">
+            <div className="section">
+              <ValueCounter value={this.state.openSellOrder.worth}></ValueCounter>
+            </div>
+            <div className="section">
+              <b>Open Sell Order</b>
+            </div>
+            <div className="section">
+              <TimeCounter date_end={this.state.openSellOrder.createdAt}></TimeCounter>
+            </div>
+            <div className="section">
+              we
+            </div>
+            <div className="section"></div>
+          </div>
+        </div> 
+      </div></div>
+    }
+    return custom_return
+  }
+
   render() {
     return (
       <div className="Land">
@@ -280,6 +310,7 @@ export class Land extends Component {
             </div>
           </div>
         </div>
+        {this.renderActiveOpenSellOrder()}
         <div className="Land__section">
           {this.renderBidHistory()}
         </div>

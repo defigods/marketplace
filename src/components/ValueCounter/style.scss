@@ -1,13 +1,17 @@
 .ValueCounter{
     line-height: 22px;
     display: block;
-    height: 19px;
+    height: 20px;
+    // overflow: hidden;
     .Icon{
         margin-right: 4px;
         float: left;
     }
     .ValueCounter__value{
         color:$ovr-orange;
+    }
+    .ValueCounter__icon{
+      height: 20px;
     }
 }
 

@@ -22,3 +22,42 @@
       100%{background-position:0% 88%}
   }
 }
+
+
+.SellOrderTile{
+  padding: 15px 50px;
+  background: linear-gradient(138deg, #1d0333, #805e9d);
+  
+  margin-bottom: 10px;
+  display: inline-block;
+  width: 100%;
+  *{
+    color: #fff;
+  }
+  .section{
+    margin-left: 10%;
+    float: left;
+    &:first-child{
+      margin-left: 0px;
+    }
+  }
+  .ValueCounter{
+    position: relative;
+    
+    .ValueCounter__icon, .ValueCounter__value{
+      z-index: 1;
+      position: relative;
+    }
+    &::before{
+      position: absolute;
+      background-color: #fff;
+      content: "";
+      top: -3px;
+      left: -5px;
+      width: calc( 100% + 10px );
+      height: calc( 100% + 6px );
+      z-index: 0;
+      border-radius: 3px;
+    }
+  }
+}
