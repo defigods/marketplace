@@ -96,6 +96,12 @@ export function sellLand(landUuid = null, worth = null) {
   }, null)
 }
 
+export function deleteSellLand(landUuid = null) {
+  return request({ url: '/land/delete_sell', method: 'POST'}, {
+    land_uuid: landUuid
+  }, null)
+}
+
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------
 

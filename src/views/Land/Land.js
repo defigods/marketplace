@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './style.scss';
 import { withMapContext } from '../../context/MapContext'
 import { withUserContext } from '../../context/UserContext'
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
@@ -8,6 +7,7 @@ import HexButton from '../../components/HexButton/HexButton';
 import BidOverlay from '../../components/BidOverlay/BidOverlay';
 import MintOverlay from '../../components/MintOverlay/MintOverlay';
 import SellOverlay from '../../components/SellOverlay/SellOverlay';
+import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
 
 import { getLand } from '../../lib/api'
 import { networkError } from '../../lib/notifications'
@@ -25,7 +25,6 @@ export class Land extends Component {
       marketStatus: 0,
       userPerspective: 0,
       auction: null,
-      bidHistory: [],
       openSellOrder: null
     }
     this.mapActions = this.props.mapProvider.actions
@@ -40,26 +39,15 @@ export class Land extends Component {
         let data = response.data
         console.log("landApiData", data)
 
-        if (data.auction != null) {
-          this.setState({
-            value: data.auction.currentWorth,
-            auction: data.auction,
-            bidHistory: data.auction.bidHistory
-          })
-        } else {
-          this.setState({
-            value: data.value,
-            bidHistory: []
-          })
-        }
-
         this.setState({
           key: data.uuid,
           name: { sentence: data.sentenceId, hex: data.uuid },
           location: data.address.full,
           marketStatus: data.marketStatus,
           userPerspective: data.userPerspective,
-          openSellOrder: data.openSellOrder
+          openSellOrder: data.openSellOrder,
+          auction: data.auction,
+          value: data.value
         })
 
 
@@ -217,7 +205,7 @@ export class Land extends Component {
   }
 
   renderBidHistory(){
-    if(this.state.bidHistory.length === 0){
+    if(this.state.auction === null || this.state.auction.bidHistory.length === 0){
       return <div className="o-container">
         <div className="Title__container"> <h3 className="o-small-title">History</h3></div>
         <div className="c-dialog --centered">
@@ -242,7 +230,7 @@ export class Land extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.bidHistory.map((bid) =>
+              {this.state.auction.bidHistory.map((bid) =>
                 <tr key={bid.when} className="Table__line">
                   <td><ValueCounter value={bid.worth}></ValueCounter> </td>
                   <td><TimeCounter date_end={bid.when}></TimeCounter></td>
@@ -258,28 +246,15 @@ export class Land extends Component {
 
   renderActiveOpenSellOrder(){
     let custom_return = <></>
-    console.log('we', this.state.openSellOrder)
     if (this.state.openSellOrder != null && this.state.userPerspective === 1){
-      custom_return = <div className="Land__section"><div className="o-container">
-        <div className="Title__container"> <h3 className="o-small-title">Open Orders</h3></div>
-        <div className="Body__container">
-          <div className="SellOrderTile">
-            <div className="section">
-              <ValueCounter value={this.state.openSellOrder.worth}></ValueCounter>
-            </div>
-            <div className="section">
-              <b>Open Sell Order</b>
-            </div>
-            <div className="section">
-              <TimeCounter date_end={this.state.openSellOrder.createdAt}></TimeCounter>
-            </div>
-            <div className="section">
-              we
-            </div>
-            <div className="section"></div>
-          </div>
-        </div> 
-      </div></div>
+      custom_return = <div className="Land__section">
+        <div className="o-container">
+          <div className="Title__container"> <h3 className="o-small-title">Open Orders</h3></div>
+          <div className="Body__container">
+            <OpenSellOrder order={this.state.openSellOrder}></OpenSellOrder>
+          </div> 
+        </div>
+      </div>
     }
     return custom_return
   }

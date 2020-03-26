@@ -49,3 +49,19 @@ export function dangerNotification(title, message) {
     }
   })
 }
+
+export function successNotification(title, message){
+  store.addNotification({
+    title: title,
+    message: message,
+    type: "success",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "fadeOut"],
+    showIcon: true,
+    dismiss: {
+      duration: 5000
+    }
+  })
+}

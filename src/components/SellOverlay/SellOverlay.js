@@ -116,7 +116,7 @@ const SellOverlay = (props) => {
                   />
                 </div>
                 <div className="Overlay__buttons_container">
-                  <HexButton url="#" text="Place Bid" className={`--purple ${bidValid ? '' : '--disabled'}`} onClick={handleNext}></HexButton>
+                  <HexButton url="#" text="Place Sell" className={`--purple ${bidValid ? '' : '--disabled'}`} onClick={handleNext}></HexButton>
                   <HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
                 </div>
               </div>
