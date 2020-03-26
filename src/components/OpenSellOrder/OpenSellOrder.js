@@ -5,13 +5,13 @@ import HexButton from '../../components/HexButton/HexButton';
 import Modal from '@material-ui/core/Modal';
 
 import { deleteSellLand } from '../../lib/api'
-import { networkError, dangerNotification, successNotification} from '../../lib/notifications'
+import { networkError, dangerNotification, successNotification, warningNotification} from '../../lib/notifications'
 
 
 export class OpenSellOrder extends Component {
   constructor(props) {
     super(props)
-    console.log("OpenSellOrderValues", props.order)
+    console.log("OpenSellOrderValues", props)
     this.state = {
       openModal: false
     }
@@ -33,7 +33,12 @@ export class OpenSellOrder extends Component {
   }
 
   handleOpen = () => {
-    this.setState({openModal: true});
+    if (this.props.userProvider.state.isLoggedIn){
+      this.setState({ openModal: true });
+    } else {
+      warningNotification("Invalid authentication", "Please Log In to buy land")
+    } 
+    
   };
 
   handleClose = () => {
@@ -42,6 +47,72 @@ export class OpenSellOrder extends Component {
 
   componentDidMount() {
 
+  }
+
+  buttonRender = () => {
+    let customRender;
+    if(this.props.userPerspective === 1 ){
+      customRender = <>
+      <div className="section">
+        <button type="button" className="orderTileButton" onClick={this.handleOpen}>
+          Delete
+        </button>
+      </div>
+      <div className="section"></div>
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={this.state.openModal}
+        onClose={this.handleClose}
+      >
+        <div className="SellOrderModal">
+          <h2>Delete confirmation</h2>
+          <p>
+            Do you confirm the delete of this <b>Open Sell Order</b>?
+          </p>
+          <div className="Modal__buttons_container">
+            <HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmDeleteSell}></HexButton>
+            <HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+          </div>
+        </div>
+      </Modal>
+      </>
+    } else {
+      customRender = <>
+      <div className="section">
+        <button type="button" className="orderTileButton" onClick={this.handleOpen}>
+          Buy
+        </button>
+      </div>
+      <div className="section"></div>
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={this.state.openModal}
+        onClose={this.handleClose}
+      >
+        <div className="SellOrderModal">
+          <h2>Buy confirmation</h2>
+          <p>
+            Do you confirm the buy of this <b>Open Sell Order</b>?
+          </p>
+          <div className="Overlay__bid_container">
+            <div className="Overlay__minimum_bid">
+              <div className="Overlay__bid_title">Buy at</div>
+              <div className="Overlay__bid_cont">
+                <ValueCounter value={this.props.order.worth}></ValueCounter>
+              </div>
+            </div>
+          </div>
+          <div className="Modal__buttons_container">
+            <HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmDeleteSell}></HexButton>
+            <HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+          </div>
+        </div>
+      </Modal>
+      </>
+    }
+    return customRender;
   }
 
 
@@ -57,29 +128,7 @@ export class OpenSellOrder extends Component {
         <div className="section">
           <TimeCounter date_end={this.props.order.createdAt}></TimeCounter>
         </div>
-        <div className="section">
-          <button type="button" className="deleteButton" onClick={this.handleOpen}>
-            Delete
-          </button>
-        </div>
-        <div className="section"></div>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={this.state.openModal}
-          onClose={this.handleClose}
-        >
-          <div className="SellOrderModal">
-            <h2>Delete confirmation</h2>
-            <p>
-              Do you confirm the delete of this <b>Open Sell Order</b>?
-            </p>
-            <div className="Modal__buttons_container">
-              <HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmDeleteSell}></HexButton>
-              <HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
-            </div>
-          </div>
-        </Modal>
+        {this.buttonRender()}
       </div>
     );
   }

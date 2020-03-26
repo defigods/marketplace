@@ -57,7 +57,7 @@
 }
 
 
-.deleteButton{
+.orderTileButton{
   padding: 5px 15px;
   font-size: 10px;
   font-weight: 800;
@@ -65,9 +65,10 @@
   letter-spacing: 1px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.08);
   border-radius: 5px;
-  outline: 0;
+  outline: none;
   text-transform: uppercase;
   background: #1d0333;
+  border: none;
   &:focus{
     outline: none;
   }

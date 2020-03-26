@@ -86,7 +86,7 @@ export class Land extends Component {
 
   setActiveBidOverlay(e) {
     e.preventDefault()
-    if (this.props.userProvider.state.isLoggedIn === false) {
+    if (!this.props.userProvider.state.isLoggedIn) {
       // TODO remove comment
       // warningNotification("Invalid authentication", "Please Log In to partecipate")
       // this.props.history.push("/login")
@@ -246,12 +246,12 @@ export class Land extends Component {
 
   renderActiveOpenSellOrder(){
     let custom_return = <></>
-    if (this.state.openSellOrder != null && this.state.userPerspective === 1){
+    if (this.state.openSellOrder != null){
       custom_return = <div className="Land__section">
         <div className="o-container">
           <div className="Title__container"> <h3 className="o-small-title">Open Orders</h3></div>
           <div className="Body__container">
-            <OpenSellOrder order={this.state.openSellOrder}></OpenSellOrder>
+            <OpenSellOrder order={this.state.openSellOrder} userPerspective={this.state.userPerspective} userProvider={this.props.userProvider}></OpenSellOrder>
           </div> 
         </div>
       </div>

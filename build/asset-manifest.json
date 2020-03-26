@@ -1,26 +1,27 @@
 {
   "files": {
-    "main.css": "./static/css/main.05ef9da8.chunk.css",
-    "main.js": "./static/js/main.f4bbd89c.chunk.js",
-    "main.js.map": "./static/js/main.f4bbd89c.chunk.js.map",
+    "main.css": "./static/css/main.d7030ab5.chunk.css",
+    "main.js": "./static/js/main.a1b7b926.chunk.js",
+    "main.js.map": "./static/js/main.a1b7b926.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.8388affd.js",
     "runtime-main.js.map": "./static/js/runtime-main.8388affd.js.map",
-    "static/css/2.913bfbdb.chunk.css": "./static/css/2.913bfbdb.chunk.css",
-    "static/js/2.ce39c5ca.chunk.js": "./static/js/2.ce39c5ca.chunk.js",
-    "static/js/2.ce39c5ca.chunk.js.map": "./static/js/2.ce39c5ca.chunk.js.map",
+    "static/css/2.72c92458.chunk.css": "./static/css/2.72c92458.chunk.css",
+    "static/js/2.cbe37a3a.chunk.js": "./static/js/2.cbe37a3a.chunk.js",
+    "static/js/2.cbe37a3a.chunk.js.map": "./static/js/2.cbe37a3a.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.40acd27f9f497620f14dd55e199e3808.js": "./precache-manifest.40acd27f9f497620f14dd55e199e3808.js",
+    "precache-manifest.db69781a30fc8da29fdd392d2bb46782.js": "./precache-manifest.db69781a30fc8da29fdd392d2bb46782.js",
     "service-worker.js": "./service-worker.js",
-    "static/css/2.913bfbdb.chunk.css.map": "./static/css/2.913bfbdb.chunk.css.map",
-    "static/css/main.05ef9da8.chunk.css.map": "./static/css/main.05ef9da8.chunk.css.map",
-    "static/js/2.ce39c5ca.chunk.js.LICENSE.txt": "./static/js/2.ce39c5ca.chunk.js.LICENSE.txt",
-    "static/media/logo_ovr_white.svg": "./static/media/logo_ovr_white.0ab38d4b.svg"
+    "static/css/2.72c92458.chunk.css.map": "./static/css/2.72c92458.chunk.css.map",
+    "static/css/main.d7030ab5.chunk.css.map": "./static/css/main.d7030ab5.chunk.css.map",
+    "static/js/2.cbe37a3a.chunk.js.LICENSE.txt": "./static/js/2.cbe37a3a.chunk.js.LICENSE.txt",
+    "static/media/logo_ovr_white.svg": "./static/media/logo_ovr_white.0ab38d4b.svg",
+    "static/media/ovr_token.svg": "./static/media/ovr_token.8aeb9121.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.8388affd.js",
-    "static/css/2.913bfbdb.chunk.css",
-    "static/js/2.ce39c5ca.chunk.js",
-    "static/css/main.05ef9da8.chunk.css",
-    "static/js/main.f4bbd89c.chunk.js"
+    "static/css/2.72c92458.chunk.css",
+    "static/js/2.cbe37a3a.chunk.js",
+    "static/css/main.d7030ab5.chunk.css",
+    "static/js/main.a1b7b926.chunk.js"
   ]
 }

@@ -28,7 +28,7 @@ function App() {
               <MapContext.Consumer>
               {(mapValue) => { 
                 return(
-                  <Router>
+                  <Router path="/">
                     <div className="App">
                       <ReactNotification />
                       <NavBar></NavBar>
