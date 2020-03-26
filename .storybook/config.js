@@ -4,4 +4,4 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import { addDecorator } from '@storybook/react';
 
-addDecorator(story => <Router>{story()}</Router>);
+addDecorator(story => <Router basename="/">{story()}</Router>);

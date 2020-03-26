@@ -33,7 +33,7 @@ function App() {
                       <ReactNotification />
                       <NavBar></NavBar>
                       <div className="o-container">
-                              <Route path="/map/" component={Map}></Route>
+                        <Route path="/map/" component={Map}></Route>
                       </div>
                       <Switch>
                         {/* <Route path="/" exact component={Home}></Route> */}
