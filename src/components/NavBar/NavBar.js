@@ -11,8 +11,8 @@ class NavBar extends Component {
   render() {
     let rightContainer = <div></div>
     let state = this.context.state
-
-    if (state.isLoggedIn === true) {
+    console.log('state',state)
+    if (state.isLoggedIn === true && state.user != null ) {
       rightContainer = <>
       <div className="Navbar__right_container">
         <Link to="/" className="Notifications__link">

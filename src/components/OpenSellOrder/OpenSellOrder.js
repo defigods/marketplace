@@ -4,7 +4,7 @@ import TimeCounter from '../../components/TimeCounter/TimeCounter';
 import HexButton from '../../components/HexButton/HexButton';
 import Modal from '@material-ui/core/Modal';
 
-import { deleteSellLand } from '../../lib/api'
+import { deleteSellLand, buyLand } from '../../lib/api'
 import { networkError, dangerNotification, successNotification, warningNotification} from '../../lib/notifications'
 
 
@@ -25,6 +25,21 @@ export class OpenSellOrder extends Component {
         // this.props.realodLandStatefromApi(this.props.order.landUuid)
       } else {
         dangerNotification("Unable to delete sell order", response.data.errors[0].message)
+      }
+    }).catch(() => {
+      // Notify user if network error
+      networkError()
+    });
+  }
+
+  confirmBuy = () => {
+    buyLand(this.props.order.landUuid) // Call API function 
+    .then((response) => {
+      if (response.data.result === true) {
+        successNotification("Action complete", "Now you own this land")
+        // this.props.realodLandStatefromApi(this.props.order.landUuid)
+      } else {
+        dangerNotification("Unable to buy land", response.data.errors[0].message)
       }
     }).catch(() => {
       // Notify user if network error
@@ -94,10 +109,10 @@ export class OpenSellOrder extends Component {
         <div className="SellOrderModal">
           <h2>Buy confirmation</h2>
           <p>
-            Do you confirm the buy of this <b>Open Sell Order</b>?
+            Do you confirm the buy of this <b>OVRLand</b>?
           </p>
           <div className="Overlay__bid_container">
-            <div className="Overlay__minimum_bid">
+            <div className="OrderModal__bid">
               <div className="Overlay__bid_title">Buy at</div>
               <div className="Overlay__bid_cont">
                 <ValueCounter value={this.props.order.worth}></ValueCounter>
@@ -105,7 +120,7 @@ export class OpenSellOrder extends Component {
             </div>
           </div>
           <div className="Modal__buttons_container">
-            <HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmDeleteSell}></HexButton>
+            <HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmBuy}></HexButton>
             <HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
           </div>
         </div>
