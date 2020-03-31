@@ -13,6 +13,7 @@ export class MapProvider extends Component {
             activeBidOverlay: false,
             activeMintOverlay: false,
             activeSellOverlay: false,
+            activeBuyOfferOverlay: false,
             auctionList: []
         }
     }
@@ -35,6 +36,9 @@ export class MapProvider extends Component {
     changeActiveSellOverlay = (activeVal) =>{
         this.setState({ activeSellOverlay: activeVal })
     }
+    changeActiveBuyOfferOverlay = (activeVal) =>{
+        this.setState({ activeBuyOfferOverlay: activeVal })
+    }
 
     render() {
         return (
@@ -46,7 +50,8 @@ export class MapProvider extends Component {
                   changeActiveMintOverlay: this.changeActiveMintOverlay, 
                   changeAuctionList: this.changeAuctionList, 
                   disableSingleView: this.disableSingleView,
-                  changeActiveSellOverlay: this.changeActiveSellOverlay
+                  changeActiveSellOverlay: this.changeActiveSellOverlay,
+                  changeActiveBuyOfferOverlay: this.changeActiveBuyOfferOverlay
               }, 
               overviewList: this.overviewList
               }}>

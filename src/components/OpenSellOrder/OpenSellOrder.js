@@ -23,6 +23,7 @@ export class OpenSellOrder extends Component {
       if (response.data.result === true) {
         successNotification("Action complete", "Delete of sell order complete")
         // this.props.realodLandStatefromApi(this.props.order.landUuid)
+        this.handleClose()
       } else {
         dangerNotification("Unable to delete sell order", response.data.errors[0].message)
       }
@@ -38,6 +39,7 @@ export class OpenSellOrder extends Component {
       if (response.data.result === true) {
         successNotification("Action complete", "Now you own this land")
         // this.props.realodLandStatefromApi(this.props.order.landUuid)
+        this.handleClose()
       } else {
         dangerNotification("Unable to buy land", response.data.errors[0].message)
       }
@@ -110,10 +112,10 @@ export class OpenSellOrder extends Component {
           <h2>Buy confirmation</h2>
           <p>
             Do you confirm the buy of this <b>OVRLand</b>?
-          </p>
+        </p>
           <div className="Overlay__bid_container">
             <div className="OrderModal__bid">
-              <div className="Overlay__bid_title">Buy at</div>
+              <div className="Overlay__bid_title">Buy for</div>
               <div className="Overlay__bid_cont">
                 <ValueCounter value={this.props.order.worth}></ValueCounter>
               </div>
@@ -141,7 +143,7 @@ export class OpenSellOrder extends Component {
           <b>Open Sell Order</b>
         </div>
         <div className="section">
-          <TimeCounter date_end={this.props.order.createdAt}></TimeCounter>
+          <span className="c-small-tile-text">Placed</span> <TimeCounter date_end={this.props.order.createdAt}></TimeCounter>
         </div>
         {this.buttonRender()}
       </div>

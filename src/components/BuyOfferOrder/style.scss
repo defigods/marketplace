@@ -1,0 +1,65 @@
+
+.BuyOfferTile{
+  padding: 15px 50px;
+  background: linear-gradient(138deg, #022136, #0081DD);
+  
+  margin-bottom: 10px;
+  display: inline-block;
+  width: 100%;
+
+  .section{
+    margin-left: 10%;
+    float: left;
+    &:first-child{
+      margin-left: 0px;
+    }
+  }
+  .ValueCounter{
+    position: relative;
+    // font-weight: 400;
+    .ValueCounter__icon, .ValueCounter__value{
+      z-index: 1;
+      position: relative;
+      color: #fff;
+      
+    }
+    
+    // &::before{
+    //   position: absolute;
+    //   background-color: #fff;
+    //   content: "";
+    //   top: -3px;
+    //   left: -5px;
+    //   width: calc( 100% + 10px );
+    //   height: calc( 100% + 6px );
+    //   z-index: 0;
+    //   border-radius: 3px;
+    // }
+
+  }
+  .TimeCounter, b{
+    color: #fff;
+  }
+}
+
+.c-small-tile-text{
+  color: #fff;
+  letter-spacing: 1px;
+  outline: none;
+}
+
+.BuyOfferModal{
+  position: absolute;
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+  padding: 20px 50px;
+  background: linear-gradient(138deg, #022136, #0081DD);
+  color: #fff;
+  &:focus{
+    outline: none;
+  }
+}
+

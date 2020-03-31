@@ -7,7 +7,9 @@ import HexButton from '../../components/HexButton/HexButton';
 import BidOverlay from '../../components/BidOverlay/BidOverlay';
 import MintOverlay from '../../components/MintOverlay/MintOverlay';
 import SellOverlay from '../../components/SellOverlay/SellOverlay';
+import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
 import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
+import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 
 import { getLand } from '../../lib/api'
 import { networkError } from '../../lib/notifications'
@@ -25,7 +27,8 @@ export class Land extends Component {
       marketStatus: 0,
       userPerspective: 0,
       auction: null,
-      openSellOrder: null
+      openSellOrder: null,
+      openBuyOffers: [],
     }
     this.mapActions = this.props.mapProvider.actions
   }
@@ -46,6 +49,7 @@ export class Land extends Component {
           marketStatus: data.marketStatus,
           userPerspective: data.userPerspective,
           openSellOrder: data.openSellOrder,
+          openBuyOffers: data.openBuyOffers,
           auction: data.auction,
           value: data.value
         })
@@ -104,6 +108,11 @@ export class Land extends Component {
   setActiveSellOverlay(e) {
     e.preventDefault()
     this.mapActions.changeActiveSellOverlay(true)
+  }
+
+  setActiveBuyOfferOverlay(e) {
+    e.preventDefault()
+    this.mapActions.changeActiveBuyOfferOverlay(true)
   }
 
   realodLandStatefromApi = (value) => {
@@ -172,7 +181,7 @@ export class Land extends Component {
         button = <HexButton url="/" text="Place bid" className="--purple" onClick={(e) => this.setActiveBidOverlay(e)}></HexButton>
         break  
       case 2:
-        button = <div>&nbsp;</div>
+        button = <HexButton url="/" text="Buy offer" className="--purple" onClick={(e) => this.setActiveBuyOfferOverlay(e)}></HexButton>
         break
       default:
         button = <div>&nbsp;</div>
@@ -244,18 +253,48 @@ export class Land extends Component {
     }
   }
 
-  renderActiveOpenSellOrder(){
+  renderActiveOpenOrders(){
     let custom_return = <></>
+    let openSell = <></>
+    let openBuyOffers = <></>
+    let displayBuyOffers = false 
+
+    // If there are open Sell Orders
     if (this.state.openSellOrder != null){
+      openSell = <OpenSellOrder order={this.state.openSellOrder} userPerspective={this.state.userPerspective} userProvider={this.props.userProvider}></OpenSellOrder>
+    }
+
+    // If there are Buy Offers
+    if (this.state.openBuyOffers.length > 0){
+      displayBuyOffers = this.state.userPerspective === 1 || 
+      (this.state.openBuyOffers != null && this.state.openBuyOffers.map(a => a.userUuid).includes(this.props.userProvider.state.user.uuid))
+
+      if (displayBuyOffers){
+        openBuyOffers = this.state.openBuyOffers.map((obj) =>
+          <BuyOfferOrder order={obj} userPerspective={this.state.userPerspective} userProvider={this.props.userProvider}></BuyOfferOrder>
+        )
+      }
+    }
+
+    console.log("this.state.openSellOrder", this.state.openSellOrder)
+    console.log("this.state.openBuyOffers", this.state.openBuyOffers)
+    console.log("this.state.openBuyOffers > 0 ", this.state.openBuyOffers.length > 0)
+    console.log("displayBuyOffers", displayBuyOffers)
+    console.log("wewewe", this.state.openSellOrder || (displayBuyOffers && this.state.openBuyOffers.length > 0))
+
+    if (this.state.openSellOrder || (displayBuyOffers && this.state.openBuyOffers.length > 0)){
       custom_return = <div className="Land__section">
         <div className="o-container">
           <div className="Title__container"> <h3 className="o-small-title">Open Orders</h3></div>
           <div className="Body__container">
-            <OpenSellOrder order={this.state.openSellOrder} userPerspective={this.state.userPerspective} userProvider={this.props.userProvider}></OpenSellOrder>
+            {openSell}
+            {openBuyOffers}
           </div> 
         </div>
       </div>
     }
+    
+
     return custom_return
   }
 
@@ -265,6 +304,8 @@ export class Land extends Component {
         <BidOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></BidOverlay>
         <MintOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></MintOverlay>
         <SellOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></SellOverlay>
+        <BuyOfferOverlay currentBid={this.state.value} land={this.state} realodLandStatefromApi={this.realodLandStatefromApi}></BuyOfferOverlay>
+
         <div className="o-container">
           <div className="Land__heading__1">
             <h2>{this.state.name.sentence}</h2>
@@ -285,7 +326,7 @@ export class Land extends Component {
             </div>
           </div>
         </div>
-        {this.renderActiveOpenSellOrder()}
+        {this.renderActiveOpenOrders()}
         <div className="Land__section">
           {this.renderBidHistory()}
         </div>

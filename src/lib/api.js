@@ -91,23 +91,45 @@ export function indexMyLands(sort = null, page = 1) {
 
 // SELL 
 export function sellLand(landUuid = null, worth = null) {
-  return request({ url: '/land/sell', method: 'POST' }, {
+  return request({ url: '/order/sell', method: 'POST' }, {
     land_uuid: landUuid, worth: worth
   }, null)
 }
 
 export function deleteSellLand(landUuid = null) {
-  return request({ url: '/land/delete_sell', method: 'POST'}, {
+  return request({ url: '/order/delete/sell', method: 'POST'}, {
     land_uuid: landUuid
   }, null)
 }
 
 // BUY 
 export function buyLand(landUuid = null) {
-  return request({ url: '/land/buy', method: 'POST' }, {
+  return request({ url: '/order/buy', method: 'POST' }, {
     land_uuid: landUuid
   }, null)
 }
+
+// BUY OFFER
+export function buyOffer(landUuid = null, worth = null, expirationDate = null) {
+  return request({ url: '/order/buy_offer', method: 'POST' }, {
+    land_uuid: landUuid,
+    worth: worth,
+    expiration_date: expirationDate
+  }, null)
+}
+
+export function deleteBuyOffer(orderUuid = null) {
+  return request({ url: '/order/delete/buy_offer', method: 'POST' }, {
+    order_uuid: orderUuid
+  }, null)
+}
+
+export function hitBuyOffer(orderUuid = null) {
+  return request({ url: '/order/hit_buy_offer', method: 'POST' }, {
+    order_uuid: orderUuid
+  }, null)
+}
+
 
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------
