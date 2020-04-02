@@ -14,6 +14,8 @@ import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 import { getLand } from '../../lib/api'
 import { networkError } from '../../lib/notifications'
 
+import { Textfit } from 'react-textfit';
+
 
 export class Land extends Component {
   constructor(props) {
@@ -308,7 +310,10 @@ export class Land extends Component {
 
         <div className="o-container">
           <div className="Land__heading__1">
-            <h2>{this.state.name.sentence}</h2>
+            <h2>
+              <Textfit mode="single" max="25">
+                {this.state.name.sentence}
+              </Textfit></h2>
             <div className="Land__location">{this.state.location}</div>
           </div>
           <div className="Land__heading__2">

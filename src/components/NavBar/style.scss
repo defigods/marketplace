@@ -10,10 +10,22 @@
 
 .Profile__link{
     display: inline-block;
-    width: 70px;
     height: 70px;
     float: left;
     text-align: center;
+    .Profile__img-cont{
+      height: 70px;
+      width: 70px;
+      display: inline-block;
+      float: left;
+    }
+    span{
+      color: #000;
+      text-decoration: none;
+      float: left;
+      line-height: 70px;
+      margin-left: 15px;
+    }
 }
 
 .Profile__img{
@@ -44,7 +56,7 @@
 
 .Navbar__link_container{
     text-align: center;
-    width: calc(100% - 141px);
+    width: calc(100% - 71px);
     display: block;
     float: left;
 }
@@ -54,7 +66,6 @@
     line-height: 70px;
     text-decoration: none;
     margin: 0 10px;
-    font-size: 15px;
     color: rgba(40, 45, 50, 0.5);
     display: inline-block;
     position: relative;
@@ -84,7 +95,8 @@
 }
 .Navbar__right_container{
     position: absolute;
-    right: 70px;
+    top: 0px;
+    right: 0px;
     .ValueCounter{
         line-height: 70px;
         margin-right: 15px;
@@ -142,5 +154,4 @@
   line-height: 70px;
   right: 0px;
   margin: 0px 70px;
-  font-size: 15px;
 }

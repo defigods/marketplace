@@ -12,14 +12,28 @@ $ovr-green: #49B6AE;
 $ovr-light-blue: #2FD7FF;
 $ovr-red: #C32438;
 
-.o-line, .o-line--in{
-  display: block;
-  width: 100%;
-  clear: both;
+
+$breakpoints: (
+  phone-down: 319px,
+  phone: 320px,
+  mobile-down: 540px,
+  mobile: 541px,
+  tab-down: 767px,
+  desk-down: 1023px,
+  desk: 1024px,
+  large: 1200px,
+  x-large: 1600px
+) !default;
+
+
+// Managing container max-width
+@function bk($bk: "mobile") {
+  @if not map-has-key($breakpoints, $bk) {
+    @warn "No breakpoint value found in $breakpoints map for '#{$bk}'. Property omitted.";
+  }
+  @return map-get($breakpoints, $bk);
 }
-.o-line--in{
-  display: inline-block;
-}
+
 
 
 body{
@@ -27,6 +41,15 @@ body{
   font-weight: 300;
   font-size: 16px;
   background-color: $ovr-light-grey;
+}
+
+.o-line, .o-line--in{
+  display: block;
+  width: 100%;
+  clear: both;
+}
+.o-line--in{
+  display: inline-block;
 }
 
 .o-half{
@@ -50,9 +73,16 @@ body{
 .Land__heading__2{
     @include column(3/5);
 }
-.o-container{
-   margin: 0 auto;
-   max-width: calc(100% - 140px);
+
+.o-container {
+  margin: 0 auto;
+  width: calc(100% - 140px);
+  @media only screen and (max-width: bk("desk")) {
+    width: 90%;
+  }
+  @media only screen and (min-width: bk("x-large")) {
+    width: 80%;
+  }
 }
 
 .App{

@@ -191,7 +191,7 @@ const BuyOfferOverlay = (props) => {
       case 2:
         return <div className="Overlay__body_cont">
           <div className="Overlay__upper">
-            <div className="Overlay__title">Opened sell for OVRLand</div>
+            <div className="Overlay__title">Open Buy offer for OVRLand</div>
             <div className="Overlay__land_title">{props.land.name.sentence}</div>
             <div className="Overlay__land_hex">{props.land.location}</div>
           </div>

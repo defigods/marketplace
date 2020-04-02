@@ -167,7 +167,7 @@ const MintOverlay = (props) => {
             </div>
             <div className="Overlay__message__container">
               <span>
-                Mint confirmed
+                Bid published
               </span>
             </div>
             <div className="Overlay__buttons_container">

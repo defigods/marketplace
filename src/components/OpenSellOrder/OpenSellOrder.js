@@ -98,7 +98,7 @@ export class OpenSellOrder extends Component {
       customRender = <>
       <div className="section">
         <button type="button" className="orderTileButton" onClick={this.handleOpen}>
-          Buy
+          Buy now
         </button>
       </div>
       <div className="section"></div>

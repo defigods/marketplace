@@ -135,7 +135,7 @@ const Overview = (props) => {
         </div>
       </div>
       <div className="o-container">
-        <h2 className="o-section-title">Closed Auctions</h2>
+        <h2 className="o-section-title">My OVR Lands</h2>
       </div>
       <div className="o-container">
         <div className="o-land-list">

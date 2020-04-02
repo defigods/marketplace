@@ -11,6 +11,9 @@ import HexButton from '../HexButton/HexButton';
 
 import { sellLand } from '../../lib/api'
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications'
+
+import { Textfit } from 'react-textfit';
+
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 
@@ -89,7 +92,10 @@ const SellOverlay = (props) => {
       case 0:
         return <div className="Overlay__body_cont">
               <div className="Overlay__upper">
-                <div className="Overlay__title">Sell the OVRLand</div>
+                <div className="Overlay__title">
+                  <Textfit mode="single">
+                    Set sell offer for the OVRLand
+                  </Textfit></div>
                 <div className="Overlay__land_title">{props.land.name.sentence}</div>
                 <div className="Overlay__land_hex">{props.land.location}</div>
               </div>

@@ -22,6 +22,7 @@
     margin: 0 auto;
     color: #fff;
     height: 300px;
+    display: flex;
 }
 
 .Overlay__title{
@@ -41,6 +42,9 @@
     font-size: 18px;
     font-weight: 300;
     margin-top: 5px;
+}
+.Overlay__body_cont{
+  float: left;
 }
 .Overlay__hex_cont{
     max-width: 40%;
@@ -94,6 +98,7 @@
 .Overlay__close_button{
     position: absolute;
     transition: 350ms ease-in-out all;
+    z-index: 9;
     cursor: pointer;
     &:hover{
         transform: scale(0.9);

@@ -11,7 +11,6 @@ class NavBar extends Component {
   render() {
     let rightContainer = <div></div>
     let state = this.context.state
-    console.log('state',state)
     if (state.isLoggedIn === true && state.user != null ) {
       rightContainer = <>
       <div className="Navbar__right_container">
@@ -33,19 +32,22 @@ class NavBar extends Component {
           <div className="Notifications__counter">0</div>
         </Link>
         <Link to="/" className="Funds__link"><ValueCounter value={state.user.balance}></ValueCounter></Link>
+        <Link to="/" className="Profile__link">
+          <span>{state.user.username}</span>
+          <div className="Profile__img-cont">
+            <div id="Profile__img" className="Profile__img" style={{ backgroundImage: 'url(../../assets/img/auction-map.png)' }}>
+              <Blockies
+                seed={state.user.uuid || 'wewewe'}
+                size={12}
+                scale={3}
+                color="#7521c8"
+                bgColor="#EC663C"
+                spotColor="#F9B426"
+              />
+            </div>
+          </div>
+        </Link>
       </div>
-      <Link to="/" className="Profile__link">
-        <div id="Profile__img" className="Profile__img" style={{ backgroundImage: 'url(../../assets/img/auction-map.png)' }}>
-          <Blockies
-            seed={state.user.uuid || 'wewewe'}
-            size={12}
-            scale={3}
-            color="#7521c8"
-            bgColor="#EC663C"
-            spotColor="#F9B426"
-          />
-        </div>
-      </Link>
       </>
       
     } else {
@@ -127,8 +129,8 @@ class NavBar extends Component {
         <NavLink className="NavBar__link" to="/profile">
           Profile
         </NavLink>
+        {rightContainer}
       </div>
-      {rightContainer}
     </div>;
   }
 }
