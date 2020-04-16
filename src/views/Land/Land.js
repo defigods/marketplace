@@ -278,12 +278,6 @@ export class Land extends Component {
       }
     }
 
-    console.log("this.state.openSellOrder", this.state.openSellOrder)
-    console.log("this.state.openBuyOffers", this.state.openBuyOffers)
-    console.log("this.state.openBuyOffers > 0 ", this.state.openBuyOffers.length > 0)
-    console.log("displayBuyOffers", displayBuyOffers)
-    console.log("wewewe", this.state.openSellOrder || (displayBuyOffers && this.state.openBuyOffers.length > 0))
-
     if (this.state.openSellOrder || (displayBuyOffers && this.state.openBuyOffers.length > 0)){
       custom_return = <div className="Land__section">
         <div className="o-container">

@@ -1,0 +1,51 @@
+.Notification{
+  font-size: 14px;
+  position: relative;
+  padding: 18px 25px;
+  border-bottom: 1px solid rgba(43, 48, 52, 0.1);
+  line-height: 20px;
+  text-align: left;
+  .TimeCounter{
+    color: $ovr-grey;
+  }
+  &:hover{
+    background-color: rgba($ovr-light-grey, 0.4);
+    .Notification__content{
+      // text-decoration: underline;
+    }
+  }
+  &.--new{
+    &:after{
+      background-color: #7521C8;
+      width:6px;
+      height:6px;
+      border-radius: 10px;
+      content: " ";
+      display: block;
+      position: absolute;
+      top: 26px;
+    }
+  }
+  button{
+    position: absolute;
+    right: 14px;
+    top: 14px;
+  }
+}
+.Notification__body{
+  padding-left: 18px;
+}
+.Notification__content{
+  clear: both;
+}
+.Notification__time{
+  clear: both;
+}
+
+.MuiPaper-elevation8{
+  box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.15)!important;
+}
+.MuiButtonBase-root{
+  font-size: 14px!important;
+  font-weight: 200!important;
+}

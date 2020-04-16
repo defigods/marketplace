@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from "react-router-dom";
 import ValueCounter from '../ValueCounter/ValueCounter';
+import NotificationCenter from '../NotificationCenter/NotificationCenter';
 
 import { UserContext, withUserContext } from '../../context/UserContext';
 import Blockies from 'react-blockies';
 
 class NavBar extends Component {
   static contextType = UserContext
+  constructor(props) {
+    super(props)
+    this.state = {
+      showNotificationCenter: true // TODO really is false
+    }
+  }
+
+  toggleNotificationCenter = (e) => {
+    e.preventDefault();
+    this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
+  };
 
   render() {
     let rightContainer = <div></div>
@@ -14,7 +26,7 @@ class NavBar extends Component {
     if (state.isLoggedIn === true && state.user != null ) {
       rightContainer = <>
       <div className="Navbar__right_container">
-        <Link to="/" className="Notifications__link">
+        <Link to="/" className="Notifications__link" onClick={this.toggleNotificationCenter}>
           <div className="Notifications__icon">
             <svg width="18px" height="20px" viewBox="0 0 18 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <title>icons/icon_notification</title>
@@ -29,7 +41,7 @@ class NavBar extends Component {
                 </g>
             </svg>
           </div>
-          <div className="Notifications__counter">0</div>
+          <div className="Notifications__counter">{state.user.notifications ? state.user.notifications.unreadedCount :  0}</div>
         </Link>
         <Link to="/" className="Funds__link"><ValueCounter value={state.user.balance}></ValueCounter></Link>
         <Link to="/" className="Profile__link">
@@ -47,6 +59,7 @@ class NavBar extends Component {
             </div>
           </div>
         </Link>
+        <NotificationCenter active={this.state.showNotificationCenter} notifications={state.user.notifications}></NotificationCenter>
       </div>
       </>
       

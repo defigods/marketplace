@@ -22,7 +22,6 @@ export class UserProvider extends Component {
     if(isLogged()){
       userProfile()
       .then((response) => {
-
         if (response.data.result === true) {
           this.setState({ user: response.data.user })
         } else {

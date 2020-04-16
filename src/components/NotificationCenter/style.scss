@@ -1,0 +1,36 @@
+.NotificationCenter{
+  position: fixed;
+  right: 20px;
+  top: 80px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.05);
+  width: 400px;
+}
+.NotificationCenter__title{
+  font-weight: 800;
+  font-size: 16px;
+}
+.NotificationCenter__header{
+  // line-height: 20px;
+  padding: 18px 25px;
+  border-bottom: 1px solid rgba(43, 48, 52, 0.1);
+  text-align: left;
+}
+.NotificationCenter__footer{
+  padding: 18px 25px;
+  text-align: left;
+  a{
+    font-size: 14px;
+    color: $ovr-sideral-grey;
+    text-decoration: none;
+    &:hover{
+      color: #000;
+      text-decoration: underline;
+    }
+  }
+}
+.NotificationCenter__body{
+  height: 400px;
+  overflow: scroll;
+}
