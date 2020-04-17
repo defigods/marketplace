@@ -130,6 +130,22 @@ export function hitBuyOffer(orderUuid = null) {
   }, null)
 }
 
+// NOTIFICATION
+export function readNotification(notificationUuid = null) {
+  return request({ url: '/notification/read', method: 'POST' }, {
+    notification_uuid: notificationUuid
+  }, null)
+}
+
+export function readAllNotifications() {
+  return request({ url: '/notifications/read', method: 'POST' }, {}, null)
+}
+
+export function hideNotification(notificationUuid = null) {
+  return request({ url: '/notification/hide', method: 'POST' }, {
+    notification_uuid: notificationUuid
+  }, null)
+}
 
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------

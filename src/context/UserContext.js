@@ -14,7 +14,8 @@ export class UserProvider extends Component {
       token: null,
       user: {
         uuid: null
-      }
+      },
+      showNotificationCenter: false
     }
   }
 
@@ -44,9 +45,13 @@ export class UserProvider extends Component {
     saveToken('userUuid', user)
   }
 
+  toggleShowNotificationCenter = () => {
+    this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
+  }
+
   render() {
     return (
-      <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser }}}>
+      <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter }}}>
         {this.props.children}
       </UserContext.Provider>
     )

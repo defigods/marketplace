@@ -8,16 +8,10 @@ import Blockies from 'react-blockies';
 
 class NavBar extends Component {
   static contextType = UserContext
-  constructor(props) {
-    super(props)
-    this.state = {
-      showNotificationCenter: true // TODO really is false
-    }
-  }
 
   toggleNotificationCenter = (e) => {
     e.preventDefault();
-    this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
+    this.context.actions.toggleShowNotificationCenter();
   };
 
   render() {
@@ -59,7 +53,7 @@ class NavBar extends Component {
             </div>
           </div>
         </Link>
-        <NotificationCenter active={this.state.showNotificationCenter} notifications={state.user.notifications}></NotificationCenter>
+        <NotificationCenter></NotificationCenter>
       </div>
       </>
       
