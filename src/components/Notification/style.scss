@@ -6,6 +6,9 @@
   line-height: 20px;
   text-align: left;
   cursor: pointer;
+  .MuiButtonBase-root{
+    opacity: 0;
+  }
   .TimeCounter{
     color: $ovr-grey;
   }
@@ -13,6 +16,9 @@
     background-color: rgba($ovr-light-grey, 0.4);
     .Notification__content{
       // text-decoration: underline;
+    }
+    .MuiButtonBase-root{
+      opacity: 1;
     }
   }
   &.--new{
