@@ -2,6 +2,7 @@ import React, { createContext, Component } from 'react';
 import { saveToken, isLogged, getToken, removeUser } from '../lib/auth'
 import { userProfile } from '../lib/api'
 import { networkError, dangerNotification } from '../lib/notifications' 
+import { ActionCableConsumer } from 'react-actioncable-provider';
 
 export const UserContext = createContext();
 
@@ -11,11 +12,11 @@ export class UserProvider extends Component {
 
     this.state = {
       isLoggedIn: false,
+      showNotificationCenter: false,
       token: null,
       user: {
         uuid: null
-      },
-      showNotificationCenter: false
+      }
     }
   }
 
@@ -49,9 +50,34 @@ export class UserProvider extends Component {
     this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
   }
 
+  handleReceivedNotification = response => {
+    const { notification } = response
+    const { balance } = response
+    const { unreaded_count } = response
+
+    this.setState({
+      user: {
+        ...this.state.user, 
+        balance: balance, 
+        notifications: { 
+          ...this.state.user.notifications,
+          unreadedCount: unreaded_count,
+          content: [notification, ...this.state.user.notifications.content] }}
+    });
+  }
+
   render() {
     return (
       <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter }}}>
+     
+
+      {this.state.user.uuid && 
+        <ActionCableConsumer
+          key={this.state.user.uuid}  
+          channel={{ channel: 'UsersChannel', user_uuid: this.state.user.uuid }}
+          onReceived={this.handleReceivedNotification}
+        /> }
+
         {this.props.children}
       </UserContext.Provider>
     )
