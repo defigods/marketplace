@@ -2,7 +2,7 @@ import React, { createContext, Component } from 'react';
 import { saveToken, isLogged, getToken, removeUser } from '../lib/auth'
 import { userProfile } from '../lib/api'
 import { networkError, dangerNotification } from '../lib/notifications' 
-import { ActionCableConsumer } from 'react-actioncable-provider';
+let ActionCable = require('actioncable')
 
 export const UserContext = createContext();
 
@@ -26,6 +26,7 @@ export class UserProvider extends Component {
       .then((response) => {
         if (response.data.result === true) {
           this.setState({ user: response.data.user })
+          this.liveSocket()
         } else {
           dangerNotification('Session expired', 'Please login again')
           removeUser()
@@ -35,7 +36,7 @@ export class UserProvider extends Component {
         networkError()
       });
 
-      this.loginUser(getToken('userToken'), getToken('userUuid'))      
+      this.loginUser(getToken('userToken'), getToken('userUuid'))  
     }
   }
 
@@ -44,42 +45,74 @@ export class UserProvider extends Component {
     // Cookie management 
     saveToken('userToken', token)
     saveToken('userUuid', user)
+    this.liveSocket()
+  }
+
+  liveSocket = () => {
+    console.log('live sockets', this.state.user.uuid)
+    // Sockets
+    var cable = ActionCable.createConsumer('ws://localhost:3000/cable')
+
+    cable.subscriptions.create(
+      { channel: "UsersChannel", user_uuid: this.state.user.uuid},
+      {
+        received: data => {
+          const { notification } = data
+          const { balance } = data
+          const { unreaded_count } = data
+
+          this.setState({
+            user: {
+              ...this.state.user, 
+              balance: balance, 
+              notifications: { 
+                ...this.state.user.notifications,
+                unreadedCount: unreaded_count,
+                content: [notification, ...this.state.user.notifications.content] }}
+          });
+        }
+      }
+    );
   }
 
   toggleShowNotificationCenter = () => {
     this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
   }
 
-  handleReceivedNotification = response => {
-    const { notification } = response
-    const { balance } = response
-    const { unreaded_count } = response
+  // handleReceivedNotification = response => {
+  //   const { notification } = response
+  //   const { balance } = response
+  //   const { unreaded_count } = response
+  //   console.log('socket response', response)
+  //   this.setState({
+  //     user: {
+  //       ...this.state.user, 
+  //       balance: balance, 
+  //       notifications: { 
+  //         ...this.state.user.notifications,
+  //         unreadedCount: unreaded_count,
+  //         content: [notification, ...this.state.user.notifications.content] }}
+  //   });
+  // }
 
-    this.setState({
-      user: {
-        ...this.state.user, 
-        balance: balance, 
-        notifications: { 
-          ...this.state.user.notifications,
-          unreadedCount: unreaded_count,
-          content: [notification, ...this.state.user.notifications.content] }}
-    });
-  }
 
   render() {
     return (
-      <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter }}}>
-     
-
-      {this.state.user.uuid && 
+      <>
+      {console.log('this.state.user.uuid',this.state.user.uuid)}
+      
+      {/* {this.state.user.uuid && 
         <ActionCableConsumer
           key={this.state.user.uuid}  
           channel={{ channel: 'UsersChannel', user_uuid: this.state.user.uuid }}
           onReceived={this.handleReceivedNotification}
-        /> }
+        /> } */}
 
+
+      <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter }}}>
         {this.props.children}
       </UserContext.Provider>
+      </>
     )
   }
 }

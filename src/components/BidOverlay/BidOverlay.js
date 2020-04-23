@@ -16,7 +16,7 @@ import { networkError, warningNotification, dangerNotification } from '../../lib
 
 const BidOverlay = (props) => {  
   const [newBidValue, setNewBidValue] = useState('');
-  const [bidInputError, setBidInputError] = useState(false);
+  const [bidInputError] = useState(false);
   const [bidValid, setBidValid] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 

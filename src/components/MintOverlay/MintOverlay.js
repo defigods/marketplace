@@ -6,7 +6,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import { withMapContext } from '../../context/MapContext'
 import { withUserContext } from '../../context/UserContext'
 
-import Icon from '../Icon/Icon';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { mintLand } from '../../lib/api'
@@ -18,7 +17,7 @@ import { networkError, warningNotification, dangerNotification } from '../../lib
 const MintOverlay = (props) => {
   const [currentBid] = useState(10);
   const [newBidValue, setNewBidValue] = useState('');
-  const [bidInputError, setBidInputError] = useState(false);
+  const [bidInputError] = useState(false);
   const [bidValid, setBidValid] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   

@@ -9,8 +9,8 @@ class ValueCounter extends Component {
                 <svg width="18px" height="20px" viewBox="0 0 18 20" xmlns="http://www.w3.org/2000/svg" x="0" y="0" >
                   <defs>
                     <linearGradient x1="109.444%" y1="100%" x2="0%" y2="0%" id="prefix__a">
-                      <stop stop-color="#EB663B" offset="0%" />
-                      <stop stop-color="#F9B326" offset="100%" />
+                      <stop stopColor="#EB663B" offset="0%" />
+                      <stop stopColor="#F9B326" offset="100%" />
                     </linearGradient>
                   </defs>
                   <g

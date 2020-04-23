@@ -26,7 +26,7 @@ const Discover = (props) => {
     .then((response) => {
       // Load Auctions in MapContext
       actions.changeAuctionList(response.data.auctions)
-      console.log(response.data.auctions)
+      // console.log(response.data.auctions)
 
       if (response.data.auctions.length > 0){
       // Load user data in context store
@@ -61,11 +61,11 @@ const Discover = (props) => {
   }
 
   function loadLandsByPage(page){
-    console.log('load land')
+    // console.log('load land')
     // Call API function 
     indexLands(null, page)
     .then((response) => {
-      console.log("wew", response.data.lands)
+      // console.log("wew", response.data.lands)
       // Load Lands in MapContext
       if (response.data.lands.length > 0){
       // Load user data in context store
@@ -93,7 +93,7 @@ const Discover = (props) => {
         )
       }
     }).catch((error) => {
-      console.log(error)
+      // console.log(error)
       // Notify user if network error
       networkError()
     });

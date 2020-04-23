@@ -20,7 +20,7 @@ import { Textfit } from 'react-textfit';
 export class Land extends Component {
   constructor(props) {
     super(props)
-    console.log("LandProps", props)
+    // console.log("LandProps", props)
     this.state = {
       key: "8cbcc350c0ab5ff",
       value: 10,
@@ -37,12 +37,12 @@ export class Land extends Component {
 
   loadLandStateFromApi(hex_id) {
     // Call API function 
-    console.log('reload api')
+    // console.log('reload api')
     getLand(hex_id)
       .then((response) => {
 
         let data = response.data
-        console.log("landApiData", data)
+        // console.log("landApiData", data)
 
         this.setState({
           key: data.uuid,
@@ -59,7 +59,7 @@ export class Land extends Component {
 
       }).catch((error) => {
         // Notify user if network error
-        console.log(error)
+        // console.log(error)
         networkError()
       });
   }
@@ -73,15 +73,15 @@ export class Land extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // If param change load data from API
+    // If param changes, load data from API
     if (this.props.location !== prevProps.location ||
       this.props.value !== prevProps.value) {
       const hex_id = this.props.match.params.id
       this.loadLandStateFromApi(hex_id)
       this.mapActions.changeHexId(hex_id)
-      console.log('didupdateinsideif')
+      // console.log('didupdateinsideif')
     }
-    console.log('didupdate')
+    // console.log('didupdate')
   }
 
   componentWillUnmount(){
@@ -305,7 +305,7 @@ export class Land extends Component {
         <div className="o-container">
           <div className="Land__heading__1">
             <h2>
-              <Textfit mode="single" max="25">
+              <Textfit mode="single" max={25}>
                 {this.state.name.sentence}
               </Textfit></h2>
             <div className="Land__location">{this.state.location}</div>

@@ -2,9 +2,6 @@ import React from 'react';
 import './App.scss';
 import 'react-notifications-component/dist/theme.css'
 
-import { ActionCableProvider } from 'react-actioncable-provider';
-import config from './lib/config'
-
 // import Home from './views/Home/Home';
 import Discover from './views/Discover/Discover';
 import Overview from './views/Overview/Overview';
@@ -23,45 +20,43 @@ import { UserProvider, UserContext } from './context/UserContext';
 
 function App() {
   return (
-    <ActionCableProvider url={'ws://localhost:3000/cable'}>
-      <UserProvider>
-        <MapProvider>
-          <UserContext.Consumer>
-            {(userValue) => { 
-              return(
-                <MapContext.Consumer>
-                {(mapValue) => { 
-                  return(
-                    <Router>
-                      <div className="App">
-                        <ReactNotification />
-                        <NavBar></NavBar>
-                        <div className="o-container">
-                                <Route path="/map/" component={Map}></Route>
-                        </div>
-                        <Switch>
-                          {/* <Route path="/" exact component={Home}></Route> */}
-                          <Route exact path="/">
-                            <Redirect to="/map/discover" />
-                          </Route>
-                          <Route path="/map/discover" component={Discover}></Route>
-                          <Route path="/map/overview" component={Overview}></Route>
-                          <Route path="/map/land/:id" component={Land}></Route>
-                          <Route path="/login" component={Login}></Route>
-                          <Route path="/signup" component={Signup}></Route>
-                        </Switch>
-                        <Footer></Footer>
+    <UserProvider>
+      <MapProvider>
+        <UserContext.Consumer>
+          {(userValue) => { 
+            return(
+              <MapContext.Consumer>
+              {(mapValue) => { 
+                return(
+                  <Router>
+                    <div className="App">
+                      <ReactNotification />
+                      <NavBar></NavBar>
+                      <div className="o-container">
+                              <Route path="/map/" component={Map}></Route>
                       </div>
-                    </Router>
-                  )
-                }}
-              </MapContext.Consumer>
-              )
-            }}
-          </UserContext.Consumer>
-        </MapProvider>
-      </UserProvider>
-    </ActionCableProvider>
+                      <Switch>
+                        {/* <Route path="/" exact component={Home}></Route> */}
+                        <Route exact path="/">
+                          <Redirect to="/map/discover" />
+                        </Route>
+                        <Route path="/map/discover" component={Discover}></Route>
+                        <Route path="/map/overview" component={Overview}></Route>
+                        <Route path="/map/land/:id" component={Land}></Route>
+                        <Route path="/login" component={Login}></Route>
+                        <Route path="/signup" component={Signup}></Route>
+                      </Switch>
+                      <Footer></Footer>
+                    </div>
+                  </Router>
+                )
+              }}
+            </MapContext.Consumer>
+            )
+          }}
+        </UserContext.Consumer>
+      </MapProvider>
+    </UserProvider>
   );
 }
 
