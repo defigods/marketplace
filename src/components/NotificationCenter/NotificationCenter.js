@@ -55,7 +55,7 @@ export class NotificationCenter extends Component {
           {this.renderNotifications()}
         </div>
         <div className="NotificationCenter__footer">
-          <Link to={'#'} onClick={this.setAllAsReaded()}>Mark all as read</Link>
+          <Link to={'#'} onClick={this.setAllAsReaded}>Mark all as read</Link>
         </div>
       </div>
     );

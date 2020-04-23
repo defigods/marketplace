@@ -79,40 +79,12 @@ export class UserProvider extends Component {
     this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
   }
 
-  // handleReceivedNotification = response => {
-  //   const { notification } = response
-  //   const { balance } = response
-  //   const { unreaded_count } = response
-  //   console.log('socket response', response)
-  //   this.setState({
-  //     user: {
-  //       ...this.state.user, 
-  //       balance: balance, 
-  //       notifications: { 
-  //         ...this.state.user.notifications,
-  //         unreadedCount: unreaded_count,
-  //         content: [notification, ...this.state.user.notifications.content] }}
-  //   });
-  // }
-
 
   render() {
     return (
-      <>
-      {console.log('this.state.user.uuid',this.state.user.uuid)}
-      
-      {/* {this.state.user.uuid && 
-        <ActionCableConsumer
-          key={this.state.user.uuid}  
-          channel={{ channel: 'UsersChannel', user_uuid: this.state.user.uuid }}
-          onReceived={this.handleReceivedNotification}
-        /> } */}
-
-
       <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter }}}>
         {this.props.children}
       </UserContext.Provider>
-      </>
     )
   }
 }
