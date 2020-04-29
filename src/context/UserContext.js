@@ -52,7 +52,7 @@ export class UserProvider extends Component {
   liveSocket = () => {
     console.log('live sockets', this.state.user.uuid)
     // Sockets
-    var cable = ActionCable.createConsumer(config.apis.apisDevelopment)
+    var cable = ActionCable.createConsumer(config.apis.socket)
 
     cable.subscriptions.create(
       { channel: "UsersChannel", user_uuid: this.state.user.uuid},
