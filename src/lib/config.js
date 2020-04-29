@@ -5,7 +5,7 @@ import _ from 'lodash'
 // 
 
 
-const apisDevelopment = true 
+const apisDevelopment = false
 const apis = {
   hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003/api/v1'
 }
@@ -14,7 +14,7 @@ const map = {
   lng: 13.2312417,
   zoom: 0,
   fillOpacity: 0.3,
-  colorScale: ['#5F39BE', '#ffffff','#1a0731', '#EC663C', '#0081DD'],
+  colorScale: ['#5F39BE', '#ffffff', '#1a0731', '#EC663C', '#0081DD'],
 }
 
 let config = {
@@ -22,7 +22,7 @@ let config = {
   map: map
 }
 
-export default config 
+export default config
 
 
 
