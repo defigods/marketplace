@@ -12,6 +12,14 @@ const h3 = require("h3-js");
 class Map extends Component {
   static contextType = MapContext
 
+  constructor(props) {
+    super(props);
+
+    this.hexagons = this.hexagons.bind(this)
+    this.initMap = this.initMap.bind(this)
+    this.waitMapStyle = this.waitMapStyle.bind(this)
+  }
+
   renderHexes(hexagons) {
     const geojson = geojson2h3.h3SetToFeatureCollection(
       Object.keys(hexagons),
@@ -20,7 +28,7 @@ class Map extends Component {
     const sourceId = 'h3-hexes'
     const layerId = `${sourceId}-layer`
     let source = this.map.getSource(sourceId)
-    
+
     if (!source) {
       this.map.addSource(sourceId, {
         type: 'geojson',
@@ -43,7 +51,7 @@ class Map extends Component {
 
     // Update the layer paint properties, using the current config values
     this.map.setPaintProperty(layerId, 'fill-opacity', config.map.fillOpacity);
-    
+
     this.map.setPaintProperty(layerId, 'fill-color', {
       property: 'value',
       stops: [
@@ -53,10 +61,10 @@ class Map extends Component {
       ]
     });
 
-    
+
   }
 
-  hexagons = () => {
+  hexagons() {
     var center = this.map.getCenter()
     //console.log (center)
     const centerHex = h3.geoToH3(center['lat'], center['lng'], 12)
@@ -77,7 +85,7 @@ class Map extends Component {
   // Mapbox init
   //
 
-  initMap = () => {
+  initMap() {
     const state = this.context.state
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw';
@@ -102,47 +110,47 @@ class Map extends Component {
     this.map.on('load', () => {
       geocoder.on('result', (ev) => {
         this.map.flyTo({
-          center:[ev.result.geometry.coordinates[0], ev.result.geometry.coordinates[1]], 
-          zoom:18,
+          center: [ev.result.geometry.coordinates[0], ev.result.geometry.coordinates[1]],
+          zoom: 18,
           speed: 1.8
         });
       });
 
       this.map.addLayer({
         id: 'mapbox-mapbox-satellite',
-        source: {"type": "raster",  "url": "mapbox://mapbox.satellite", "tileSize": 256},
+        source: { "type": "raster", "url": "mapbox://mapbox.satellite", "tileSize": 256 },
         type: "raster"
       });
       this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
 
       var switchy = document.getElementById('js-map-view');
-      if (switchy){
+      if (switchy) {
         switchy.addEventListener("click", () => {
-            if (switchy.className === 'on') {
-                switchy.setAttribute('class', 'off');
-                this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
-                switchy.innerHTML = 'Satellite';
-            } else {
-                switchy.setAttribute('class', 'on');
-                this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'visible');
-                switchy.innerHTML = 'Streets';
-            }
+          if (switchy.className === 'on') {
+            switchy.setAttribute('class', 'off');
+            this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'none');
+            switchy.innerHTML = 'Satellite';
+          } else {
+            switchy.setAttribute('class', 'on');
+            this.map.setLayoutProperty('mapbox-mapbox-satellite', 'visibility', 'visible');
+            switchy.innerHTML = 'Streets';
+          }
         });
       }
 
       // View single point
-      if( state.onSingleView === true){
+      if (state.onSingleView === true) {
         this.focusMap(state.hex_id, state.isAuction)
       }
     })
 
     // Show grid on high zoom 
     const zoomThreshold = 17;
-    let that = this 
-    this.map.on('moveend', function(){
+    let that = this
+    this.map.on('moveend', function () {
       if (that.map.getZoom() > zoomThreshold) {
         that.renderHexes(that.hexagons())
-      } 
+      }
     });
 
     // Click hexagon
@@ -159,12 +167,12 @@ class Map extends Component {
   // Focus on single point
   // Used when accessing directly to a single land view or when clicked on a land
   //
-  focusMap(hex_id, isAuction){
+  focusMap(hex_id, isAuction) {
     // Hex to geo
     let hexCenterCoordinates = h3.h3ToGeo(hex_id);
     // Move map focus
     this.map.flyTo({
-      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]], 
+      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]],
       zoom: 18,
       speed: 1.8
     });
@@ -198,7 +206,7 @@ class Map extends Component {
     this.map.setLayoutProperty(selected_layerId, 'visibility', 'visible');
 
     // Plot pin
-    if(isAuction){
+    if (isAuction) {
       // Add pin
       // TODO
       // let el = document.createElement('div');
@@ -215,11 +223,11 @@ class Map extends Component {
   // Plot auctions from MapContext data
   //
 
-  plotAuctions(){
+  plotAuctions() {
     // Delete all displayed markers
     var paras = document.getElementsByClassName('Map__ping_container');
-    while(paras[0]) {
-        paras[0].parentNode.removeChild(paras[0]);
+    while (paras[0]) {
+      paras[0].parentNode.removeChild(paras[0]);
     }
 
     // Add all markers on map 
@@ -241,9 +249,9 @@ class Map extends Component {
       el.className = `Map__ping_container ${statusClassName}`;
       el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
       new mapboxgl.Marker(el)
-          .setLngLat([auction.land.address.geocenter[1], auction.land.address.geocenter[0]])
-          .addTo(this.map);
-          
+        .setLngLat([auction.land.address.geocenter[1], auction.land.address.geocenter[0]])
+        .addTo(this.map);
+
     }
   }
 
@@ -251,7 +259,7 @@ class Map extends Component {
   // Used for safely load the map
   //
 
-  waitMapStyle = () => {
+  waitMapStyle() {
     if (!this.map.isStyleLoaded()) {
       setTimeout(this.waitMapStyle, 200);
     } else {
@@ -275,7 +283,7 @@ class Map extends Component {
 
   componentDidUpdate() {
     const state = this.context.state
-    if( state.onSingleView === true){
+    if (state.onSingleView === true) {
       this.waitMapStyle();
     } else {
       this.plotAuctions();
@@ -293,8 +301,8 @@ class Map extends Component {
 
   render() {
     return <div id="Map" className="Map">
-              <div id='js-map-view'>Satellite</div>
-            </div>;
+      <div id='js-map-view'>Satellite</div>
+    </div>;
   }
 }
 

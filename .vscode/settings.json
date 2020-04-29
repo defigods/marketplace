@@ -1,3 +1,9 @@
 {
-  "emmet.showSuggestionsAsSnippets": true
+  "emmet.showSuggestionsAsSnippets": true,
+  "editor.codeActionsOnSave": {
+    // For ESLint
+    "source.fixAll.eslint": true
+  },
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": false
 }
