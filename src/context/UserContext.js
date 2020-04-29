@@ -2,6 +2,7 @@ import React, { createContext, Component } from 'react';
 import { saveToken, isLogged, getToken, removeUser } from '../lib/auth'
 import { userProfile } from '../lib/api'
 import { networkError, dangerNotification } from '../lib/notifications' 
+import config from '../lib/config'
 let ActionCable = require('actioncable')
 
 export const UserContext = createContext();
@@ -51,7 +52,7 @@ export class UserProvider extends Component {
   liveSocket = () => {
     console.log('live sockets', this.state.user.uuid)
     // Sockets
-    var cable = ActionCable.createConsumer('ws://localhost:3000/cable')
+    var cable = ActionCable.createConsumer(config.apis.apisDevelopment)
 
     cable.subscriptions.create(
       { channel: "UsersChannel", user_uuid: this.state.user.uuid},
