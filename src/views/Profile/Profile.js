@@ -16,9 +16,7 @@ const ProfileContentLoginRequired = () => (
 	</div>
 );
 
-const ProfileContent = (user) => {
-	console.log('ProfileContent shows the user info', user);
-
+const ProfileLayout = () => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 	return (
 		<div className="profile">
@@ -28,22 +26,131 @@ const ProfileContent = (user) => {
 			</div>
 			<div className="p-container">
 				<div className="o-fourth">Aqui va un hexagono</div>
-				<div className="">Aqui va el resto</div>
+				<div className="">
+					<ProfileContent />
+				</div>
 			</div>
 		</div>
 	);
 };
 
+const ProfileContent = () => {
+	const { state, actions } = useContext(UserContext);
+	const { user } = state;
+	console.log('ProfileContent->These are user and actions from UserContext', actions, user);
+
+	return [
+		<div key="wallet" className="p-section">
+			<div className="p-section-title">WALLET</div>
+			<div className="p-section-content">
+				<div className="p-content-title">Wallet address</div>
+				<div className="p-balance">SHOW THE BALANCE with TWO BUTTONS</div>
+			</div>
+		</div>,
+		<div key="authorizations" className="p-section">
+			<div className="p-section-title">AUTHORIZATIONS</div>
+			<div className="p-section-content">
+				<div className="o-half">
+					<div className="p-content-title">For Buying</div>
+					<div className="p-checkbox-item">
+						[] ERC721 using OVR
+						<small>Authorize the Marketplace to operate OVR on my behalf</small>
+					</div>
+					<div className="p-checkbox-item">
+						[] ERC721 using OVR
+						<small>Authorize the Marketplace to operate OVR on my behalf</small>
+					</div>
+					<div className="p-checkbox-item">
+						[] ERC721 using OVR
+						<small>Authorize the Marketplace to operate OVR on my behalf</small>
+					</div>
+				</div>
+				<div className="o-half">
+					<div className="p-content-title">For Selling</div>
+					<div className="p-checkbox-item">
+						[] ERC721 using OVR
+						<small>Authorize the Marketplace to operate OVR on my behalf</small>
+					</div>
+					<div className="p-checkbox-item">
+						[] ERC721 using OVR
+						<small>Authorize the Marketplace to operate OVR on my behalf</small>
+					</div>
+					<div className="p-checkbox-item">
+						[] ERC721 using OVR
+						<small>Authorize the Marketplace to operate OVR on my behalf</small>
+					</div>
+				</div>
+			</div>
+		</div>,
+		<div key="notifications" className="p-section">
+			<div className="p-section-title">NOTIFICATIONS</div>
+			<div className="p-section-content">
+				<div className="p-content-title">General</div>
+				<div>
+					<div className="o-half">
+						<div className="p-checkbox-item">
+							[] Hottest Auctions
+							<small>Authorize the Marketplace to operate OVR on my behalf</small>
+						</div>
+					</div>
+					<div className="o-half">
+						<div className="p-checkbox-item">
+							[] Area of interest
+							<small>Authorize the Marketplace to operate OVR on my behalf</small>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div className="o-half">
+						<div className="p-content-title">My OVRLands</div>
+						<div className="p-checkbox-item">
+							[] New sell request
+							<small>Authorize the Marketplace to operate OVR on my behalf</small>
+						</div>
+						<div className="p-checkbox-item">
+							[] OVRLand sold
+							<small>Authorize the Marketplace to operate OVR on my behalf</small>
+						</div>
+					</div>
+					<div className="o-half">
+						<div className="p-content-title">My auctions</div>
+						<div className="p-checkbox-item">
+							[] Over bidded
+							<small>Authorize the Marketplace to operate OVR on my behalf</small>
+						</div>
+						<div className="p-checkbox-item">
+							[] Auction won
+							<small>Authorize the Marketplace to operate OVR on my behalf</small>
+						</div>
+					</div>
+				</div>
+
+				<div className="p-email-subscription">
+					[] Active email notification
+					<label>
+						Your email
+						<input type="text"></input>
+					</label>
+					<small>
+						We will keep this information for ourselves, as it will not be written on the blockchain. By inserting your
+						email address you accept our Terms and Conditions
+					</small>
+				</div>
+			</div>
+		</div>,
+	];
+};
+
 const Profile = () => {
 	const { state, actions } = useContext(UserContext);
-	const { isLoggedIn: userAuthenticated, user } = state;
+	const { isLoggedIn: userAuthenticated } = state;
 
 	if (!userAuthenticated) {
 		return <ProfileContentLoginRequired />;
 	}
 	console.log('These are the actions for UserContext', actions);
 
-	return <ProfileContent user={user} />;
+	return <ProfileLayout />;
 };
 
 export default Profile;
