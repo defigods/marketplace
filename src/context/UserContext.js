@@ -8,8 +8,8 @@ let ActionCable = require('actioncable')
 export const UserContext = createContext();
 
 export class UserProvider extends Component {
-  constructor(props) {
-    super(props)
+	constructor(props) {
+		super(props);
 
     this.state = {
       isLoggedIn: false,
@@ -76,30 +76,34 @@ export class UserProvider extends Component {
     );
   }
 
-  toggleShowNotificationCenter = () => {
-    this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
-  }
+	toggleShowNotificationCenter = () => {
+		this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
+	}
 
-
-  render() {
-    return (
-      <UserContext.Provider value={{ state: this.state, actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter }}}>
-        {this.props.children}
-      </UserContext.Provider>
-    )
-  }
+	render() {
+		return (
+			<UserContext.Provider
+				value={{
+					state: this.state,
+					actions: { loginUser: this.loginUser, toggleShowNotificationCenter: this.toggleShowNotificationCenter },
+				}}
+			>
+				{this.props.children}
+			</UserContext.Provider>
+		);
+	}
 }
 
 export function withUserContext(Component) {
-  class ComponentWithContext extends React.Component {
-    render() {
-      return (
-        <UserContext.Consumer>
-          {(value) => <Component {...this.props} userProvider={{...value}} />}
-        </UserContext.Consumer>
-      )
-    }
-  }
+	class ComponentWithContext extends React.Component {
+		render() {
+			return (
+				<UserContext.Consumer>
+					{(value) => <Component {...this.props} userProvider={{ ...value }} />}
+				</UserContext.Consumer>
+			);
+		}
+	}
 
-  return ComponentWithContext
+	return ComponentWithContext;
 }

@@ -33,5 +33,7 @@
 }
 .NotificationCenter__body{
   height: 400px;
-  overflow: scroll;
+  overflow-y: scroll;
+  width: 100%;
+  display: grid;
 }

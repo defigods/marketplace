@@ -1,130 +1,133 @@
 @import 'node_modules/jeet/jeet';
 
-$ovr-purple : #1D0333;
-$ovr-light-purple: #C81D5E;
-$ovr-sideral-grey: #282D32; 
+$ovr-purple: #1d0333;
+$ovr-light-purple: #c81d5e;
+$ovr-sideral-grey: #282d32;
 $ovr-grey: #857f7c;
 $ovr-light-grey: #f3f3f5;
 $ovr-aqua-marine: #c9d2d3;
-$ovr-orange: #EC663C;
-$ovr-yellow: #F9B426;
-$ovr-green: #49B6AE;
-$ovr-light-blue: #2FD7FF;
-$ovr-red: #C32438;
-
+$ovr-orange: #ec663c;
+$ovr-yellow: #f9b426;
+$ovr-green: #49b6ae;
+$ovr-light-blue: #2fd7ff;
+$ovr-red: #c32438;
 
 $breakpoints: (
-  phone-down: 319px,
-  phone: 320px,
-  mobile-down: 540px,
-  mobile: 541px,
-  tab-down: 767px,
-  desk-down: 1023px,
-  desk: 1024px,
-  large: 1200px,
-  x-large: 1600px
+	phone-down: 319px,
+	phone: 320px,
+	mobile-down: 540px,
+	mobile: 541px,
+	tab-down: 767px,
+	desk-down: 1023px,
+	desk: 1024px,
+	large: 1200px,
+	x-large: 1600px,
 ) !default;
 
-
 // Managing container max-width
-@function bk($bk: "mobile") {
-  @if not map-has-key($breakpoints, $bk) {
-    @warn "No breakpoint value found in $breakpoints map for '#{$bk}'. Property omitted.";
-  }
-  @return map-get($breakpoints, $bk);
+@function bk($bk: 'mobile') {
+	@if not map-has-key($breakpoints, $bk) {
+		@warn "No breakpoint value found in $breakpoints map for '#{$bk}'. Property omitted.";
+	}
+	@return map-get($breakpoints, $bk);
 }
 
-
-
-body{
-  font-family: 'Work Sans', sans-serif;
-  font-weight: 300;
-  font-size: 16px;
-  background-color: $ovr-light-grey;
+$font-family-body: 'Work Sans', sans-serif;
+body {
+	font-family: $font-family-body;
+	font-weight: 300;
+	font-size: 16px;
+	background-color: $ovr-light-grey;
 }
 
-.o-line, .o-line--in{
-  display: block;
-  width: 100%;
-  clear: both;
+.o-line,
+.o-line--in {
+	display: block;
+	width: 100%;
+	clear: both;
 }
-.o-line--in{
-  display: inline-block;
+.o-line--in {
+	display: inline-block;
 }
 
-.o-half{
-  @include column(1/2);
+.o-half {
+	@include column(1/2);
 }
-.c-one-third{
-  @include column(1/3);
+.c-one-third {
+	@include column(1/3);
 }
-.c-two-third{
-  @include column(2/3);
+.c-two-third {
+	@include column(2/3);
 }
-.o-fourth{
-  @include column(1/4);
+.o-fourth {
+	@include column(1/4);
 }
-.o-fifth{
-  @include column(1/5);
+.o-fifth {
+	@include column(1/5);
 }
-.Land__heading__1{
-    @include column(2/5);
+.Land__heading__1 {
+	@include column(2/5);
 }
-.Land__heading__2{
-    @include column(3/5);
+.Land__heading__2 {
+	@include column(3/5);
 }
 
 .o-container {
-  margin: 0 auto;
-  width: calc(100% - 140px);
-  @media only screen and (max-width: bk("desk")) {
-    width: 90%;
-  }
-  @media only screen and (min-width: bk("x-large")) {
-    width: 80%;
-  }
+	margin: 0 auto;
+	width: calc(100% - 140px);
+	@media only screen and (max-width: bk('desk')) {
+		width: 90%;
+	}
+	@media only screen and (min-width: bk('x-large')) {
+		width: 80%;
+	}
 }
 
-.App{
-  padding-top:70px;
+.App {
+	padding-top: 70px;
 }
 
-.o-section-title{
-  margin-top: 30px;
-  color: $ovr-sideral-grey;
+.o-section-title {
+	margin-top: 30px;
+	color: $ovr-sideral-grey;
 }
 
-@import "./src/components/CtaCard/style.scss";
-@import "./src/components/TextCounter/style.scss";
-@import "./src/components/ArrowLink/style.scss";
-@import "./src/components/HexButton/style.scss";
-@import "./src/components/LandName/style.scss";
-@import "./src/components/AuctionCard/style.scss";
-@import "./src/components/ValueCounter/style.scss";
-@import "./src/components/TimeCounter/style.scss";
-@import "./src/components/LandCard/style.scss";
-@import "./src/components/NavBar/style.scss";
-@import "./src/components/Footer/style.scss";
-@import "./src/components/Map/style.scss";
-@import "./src/components/BidOverlay/style.scss";
-@import "./src/components/MintOverlay/style.scss";
-@import "./src/components/SellOverlay/style.scss";
-@import "./src/components/Dialog/style.scss";
-@import "./src/components/OpenSellOrder/style.scss";
-@import "./src/components/BuyOfferOrder/style.scss";
-@import "./src/components/BuyOfferOverlay/style.scss";
-@import "./src/components/NotificationCenter/style.scss";
-@import "./src/components/Notification/style.scss";
+@import './src/components/CtaCard/style.scss';
+@import './src/components/CheckBox/style.scss';
+@import './src/components/TextField/style.scss';
+@import './src/components/EmailConfirmation/style.scss';
+@import './src/components/TextCounter/style.scss';
+@import './src/components/ArrowLink/style.scss';
+@import './src/components/HexButton/style.scss';
+@import './src/components/HexImage/style.scss';
+@import './src/components/LandName/style.scss';
+@import './src/components/AuctionCard/style.scss';
+@import './src/components/ValueCounter/style.scss';
+@import './src/components/TimeCounter/style.scss';
+@import './src/components/LandCard/style.scss';
+@import './src/components/NavBar/style.scss';
+@import './src/components/Footer/style.scss';
+@import './src/components/Map/style.scss';
+@import './src/components/BidOverlay/style.scss';
+@import './src/components/MintOverlay/style.scss';
+@import './src/components/SellOverlay/style.scss';
+@import './src/components/Dialog/style.scss';
+@import './src/components/OpenSellOrder/style.scss';
+@import './src/components/BuyOfferOrder/style.scss';
+@import './src/components/BuyOfferOverlay/style.scss';
+@import './src/components/NotificationCenter/style.scss';
 
-@import "./src/views/Land/style.scss";
-@import "./src/views/Login/style.scss";
-@import "./src/views/Signup/style.scss";
+@import './src/views/Land/style.scss';
+@import './src/views/Login/style.scss';
+@import './src/views/Signup/style.scss';
+@import './src/views/Profile/style.scss';
 
+@import './src/components/Notification/style.scss';
 
-.notification-danger{
-  background-color: $ovr-red!important;
+.notification-danger {
+	background-color: $ovr-red !important;
 }
-.notification-warning{
-  border-left: #1d0333!important;
-  background: linear-gradient(138deg, #1d0333, #805e9d)!important;
+.notification-warning {
+	border-left: #1d0333 !important;
+	background: linear-gradient(138deg, #1d0333, #805e9d) !important;
 }
