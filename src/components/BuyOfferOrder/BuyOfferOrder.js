@@ -67,7 +67,7 @@ export class BuyOfferOrder extends Component {
 		this.setState({ openModal: false });
 	}
 
-	componentDidMount() { }
+	componentDidMount() {}
 
 	buttonRender() {
 		let customRender;
