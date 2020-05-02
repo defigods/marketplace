@@ -3,6 +3,11 @@ module.exports = {
 		'browser': true,
 		'es6': true
 	},
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
 	'extends': [
 		'eslint:recommended',
 		'plugin:react/recommended',
@@ -25,7 +30,8 @@ module.exports = {
 	'rules': {
 		'indent': [
 			'error',
-			'tab'
+			'tab',
+			{ "SwitchCase": 1 }
 		],
 		'linebreak-style': [
 			'error',

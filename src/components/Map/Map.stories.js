@@ -5,8 +5,8 @@ import { action } from '@storybook/addon-actions';
 import Map from './Map';
 
 export default {
-  title: 'Map',
-  component: Map,
+	title: 'Map',
+	component: Map,
 };
 
 export const Standard = () => <Map></Map>;
