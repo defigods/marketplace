@@ -32,8 +32,9 @@ $breakpoints: (
 	@return map-get($breakpoints, $bk);
 }
 
+$font-family-body: 'Work Sans', sans-serif;
 body {
-	font-family: 'Work Sans', sans-serif;
+	font-family: $font-family-body;
 	font-weight: 300;
 	font-size: 16px;
 	background-color: $ovr-light-grey;
@@ -92,6 +93,9 @@ body {
 }
 
 @import './src/components/CtaCard/style.scss';
+@import './src/components/CheckBox/style.scss';
+@import './src/components/TextField/style.scss';
+@import './src/components/EmailConfirmation/style.scss';
 @import './src/components/TextCounter/style.scss';
 @import './src/components/ArrowLink/style.scss';
 @import './src/components/HexButton/style.scss';

@@ -10,8 +10,8 @@ export default {
 
 export const Image = () => (
 	<HexImage
-		style={{ width: '100%', height: '100%' }}
+		style={{ width: '6rem', height: '6rem' }}
 		src="https://cdn.pixabay.com/photo/2020/04/13/11/49/forest-5038025_960_720.jpg"
 	></HexImage>
 );
-export const ImageNoSrc = () => <HexImage src=""></HexImage>;
+export const ImageNoSrc = () => <HexImage style={{ width: '6rem', height: '6rem' }} src=""></HexImage>;

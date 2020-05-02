@@ -1,60 +1,92 @@
-.HexButton{
-    display: inline-block;
-    transition: all 250ms ease-in-out;
-    position: relative;
-    &:hover{
-        transform: scale(0.98);
-        opacity: 0.95;
-    }
+.HexButton {
+	display: inline-block;
+	transition: all 250ms ease-in-out;
+	position: relative;
+	&:hover {
+		transform: scale(0.98);
+		opacity: 0.95;
+	}
+	svg {
+		text {
+			font-weight: bold;
+		}
+	}
 }
 
-.HexButton__cont{
-    position: relative;
+.HexButton__cont {
+	position: relative;
 }
 
-.HexButton__text{
-    position: absolute;
-    font-size: 14px;
-    font-weight: 400;
-    top: 0px;
-    line-height: 35px;
-    text-align: center;
-    width: 100%;
-    color: #fff;
+// .HexButton__text {
+// 	position: absolute;
+// 	font-size: 14px;
+// 	font-weight: 400;
+// 	top: 0px;
+// 	line-height: 35px;
+// 	text-align: center;
+// 	width: 100%;
+// 	color: #fff;
+// }
+
+.HexButton.--purple {
+	.first-stop {
+		stop-color: rgb(163, 84, 177);
+	}
+	.last-stop {
+		stop-color: #1d0333;
+	}
 }
 
-.HexButton.--purple{
-    .first-stop {
-      stop-color: rgb(163, 84, 177);
-    }
-    .last-stop {
-      stop-color: #1D0333;
-    }
+.HexButton.--blue {
+	.first-stop {
+		stop-color: #0081dd !important;
+	}
+	.last-stop {
+		stop-color: #2fd7ff !important;
+	}
 }
-
-.HexButton.--blue{
-    .first-stop {
-      stop-color:#0081DD!important;
-    }
-    .last-stop {
-      stop-color: #2FD7FF!important;
-    }
+.HexButton.--regular {
+	svg {
+		mask#c {
+			display: none;
+		}
+		path {
+			fill: url(#b);
+			stroke-width: 2px;
+			stroke: url(#b);
+		}
+		text {
+			fill: #fff;
+		}
+	}
 }
-
-.--outline{
-    svg{
-        
-    }
-    svg path{
-        fill: transparent;
-        stroke-width: 2px;
-        stroke:#fff;
-    }
-
+.HexButton.--outline {
+	svg {
+	}
+	svg path {
+		fill: transparent;
+		stroke-width: 2px;
+		stroke: #fff;
+	}
 }
-.--disabled{
-    opacity: 0.5;
-    pointer-events: none;
-    cursor: not-allowed;
-    filter: grayscale(100%);
+.HexButton.--hollow {
+	svg {
+		mask#c {
+			display: none;
+		}
+		path {
+			fill: transparent;
+			stroke-width: 2px;
+			stroke: url(#b);
+		}
+		text {
+			fill: url(#b);
+		}
+	}
+}
+.HexButton.--disabled {
+	opacity: 0.5;
+	pointer-events: none;
+	cursor: not-allowed;
+	filter: grayscale(100%);
 }
