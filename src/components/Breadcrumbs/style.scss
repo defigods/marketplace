@@ -1,3 +1,13 @@
+.breadcrumbs {
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	color: $ovr-grey;
+	margin: 1.5rem 0;
+	width: 100%;
+}
+.breadcrumbs--items {
+}
 .breadcrumbs--prevlink {
 }
 .breadcrumbs--currentlabel {

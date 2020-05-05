@@ -12,3 +12,4 @@ const prevLinks = [
 	{ href: '/', label: 'My OVRLands' },
 ];
 export const breadcrumbs = () => <Breadcrumbs currentPageLabel="delivery.subject.hunger" previousLinks={prevLinks} />;
+export const empty = () => <Breadcrumbs />;

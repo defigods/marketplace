@@ -41,7 +41,8 @@ export class Land extends Component {
 			.then((response) => {
 				let data = response.data;
 				console.log('landApiData', data);
-
+				this.mapActions.changeIsAuction(data.marketStatus === 1);
+				this.mapActions.changeIsUserRelated(data.userPerspective !== 0);
 				this.setState({
 					key: data.uuid,
 					name: { sentence: data.sentenceId, hex: data.uuid },

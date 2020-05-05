@@ -1,27 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { grey } from '@material-ui/core/colors';
+import * as moment from 'moment';
 
-import { makeStyles } from '@material-ui/core/styles';
 import { Breadcrumbs as MaterialBreadcrumbs, Link } from '@material-ui/core';
-//import Typography from '@material-ui/core/Typography';
+
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		'& > * + *': {
-			marginTop: theme.spacing(2),
-		},
-	},
-}));
-
 const Breadcrumbs = ({ previousLinks, currentPageLabel, className }) => {
-	const classes = useStyles();
+	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 
 	return (
-		<div className={`breadcrumbs ${classes.root}`}>
+		<div className={`breadcrumbs ${className}`}>
 			<MaterialBreadcrumbs
-				className={className}
+				className={'breadcrumbs--items'}
 				separator={<NavigateNextIcon fontSize="small" />}
 				aria-label="breadcrumb"
 			>
@@ -32,6 +23,7 @@ const Breadcrumbs = ({ previousLinks, currentPageLabel, className }) => {
 				))}
 				<span className="breadcrumbs--currentlabel">{currentPageLabel}</span>
 			</MaterialBreadcrumbs>
+			<span className="breadcrumbs--datetime">{currentDatetimeStamp}</span>
 		</div>
 	);
 };
@@ -41,5 +33,9 @@ Breadcrumbs.propTypes = {
 	currentPageLabel: PropTypes.string,
 	className: PropTypes.string,
 };
-
+Breadcrumbs.defaultProps = {
+	previousLinks: [],
+	currentPageLabel: 'undefined',
+	className: '',
+};
 export default Breadcrumbs;

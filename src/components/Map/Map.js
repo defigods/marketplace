@@ -5,7 +5,10 @@ import config from '../../lib/config';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { MapContext, withMapContext } from '../../context/MapContext';
-const h3 = require('h3-js');
+import * as h3 from "h3-js";
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+
+
 
 class Map extends Component {
 	static contextType = MapContext;
@@ -282,11 +285,29 @@ class Map extends Component {
 		}
 	}
 
+	buildBreadcrumbs() {
+		const { location: { pathname }, mapProvider: { state: { hex_id, isAuction, isUserRelated } } } = this.props;
+		let currentPageLabel = pathname.split("/")[2];
+		currentPageLabel = currentPageLabel.charAt(0).toUpperCase() + currentPageLabel.slice(1);
+
+		const prevLinks = [];
+		if (currentPageLabel === "Land" && hex_id) {
+			prevLinks.push({ href: "/map/discover", label: `${isUserRelated ? "My " : ""}${isAuction ? "Auctions" : "Lands"}` });
+			currentPageLabel = hex_id;
+		}
+		return <Breadcrumbs currentPageLabel={currentPageLabel} previousLinks={prevLinks} />;
+
+	}
 	render() {
+		const breadcrumbs = this.buildBreadcrumbs();
+
 		return (
-			<div id="Map" className="Map">
-				<div id="js-map-view">Satellite</div>
-			</div>
+			<>
+				{breadcrumbs}
+				<div id="Map" className="Map">
+					<div id="js-map-view">Satellite</div>
+				</div>
+			</>
 		);
 	}
 }
