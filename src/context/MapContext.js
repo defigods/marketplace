@@ -16,6 +16,7 @@ export class MapProvider extends Component {
 			activeSellOverlay: false,
 			activeBuyOfferOverlay: false,
 			auctionList: [],
+			landData: {},
 		};
 
 		this.changeHexId = this.changeHexId.bind(this);
@@ -25,12 +26,14 @@ export class MapProvider extends Component {
 		this.changeActiveMintOverlay = this.changeActiveMintOverlay.bind(this);
 		this.changeActiveSellOverlay = this.changeActiveSellOverlay.bind(this);
 		this.changeActiveBuyOfferOverlay = this.changeActiveBuyOfferOverlay.bind(this);
-		this.changeIsAuction = this.changeIsAuction.bind(this);
-		this.changeIsUserRelated = this.changeIsUserRelated.bind(this);
+		this.changeLandData = this.changeLandData.bind(this);
 	}
 
 	changeHexId(hex_id) {
 		this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true });
+	}
+	changeLandData(landData) {
+		this.setState({ landData });
 	}
 	disableSingleView() {
 		this.setState({ onSingleView: false });
@@ -50,12 +53,7 @@ export class MapProvider extends Component {
 	changeActiveBuyOfferOverlay(activeVal) {
 		this.setState({ activeBuyOfferOverlay: activeVal });
 	}
-	changeIsAuction(activeVal) {
-		this.setState({ isAuction: activeVal });
-	}
-	changeIsUserRelated(activeVal) {
-		this.setState({ isUserRelated: activeVal });
-	}
+
 	render() {
 		return (
 			<MapContext.Provider
@@ -69,8 +67,7 @@ export class MapProvider extends Component {
 						disableSingleView: this.disableSingleView,
 						changeActiveSellOverlay: this.changeActiveSellOverlay,
 						changeActiveBuyOfferOverlay: this.changeActiveBuyOfferOverlay,
-						changeIsAuction: this.changeIsAuction,
-						changeIsUserRelated: this.changeIsUserRelated,
+						changeLandData: this.changeLandData,
 					},
 					overviewList: this.overviewList,
 				}}

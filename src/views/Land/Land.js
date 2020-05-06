@@ -41,9 +41,7 @@ export class Land extends Component {
 			.then((response) => {
 				let data = response.data;
 				console.log('landApiData', data);
-				this.mapActions.changeIsAuction(data.marketStatus === 1);
-				this.mapActions.changeIsUserRelated(data.userPerspective !== 0);
-				this.setState({
+				const state = {
 					key: data.uuid,
 					name: { sentence: data.sentenceId, hex: data.uuid },
 					location: data.address.full,
@@ -53,7 +51,9 @@ export class Land extends Component {
 					openBuyOffers: data.openBuyOffers,
 					auction: data.auction,
 					value: data.value,
-				});
+				};
+				this.mapActions.changeLandData(state);
+				this.setState(state);
 			})
 			.catch((error) => {
 				// Notify user if network error

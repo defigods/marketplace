@@ -8,7 +8,7 @@ import { indexMyOpenAuctions, indexMyLands } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 import Pagination from '@material-ui/lab/Pagination';
 
-const Overview = (props) => {
+const Overview = () => {
 	const [listAuctions, setListAuctions] = useState('');
 	const [numberOfAuctionPages, setNumberOfAuctionPages] = useState(0);
 	const [currentAuctionPage, setCurrentAuctionPage] = useState(1);
@@ -62,8 +62,9 @@ const Overview = (props) => {
 					setUserAuthenticated(false);
 				}
 			})
-			.catch(() => {
+			.catch((error) => {
 				// Notify user if network error
+				console.error(error);
 				networkError();
 			});
 	}
@@ -103,6 +104,7 @@ const Overview = (props) => {
 			})
 			.catch((error) => {
 				// Notify user if network error
+				console.error(error);
 				networkError();
 			});
 	}
@@ -117,11 +119,11 @@ const Overview = (props) => {
 		setCurrentLandPage(number);
 	}
 
-	useEffect(() => {
-		actions.disableSingleView();
-		loadAuctionsByPage();
-		loadLandsByPage();
-	}, []);
+	// useEffect(() => {
+	// 	actions.disableSingleView();
+	// 	loadAuctionsByPage();
+	// 	loadLandsByPage();
+	// }, []);
 
 	let customReturn;
 
@@ -134,10 +136,8 @@ const Overview = (props) => {
 				<div className="o-container">
 					<div className="o-auction-list">{listAuctions}</div>
 					<div className="o-pagination">
-						{numberOfAuctionPages > 1 ? (
+						{numberOfAuctionPages > 1 && (
 							<Pagination count={numberOfAuctionPages} page={currentAuctionPage} onChange={handleAuctionPageClick} />
-						) : (
-							''
 						)}
 					</div>
 				</div>
@@ -147,10 +147,8 @@ const Overview = (props) => {
 				<div className="o-container">
 					<div className="o-land-list">{listLands}</div>
 					<div className="o-pagination">
-						{numberOfLandPages > 1 ? (
+						{numberOfLandPages > 1 && (
 							<Pagination count={numberOfLandPages} page={currentLandPage} onChange={handleLandPageClick} />
-						) : (
-							''
 						)}
 					</div>
 				</div>
@@ -161,7 +159,12 @@ const Overview = (props) => {
 			<div className="Overview">
 				<div className="o-container">
 					<div className="c-dialog --centered">
-						<div className="c-dialog-main-title">You have to log in to visit My Assets 😎</div>
+						<div className="c-dialog-main-title">
+							You have to log in to visit My Assets
+							<span role="img" aria-label="Cool dude">
+								😎
+							</span>
+						</div>
 						<div className="c-dialog-sub-title">Browse your OVRLands and ongoing Auctions. Login now.</div>
 					</div>
 				</div>

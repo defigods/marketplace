@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import mapboxgl from 'mapbox-gl';
 import geojson2h3 from 'geojson2h3';
 import config from '../../lib/config';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { MapContext, withMapContext } from '../../context/MapContext';
-import * as h3 from "h3-js";
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-
-
+import * as h3 from 'h3-js';
+import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
 
 class Map extends Component {
-	static contextType = MapContext;
-
 	constructor(props) {
 		super(props);
 
@@ -62,17 +59,17 @@ class Map extends Component {
 
 	hexagons() {
 		var center = this.map.getCenter();
-		//console.log (center)
+
 		const centerHex = h3.geoToH3(center['lat'], center['lng'], 12);
 		const kRing = h3.kRing(centerHex, 20);
-		// console.log('kRing', kRing)
+
 		var data = Object.assign({}, kRing);
-		// console.log('data', data)
+
 		var newData = Object.keys(data).reduce(function (obj, key) {
 			obj[data[key]] = Math.random();
 			return obj;
 		}, {});
-		// console.log('newData', newData)
+
 		return newData;
 	}
 
@@ -262,6 +259,7 @@ class Map extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		console.log(nextProps, nextState, nextContext);
 		if (this.context.state.onSingleView !== nextContext.state.onSingleView) {
 			return true;
 		}
@@ -285,25 +283,10 @@ class Map extends Component {
 		}
 	}
 
-	buildBreadcrumbs() {
-		const { location: { pathname }, mapProvider: { state: { hex_id, isAuction, isUserRelated } } } = this.props;
-		let currentPageLabel = pathname.split("/")[2];
-		currentPageLabel = currentPageLabel.charAt(0).toUpperCase() + currentPageLabel.slice(1);
-
-		const prevLinks = [];
-		if (currentPageLabel === "Land" && hex_id) {
-			prevLinks.push({ href: "/map/discover", label: `${isUserRelated ? "My " : ""}${isAuction ? "Auctions" : "Lands"}` });
-			currentPageLabel = hex_id;
-		}
-		return <Breadcrumbs currentPageLabel={currentPageLabel} previousLinks={prevLinks} />;
-
-	}
 	render() {
-		const breadcrumbs = this.buildBreadcrumbs();
-
 		return (
 			<>
-				{breadcrumbs}
+				<Breadcrumbs />
 				<div id="Map" className="Map">
 					<div id="js-map-view">Satellite</div>
 				</div>
@@ -311,5 +294,12 @@ class Map extends Component {
 		);
 	}
 }
+
+Map.contextType = MapContext;
+
+Map.propTypes = {
+	location: PropTypes.object,
+	mapProvider: PropTypes.object,
+};
 
 export default withMapContext(Map);
