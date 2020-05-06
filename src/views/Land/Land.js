@@ -76,9 +76,7 @@ export class Land extends Component {
 			const hex_id = this.props.match.params.id;
 			this.loadLandStateFromApi(hex_id);
 			this.mapActions.changeHexId(hex_id);
-			console.log('didupdateinsideif');
 		}
-		console.log('didupdate');
 	}
 
 	componentWillUnmount() {

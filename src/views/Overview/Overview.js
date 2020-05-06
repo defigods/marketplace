@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './style.scss';
-import { withMapContext, MapContext } from '../../context/MapContext';
+import { MapContext } from '../../context/MapContext';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import LandCard from '../../components/LandCard/LandCard';
 
@@ -119,11 +119,11 @@ const Overview = () => {
 		setCurrentLandPage(number);
 	}
 
-	// useEffect(() => {
-	// 	actions.disableSingleView();
-	// 	loadAuctionsByPage();
-	// 	loadLandsByPage();
-	// }, []);
+	useEffect(() => {
+		actions.disableSingleView();
+		loadAuctionsByPage();
+		loadLandsByPage();
+	}, []);
 
 	let customReturn;
 
@@ -175,4 +175,4 @@ const Overview = () => {
 	return customReturn;
 };
 
-export default withMapContext(Overview);
+export default Overview;
