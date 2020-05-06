@@ -11,8 +11,8 @@ import ValueCounter from '../../components/ValueCounter/ValueCounter';
 // import { networkError } from '../../lib/notifications';
 
 const ProfileContentLoginRequired = () => (
-	<div className="Profile">
-		<div className="p-container">
+	<div className="profile">
+		<div className="o-container">
 			<div className="c-dialog --centered">
 				<div className="c-dialog-main-title">You have to log in to visit Your profile 😎</div>
 				<div className="c-dialog-sub-title">Check your profile. Login now.</div>
@@ -25,15 +25,17 @@ const ProfileLayout = () => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 	return (
 		<div className="profile">
-			<div className="p-header">
-				<h2 className="p-header-title">My Profile</h2>
-				<span className="p-header-datetime">{currentDatetimeStamp}</span>
-			</div>
-			<div className="p-container">
-				<div className="o-fourth">
-					<HexImage className="profile-image" />
+			<div className="o-container">
+				<div className="p-header">
+					<h2 className="p-header-title">My Profile</h2>
+					<span className="p-header-datetime">{currentDatetimeStamp}</span>
 				</div>
-				<ProfileContent />
+				<div className="p-body">
+					<div className="o-fourth">
+						<HexImage className="profile-image" />
+					</div>
+					<ProfileContent />
+				</div>
 			</div>
 		</div>
 	);

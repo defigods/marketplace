@@ -1,11 +1,16 @@
 .profile {
-	width: 95%;
-	margin: 0 auto;
 	.profile-image {
 		width: 80%;
-		height: 80%;
+		height: auto;
 		margin: 0 auto;
-	}
+  }
+  .p-body{
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom: 80px;
+    display: flex;
+  }
 	.profile-content {
 		@include column(3/4);
 	}
@@ -46,10 +51,5 @@
 		// 	margin-top: 0;
 		// }
 		margin-bottom: 3rem;
-	}
-
-	.p-container {
-		width: 75%;
-		margin: 0 auto;
 	}
 }
