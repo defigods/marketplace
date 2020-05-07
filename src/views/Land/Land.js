@@ -198,7 +198,7 @@ export class Land extends Component {
 		switch (this.state.marketStatus) {
 			case 0:
 				button = (
-					<HexButton url="/" text="Init Auction" className="" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
+					<HexButton url="/" text="Init Auction" className="--blue" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
 				);
 				break;
 			case 1:
@@ -216,7 +216,7 @@ export class Land extends Component {
 					<HexButton
 						url="/"
 						text="Buy offer"
-						className="--purple"
+						className="--blue"
 						onClick={(e) => this.setActiveBuyOfferOverlay(e)}
 					></HexButton>
 				);
@@ -401,7 +401,7 @@ export class Land extends Component {
 				<div className="o-container">
 					<div className="Land__heading__1">
 						<h2>
-							<Textfit mode="single" max="25">
+							<Textfit mode="single" max={25}>
 								{this.state.name.sentence}
 							</Textfit>
 						</h2>

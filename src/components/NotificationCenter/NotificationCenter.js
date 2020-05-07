@@ -24,6 +24,7 @@ export class NotificationCenter extends Component {
 		) {
 			notifications = this.context.state.user.notifications.content.map((obj) => (
 				<Notification
+					key={obj.uuid}
 					data={obj}
 					actions={{ toggleNotificationCenter: this.context.actions.toggleShowNotificationCenter }}
 				></Notification>

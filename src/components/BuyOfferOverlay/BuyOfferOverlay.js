@@ -147,7 +147,7 @@ const BuyOfferOverlay = (props) => {
 								<HexButton
 									url="#"
 									text="Place Order"
-									className={`--purple ${bidValid ? '' : '--disabled'}`}
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									onClick={handleNext}
 								></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>

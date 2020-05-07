@@ -126,7 +126,7 @@ const MintOverlay = (props) => {
 								<HexButton
 									url="#"
 									text="Place Bid"
-									className={`--purple ${bidValid ? '' : '--disabled'}`}
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									onClick={handleNext}
 								></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>

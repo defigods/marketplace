@@ -56,8 +56,7 @@ export class UserProvider extends Component {
 
     cable.subscriptions.create(
       { channel: "UsersChannel", user_uuid: this.state.user.uuid},
-      {
-        received: data => {
+      { received: data => {
           const { notification } = data
           const { balance } = data
           const { unreaded_count } = data

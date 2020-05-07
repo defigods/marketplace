@@ -44,6 +44,9 @@
 }
 .Notification__content{
   clear: both;
+  span{
+    font-weight: 400;
+  }
 }
 .Notification__time{
   clear: both;

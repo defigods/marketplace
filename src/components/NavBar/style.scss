@@ -6,6 +6,7 @@
     top: 0px;
     width: 100%;
     z-index: 99;
+    box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.05);
 }
 
 .Profile__link{
@@ -70,6 +71,7 @@
     display: inline-block;
     position: relative;
     transition: ease-in-out 250ms all;
+    
     &::after{
         position: absolute;
         bottom: 0px;

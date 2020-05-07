@@ -6,6 +6,8 @@
     transition: all 250ms ease-in-out;
     min-width: 200px;
     @include column(1/5, $cycle: 5);
+    border-radius: 5px;
+    overflow: hidden;
     // .LandName__name {
     //   width: 100%;
     //   &:after{
@@ -25,7 +27,7 @@
     }
 
     &:hover{
-      box-shadow: 0px 0px 0px 0 rgba(30,30,30,0.00);
+      box-shadow: 0px 0px 10px 0 rgba(30,30,30,0.03);
       transform: scale(0.98);
     }
 }

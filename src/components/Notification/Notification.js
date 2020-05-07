@@ -29,6 +29,10 @@ const Notification = (props) => {
 		props.actions.toggleNotificationCenter();
 	};
 
+	const formatTextContent = (content) => {
+		return content.replace(props.data.landSentence, "<span>" + props.data.landSentence +"</span>");
+	}
+
 	const handleHide = () => {
 		setAnchorEl(null);
 		setHidden(true);
@@ -53,7 +57,7 @@ const Notification = (props) => {
 			content = (
 				<div key={props.data.uuid} className={`Notification ${!readed ? '--new' : ''}`} onClick={setAsReaded}>
 					<div className="Notification__body">
-						<div className="Notification__content">{props.data.content}</div>
+						<div className="Notification__content" dangerouslySetInnerHTML={{ __html: formatTextContent(props.data.content) }}></div>
 						<div className="Notification__time">
 							<TimeCounter date_end={props.data.createdAt}></TimeCounter>
 						</div>

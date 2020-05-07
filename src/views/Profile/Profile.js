@@ -58,10 +58,10 @@ const ProfileContent = () => {
 						<div className="p-balance-value">
 							<ValueCounter value="30000" />
 							<div>
-								<HexButton className="--hollow" text="BUY MORE"></HexButton>
+								<HexButton className="--orange" text="BUY MORE"></HexButton>
 							</div>
 							<div>
-								<HexButton className="--regular" text="TRANSFER"></HexButton>
+								<HexButton className="--hollow-orange" text="TRANSFER"></HexButton>
 							</div>
 						</div>
 					</div>

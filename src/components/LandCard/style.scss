@@ -2,21 +2,21 @@
 .LandCard{
     background: #FFFFFF;
     display: block;
-    box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.05);
+    box-shadow: -6px 7px 21px 0 rgba(30,30,30,0.05);
     @include column(1/4, $cycle: 4);
-  
+    border-radius: 5px;
+    overflow: hidden;
     float: left;
-    .Icon{
-      float: left;
-      margin-right: 15px;
-
-      height: 60px;
-      width: 60px;
-      padding: 5px;
-      padding-left: 0px;
+    transition: 350ms all cubic-bezier(0.190,  1.000, 0.220, 1.000);
+    background-position: center center;
+    background-size: 100%;
+    &:hover{
+      box-shadow: 0px 0px 20px rgba(30,30,30,0.05);
+      transform: scale(0.97);
     }
     .LandCard__body{
       float: left;
+      padding: 20px;
     }
     .TimeCounter{
       margin-top: 10px;
@@ -25,9 +25,18 @@
     .ola0{
       fill:none;stroke:#56c0e6
     }
+
+    position: relative;
+}
+
+.LandCard__header{
+  height: 120px;
+  width: 100%;
+  background-position: center center;
+  background-size: 120%;
 }
 .LandCard__cont{
-  margin: 25px 25px;
+  
   display: flow-root;
 }
 
