@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import mapboxgl from 'mapbox-gl';
-import geojson2h3 from 'geojson2h3';
-import config from '../../lib/config';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import { MapContext, withMapContext } from '../../context/MapContext';
+import geojson2h3 from 'geojson2h3';
 import * as h3 from 'h3-js';
+import config from '../../lib/config';
+import { MapContext, withMapContext } from '../../context/MapContext';
+
 import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
+import MapNavigationBox from '../MapNavigationBox/MapNavigationBox';
 
 class Map extends Component {
 	constructor(props) {
@@ -289,6 +291,7 @@ class Map extends Component {
 				<Breadcrumbs />
 				<div id="Map" className="Map">
 					<div id="js-map-view">Satellite</div>
+					<MapNavigationBox />
 				</div>
 			</>
 		);
