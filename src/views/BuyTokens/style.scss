@@ -1,0 +1,23 @@
+.BuyTokens__container {
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	grid-template-columns: repeat(4, 1fr);
+	max-width: 700px;
+	margin: auto;
+	margin-top: 50px;
+	grid-column-gap: 10px;
+
+	> *:not(button) {
+		grid-column: 1 / 5;
+	}
+
+	.BuyTokens__input {
+		padding: 10px;
+		margin-bottom: 16px;
+	}
+
+	.BuyTokens__description {
+		margin-bottom: 0;
+	}
+}

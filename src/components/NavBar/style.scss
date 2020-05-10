@@ -208,7 +208,15 @@
             top: .325em;
             position: relative;
         }
-    }
+	}
+	.Funds__container {
+		float: left;
+		line-height: 70px;
+
+		.Funds__buy {
+			display: inline;
+		}
+	}
 }
 
 .js--ring-notification-bell{
