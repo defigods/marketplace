@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Web3 from 'web3';
 import './style.scss';
 import { warningNotification } from '../../lib/notifications';
-import { promisifyAll } from 'bluebird';
-import tokenBuyABI from './BuyTokensABI';
-import erc20ABI from './ERC20ABI';
-
-// TODO change this for the final addresses
-const tokenBuyAddress = '0x33cB0Ff65DBc2a1F17C0c384C6435A771660Bf85';
-const daiAddress = '0x903c80Cb9723D0249CfBA48b863F328Fb589Cbf2';
-const tetherAddress = '0xa4c776E0f082e5E0589620F8A0cEF7b2b3bD8f6E';
-const usdcAddress = '0x0f83ee6BfAb643b4A1a0024f3413e56801a2Fb84';
+import { tokenBuyAddress } from '../../lib/contracts';
+import { withUserContext } from '../../context/UserContext';
 
 const promisify = (inner) =>
 	new Promise((resolve, reject) =>
@@ -26,56 +18,19 @@ const promisify = (inner) =>
 /**
  * Buy tokens component
  */
-const BuyTokens = () => {
-	const [tokenBuy, setTokenBuy] = useState(null);
-	const [dai, setDai] = useState(null);
-	const [tether, setTether] = useState(null);
-	const [usdc, setUsdc] = useState(null);
+const BuyTokens = context => {
+	const { tokenBuy, dai, tether, usdc } = context.userProvider.state;
 	const [perEth, setPerEth] = useState(0);
 	const [perUsd, setPerUsd] = useState(0);
 	const [tokensToBuy, setTokensToBuy] = useState(0);
-
+	
 	useEffect(() => {
-		setupWeb3();
+		getPrices();
 	}, []);
-
-	useEffect(() => {
-		if (tokenBuy) getPrices();
-	}, [tokenBuy]);
-
-	// Note: the web3 version is always 0.20.7 because of metamask
-	const setupWeb3 = async () => {
-		const ethereum = window.ethereum;
-		if (typeof ethereum !== 'undefined') {
-			try {
-				await ethereum.enable();
-			} catch (e) {
-				warningNotification('Metamask permission error', 'You must accept the connection request to continue');
-			}
-			window.web3 = new Web3(ethereum);
-		} else if (typeof window.web3 !== 'undefined') {
-			window.web3 = new Web3(window.web3.currentProvider);
-		} else {
-			warningNotification('Metamask not detected', 'You must login to metamask to use this application');
-		}
-		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
-		setupContracts();
-	};
-
-	const setupContracts = () => {
-		const _dai = window.web3.eth.contract(erc20ABI).at(daiAddress);
-		setDai(promisifyAll(_dai));
-		const _tether = window.web3.eth.contract(erc20ABI).at(tetherAddress);
-		setTether(promisifyAll(_tether));
-		const _usdc = window.web3.eth.contract(erc20ABI).at(usdcAddress);
-		setUsdc(promisifyAll(_usdc));
-		const contract = window.web3.eth.contract(tokenBuyABI).at(tokenBuyAddress);
-		setTokenBuy(promisifyAll(contract));
-	};
 
 	const waitTx = (txHash) => {
 		return new Promise((resolve, reject) => {
-			let blockCounter = 2;
+			let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
 			// Wait for tx to be finished
 			let filter = window.web3.eth.filter('latest').watch(async (err, blockHash) => {
 				if (err) {
@@ -83,6 +38,12 @@ const BuyTokens = () => {
 					filter = null;
 					return reject(err);
 				}
+				if (blockCounter<=0) {
+					filter.stopWatching();
+					filter = null;
+					console.warn('!! Tx expired !!');
+					reject(`Transaction not confirmed after ${blockCounter} blocks`)
+				  }
 				// Get info about latest Ethereum block
 				const block = await promisify((cb) => window.web3.eth.getBlock(blockHash, cb));
 				--blockCounter;
@@ -120,7 +81,8 @@ const BuyTokens = () => {
 			switch (type) {
 				case 'eth':
 					const value = tokensToBuy / perEth;
-					await tokenBuy.buyTokensWithEthAsync({ value });
+					const tx = await tokenBuy.buyTokensWithEthAsync({ value });
+					await waitTx(tx);
 					break;
 				case 'usdt':
 					await buyWithToken(tether, 'usdt');
@@ -131,7 +93,11 @@ const BuyTokens = () => {
 				case 'dai':
 					await buyWithToken(dai, 'dai');
 					break;
+				default:
+					warningNotification('Error', 'The currency selected is not correct');
+					break;
 			}
+			context.userProvider.actions.getOvrsOwned()
 		} catch (e) {
 			console.log('Error', e);
 			warningNotification(
@@ -169,6 +135,9 @@ const BuyTokens = () => {
 					break;
 				case 'usdc':
 					tx = await tokenBuy.buyTokensWithUsdcAsync(tokensToBuy);
+					break;
+				default:
+					warningNotification('Error', 'The currency selected is not correct');
 					break;
 			}
 			await waitTx(tx);
@@ -228,4 +197,4 @@ const BuyTokens = () => {
 	);
 };
 
-export default BuyTokens;
+export default withUserContext(BuyTokens);
