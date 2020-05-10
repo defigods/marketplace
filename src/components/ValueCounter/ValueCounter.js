@@ -21,7 +21,7 @@ class ValueCounter extends Component {
 						</svg>
 					</div>
 				</div>
-				<div className="ValueCounter__value">{this.props.ovrsOwned}</div>
+				<div className="ValueCounter__value"> {this.props.value}</div>
 			</div>
 		);
 	}

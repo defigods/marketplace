@@ -50,7 +50,7 @@ class NavBar extends Component {
 
 						<div className="Funds__container">
 							<Link to="/" className="Funds__link">
-								<ValueCounter ovrsOwned={state.ovrsOwned}></ValueCounter>
+								<ValueCounter value={state.ovrsOwned}></ValueCounter>
 							</Link>
 							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
 								Buy OVR
