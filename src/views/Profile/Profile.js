@@ -14,7 +14,12 @@ const ProfileContentLoginRequired = () => (
 	<div className="profile">
 		<div className="o-container">
 			<div className="c-dialog --centered">
-				<div className="c-dialog-main-title">You have to log in to visit Your profile 😎</div>
+				<div className="c-dialog-main-title">
+					You have to log in to visit Your profile
+					<span role="img" aria-label="Cool dude">
+						😎
+					</span>
+				</div>
 				<div className="c-dialog-sub-title">Check your profile. Login now.</div>
 			</div>
 		</div>

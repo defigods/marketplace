@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import mapboxgl from 'mapbox-gl';
 import geojson2h3 from 'geojson2h3';
 import config from '../../lib/config';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { MapContext, withMapContext } from '../../context/MapContext';
-const h3 = require('h3-js');
+import * as h3 from 'h3-js';
+import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
 
 class Map extends Component {
-	static contextType = MapContext;
-
 	constructor(props) {
 		super(props);
 
@@ -59,17 +59,17 @@ class Map extends Component {
 
 	hexagons() {
 		var center = this.map.getCenter();
-		//console.log (center)
+
 		const centerHex = h3.geoToH3(center['lat'], center['lng'], 12);
 		const kRing = h3.kRing(centerHex, 20);
-		// console.log('kRing', kRing)
+
 		var data = Object.assign({}, kRing);
-		// console.log('data', data)
+
 		var newData = Object.keys(data).reduce(function (obj, key) {
 			obj[data[key]] = Math.random();
 			return obj;
 		}, {});
-		// console.log('newData', newData)
+
 		return newData;
 	}
 
@@ -259,6 +259,7 @@ class Map extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		console.log(nextProps, nextState, nextContext);
 		if (this.context.state.onSingleView !== nextContext.state.onSingleView) {
 			return true;
 		}
@@ -284,11 +285,21 @@ class Map extends Component {
 
 	render() {
 		return (
-			<div id="Map" className="Map">
-				<div id="js-map-view">Satellite</div>
-			</div>
+			<>
+				<Breadcrumbs />
+				<div id="Map" className="Map">
+					<div id="js-map-view">Satellite</div>
+				</div>
+			</>
 		);
 	}
 }
+
+Map.contextType = MapContext;
+
+Map.propTypes = {
+	location: PropTypes.object,
+	mapProvider: PropTypes.object,
+};
 
 export default withMapContext(Map);

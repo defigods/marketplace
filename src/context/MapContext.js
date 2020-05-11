@@ -10,35 +10,49 @@ export class MapProvider extends Component {
 			onSingleView: false,
 			hex_id: '8c81326dda43dff',
 			isAuction: false,
+			isUserRelated: false,
 			activeBidOverlay: false,
 			activeMintOverlay: false,
 			activeSellOverlay: false,
 			activeBuyOfferOverlay: false,
 			auctionList: [],
+			landData: {},
 		};
+
+		this.changeHexId = this.changeHexId.bind(this);
+		this.disableSingleView = this.disableSingleView.bind(this);
+		this.changeAuctionList = this.changeAuctionList.bind(this);
+		this.changeActiveBidOverlay = this.changeActiveBidOverlay.bind(this);
+		this.changeActiveMintOverlay = this.changeActiveMintOverlay.bind(this);
+		this.changeActiveSellOverlay = this.changeActiveSellOverlay.bind(this);
+		this.changeActiveBuyOfferOverlay = this.changeActiveBuyOfferOverlay.bind(this);
+		this.changeLandData = this.changeLandData.bind(this);
 	}
 
-	changeHexId = (hex_id) => {
+	changeHexId(hex_id) {
 		this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true });
-	};
-	disableSingleView = () => {
+	}
+	changeLandData(landData) {
+		this.setState({ landData });
+	}
+	disableSingleView() {
 		this.setState({ onSingleView: false });
-	};
-	changeAuctionList = (list) => {
+	}
+	changeAuctionList(list) {
 		this.setState({ auctionList: list });
-	};
-	changeActiveBidOverlay = (activeVal) => {
+	}
+	changeActiveBidOverlay(activeVal) {
 		this.setState({ activeBidOverlay: activeVal });
-	};
-	changeActiveMintOverlay = (activeVal) => {
+	}
+	changeActiveMintOverlay(activeVal) {
 		this.setState({ activeMintOverlay: activeVal });
-	};
-	changeActiveSellOverlay = (activeVal) => {
+	}
+	changeActiveSellOverlay(activeVal) {
 		this.setState({ activeSellOverlay: activeVal });
-	};
-	changeActiveBuyOfferOverlay = (activeVal) => {
+	}
+	changeActiveBuyOfferOverlay(activeVal) {
 		this.setState({ activeBuyOfferOverlay: activeVal });
-	};
+	}
 
 	render() {
 		return (
@@ -53,6 +67,7 @@ export class MapProvider extends Component {
 						disableSingleView: this.disableSingleView,
 						changeActiveSellOverlay: this.changeActiveSellOverlay,
 						changeActiveBuyOfferOverlay: this.changeActiveBuyOfferOverlay,
+						changeLandData: this.changeLandData,
 					},
 					overviewList: this.overviewList,
 				}}

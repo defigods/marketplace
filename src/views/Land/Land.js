@@ -41,8 +41,7 @@ export class Land extends Component {
 			.then((response) => {
 				let data = response.data;
 				console.log('landApiData', data);
-
-				this.setState({
+				const state = {
 					key: data.uuid,
 					name: { sentence: data.sentenceId, hex: data.uuid },
 					location: data.address.full,
@@ -52,7 +51,9 @@ export class Land extends Component {
 					openBuyOffers: data.openBuyOffers,
 					auction: data.auction,
 					value: data.value,
-				});
+				};
+				this.mapActions.changeLandData(state);
+				this.setState(state);
 			})
 			.catch((error) => {
 				// Notify user if network error
@@ -75,9 +76,7 @@ export class Land extends Component {
 			const hex_id = this.props.match.params.id;
 			this.loadLandStateFromApi(hex_id);
 			this.mapActions.changeHexId(hex_id);
-			console.log('didupdateinsideif');
 		}
-		console.log('didupdate');
 	}
 
 	componentWillUnmount() {
