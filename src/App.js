@@ -9,6 +9,7 @@ import Land from './views/Land/Land';
 import Profile from './views/Profile/Profile';
 import Login from './views/Login/Login';
 import Signup from './views/Signup/Signup';
+import BuyTokens from './views/BuyTokens/BuyTokens';
 
 import NavBar from './components/NavBar/NavBar';
 import Map from './components/Map/Map';
@@ -47,6 +48,7 @@ function App() {
 													<Route path="/map/land/:id" component={Land}></Route>
 													<Route path="/login" component={Login}></Route>
 													<Route path="/signup" component={Signup}></Route>
+													<Route path="/buy-tokens" component={BuyTokens}></Route>
 												</Switch>
 												<Footer></Footer>
 											</div>

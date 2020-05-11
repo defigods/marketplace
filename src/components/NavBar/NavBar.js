@@ -47,9 +47,16 @@ class NavBar extends Component {
 								{state.user.notifications ? state.user.notifications.unreadedCount : 0}
 							</div>
 						</Link>
-						<Link to="/" className="Funds__link">
-							<ValueCounter value={state.user.balance}></ValueCounter>
-						</Link>
+
+						<div className="Funds__container">
+							<Link to="/" className="Funds__link">
+								<ValueCounter value={state.ovrsOwned}></ValueCounter>
+							</Link>
+							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
+								Buy OVR
+							</Link>
+						</div>
+
 						<Link to="/" className="Profile__link">
 							<span>{state.user.username}</span>
 							<div className="Profile__img-cont">
