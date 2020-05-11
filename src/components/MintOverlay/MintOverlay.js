@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
 // import { makeStyles } from '@material-ui/core/styles';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 
@@ -10,45 +9,66 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { mintLand } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
+import { icoAddress } from '../../lib/contracts';
 
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 
 const MintOverlay = (props) => {
-	const [currentBid] = useState(10);
-	const [newBidValue, setNewBidValue] = useState('');
-	const [bidInputError] = useState(false);
-	const [bidValid, setBidValid] = useState(false);
+	const { waitTx } = props.userProvider.actions;
+	const { hex_id } = props.mapProvider.state;
+	const { ovr, ico } = props.userProvider.state;
+	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 
-	const handleNext = () => {
+	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
 				warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			} else {
+				// Participate in the auction
+				const landId = parseInt(hex_id, 16);
+				const isAvailableInThisEpoch = await ico.checkEpochAsync(landId);
+				if (!isAvailableInThisEpoch) {
+					return warningNotification('Epoch issue', 'The current land is not available in this epoch');
+				}
+
+				// Check current balance and allowance
+				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
+				let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
+				// Allow all the tokens
+				if (currentBalance.greaterThan(currentAllowance)) {
+					try {
+						const tx = await ovr.approveAsync(icoAddress, currentBalance);
+						await waitTx(tx);
+					} catch (e) {
+						return dangerNotification(
+							'Approval error',
+							'There was an error processing the approval of your tokens try again in a few minutes',
+						);
+					}
+				}
+				const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
+				const nextPayment = previousPayment.mul(2).toString();
+				setNextBid(nextPayment);
+
+				// Check if the user has enough balance to buy those tokens
+				if (currentBalance.lessThan(nextPayment)) {
+					return warningNotification(
+						'Not enough tokens',
+						`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
+					);
+				}
+				const tx = await ico.participateInAuctionAsync(landId, {
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				});
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);
-				//  TODO Remove timeout
-				setTimeout(function () {
-					sendMint();
-				}, 1500);
+				await waitTx(tx);
+				sendMint();
 			}
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}
-	};
-
-	// const handleBack = () => {
-	//   setActiveStep(prevActiveStep => prevActiveStep - 1);
-	// };
-
-	const updateNewBidValue = (e) => {
-		if (newBidValue >= 10) {
-			setBidValid(true);
-		} else {
-			setBidValid(false);
-		}
-
-		setNewBidValue(e.target.value);
 	};
 
 	function setDeactiveOverlay(e) {
@@ -58,15 +78,8 @@ const MintOverlay = (props) => {
 	}
 
 	function sendMint() {
-		// //Check value if valid
-		// if (newBidValue < 10) {
-		//   setBidInputError('Should be equal to or greater than Minimum bid')
-		//   setBidValid(false)
-		//   return false
-		// }
-
 		// Call API function
-		mintLand(props.land.key, newBidValue)
+		mintLand(props.land.key, nextBid)
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
@@ -103,32 +116,15 @@ const MintOverlay = (props) => {
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Minimum bid</div>
+									<div className="Overlay__bid_title">Next bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={currentBid}></ValueCounter>
+										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
-							<div className="Overlay__input">
-								<TextField
-									id="quantity"
-									label="Your Bid"
-									type="number"
-									error={bidInputError !== false ? true : false}
-									helperText={bidInputError !== false ? bidInputError : ''}
-									value={newBidValue}
-									onFocus={updateNewBidValue}
-									onChange={updateNewBidValue}
-									onKeyUp={updateNewBidValue}
-								/>
-							</div>
+							<br />
 							<div className="Overlay__buttons_container">
-								<HexButton
-									url="#"
-									text="Place Bid"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={handleNext}
-								></HexButton>
+								<HexButton url="#" text="Place Bid" className={`--orange`} onClick={handleNext}></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
@@ -147,7 +143,7 @@ const MintOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Your bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={newBidValue}></ValueCounter>
+										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -170,7 +166,7 @@ const MintOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={newBidValue}></ValueCounter>
+										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>

@@ -4,22 +4,12 @@ import { warningNotification } from '../../lib/notifications';
 import { tokenBuyAddress } from '../../lib/contracts';
 import { withUserContext } from '../../context/UserContext';
 
-const promisify = (inner) =>
-	new Promise((resolve, reject) =>
-		inner((err, res) => {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(res);
-			}
-		}),
-	);
-
 /**
  * Buy tokens component
  */
 const BuyTokens = context => {
 	const { tokenBuy, dai, tether, usdc } = context.userProvider.state;
+	const { waitTx } = context.userProvider.actions;
 	const [perEth, setPerEth] = useState(0);
 	const [perUsd, setPerUsd] = useState(0);
 	const [tokensToBuy, setTokensToBuy] = useState(0);
@@ -27,37 +17,6 @@ const BuyTokens = context => {
 	useEffect(() => {
 		getPrices();
 	}, []);
-
-	const waitTx = (txHash) => {
-		return new Promise((resolve, reject) => {
-			let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
-			// Wait for tx to be finished
-			let filter = window.web3.eth.filter('latest').watch(async (err, blockHash) => {
-				if (err) {
-					filter.stopWatching();
-					filter = null;
-					return reject(err);
-				}
-				if (blockCounter<=0) {
-					filter.stopWatching();
-					filter = null;
-					console.warn('!! Tx expired !!');
-					reject(`Transaction not confirmed after ${blockCounter} blocks`)
-				  }
-				// Get info about latest Ethereum block
-				const block = await promisify((cb) => window.web3.eth.getBlock(blockHash, cb));
-				--blockCounter;
-				// Found tx hash?
-				if (block.transactions.indexOf(txHash) > -1) {
-					// Tx is finished
-					filter.stopWatching();
-					filter = null;
-					return resolve();
-					// Tx hash not found yet?
-				}
-			});
-		});
-	};
 
 	/**
 	 * Sets the number of tokens you get per ether and the number of tokens for stablecoins
