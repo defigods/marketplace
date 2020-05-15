@@ -105,7 +105,7 @@ export class UserProvider extends Component {
 			try {
 				await ethereum.enable();
 			} catch (e) {
-				warningNotification('Metamask permission error', 'You must accept the connection request to continue');
+				return warningNotification('Metamask permission error', 'You must accept the connection request to continue');
 			}
 			window.web3 = new Web3(ethereum);
 		} else if (typeof window.web3 !== 'undefined') {
@@ -192,6 +192,7 @@ export class UserProvider extends Component {
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						getOvrsOwned: this.getOvrsOwned,
 						waitTx: this.waitTx,
+						setupWeb3: this.setupWeb3,
 					},
 				}}
 			>

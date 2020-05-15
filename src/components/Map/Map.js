@@ -149,6 +149,12 @@ class Map extends Component {
 			const hex_id = h3.geoToH3(e.lngLat['lat'], e.lngLat['lng'], 12);
 			that.focusMap(hex_id, state.isAuction);
 			that.props.history.push(`/map/land/${hex_id}`);
+			const landSelectedEvent = new CustomEvent('land-selected', {
+				detail: {
+					hex_id,
+				},
+			});
+			document.dispatchEvent(landSelectedEvent);
 		});
 	}
 

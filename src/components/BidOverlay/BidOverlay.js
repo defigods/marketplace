@@ -36,14 +36,6 @@ const BidOverlay = (props) => {
 		}
 	};
 
-	useEffect(() => {
-		console.log('bidoverlayuseeffect');
-	}, []);
-
-	// const handleBack = () => {
-	//   setActiveStep(prevActiveStep => prevActiveStep - 1);
-	// };
-
 	const updateNewBidValue = (e) => {
 		if (newBidValue >= props.currentBid * 2) {
 			setBidValid(true);
@@ -135,24 +127,11 @@ const BidOverlay = (props) => {
 									</div>
 								</div>
 							</div>
-							<div className="Overlay__input">
-								<TextField
-									id="quantity"
-									label="Your Bid"
-									type="number"
-									error={bidInputError !== false ? true : false}
-									helperText={bidInputError !== false ? bidInputError : ''}
-									value={newBidValue}
-									onFocus={updateNewBidValue}
-									onChange={updateNewBidValue}
-									onKeyUp={updateNewBidValue}
-								/>
-							</div>
 							<div className="Overlay__buttons_container">
 								<HexButton
 									url="#"
 									text="Place Bid"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									className="--orange"
 									onClick={handleNext}
 								></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
