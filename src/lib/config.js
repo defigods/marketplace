@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 
-const apisDevelopment = false 
+const apisDevelopment = true 
 const apis = {
   hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003/api/v1',
   socket: apisDevelopment ? 'ws://localhost:3000/cable' : 'ws://47.254.135.104:8003/cable'
@@ -50,3 +50,16 @@ export function camelCaseKeys(object) {
 		return value;
 	});
 }
+
+Array.prototype.readNotification = function (notification_uuid) {
+	let foundItem = this.find((item) => item.uuid === notification_uuid);
+	if (foundItem) {
+		foundItem.status = 1;
+	}
+};
+
+Array.prototype.readAllNotifications = function () {
+	this.forEach((item) => {
+		item.status = 1;
+	});
+};

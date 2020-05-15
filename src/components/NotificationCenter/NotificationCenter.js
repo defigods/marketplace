@@ -9,9 +9,6 @@ export class NotificationCenter extends Component {
 	static contextType = UserContext;
 	constructor(props) {
 		super(props);
-		this.state = {
-			something: false,
-		};
 	}
 
 	renderNotifications = () => {
@@ -26,7 +23,7 @@ export class NotificationCenter extends Component {
 				<Notification
 					key={obj.uuid}
 					data={obj}
-					actions={{ toggleNotificationCenter: this.context.actions.toggleShowNotificationCenter }}
+					actions={{ toggleNotificationCenter: this.context.actions.toggleShowNotificationCenter, setAsReaded: this.context.actions.notification.setAsReaded }}
 				></Notification>
 			));
 		} else {
@@ -43,8 +40,8 @@ export class NotificationCenter extends Component {
 
 	setAllAsReaded = () => {
 		readAllNotifications().then((response) => {
-			console.log(response);
-			// TODO: trigger reload or wait for sockets
+			this.context.actions.notification.setAllAsReaded()
+			this.context.actions.toggleShowNotificationCenter()
 		});
 	};
 

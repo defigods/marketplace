@@ -8,6 +8,7 @@ import { promisifyAll } from 'bluebird';
 import { tokenBuyAddress, daiAddress, tetherAddress, usdcAddress, ovrAddress, icoAddress } from '../lib/contracts';
 import { tokenBuyAbi, erc20Abi, icoAbi } from '../lib/abis';
 import { zhCN } from 'date-fns/esm/locale';
+
 let ActionCable = require('actioncable');
 
 const promisify = (inner) =>
@@ -162,6 +163,9 @@ export class UserProvider extends Component {
 					const { balance } = data;
 					const { unreaded_count } = data;
 
+					console.log('notification', notification)
+					console.log('this.state.user.notifications.content', this.state.user.notifications.content)
+						
 					this.setState({
 						user: {
 							...this.state.user,
@@ -170,6 +174,7 @@ export class UserProvider extends Component {
 								...this.state.user.notifications,
 								unreadedCount: unreaded_count,
 								content: [notification, ...this.state.user.notifications.content],
+								// content: update(this.state.user.notifications.content, { 1: { name: { $set: 'updated field name' } } })
 							},
 						},
 					});
@@ -182,6 +187,42 @@ export class UserProvider extends Component {
 		this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
 	};
 
+	setNotificationAsReaded = (notification_uuid) => {
+		let notifications_content = this.state.user.notifications.content
+		let unreaded_count = this.state.user.notifications.unreadedCount
+
+		notifications_content.readNotification(notification_uuid)
+		unreaded_count = unreaded_count - 1
+
+		this.setState({
+			user: {
+				...this.state.user,
+				notifications: {
+					...this.state.user.notifications,
+					unreadedCount: unreaded_count,
+					content: notifications_content,
+				},
+			},
+		});
+	};
+
+	setAllNotificationsAsReaded = () => {
+		let notifications_content = this.state.user.notifications.content
+		console.log("prima", notifications_content)
+		notifications_content.readAllNotifications()
+		console.log("dopo",notifications_content)
+		this.setState({
+			user: {
+				...this.state.user,
+				notifications: {
+					...this.state.user.notifications,
+					unreadedCount: 0,
+					content: notifications_content,
+				},
+			},
+		});
+	};
+
 	render() {
 		return (
 			<UserContext.Provider
@@ -190,6 +231,10 @@ export class UserProvider extends Component {
 					actions: {
 						loginUser: this.loginUser,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
+						notification: {
+							setAsReaded: this.setNotificationAsReaded,
+							setAllAsReaded: this.setAllNotificationsAsReaded,
+						},
 						getOvrsOwned: this.getOvrsOwned,
 						waitTx: this.waitTx,
 						setupWeb3: this.setupWeb3,

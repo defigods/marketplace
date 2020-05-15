@@ -36,7 +36,6 @@ const Notification = (props) => {
 	const handleHide = () => {
 		setAnchorEl(null);
 		setHidden(true);
-
 		hideNotification(props.data.uuid).then((response) => {
 			// TODO: check if result is true
 		});
@@ -44,9 +43,8 @@ const Notification = (props) => {
 
 	const setAsReaded = () => {
 		setReaded(true);
-
 		readNotification(props.data.uuid).then((response) => {
-			// TODO: check if result is true
+			props.actions.setAsReaded(props.data.uuid);
 		});
 	};
 
