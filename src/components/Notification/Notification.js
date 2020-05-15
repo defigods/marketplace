@@ -36,26 +36,28 @@ const Notification = (props) => {
 	const handleHide = () => {
 		setAnchorEl(null);
 		setHidden(true);
-		hideNotification(props.data.uuid).then((response) => {
-			// TODO: check if result is true
-		});
+		hideNotification(props.data.uuid).then(() => {});
 	};
 
 	const setAsReaded = () => {
 		setReaded(true);
-		readNotification(props.data.uuid).then((response) => {
-			props.actions.setAsReaded(props.data.uuid);
-		});
+		if (!readed) {
+			readNotification(props.data.uuid).then((response) => {
+				props.actions.setAsReaded(props.data.uuid);
+			});
+		}
 	};
 
 	const returnContent = () => {
-		console.log(hidden);
 		let content;
 		if (!hidden) {
 			content = (
 				<div key={props.data.uuid} className={`Notification ${!readed ? '--new' : ''}`} onClick={setAsReaded}>
 					<div className="Notification__body">
-						<div className="Notification__content" dangerouslySetInnerHTML={{ __html: formatTextContent(props.data.content) }}></div>
+						<div
+							className="Notification__content"
+							dangerouslySetInnerHTML={{ __html: formatTextContent(props.data.content) }}
+						></div>
 						<div className="Notification__time">
 							<TimeCounter date_end={props.data.createdAt}></TimeCounter>
 						</div>

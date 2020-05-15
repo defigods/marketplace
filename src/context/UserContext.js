@@ -151,7 +151,7 @@ export class UserProvider extends Component {
 	};
 
 	liveSocket = () => {
-		console.log('live sockets', this.state.user.uuid);
+		// console.log('live sockets', this.state.user.uuid);
 		// Sockets
 		var cable = ActionCable.createConsumer(config.apis.socket);
 
@@ -162,9 +162,6 @@ export class UserProvider extends Component {
 					const { notification } = data;
 					const { balance } = data;
 					const { unreaded_count } = data;
-
-					console.log('notification', notification)
-					console.log('this.state.user.notifications.content', this.state.user.notifications.content)
 						
 					this.setState({
 						user: {
@@ -174,7 +171,6 @@ export class UserProvider extends Component {
 								...this.state.user.notifications,
 								unreadedCount: unreaded_count,
 								content: [notification, ...this.state.user.notifications.content],
-								// content: update(this.state.user.notifications.content, { 1: { name: { $set: 'updated field name' } } })
 							},
 						},
 					});
@@ -208,9 +204,7 @@ export class UserProvider extends Component {
 
 	setAllNotificationsAsReaded = () => {
 		let notifications_content = this.state.user.notifications.content
-		console.log("prima", notifications_content)
 		notifications_content.readAllNotifications()
-		console.log("dopo",notifications_content)
 		this.setState({
 			user: {
 				...this.state.user,
