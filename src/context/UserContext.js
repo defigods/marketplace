@@ -41,10 +41,12 @@ export class UserProvider extends Component {
 			tokenBuy: null,
 			ovr: null,
 			ico: null,
+			setupComplete: false,
 		};
 	}
 
 	componentDidMount() {
+		this.setupWeb3();
 		if (isLogged()) {
 			userProfile()
 				.then((response) => {
@@ -62,11 +64,10 @@ export class UserProvider extends Component {
 				});
 
 			this.loginUser(getToken('userToken'), getToken('userUuid'));
-			this.setupWeb3();
 		}
 	}
 
-	waitTx = txHash => {
+	waitTx = (txHash) => {
 		return new Promise((resolve, reject) => {
 			let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
 			// Wait for tx to be finished
@@ -76,12 +77,12 @@ export class UserProvider extends Component {
 					filter = null;
 					return reject(err);
 				}
-				if (blockCounter<=0) {
+				if (blockCounter <= 0) {
 					filter.stopWatching();
 					filter = null;
 					console.warn('!! Tx expired !!');
-					reject(`Transaction not confirmed after ${blockCounter} blocks`)
-				  }
+					reject(`Transaction not confirmed after ${blockCounter} blocks`);
+				}
 				// Get info about latest Ethereum block
 				const block = await promisify((cb) => window.web3.eth.getBlock(blockHash, cb));
 				--blockCounter;
@@ -110,12 +111,12 @@ export class UserProvider extends Component {
 		} else if (typeof window.web3 !== 'undefined') {
 			window.web3 = new Web3(window.web3.currentProvider);
 		} else {
-			warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		await this.setupContracts();
 		await this.getOvrsOwned();
-	}
+	};
 
 	setupContracts = async () => {
 		const _dai = window.web3.eth.contract(erc20Abi).at(daiAddress);
@@ -131,13 +132,14 @@ export class UserProvider extends Component {
 			tokenBuy: promisifyAll(_tokenBuy),
 			ovr: promisifyAll(_ovr),
 			ico: promisifyAll(_ico),
+			setupComplete: true,
 		});
-	}
+	};
 
 	getOvrsOwned = async () => {
 		const ovrsOwned = String(window.web3.fromWei(await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount)));
 		this.setState({ ovrsOwned });
-	}
+	};
 
 	loginUser = (token, user) => {
 		this.setState({ isLoggedIn: true, token: token, user: user });
@@ -185,9 +187,9 @@ export class UserProvider extends Component {
 			<UserContext.Provider
 				value={{
 					state: this.state,
-					actions: { 
-						loginUser: this.loginUser, 
-						toggleShowNotificationCenter: this.toggleShowNotificationCenter, 
+					actions: {
+						loginUser: this.loginUser,
+						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						getOvrsOwned: this.getOvrsOwned,
 						waitTx: this.waitTx,
 					},

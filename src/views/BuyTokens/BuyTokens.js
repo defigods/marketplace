@@ -7,21 +7,29 @@ import { withUserContext } from '../../context/UserContext';
 /**
  * Buy tokens component
  */
-const BuyTokens = context => {
-	const { tokenBuy, dai, tether, usdc } = context.userProvider.state;
+const BuyTokens = (context) => {
+	const { tokenBuy, dai, tether, usdc, setupComplete } = context.userProvider.state;
 	const { waitTx } = context.userProvider.actions;
 	const [perEth, setPerEth] = useState(0);
 	const [perUsd, setPerUsd] = useState(0);
 	const [tokensToBuy, setTokensToBuy] = useState(0);
-	
 	useEffect(() => {
 		getPrices();
 	}, []);
+
+	const requireSetup = () => {
+		if (!setupComplete) {
+			warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+			return false;
+		}
+		return true;
+	};
 
 	/**
 	 * Sets the number of tokens you get per ether and the number of tokens for stablecoins
 	 */
 	const getPrices = async () => {
+		if (!requireSetup()) return;
 		const receivedPerEth = Number(await tokenBuy.tokensPerEthAsync());
 		const receivedPerUsd = Number(await tokenBuy.tokensPerUsdAsync());
 		setPerEth(receivedPerEth);
@@ -34,8 +42,8 @@ const BuyTokens = context => {
 	 * @param {String} type The type of payment chosen
 	 */
 	const buy = async (type) => {
+		if (!requireSetup()) return;
 		if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
-
 		try {
 			switch (type) {
 				case 'eth':
@@ -56,7 +64,7 @@ const BuyTokens = context => {
 					warningNotification('Error', 'The currency selected is not correct');
 					break;
 			}
-			context.userProvider.actions.getOvrsOwned()
+			context.userProvider.actions.getOvrsOwned();
 		} catch (e) {
 			console.log('Error', e);
 			warningNotification(
@@ -67,6 +75,7 @@ const BuyTokens = context => {
 	};
 
 	const buyWithToken = async (token, type) => {
+		if (!requireSetup()) return;
 		let currentBalance = await token.balanceOfAsync(window.web3.eth.defaultAccount);
 		let currentAllowance = await token.allowanceAsync(window.web3.eth.defaultAccount, tokenBuyAddress);
 		// Allow all the tokens
