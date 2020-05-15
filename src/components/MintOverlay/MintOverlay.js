@@ -1,71 +1,93 @@
-import React, { useState } from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
-
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
-
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { mintLand } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
 import { icoAddress } from '../../lib/contracts';
 
-// import Stepper from '@material-ui/core/Stepper';
-// import Step from '@material-ui/core/Step';
-
 const MintOverlay = (props) => {
 	const { waitTx } = props.userProvider.actions;
 	const { hex_id } = props.mapProvider.state;
-	const { ovr, ico } = props.userProvider.state;
+	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
+
+	useEffect(() => {
+		if (setupComplete) setupListeners();
+	}, [setupComplete]);
+
+	const setupListeners = () => {
+		document.addEventListener('land-selected', (event) => {
+			setNextBidSelectedLand(event.detail.hex_id);
+		});
+	};
+
+	const setNextBidSelectedLand = async (hex_id) => {
+		if (!setupComplete || !ico || !ovr) {
+			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+		}
+		const landId = parseInt(hex_id, 16);
+		const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
+		let nextPayment = previousPayment.mul(2).toString();
+		// If nobody has purchased it yet, set the default bid
+		if (nextPayment == 0) {
+			const initialBid = String(await ico.initialLandBidAsync());
+			nextPayment = window.web3.fromWei(initialBid);
+		}
+		setNextBid(nextPayment);
+	};
 
 	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
-				warningNotification('Invalid authentication', 'Please Log In to partecipate');
-			} else {
-				// Participate in the auction
-				const landId = parseInt(hex_id, 16);
-				const isAvailableInThisEpoch = await ico.checkEpochAsync(landId);
-				if (!isAvailableInThisEpoch) {
-					return warningNotification('Epoch issue', 'The current land is not available in this epoch');
-				}
+				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			}
+			// Participate in the auction
+			const landId = parseInt(hex_id, 16);
+			const isAvailableInThisEpoch = await ico.checkEpochAsync(landId);
+			if (!isAvailableInThisEpoch) {
+				return warningNotification('Epoch issue', 'The current land is not available in this epoch');
+			}
 
-				// Check current balance and allowance
-				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-				let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
-				// Allow all the tokens
-				if (currentBalance.greaterThan(currentAllowance)) {
-					try {
-						const tx = await ovr.approveAsync(icoAddress, currentBalance);
-						await waitTx(tx);
-					} catch (e) {
-						return dangerNotification(
-							'Approval error',
-							'There was an error processing the approval of your tokens try again in a few minutes',
-						);
-					}
-				}
-				const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
-				const nextPayment = previousPayment.mul(2).toString();
-				setNextBid(nextPayment);
-
-				// Check if the user has enough balance to buy those tokens
-				if (currentBalance.lessThan(nextPayment)) {
-					return warningNotification(
-						'Not enough tokens',
-						`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
+			// Check current balance and allowance
+			let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
+			let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
+			// Allow all the tokens
+			if (currentBalance.greaterThan(currentAllowance)) {
+				try {
+					const tx = await ovr.approveAsync(icoAddress, currentBalance);
+					await waitTx(tx);
+				} catch (e) {
+					return dangerNotification(
+						'Approval error',
+						'There was an error processing the approval of your tokens try again in a few minutes',
 					);
 				}
-				const tx = await ico.participateInAuctionAsync(landId, {
-					gasPrice: window.web3.toWei(30, 'gwei'),
-				});
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
-				await waitTx(tx);
-				sendMint();
 			}
+			const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
+			let nextPayment = previousPayment.mul(2).toString();
+			// If nobody has purchased it yet, set the default bid
+			if (nextPayment == 0) {
+				const initialBid = String(await ico.initialLandBidAsync());
+				nextPayment = window.web3.fromWei(initialBid);
+			}
+
+			// Check if the user has enough balance to buy those tokens
+			if (currentBalance.lessThan(nextPayment)) {
+				return warningNotification(
+					'Not enough tokens',
+					`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
+				);
+			}
+			const tx = await ico.participateInAuctionAsync(landId, {
+				gasPrice: window.web3.toWei(30, 'gwei'),
+			});
+			setActiveStep((prevActiveStep) => prevActiveStep + 1);
+			await waitTx(tx);
+			sendMint();
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}

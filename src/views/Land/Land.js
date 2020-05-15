@@ -19,7 +19,6 @@ import { Textfit } from 'react-textfit';
 export class Land extends Component {
 	constructor(props) {
 		super(props);
-		console.log('LandProps', props);
 		this.state = {
 			key: '8cbcc350c0ab5ff',
 			value: 10,
@@ -36,7 +35,6 @@ export class Land extends Component {
 
 	loadLandStateFromApi(hex_id) {
 		// Call API function
-		console.log('reload api');
 		getLand(hex_id)
 			.then((response) => {
 				let data = response.data;
@@ -54,6 +52,8 @@ export class Land extends Component {
 				};
 				this.mapActions.changeLandData(state);
 				this.setState(state);
+
+				this.updateMarketStatusFromSmartContract(hex_id)
 			})
 			.catch((error) => {
 				// Notify user if network error
@@ -83,6 +83,14 @@ export class Land extends Component {
 		this.mapActions.changeActiveBidOverlay(false);
 		this.mapActions.changeActiveMintOverlay(false);
 		this.mapActions.changeActiveSellOverlay(false);
+	}
+
+	updateMarketStatusFromSmartContract(hex_id) {
+		// TODO working on this
+		// Set 0 for not started, 1 for started and 2 for ended
+		// const landId = parseInt(hex_id, 16)
+		// const ico = this.props.userProvider.state.ico
+		// ico.getLand
 	}
 
 	setActiveBidOverlay(e) {
