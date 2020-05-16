@@ -14,6 +14,7 @@ const BidOverlay = (props) => {
 	const [bidInputError] = useState(false);
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
+	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const { waitTx } = props.userProvider.actions;
 	const { hex_id } = props.mapProvider.state;
 	const { ovr, ico, setupComplete } = props.userProvider.state;
@@ -23,18 +24,21 @@ const BidOverlay = (props) => {
 	}, [setupComplete]);
 
 	const setupListeners = () => {
+		setNextBidSelectedLand(hex_id);
 		document.addEventListener('land-selected', (event) => {
 			setNextBidSelectedLand(event.detail.hex_id);
 		});
 	};
 
-	const setNextBidSelectedLand = async () => {
+	const setNextBidSelectedLand = async (hexId) => {
 		if (!setupComplete || !ico || !ovr) {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
-		const initialBid = String(await ico.initialLandBidAsync());
-		let nextPayment = window.web3.fromWei(initialBid);
-		setNextBid(nextPayment);
+		const landId = parseInt(hexId, 16);
+		const land = await ico.landsAsync(landId);
+		const currentBid = String(window.web3.fromWei(land[2]));
+		setCurrentBid(currentBid);
+		setNextBid(currentBid * 2);
 	};
 
 	const handleNext = async () => {
@@ -70,6 +74,7 @@ const BidOverlay = (props) => {
 					`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
 				);
 			}
+
 			const tx = await ico.participateInAuctionAsync(landId, {
 				gasPrice: window.web3.toWei(30, 'gwei'),
 			});
@@ -137,7 +142,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={props.currentBid}></ValueCounter>
+										<ValueCounter value={currentBid}></ValueCounter>
 									</div>
 								</div>
 								<div className="Overlay__arrow">
@@ -168,17 +173,12 @@ const BidOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Minimum bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={props.currentBid * 2}></ValueCounter>
+										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__buttons_container">
-								<HexButton
-									url="#"
-									text="Place Bid"
-									className="--orange"
-									onClick={handleNext}
-								></HexButton>
+								<HexButton url="#" text="Place Bid" className="--orange" onClick={handleNext}></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
@@ -197,7 +197,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={props.currentBid}></ValueCounter>
+										<ValueCounter value={currentBid}></ValueCounter>
 									</div>
 								</div>
 								<div className="Overlay__arrow">
@@ -251,7 +251,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+										<ValueCounter value={currentBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
