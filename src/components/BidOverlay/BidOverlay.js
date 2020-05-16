@@ -50,7 +50,9 @@ const BidOverlay = (props) => {
 			// Allow all the tokens
 			if (currentBalance.greaterThan(currentAllowance)) {
 				try {
-					const tx = await ovr.approveAsync(icoAddress, currentBalance);
+					const tx = await ovr.approveAsync(icoAddress, currentBalance, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
 					await waitTx(tx);
 				} catch (e) {
 					return dangerNotification(
