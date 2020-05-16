@@ -31,7 +31,7 @@ export class Land extends Component {
 			openBuyOffers: [],
 		};
 		this.mapActions = this.props.mapProvider.actions;
-		this.setContractPrice();
+		this.setupListeners();
 	}
 
 	loadLandStateFromApi(hex_id) {
@@ -49,7 +49,7 @@ export class Land extends Component {
 					openSellOrder: data.openSellOrder,
 					openBuyOffers: data.openBuyOffers,
 					auction: data.auction,
-					value: data.value,
+					// value: data.value,
 				};
 				this.mapActions.changeLandData(state);
 				this.setState(state);
@@ -281,7 +281,9 @@ export class Land extends Component {
 	}
 
 	setupListeners = () => {
-		this.setContractPrice(this.props.mapProvider.state.hex_id);
+		// Get the hex id from the url
+		const hex_id = window.location.pathname.split('/')[3];
+		this.setContractPrice(hex_id);
 		document.addEventListener('land-selected', (event) => {
 			this.setContractPrice(event.detail.hex_id);
 		});
@@ -297,7 +299,6 @@ export class Land extends Component {
 				const landId = parseInt(hex_id, 16);
 				const land = await ico.landsAsync(landId);
 				let currentBid = String(window.web3.fromWei(land[2]));
-
 				if (currentBid == 0) {
 					currentBid = String(window.web3.fromWei(await ico.initialLandBidAsync()));
 				}
