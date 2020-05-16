@@ -48,7 +48,10 @@ const BuyTokens = (context) => {
 			switch (type) {
 				case 'eth':
 					const value = tokensToBuy / perEth;
-					const tx = await tokenBuy.buyTokensWithEthAsync({ value });
+					const tx = await tokenBuy.buyTokensWithEthAsync({
+						value,
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
 					await waitTx(tx);
 					break;
 				case 'usdt':
@@ -96,13 +99,19 @@ const BuyTokens = (context) => {
 			let tx;
 			switch (type) {
 				case 'dai':
-					tx = await tokenBuy.buyTokensWithDaiAsync(tokensToBuy);
+					tx = await tokenBuy.buyTokensWithDaiAsync(tokensToBuy, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
 					break;
 				case 'usdt':
-					tx = await tokenBuy.buyTokensWithUsdtAsync(tokensToBuy);
+					tx = await tokenBuy.buyTokensWithUsdtAsync(tokensToBuy, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
 					break;
 				case 'usdc':
-					tx = await tokenBuy.buyTokensWithUsdcAsync(tokensToBuy);
+					tx = await tokenBuy.buyTokensWithUsdcAsync(tokensToBuy, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
 					break;
 				default:
 					warningNotification('Error', 'The currency selected is not correct');
