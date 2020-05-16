@@ -43,7 +43,7 @@ export class Land extends Component {
 					key: data.uuid,
 					name: { sentence: data.sentenceId, hex: data.uuid },
 					location: data.address.full,
-					marketStatus: data.marketStatus,
+					// marketStatus: data.marketStatus,
 					userPerspective: data.userPerspective,
 					openSellOrder: data.openSellOrder,
 					openBuyOffers: data.openBuyOffers,
@@ -53,7 +53,16 @@ export class Land extends Component {
 				this.mapActions.changeLandData(state);
 				this.setState(state);
 
-				this.updateMarketStatusFromSmartContract(hex_id)
+				if (this.props.userProvider.state.ico) {
+					this.updateMarketStatusFromSmartContract(hex_id);
+				} else {
+					const myInterval = setInterval(() => {
+						if (this.props.userProvider.state.ico) {
+							this.updateMarketStatusFromSmartContract(hex_id);
+							clearInterval(myInterval);
+						}
+					}, 2e3);
+				}
 			})
 			.catch((error) => {
 				// Notify user if network error
@@ -85,12 +94,26 @@ export class Land extends Component {
 		this.mapActions.changeActiveSellOverlay(false);
 	}
 
-	updateMarketStatusFromSmartContract(hex_id) {
-		// TODO working on this
+	async updateMarketStatusFromSmartContract(hex_id) {
 		// Set 0 for not started, 1 for started and 2 for ended
-		// const landId = parseInt(hex_id, 16)
-		// const ico = this.props.userProvider.state.ico
-		// ico.getLand
+		const ico = this.props.userProvider.state.ico;
+		const landId = parseInt(hex_id, 16);
+		const land = await ico.landsAsync(landId);
+		const lastPaymentTimestamp = land[3];
+		// Check is the land is ended by comparing the timestamp to 24 hours
+		const now = Math.trunc(Date.now() / 1000);
+		const hours24 = 60 * 60 * 24; // 24 hours
+		const landContractState = parseInt(land[4]);
+
+		// If 24 hours have passed, consider it sold
+		if (landContractState == 1 && now > lastPaymentTimestamp + hours24) {
+			return this.setState({
+				marketStatus: 2,
+			});
+		}
+		this.setState({
+			marketStatus: landContractState,
+		});
 	}
 
 	setActiveBidOverlay(e) {
@@ -205,7 +228,12 @@ export class Land extends Component {
 		switch (this.state.marketStatus) {
 			case 0:
 				button = (
-					<HexButton url="/" text="Init Auction" className="--blue" onClick={(e) => this.setActiveMintOverlay(e)}></HexButton>
+					<HexButton
+						url="/"
+						text="Init Auction"
+						className="--blue"
+						onClick={(e) => this.setActiveMintOverlay(e)}
+					></HexButton>
 				);
 				break;
 			case 1:
@@ -233,20 +261,21 @@ export class Land extends Component {
 				break;
 		}
 
-		switch (this.state.userPerspective) {
-			case 1:
-				button = (
-					<HexButton
-						url="/"
-						text="Sell Land"
-						className="--purple"
-						onClick={(e) => this.setActiveSellOverlay(e)}
-					></HexButton>
-				);
-				break;
-			default:
-				break;
-		}
+		// TODO Temporarily disabled to not interfiere with the contract information
+		// switch (this.state.userPerspective) {
+		// 	case 1:
+		// 		button = (
+		// 			<HexButton
+		// 				url="/"
+		// 				text="Sell Land"
+		// 				className="--purple"
+		// 				onClick={(e) => this.setActiveSellOverlay(e)}
+		// 			></HexButton>
+		// 		);
+		// 		break;
+		// 	default:
+		// 		break;
+		// }
 		return button;
 	}
 

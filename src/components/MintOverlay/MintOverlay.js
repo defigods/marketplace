@@ -25,18 +25,12 @@ const MintOverlay = (props) => {
 		});
 	};
 
-	const setNextBidSelectedLand = async (hex_id) => {
+	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
-		const landId = parseInt(hex_id, 16);
-		const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
-		let nextPayment = previousPayment.mul(2).toString();
-		// If nobody has purchased it yet, set the default bid
-		if (nextPayment == 0) {
-			const initialBid = String(await ico.initialLandBidAsync());
-			nextPayment = window.web3.fromWei(initialBid);
-		}
+		const initialBid = String(await ico.initialLandBidAsync());
+		let nextPayment = window.web3.fromWei(initialBid);
 		setNextBid(nextPayment);
 	};
 
@@ -67,13 +61,8 @@ const MintOverlay = (props) => {
 					);
 				}
 			}
-			const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
-			let nextPayment = previousPayment.mul(2).toString();
-			// If nobody has purchased it yet, set the default bid
-			if (nextPayment == 0) {
-				const initialBid = String(await ico.initialLandBidAsync());
-				nextPayment = window.web3.fromWei(initialBid);
-			}
+			const initialBid = String(await ico.initialLandBidAsync());
+			let nextPayment = window.web3.fromWei(initialBid);
 
 			// Check if the user has enough balance to buy those tokens
 			if (currentBalance.lessThan(nextPayment)) {

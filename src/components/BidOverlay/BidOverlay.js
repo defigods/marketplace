@@ -1,54 +1,97 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-// import { makeStyles } from '@material-ui/core/styles';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
-
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
-
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-
 import { bidAuction } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
-// import Stepper from '@material-ui/core/Stepper';
-// import Step from '@material-ui/core/Step';
+import { icoAddress } from '../../lib/contracts';
 
 const BidOverlay = (props) => {
-	const [newBidValue, setNewBidValue] = useState('');
+	const [nextBid, setNextBid] = useState(10);
 	const [bidInputError] = useState(false);
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
+	const { waitTx } = props.userProvider.actions;
+	const { hex_id } = props.mapProvider.state;
+	const { ovr, ico, setupComplete } = props.userProvider.state;
 
-	const handleNext = () => {
+	useEffect(() => {
+		if (setupComplete) setupListeners();
+	}, [setupComplete]);
+
+	const setupListeners = () => {
+		document.addEventListener('land-selected', (event) => {
+			setNextBidSelectedLand(event.detail.hex_id);
+		});
+	};
+
+	const setNextBidSelectedLand = async () => {
+		if (!setupComplete || !ico || !ovr) {
+			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+		}
+		const initialBid = String(await ico.initialLandBidAsync());
+		let nextPayment = window.web3.fromWei(initialBid);
+		setNextBid(nextPayment);
+	};
+
+	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
-				warningNotification('Invalid authentication', 'Please Log In to partecipate');
-			} else {
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
-				//  TODO Remove timeout
-				setTimeout(function () {
-					sendBid();
-				}, 1500);
+				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			}
+			// Participate in the auction
+			const landId = parseInt(hex_id, 16);
+			// Check current balance and allowance
+			let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
+			let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
+			// Allow all the tokens
+			if (currentBalance.greaterThan(currentAllowance)) {
+				try {
+					const tx = await ovr.approveAsync(icoAddress, currentBalance);
+					await waitTx(tx);
+				} catch (e) {
+					return dangerNotification(
+						'Approval error',
+						'There was an error processing the approval of your tokens try again in a few minutes',
+					);
+				}
+			}
+			const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
+			let nextPayment = previousPayment.mul(2).toString();
+			// Check if the user has enough balance to buy those tokens
+			if (currentBalance.lessThan(nextPayment)) {
+				return warningNotification(
+					'Not enough tokens',
+					`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
+				);
+			}
+			const tx = await ico.participateInAuctionAsync(landId, {
+				gasPrice: window.web3.toWei(30, 'gwei'),
+			});
+			setActiveStep((prevActiveStep) => prevActiveStep + 1);
+			await waitTx(tx);
+			sendBid();
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}
 	};
 
 	const updateNewBidValue = (e) => {
-		if (newBidValue >= props.currentBid * 2) {
+		if (nextBid >= props.currentBid * 2) {
 			setBidValid(true);
 		} else {
 			setBidValid(false);
 		}
 
-		setNewBidValue(e.target.value);
+		setNextBid(e.target.value);
 	};
 
 	function sendBid() {
 		// Call API function
-		bidAuction(props.land.key, newBidValue)
+		bidAuction(props.land.key, nextBid)
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
@@ -73,7 +116,7 @@ const BidOverlay = (props) => {
 		// Bring the step at 0
 		setTimeout(function () {
 			setActiveStep(0);
-			setNewBidValue('');
+			setNextBid('');
 		}, 200);
 	}
 
@@ -183,7 +226,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Your bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={newBidValue}></ValueCounter>
+										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -206,7 +249,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={newBidValue}></ValueCounter>
+										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
