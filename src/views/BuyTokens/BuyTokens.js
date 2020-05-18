@@ -14,8 +14,8 @@ const BuyTokens = (context) => {
 	const [perUsd, setPerUsd] = useState(0);
 	const [tokensToBuy, setTokensToBuy] = useState(0);
 	useEffect(() => {
-		getPrices();
-	}, []);
+		if (setupComplete) getPrices();
+	}, [setupComplete]);
 
 	const requireSetup = () => {
 		if (!setupComplete) {
