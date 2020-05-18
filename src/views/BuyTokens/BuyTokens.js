@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
-import { warningNotification } from '../../lib/notifications';
+import { successNotification, warningNotification, dangerNotification } from '../../lib/notifications';
 import { tokenBuyAddress } from '../../lib/contracts';
 import { withUserContext } from '../../context/UserContext';
+
+// TODO Change this to the final address
+const FIAT_BUY_URL = 'http://staging-credit-card.ovr.ai/buy';
 
 /**
  * Buy tokens component
@@ -13,6 +16,14 @@ const BuyTokens = (context) => {
 	const [perEth, setPerEth] = useState(0);
 	const [perUsd, setPerUsd] = useState(0);
 	const [tokensToBuy, setTokensToBuy] = useState(0);
+	// Fiat variables
+	const [showCardForm, setShowCardForm] = useState(false);
+	const [cardNumber, setCardNumber] = useState(0);
+	const [cardExpiryMonth, setCardExpiryMonth] = useState(0);
+	const [cardExpiryYear, setCardExpiryYear] = useState(0);
+	const [cvv, setCvv] = useState(0);
+	const [zip, setZip] = useState(0);
+
 	useEffect(() => {
 		if (setupComplete) getPrices();
 	}, [setupComplete]);
@@ -54,6 +65,9 @@ const BuyTokens = (context) => {
 					});
 					await waitTx(tx);
 					break;
+				case 'fiat':
+					await buyWithCard();
+					break;
 				case 'usdt':
 					await buyWithToken(tether, 'usdt');
 					break;
@@ -75,6 +89,46 @@ const BuyTokens = (context) => {
 				'There was an error processing your transaction refresh this page and try again',
 			);
 		}
+	};
+
+	const buyWithCard = async () => {
+		// tokensToBuy
+		let response;
+		try {
+			const request = await fetch(FIAT_BUY_URL, {
+				method: 'post',
+				headers: {
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify({
+					amount: tokensToBuy / perUsd,
+					addressReceiver: window.web3.eth.defaultAccount,
+					card: {
+						cardNum: cardNumber,
+						cardExpiry: {
+							month: cardExpiryMonth,
+							year: cardExpiryYear,
+						},
+						cvv,
+					},
+					billingDetails: { zip },
+				}),
+			});
+			response = await request.json();
+		} catch (e) {
+			return dangerNotification(
+				'Error processing the payment',
+				'There was an error making the credit card purchase refresh the page and try again later',
+			);
+		}
+
+		if (!response) {
+			return dangerNotification('Error', 'No response received from the payment server');
+		} else if (!response.ok) {
+			return dangerNotification('Error buying', response.msg);
+		}
+
+		successNotification('Purchase successful', 'The purchase was completed successfully');
 	};
 
 	const buyWithToken = async (token, type) => {
@@ -125,13 +179,13 @@ const BuyTokens = (context) => {
 
 	return (
 		<div className="BuyTokens__container">
-			<h1>Buy OVR tokens</h1>
-			<p className="BuyTokens__description">
+			<h1 className="full-size">Buy OVR tokens</h1>
+			<p className="BuyTokens__description full-size">
 				You can pay with ETH, Tether, USDC and DAI.
 				<br />
 				The current prices are:
 			</p>
-			<ul>
+			<ul className="full-size">
 				<li>
 					1 ETH gives you: <b>{perEth} OVR</b>
 				</li>
@@ -148,14 +202,22 @@ const BuyTokens = (context) => {
 			<input
 				type="number"
 				placeholder="Tokens to buy..."
-				className="BuyTokens__input"
+				className="BuyTokens__input full-size"
 				onChange={(e) => {
 					// Convert tokens to wei
 					setTokensToBuy(window.web3.toWei(e.target.value));
 				}}
-			></input>
+			/>
 			<button className="HexButton --blue" onClick={() => buy('eth')}>
 				Buy with ETH
+			</button>
+			<button
+				className="HexButton --blue"
+				onClick={() => {
+					setShowCardForm(!showCardForm);
+				}}
+			>
+				Buy with Dollars
 			</button>
 			<button className="HexButton --blue" onClick={() => buy('usdt')}>
 				Buy with Tether
@@ -166,10 +228,57 @@ const BuyTokens = (context) => {
 			<button className="HexButton --blue" onClick={() => buy('dai')}>
 				Buy with DAI
 			</button>
-			<p>
+			<p className="full-size">
 				Note: when paying with stablecoins you will receive 2 metamask notifications, simply approve them both to
 				complete the payment.
 			</p>
+
+			<div className={showCardForm ? 'CardForm full-size' : 'hidden'}>
+				<h2 className="card-title">Card details</h2>
+				<input
+					type="number"
+					placeholder="Card number..."
+					className="card-number"
+					onChange={(e) => {
+						setCardNumber(e.target.value);
+					}}
+				/>
+				<input
+					type="number"
+					placeholder="Month"
+					className="expiration-month"
+					onChange={(e) => {
+						setCardExpiryMonth(e.target.value);
+					}}
+				/>
+				<input
+					type="number"
+					placeholder="Year"
+					className="expiration-year"
+					onChange={(e) => {
+						setCardExpiryYear(e.target.value);
+					}}
+				/>
+				<input
+					type="number"
+					placeholder="Cvv"
+					className="cvv"
+					onChange={(e) => {
+						setCvv(e.target.value);
+					}}
+				/>
+				<input
+					type="number"
+					placeholder="Postal code zip..."
+					className="zip"
+					onChange={(e) => {
+						setZip(e.target.value);
+					}}
+				/>
+				<button className="HexButton --blue pay-with-card-button" onClick={() => buy('fiat')}>
+					Buy Now {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens With Fiat
+				</button>
+			</div>
 		</div>
 	);
 };
