@@ -115,6 +115,8 @@ export class UserProvider extends Component {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+		this.refreshWhenAccountsChanged();
+		this.updateBalanceWhenChanged();
 		await this.setupContracts();
 		await this.getOvrsOwned();
 	};
@@ -135,6 +137,18 @@ export class UserProvider extends Component {
 			ico: promisifyAll(_ico),
 			setupComplete: true,
 		});
+	};
+
+	// Refreshes the page when the metamask account is changed
+	refreshWhenAccountsChanged = () => {
+		window.ethereum.on('accountsChanged', function (accounts) {
+			window.location.reload();
+		});
+	};
+
+	// Checks every second if the balance has changed and updates it
+	updateBalanceWhenChanged = async () => {
+		setInterval(() => this.getOvrsOwned(), 1e3);
 	};
 
 	getOvrsOwned = async () => {

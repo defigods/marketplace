@@ -16,21 +16,31 @@ const BidOverlay = (props) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const { waitTx } = props.userProvider.actions;
-	const { hex_id } = props.mapProvider.state;
+	const pathHexId = window.location.pathname.split('/')[3];
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
+	let priceInterval = null; // Checks for price changes every half a second
 
 	useEffect(() => {
 		if (setupComplete) setupListeners();
 	}, [setupComplete]);
 
 	const setupListeners = () => {
-		setNextBidSelectedLand(hex_id);
+		setNextBidSelectedLand();
+		priceInterval = setInterval(() => {
+			setNextBidSelectedLand();
+		}, 5e2);
 		document.addEventListener('land-selected', (event) => {
-			setNextBidSelectedLand(event.detail.hex_id);
+			setHexId(event.detail.hex_id);
+			clearInterval(priceInterval);
+			priceInterval = setInterval(() => {
+				setNextBidSelectedLand();
+			}, 5e2);
+			setNextBidSelectedLand();
 		});
 	};
 
-	const setNextBidSelectedLand = async (hexId) => {
+	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
@@ -47,7 +57,7 @@ const BidOverlay = (props) => {
 				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			}
 			// Participate in the auction
-			const landId = parseInt(hex_id, 16);
+			const landId = parseInt(hexId, 16);
 			// Check current balance and allowance
 			let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
 			let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
