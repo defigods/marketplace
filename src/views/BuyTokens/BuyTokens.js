@@ -94,25 +94,26 @@ const BuyTokens = (context) => {
 	const buyWithCard = async () => {
 		// tokensToBuy
 		let response;
+		const dataToSend = {
+			amount: window.web3.fromWei(tokensToBuy / perUsd),
+			addressReceiver: window.web3.eth.defaultAccount,
+			card: {
+				cardNum: cardNumber,
+				cardExpiry: {
+					month: cardExpiryMonth,
+					year: cardExpiryYear,
+				},
+				cvv,
+			},
+			billingDetails: { zip },
+		};
 		try {
 			const request = await fetch(FIAT_BUY_URL, {
 				method: 'post',
 				headers: {
 					'content-type': 'application/json',
 				},
-				body: JSON.stringify({
-					amount: tokensToBuy / perUsd,
-					addressReceiver: window.web3.eth.defaultAccount,
-					card: {
-						cardNum: cardNumber,
-						cardExpiry: {
-							month: cardExpiryMonth,
-							year: cardExpiryYear,
-						},
-						cvv,
-					},
-					billingDetails: { zip },
-				}),
+				body: JSON.stringify(dataToSend),
 			});
 			response = await request.json();
 		} catch (e) {
@@ -128,7 +129,7 @@ const BuyTokens = (context) => {
 			return dangerNotification('Error buying', response.msg);
 		}
 
-		successNotification('Purchase successful', 'The purchase was completed successfully');
+		successNotification('Purchase successful', 'The purchase was completed successfully. It may take between 1 and 3 minutes to see your new tokens.');
 	};
 
 	const buyWithToken = async (token, type) => {
@@ -276,7 +277,7 @@ const BuyTokens = (context) => {
 					}}
 				/>
 				<button className="HexButton --blue pay-with-card-button" onClick={() => buy('fiat')}>
-					Buy Now {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens With Fiat
+					Buy {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens Paying {tokensToBuy == 0 ? '' :  '$'+window.web3.fromWei(tokensToBuy / perUsd)} USD
 				</button>
 			</div>
 		</div>
