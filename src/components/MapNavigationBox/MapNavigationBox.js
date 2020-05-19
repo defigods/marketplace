@@ -37,10 +37,13 @@ class CircularList {
 
 const MapNavigationBox = () => {
 	const { state } = useContext(MapContext);
-
+	console.log('MapContext state', state);
 	const { auctionList } = state;
 
-	const items = new CircularList(auctionList, 0);
+	const items = new CircularList(
+		auctionList.map((item) => item.land),
+		0,
+	);
 
 	const [current, setCurrent] = useState(items.getCurrent());
 	const [previous, setPrevious] = useState(items.getPrevious());
@@ -59,30 +62,35 @@ const MapNavigationBox = () => {
 	return (
 		auctionList.length > 0 && (
 			<div className="map-navigation-box">
-				<Link
-					to={`/map/land/${previous.uuid}`}
-					onClick={() => {
-						setIndex(index - 1);
-					}}
-				>
-					<NavigateBefore fontSize="large" style={{ color: grey[800] }} />
-				</Link>
-				<div className="map-navigation-box--current">
-					<div className="map-navigation-box--current--name">{current.sentenceId}</div>
-					<div className="map-navigation-box--current--location">
-						{currentCity}
-						{current.address.country}
+				{previous && (
+					<Link
+						to={`/map/land/${previous.uuid}`}
+						onClick={() => {
+							setIndex(index - 1);
+						}}
+					>
+						<NavigateBefore fontSize="large" style={{ color: grey[800] }} />
+					</Link>
+				)}
+				{current && (
+					<div className="map-navigation-box--current">
+						<div className="map-navigation-box--current--name">{current.sentenceId}</div>
+						<div className="map-navigation-box--current--location">
+							{currentCity}
+							{current.address.country}
+						</div>
 					</div>
-				</div>
-
-				<Link
-					to={`/map/land/${next.uuid}`}
-					onClick={() => {
-						setIndex(index + 1);
-					}}
-				>
-					<NavigateNext fontSize="large" style={{ color: grey[800] }} />
-				</Link>
+				)}
+				{next && (
+					<Link
+						to={`/map/land/${next.uuid}`}
+						onClick={() => {
+							setIndex(index + 1);
+						}}
+					>
+						<NavigateNext fontSize="large" style={{ color: grey[800] }} />
+					</Link>
+				)}
 			</div>
 		)
 	);

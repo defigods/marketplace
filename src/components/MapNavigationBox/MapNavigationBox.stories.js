@@ -20,8 +20,18 @@ const state = {
 
 export default {
 	title: 'MapNavigationBox',
-	decorators: [(storyFn) => <MapContext.Provider value={{ state }}>{storyFn()}</MapContext.Provider>],
+	// decorators: [(storyFn) => <MapContext.Provider value={{ state }}>{storyFn()}</MapContext.Provider>],
 	component: MapNavigationBox,
 };
 
-export const MapnavigationBox = () => <MapNavigationBox />;
+export const MapnavigationBox = () => (
+	<MapContext.Provider value={{ state }}>
+		<MapNavigationBox />
+	</MapContext.Provider>
+);
+
+export const oneItem = () => (
+	<MapContext.Provider value={{ state: { ...state, auctionList: [auctionListData[0]] } }}>
+		<MapNavigationBox />
+	</MapContext.Provider>
+);
