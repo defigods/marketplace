@@ -52,6 +52,11 @@ class NavBar extends Component {
 							<Link to="/" className="Funds__link">
 								<ValueCounter value={state.ovrsOwned}></ValueCounter>
 							</Link>
+							<Link className="Funds__buy HexButton --blue redeem-button" onClick={() => {
+								this.context.actions.redeemLands()
+							}}>
+								Redeem Lands
+							</Link>
 							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
 								Buy OVR
 							</Link>

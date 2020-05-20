@@ -2,11 +2,11 @@ import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
 import { saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { userProfile } from '../lib/api';
-import { networkError, dangerNotification, warningNotification } from '../lib/notifications';
+import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
-import { tokenBuyAddress, daiAddress, tetherAddress, usdcAddress, ovrAddress, icoAddress } from '../lib/contracts';
-import { tokenBuyAbi, erc20Abi, icoAbi } from '../lib/abis';
+import { tokenBuyAddress, daiAddress, tetherAddress, usdcAddress, ovrAddress, icoAddress, ovr721Address } from '../lib/contracts';
+import { tokenBuyAbi, erc20Abi, icoAbi, ovr721Abi } from '../lib/abis';
 import { zhCN } from 'date-fns/esm/locale';
 
 let ActionCable = require('actioncable');
@@ -42,6 +42,7 @@ export class UserProvider extends Component {
 			tokenBuy: null,
 			ovr: null,
 			ico: null,
+			ovr721: null,
 			setupComplete: false,
 		};
 	}
@@ -128,6 +129,7 @@ export class UserProvider extends Component {
 		const _tokenBuy = window.web3.eth.contract(tokenBuyAbi).at(tokenBuyAddress);
 		const _ovr = window.web3.eth.contract(erc20Abi).at(ovrAddress);
 		const _ico = window.web3.eth.contract(icoAbi).at(icoAddress);
+		const _ovr721 = window.web3.eth.contract(ovr721Abi).at(ovr721Address);
 		this.setState({
 			dai: promisifyAll(_dai),
 			tether: promisifyAll(_tether),
@@ -135,6 +137,7 @@ export class UserProvider extends Component {
 			tokenBuy: promisifyAll(_tokenBuy),
 			ovr: promisifyAll(_ovr),
 			ico: promisifyAll(_ico),
+			ovr721: promisifyAll(_ovr721),
 			setupComplete: true,
 		});
 	};
@@ -176,7 +179,7 @@ export class UserProvider extends Component {
 					const { notification } = data;
 					const { balance } = data;
 					const { unreaded_count } = data;
-						
+
 					this.setState({
 						user: {
 							...this.state.user,
@@ -198,11 +201,11 @@ export class UserProvider extends Component {
 	};
 
 	setNotificationAsReaded = (notification_uuid) => {
-		let notifications_content = this.state.user.notifications.content
-		let unreaded_count = this.state.user.notifications.unreadedCount
+		let notifications_content = this.state.user.notifications.content;
+		let unreaded_count = this.state.user.notifications.unreadedCount;
 
-		notifications_content.readNotification(notification_uuid)
-		unreaded_count = unreaded_count - 1
+		notifications_content.readNotification(notification_uuid);
+		unreaded_count = unreaded_count - 1;
 
 		this.setState({
 			user: {
@@ -217,8 +220,8 @@ export class UserProvider extends Component {
 	};
 
 	setAllNotificationsAsReaded = () => {
-		let notifications_content = this.state.user.notifications.content
-		notifications_content.readAllNotifications()
+		let notifications_content = this.state.user.notifications.content;
+		notifications_content.readAllNotifications();
 		this.setState({
 			user: {
 				...this.state.user,
@@ -229,6 +232,49 @@ export class UserProvider extends Component {
 				},
 			},
 		});
+	};
+
+	redeemLands = async () => {
+		const activeLandsIds = await this.state.ico.getActiveLandsAsync();
+		console.log('active lands', activeLandsIds);
+		for (let i = 0; i < activeLandsIds.length; i++) {
+			const land = await this.state.ico.landsAsync(activeLandsIds[i]);
+			const auctionTime = await this.state.ico.auctionLandDurationAsync();
+			const now = Math.trunc(Date.now() / 1000);
+			const timePassedInSeconds = now - land[3];
+			console.log('timePassedInSeconds', timePassedInSeconds);
+
+			// If this is your land
+			if (land[0] == window.web3.eth.defaultAccount 
+				&& timePassedInSeconds >= auctionTime) {
+				console.log('Redeeming land', activeLandsIds[i]);
+				try {
+					await this.state.ico.redeemWonLandAsync(activeLandsIds[i]);
+				} catch (e) {
+					return dangerNotification(`Error redeeming the land ${activeLandsIds[i]}`, e.message);
+				}
+ 			}
+		}
+		successNotification('Your lands are on their way!', "You'll receive your lands in a few minutes");
+	};
+
+	// To put a land on sale or remove it. Will approve the ERC721 first.
+	// The price can be 0 to give it away for free
+	putLandOnSale = async (hexId, price, onSale) => {
+		const landId = parseInt(hexId, 16);
+		try {
+			const tx = await this.state.ovr721.approveAsync(icoAddress, landId);
+			await this.waitTx(tx);
+		} catch (e) {
+			return dangerNotification('Error approving the OVR land token', e.message);
+		}
+		try {
+			const tx = await this.state.ico.putLandOnSaleAsync(landId, price, onSale);
+			await this.waitTx(tx);
+		} catch (e) {
+			return dangerNotification('Error listing the land on sale', e.message);
+		}
+		successNotification('Successful land listing', "Your land has been listed successfully");
 	};
 
 	render() {
@@ -246,6 +292,8 @@ export class UserProvider extends Component {
 						getOvrsOwned: this.getOvrsOwned,
 						waitTx: this.waitTx,
 						setupWeb3: this.setupWeb3,
+						redeemLands: this.redeemLands,
+						putLandOnSale: this.putLandOnSale,
 					},
 				}}
 			>
