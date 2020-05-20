@@ -22,17 +22,55 @@ const SellOverlay = (props) => {
 	const [bidInputError] = useState(false);
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
+	const pathHexId = window.location.pathname.split('/')[3];
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
+	const { ico, setupComplete } = props.userProvider.state;
+	const { approveErc721Token, putLandOnSale } = props.userProvider.actions;
+	const [boughtAt, setBoughtAt] = useState(props.currentBid);
+	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	let sellLandInterval = null;
 
-	const handleNext = () => {
+	useEffect(() => {
+		if (setupComplete) setupListeners();
+	}, [setupComplete]);
+
+	const setupListeners = () => {
+		setBoughtAtPrice();
+		sellLandInterval = setInterval(() => {
+			setBoughtAtPrice();
+		}, 5e2);
+		document.addEventListener('land-selected', (event) => {
+			setHexId(event.detail.hex_id);
+			clearInterval(sellLandInterval);
+			sellLandInterval = setInterval(() => {
+				setBoughtAtPrice();
+			}, 5e2);
+			setBoughtAtPrice();
+		});
+	};
+
+	const setBoughtAtPrice = async () => {
+		const landId = parseInt(hexId, 16);
+		const land = await ico.landsAsync(landId);
+		const paid = String(window.web3.fromWei(land[2]));
+		setBoughtAt(paid);
+	};
+
+	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
 				warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			} else {
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);
-				//  TODO Remove timeout
-				setTimeout(function () {
-					sendSell();
-				}, 1500);
+				try {
+					setMetamaskMessage('Approving ERC721 token for the Smart Contract...');
+					await approveErc721Token(hexId);
+					setMetamaskMessage('Waiting for MetaMask confirmation');
+					await putLandOnSale(hexId, String(window.web3.toWei(sellWorth)), true);
+				} catch (e) {
+					return dangerNotification('Error processing the transactions', e.message);
+				}
+				sendSell();
 			}
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -104,7 +142,7 @@ const SellOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Bought at</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={props.currentBid}></ValueCounter>
+										<ValueCounter value={boughtAt}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -146,7 +184,7 @@ const SellOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Bought at</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={props.currentBid}></ValueCounter>
+										<ValueCounter value={boughtAt}></ValueCounter>
 									</div>
 								</div>
 								<div className="Overlay__arrow">
@@ -182,7 +220,7 @@ const SellOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>Waiting for MetaMask confirmation</span>
+								<span>{metamaskMessage}</span>
 							</div>
 						</div>
 					</div>

@@ -15,7 +15,7 @@ const BidOverlay = (props) => {
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
-	const { waitTx } = props.userProvider.actions;
+	const { waitTx, approveOvrTokens } = props.userProvider.actions;
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
@@ -58,38 +58,16 @@ const BidOverlay = (props) => {
 			}
 			// Participate in the auction
 			const landId = parseInt(hexId, 16);
-			// Check current balance and allowance
-			let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-			let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
-			// Allow all the tokens
-			if (currentBalance.greaterThan(currentAllowance)) {
-				try {
-					const tx = await ovr.approveAsync(icoAddress, currentBalance, {
-						gasPrice: window.web3.toWei(30, 'gwei'),
-					});
-					await waitTx(tx);
-				} catch (e) {
-					return dangerNotification(
-						'Approval error',
-						'There was an error processing the approval of your tokens try again in a few minutes',
-					);
-				}
+			try {
+				await approveOvrTokens();
+				const tx = await ico.participateInAuctionAsync(landId, {
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				});
+				setActiveStep((prevActiveStep) => prevActiveStep + 1);
+				await waitTx(tx);
+			} catch (e) {
+				return dangerNotification('Error processing the transaction', e.message);
 			}
-			const previousPayment = (await ico.landsAsync(landId))[2]; // Lands.paid
-			let nextPayment = previousPayment.mul(2).toString();
-			// Check if the user has enough balance to buy those tokens
-			if (currentBalance.lessThan(nextPayment)) {
-				return warningNotification(
-					'Not enough tokens',
-					`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
-				);
-			}
-
-			const tx = await ico.participateInAuctionAsync(landId, {
-				gasPrice: window.web3.toWei(30, 'gwei'),
-			});
-			setActiveStep((prevActiveStep) => prevActiveStep + 1);
-			await waitTx(tx);
 			sendBid();
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);

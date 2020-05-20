@@ -101,20 +101,29 @@ export class Land extends Component {
 		const landId = parseInt(hex_id, 16);
 		const land = await ico.landsAsync(landId);
 		const lastPaymentTimestamp = land[3];
+		const landOwner = land[0];
+		const auctionLandDuration = await ico.auctionLandDurationAsync();
 		// Check is the land is ended by comparing the timestamp to 24 hours
 		const now = Math.trunc(Date.now() / 1000);
-		const hours24 = 60 * 60 * 24; // 24 hours
 		const landContractState = parseInt(land[4]);
 
 		// If 24 hours have passed, consider it sold
-		if (landContractState == 1 && now > lastPaymentTimestamp + hours24) {
-			return this.setState({
-				marketStatus: 2,
+		// Checks if you're the owner or not to display the appropriate button
+		if (landContractState === 2 || (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration)) {
+			if (landOwner == window.web3.eth.defaultAccount) {
+				return this.setState({
+					marketStatus: 3,
+				});
+			} else {
+				return this.setState({
+					marketStatus: 2,
+				});
+			}
+		} else {
+			this.setState({
+				marketStatus: landContractState,
 			});
 		}
-		this.setState({
-			marketStatus: landContractState,
-		});
 	}
 
 	setActiveBidOverlay(e) {
@@ -257,26 +266,21 @@ export class Land extends Component {
 					></HexButton>
 				);
 				break;
+			case 3:
+				button = (
+					<HexButton
+						url="/"
+						text="Sell Land"
+						className="--purple"
+						onClick={(e) => this.setActiveSellOverlay(e)}
+					></HexButton>
+				);
+				break;
 			default:
 				button = <div>&nbsp;</div>;
 				break;
 		}
 
-		// TODO Temporarily disabled to not interfiere with the contract information
-		// switch (this.state.userPerspective) {
-		// 	case 1:
-		// 		button = (
-		// 			<HexButton
-		// 				url="/"
-		// 				text="Sell Land"
-		// 				className="--purple"
-		// 				onClick={(e) => this.setActiveSellOverlay(e)}
-		// 			></HexButton>
-		// 		);
-		// 		break;
-		// 	default:
-		// 		break;
-		// }
 		return button;
 	}
 
