@@ -236,26 +236,31 @@ export class UserProvider extends Component {
 
 	redeemLands = async () => {
 		const activeLandsIds = await this.state.ico.getActiveLandsAsync();
-		console.log('active lands', activeLandsIds);
+		let landsRedeemed = 0;
 		for (let i = 0; i < activeLandsIds.length; i++) {
 			const land = await this.state.ico.landsAsync(activeLandsIds[i]);
 			const auctionTime = await this.state.ico.auctionLandDurationAsync();
 			const now = Math.trunc(Date.now() / 1000);
 			const timePassedInSeconds = now - land[3];
-			console.log('timePassedInSeconds', timePassedInSeconds);
+			const landState = parseInt(land[4]);
 
-			// If this is your land
-			if (land[0] == window.web3.eth.defaultAccount 
-				&& timePassedInSeconds >= auctionTime) {
-				console.log('Redeeming land', activeLandsIds[i]);
+			// If this is your land and it hasn't been redeemed already and the auction is done
+			if (landState != 2 &&
+				land[0] == window.web3.eth.defaultAccount && 
+				timePassedInSeconds >= auctionTime) {
 				try {
 					await this.state.ico.redeemWonLandAsync(activeLandsIds[i]);
+					landsRedeemed++;
 				} catch (e) {
 					return dangerNotification(`Error redeeming the land ${activeLandsIds[i]}`, e.message);
 				}
  			}
 		}
-		successNotification('Your lands are on their way!', "You'll receive your lands in a few minutes");
+		if (landsRedeemed == 0) {
+			warningNotification('No lands to redeem', "You don't have any lands to redeem for now. Check in a few hours when the auction time is reached.");
+		} else {
+			successNotification('Your lands are on their way!', "You'll receive your lands in a few minutes");
+		}
 	};
 
 	// To put a land on sale or remove it. Will approve the ERC721 first.
