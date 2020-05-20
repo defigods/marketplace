@@ -9,7 +9,8 @@ import { networkError, warningNotification, dangerNotification } from '../../lib
 import { icoAddress } from '../../lib/contracts';
 
 const MintOverlay = (props) => {
-	const { waitTx } = props.userProvider.actions;
+			
+	const { waitTx, approveOvrTokens } = props.userProvider.actions;
 	const { hex_id } = props.mapProvider.state;
 	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [nextBid, setNextBid] = useState(10);
@@ -46,39 +47,28 @@ const MintOverlay = (props) => {
 				return warningNotification('Epoch issue', 'The current land is not available in this epoch');
 			}
 
-			// Check current balance and allowance
-			let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-			let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
-			// Allow all the tokens
-			if (currentBalance.greaterThan(currentAllowance)) {
-				try {
-					const tx = await ovr.approveAsync(icoAddress, currentBalance, {
-						gasPrice: window.web3.toWei(30, 'gwei'),
-					});
-					await waitTx(tx);
-				} catch (e) {
-					return dangerNotification(
-						'Approval error',
-						'There was an error processing the approval of your tokens try again in a few minutes',
+			try {
+				await approveOvrTokens();
+				const initialBid = String(await ico.initialLandBidAsync());
+				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
+				let nextPayment = window.web3.fromWei(initialBid);
+
+				// Check if the user has enough balance to buy those tokens
+				if (currentBalance.lessThan(nextPayment)) {
+					return warningNotification(
+						'Not enough tokens',
+						`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
 					);
 				}
+				const tx = await ico.participateInAuctionAsync(landId, {
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				});
+				setActiveStep((prevActiveStep) => prevActiveStep + 1);
+				await waitTx(tx);
+				sendMint();
+			} catch (e) {
+				return dangerNotification('Error processing the transactions', e.message);
 			}
-			const initialBid = String(await ico.initialLandBidAsync());
-			let nextPayment = window.web3.fromWei(initialBid);
-
-			// Check if the user has enough balance to buy those tokens
-			if (currentBalance.lessThan(nextPayment)) {
-				return warningNotification(
-					'Not enough tokens',
-					`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
-				);
-			}
-			const tx = await ico.participateInAuctionAsync(landId, {
-				gasPrice: window.web3.toWei(30, 'gwei'),
-			});
-			setActiveStep((prevActiveStep) => prevActiveStep + 1);
-			await waitTx(tx);
-			sendMint();
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}

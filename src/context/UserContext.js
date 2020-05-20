@@ -5,7 +5,15 @@ import { userProfile } from '../lib/api';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
-import { tokenBuyAddress, daiAddress, tetherAddress, usdcAddress, ovrAddress, icoAddress, ovr721Address } from '../lib/contracts';
+import {
+	tokenBuyAddress,
+	daiAddress,
+	tetherAddress,
+	usdcAddress,
+	ovrAddress,
+	icoAddress,
+	ovr721Address,
+} from '../lib/contracts';
 import { tokenBuyAbi, erc20Abi, icoAbi, ovr721Abi } from '../lib/abis';
 import { zhCN } from 'date-fns/esm/locale';
 
@@ -245,22 +253,65 @@ export class UserProvider extends Component {
 			const landState = parseInt(land[4]);
 
 			// If this is your land and it hasn't been redeemed already and the auction is done
-			if (landState != 2 &&
-				land[0] == window.web3.eth.defaultAccount && 
-				timePassedInSeconds >= auctionTime) {
+			if (landState != 2 && land[0] == window.web3.eth.defaultAccount && timePassedInSeconds >= auctionTime) {
 				try {
 					await this.state.ico.redeemWonLandAsync(activeLandsIds[i]);
 					landsRedeemed++;
 				} catch (e) {
 					return dangerNotification(`Error redeeming the land ${activeLandsIds[i]}`, e.message);
 				}
- 			}
+			}
 		}
 		if (landsRedeemed == 0) {
-			warningNotification('No lands to redeem', "You don't have any lands to redeem for now. Check in a few hours when the auction time is reached.");
+			warningNotification(
+				'No lands to redeem',
+				"You don't have any lands to redeem for now. Check in a few hours when the auction time is reached.",
+			);
 		} else {
 			successNotification('Your lands are on their way!', "You'll receive your lands in a few minutes");
 		}
+	};
+
+	// Returns true for a successful approval or false otherwise
+	approveErc721Token = async (hexId) => {
+		const landId = parseInt(hexId, 16);
+		const existingApproval = await this.state.ovr721.getApprovedAsync(landId);
+		if (existingApproval === icoAddress) return true;
+		try {
+			const tx = await this.state.ovr721.setApprovalForAllAsync(icoAddress, true);
+			await this.waitTx(tx);
+		} catch (e) {
+			dangerNotification('Error approving the OVR land token', e.message);
+			return false;
+		}
+		return true;
+	};
+
+	approveOvrTokens = async () => {
+		let currentBalance = await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount);
+		let currentAllowance = await this.state.ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
+		// Allow all the tokens
+		if (currentBalance.greaterThan(currentAllowance)) {
+			try {
+				const tx = await this.state.ovr.approveAsync(icoAddress, currentBalance, {
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				});
+				await this.waitTx(tx);
+			} catch (e) {
+				dangerNotification(
+					'Approval error',
+					'There was an error processing the approval of your tokens try again in a few minutes',
+				);
+				return false;
+			}
+		}
+		return true;
+	};
+
+	buyLand = async (hexId) => {
+		const landId = parseInt(hexId, 16);
+		const tx = await this.state.buyLand(landId);
+		await this.waitTx(tx);
 	};
 
 	// To put a land on sale or remove it. Will approve the ERC721 first.
@@ -268,18 +319,12 @@ export class UserProvider extends Component {
 	putLandOnSale = async (hexId, price, onSale) => {
 		const landId = parseInt(hexId, 16);
 		try {
-			const tx = await this.state.ovr721.approveAsync(icoAddress, landId);
-			await this.waitTx(tx);
-		} catch (e) {
-			return dangerNotification('Error approving the OVR land token', e.message);
-		}
-		try {
 			const tx = await this.state.ico.putLandOnSaleAsync(landId, price, onSale);
 			await this.waitTx(tx);
 		} catch (e) {
 			return dangerNotification('Error listing the land on sale', e.message);
 		}
-		successNotification('Successful land listing', "Your land has been listed successfully");
+		successNotification('Successful land listing', 'Your land has been listed successfully');
 	};
 
 	render() {
@@ -299,6 +344,9 @@ export class UserProvider extends Component {
 						setupWeb3: this.setupWeb3,
 						redeemLands: this.redeemLands,
 						putLandOnSale: this.putLandOnSale,
+						approveErc721Token: this.approveErc721Token,
+						approveOvrTokens: this.approveOvrTokens,
+						buyLand: this.buyLand,
 					},
 				}}
 			>
