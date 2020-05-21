@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
 import { saveToken, isLogged, getToken, removeUser } from '../lib/auth';
-import { userProfile } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
 import { networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -47,8 +47,9 @@ export class UserProvider extends Component {
 	}
 
 	componentDidMount() {
-		this.setupWeb3();
 		if (isLogged()) {
+			this.lightSetupWeb3()
+
 			userProfile()
 				.then((response) => {
 					if (response.data.result === true) {
@@ -67,6 +68,14 @@ export class UserProvider extends Component {
 			this.loginUser(getToken('userToken'), getToken('userUuid'));
 		}
 	}
+
+	loginUser = (token, user) => {
+		this.setState({ isLoggedIn: true, token: token, user: user });
+		// Cookie management
+		saveToken('userToken', token);
+		saveToken('userUuid', user);
+		this.liveSocket();
+	};
 
 	waitTx = (txHash) => {
 		return new Promise((resolve, reject) => {
@@ -101,6 +110,7 @@ export class UserProvider extends Component {
 
 	// Note: the web3 version is always 0.20.7 because of metamask
 	setupWeb3 = async () => {
+		console.log('render setupweb3')
 		const ethereum = window.ethereum;
 		if (typeof ethereum !== 'undefined') {
 			try {
@@ -115,11 +125,25 @@ export class UserProvider extends Component {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+
+		// Sign nonce for centralized login
+		let publicAddress = window.web3.eth.defaultAccount.toLowerCase()
+		this.handleCentralizedLogin(publicAddress);
+
+		// Helpers
 		this.refreshWhenAccountsChanged();
 		this.updateBalanceWhenChanged();
 		await this.setupContracts();
 		await this.getOvrsOwned();
 	};
+
+	// if the user is logged in with a valid token just reload datas
+	lightSetupWeb3 = async () => {
+		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+		this.updateBalanceWhenChanged();
+		await this.setupContracts();
+		await this.getOvrsOwned();
+	}
 
 	setupContracts = async () => {
 		const _dai = window.web3.eth.contract(erc20Abi).at(daiAddress);
@@ -152,46 +176,64 @@ export class UserProvider extends Component {
 	};
 
 	getOvrsOwned = async () => {
-		const ovrsOwned = String(window.web3.fromWei(await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount)));
-		this.setState({ ovrsOwned });
+		if (this.state.ovr && this.state.setupComplete && window.web3.eth.defaultAccount){
+			const ovrsOwned = String(window.web3.fromWei(await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount)));
+			this.setState({ ovrsOwned });
+		}
 	};
 
-	loginUser = (token, user) => {
-		this.setState({ isLoggedIn: true, token: token, user: user });
-		// Cookie management
-		saveToken('userToken', token);
-		saveToken('userUuid', user);
-		this.liveSocket();
+
+	// 
+	// Centralized authentication with Metamask
+	//  
+
+	handleCentralizedLogin(publicAddress){
+		getUserNonce(publicAddress).then((response) => {
+			if (response.data.result === true) {
+				let nonce = response.data.user.nonce
+				this.handleUserSignMessage(publicAddress, nonce)
+			} else {
+				this.handleCentralizedSignup(publicAddress)
+			}
+		})
 	};
 
-	liveSocket = () => {
-		// console.log('live sockets', this.state.user.uuid);
-		// Sockets
-		var cable = ActionCable.createConsumer(config.apis.socket);
+	handleCentralizedSignup = publicAddress => {
+		signUpPublicAddress(publicAddress).then((response) => {
+			if (response.data.result === true) {
+				this.handleCentralizedLogin(publicAddress)
+			} else {
+				dangerNotification('Unable to register public address', response.data.errors[0].message);
+			}
+		})
+	};
 
-		cable.subscriptions.create(
-			{ channel: 'UsersChannel', user_uuid: this.state.user.uuid },
-			{
-				received: (data) => {
-					const { notification } = data;
-					const { balance } = data;
-					const { unreaded_count } = data;
-						
-					this.setState({
-						user: {
-							...this.state.user,
-							balance: balance,
-							notifications: {
-								...this.state.user.notifications,
-								unreadedCount: unreaded_count,
-								content: [notification, ...this.state.user.notifications.content],
-							},
-						},
-					});
-				},
-			},
+	handleUserSignMessage = (publicAddress, nonce) => {
+		return new Promise((resolve, reject) =>
+			window.web3.personal.sign(
+					window.web3.fromUtf8(`I am signing my one-time nonce: ${nonce}`),
+					publicAddress,
+					(err, signature) => {
+							if (err) return reject(err);
+							this.handleAuthenticate(publicAddress, signature)
+					}
+			)
 		);
 	};
+
+	handleAuthenticate = ( publicAddress, signature ) => {
+		signIn(publicAddress, signature).then((response) => {
+			if (response.data.result === true) {
+				// Save data in store 
+				this.loginUser(response.data.token, response.data.user);
+			} else {
+				dangerNotification('Unable to login', response.data.errors[0].message);
+			}
+		})
+	};
+
+
+	// Centralized Notifications
 
 	toggleShowNotificationCenter = () => {
 		this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
@@ -230,6 +272,40 @@ export class UserProvider extends Component {
 			},
 		});
 	};
+
+
+	// Sockets
+
+	liveSocket = () => {
+		var cable = ActionCable.createConsumer(config.apis.socket);
+
+		cable.subscriptions.create(
+			{ channel: 'UsersChannel', user_uuid: this.state.user.uuid },
+			{
+				received: (data) => {
+					const { notification } = data;
+					const { balance } = data;
+					const { unreaded_count } = data;
+
+					this.setState({
+						user: {
+							...this.state.user,
+							balance: balance,
+							notifications: {
+								...this.state.user.notifications,
+								unreadedCount: unreaded_count,
+								content: [notification, ...this.state.user.notifications.content],
+							},
+						},
+					});
+				},
+			},
+		);
+	};
+
+	//
+	// Render
+	//
 
 	render() {
 		return (

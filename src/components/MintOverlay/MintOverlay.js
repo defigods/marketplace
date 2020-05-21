@@ -46,6 +46,7 @@ const MintOverlay = (props) => {
 				return warningNotification('Epoch issue', 'The current land is not available in this epoch');
 			}
 
+			window.ethereum.enable()
 			// Check current balance and allowance
 			let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
 			let currentAllowance = await ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);

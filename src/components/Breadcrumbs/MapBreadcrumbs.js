@@ -19,7 +19,7 @@ const MapBreadcrumbs = () => {
 	const isAuction = data.marketStatus === 1;
 	const isUserRelated = data.userPerspective !== 0;
 
-	console.log('This is the data', data);
+	// console.log('This is the data', data);
 
 	if (currentPageLabel === 'Land') {
 		const dataIsEmpty = Object.keys(data).length === 0 && data.constructor === Object;

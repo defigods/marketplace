@@ -10,6 +10,7 @@ const apis = {
   hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003/api/v1',
   socket: apisDevelopment ? 'ws://localhost:3000/cable' : 'ws://47.254.135.104:8003/cable'
 }
+
 const map = {
 	lat: 46.0922495,
 	lng: 13.2312417,

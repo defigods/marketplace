@@ -21,8 +21,16 @@ export function example(user) {
  * @function signIn
  * @param {*}
  */
-export function signIn(userName, password) {
-	return request({ url: '/authentication/login', method: 'POST' }, { username: userName, password: password }, null);
+export function signIn(publicAddress, singedNonce) {
+	return request(
+		{ url: '/authentication/login', method: 'POST' },
+		{ public_address: publicAddress, signed_nonce: singedNonce },
+		null,
+	);
+}
+
+export function getUserNonce(publicAddress){
+	return request({ url: '/user/nonce', method: 'GET' }, { public_address: publicAddress }, null);
 }
 
 export function userProfile(userToken) {
@@ -43,6 +51,10 @@ export function signUp(userName, password, email) {
 		{ username: userName, password: password, email: email },
 		null,
 	);
+}
+
+export function signUpPublicAddress(publicAddress) {
+	return request({ url: '/user/registration', method: 'POST' }, { public_address: publicAddress }, null);
 }
 
 // AUCTIONS
