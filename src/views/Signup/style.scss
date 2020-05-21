@@ -1,15 +1,70 @@
 .Signup{
   text-align: center;
   padding-top: 50px;
-  h2{
-    color: $ovr_purple;
+  background-image: linear-gradient(90deg, #5e509d 0%, #724a93 100%);
+  min-height: calc( 100vh - 300px );
+  padding-bottom: 50px;
+  .o-box{
+    background: #fff;
+    border-radius: 5px;
+    margin: 0 auto;
+    width: 450px;
+    padding: 45px;
+    .Logo{
+      max-width: 100px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    h1, h2{
+      margin-top: 0px;
+      color: $ovr_purple;
+    }
+    .HexButton{
+      margin-top: 25px;
+    }
+  }
+  .--left{
+    text-align: left;
+  }
+  .o-list{
+    line-height: 20px;
+    svg{
+      margin-left: 5px;
+      max-width: 18px;
+      display: inline-block;
+      position: relative;
+      top: 7px;
+    }
+  }
+  .CheckCircleSharpIcon{
+    fill: #00C8A1;
+  }
+  .CancelIcon{
+    fill: #DC6A5B;
+  }
+  .Signup__msg{
+    &.--positive{
+      background: rgba(#00C8A1, 0.3);
+      border: 1px solid #00C8A1;
+    }
+    &.--negative{
+      background: rgba(#DC6A5B, 0.3);
+      border: 1px solid #DC6A5B;
+    }
+    border-radius: 5px;
+    padding: 10px 25px;
+    margin-top: 20px;
+    font-weight: 300;
   }
 }
-.Signup__sub-title{
+.Signup__section{
   font-size: 16px;
   margin-top: 5px;
   margin: 0 auto;
   max-width: 350px;
+  clear: both;
+  display: inline-block;
+  width: 100%;
 }
 .Signup__form-container{
   margin-top: 20px;

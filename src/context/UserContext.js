@@ -1,6 +1,6 @@
 import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
-import { saveToken, isLogged, getToken, removeUser } from '../lib/auth';
+import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
 import config from '../lib/config';
@@ -86,6 +86,14 @@ export class UserProvider extends Component {
 		this.liveSocket();
 	};
 
+	logOutUser = () => {
+		this.setState({ isLoggedIn: false, token: null, user: { uuid: null } });
+
+		// Cookie management
+		removeToken('userToken');
+		removeToken('userUuid');
+	};
+
 	waitTx = (txHash) => {
 		return new Promise((resolve, reject) => {
 			let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
@@ -149,6 +157,7 @@ export class UserProvider extends Component {
 	// if the user is logged in with a valid token just reload datas
 	lightSetupWeb3 = async () => {
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+		this.refreshWhenAccountsChanged();
 		this.updateBalanceWhenChanged();
 		await this.setupContracts();
 		await this.getOvrsOwned();
@@ -176,8 +185,16 @@ export class UserProvider extends Component {
 
 	// Refreshes the page when the metamask account is changed
 	refreshWhenAccountsChanged = () => {
-		window.ethereum.on('accountsChanged', function (accounts) {
-			window.location.reload();
+		console.log('init refresh')
+		window.ethereum.on('accountsChanged', (accounts) => {
+			console.log('this.state.isLoggedIn', this.state.isLoggedIn)
+			if(this.state.isLoggedIn){
+				console.log('isLoggedin')
+				this.logOutUser();
+				this.setupWeb3();
+			} else {
+				//
+			}
 		});
 	};
 

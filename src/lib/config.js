@@ -4,12 +4,20 @@ import _ from 'lodash';
 // General Configs
 //
 
+// Possible values are STAGING, DEVELOPMENT, PRODUCTION
+// If you have connection error set as STAGING
+const environment = 'STAGING';
 
-const apisDevelopment = true 
 const apis = {
-  hostname: apisDevelopment ? 'http://localhost:3000/api/v1' : 'http://47.254.135.104:8003/api/v1',
-  socket: apisDevelopment ? 'ws://localhost:3000/cable' : 'ws://47.254.135.104:8003/cable'
-}
+	hostname:
+		environment === 'PRODUCTION'
+			? 'http://localhost:3000/api/v1'
+			: (environment === 'STAGING' ? 'http://47.254.135.104:8003/api/v1' : 'http://localhost:3000/api/v1'),
+	socket:
+		environment === 'PRODUCTION'
+			? 'ws://localhost:3000/cable'
+			: (environment === 'STAGING' ? 'ws://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable')
+};
 
 const map = {
 	lat: 46.0922495,
@@ -20,6 +28,10 @@ const map = {
 };
 
 let config = {
+	web3network:
+	environment === 'PRODUCTION'
+		? "1"
+		: "3",
 	apis: apis,
 	map: map,
 };

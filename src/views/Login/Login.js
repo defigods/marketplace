@@ -1,22 +1,24 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { UserContext, withUserContext } from '../../context/UserContext';
-
+import { useHistory } from 'react-router-dom';
 
 /**
  * Login page component
  */
 
-const Login = (props) => {
+const Login = () => {
 	const context = useContext(UserContext);
-	// let history = useHistory();
+	let history = useHistory();
 
 	useEffect(() => {
 		// Login via web3
-		context.actions.setupWeb3();
+		context.actions.setupWeb3().then(() => {
+			// Redirect to overview
+			//history.push('/map/overview');
+		});
 	}, []);
-
 
 	//
 	// Return
