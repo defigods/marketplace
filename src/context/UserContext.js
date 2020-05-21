@@ -259,7 +259,9 @@ export class UserProvider extends Component {
 			// If this is your land and it hasn't been redeemed already and the auction is done
 			if (landState != 2 && land[0] == window.web3.eth.defaultAccount && timePassedInSeconds >= auctionTime) {
 				try {
-					await this.state.ico.redeemWonLandAsync(activeLandsIds[i]);
+					await this.state.ico.redeemWonLandAsync(activeLandsIds[i], {
+						gasPrice: window.web3.toWei(30, 'gwei')
+					});
 					landsRedeemed++;
 				} catch (e) {
 					return dangerNotification(`Error redeeming the land ${activeLandsIds[i]}`, e.message);
@@ -282,7 +284,9 @@ export class UserProvider extends Component {
 		const existingApproval = await this.state.ovr721.getApprovedAsync(landId);
 		if (existingApproval === icoAddress) return true;
 		try {
-			const tx = await this.state.ovr721.setApprovalForAllAsync(icoAddress, true);
+			const tx = await this.state.ovr721.setApprovalForAllAsync(icoAddress, true, {
+				gasPrice: window.web3.toWei(30, 'gwei'),
+			});
 			await this.waitTx(tx);
 		} catch (e) {
 			dangerNotification('Error approving the OVR land token', e.message);
@@ -323,7 +327,9 @@ export class UserProvider extends Component {
 	putLandOnSale = async (hexId, price, onSale) => {
 		const landId = parseInt(hexId, 16);
 		try {
-			const tx = await this.state.ico.putLandOnSaleAsync(landId, price, onSale);
+			const tx = await this.state.ico.putLandOnSaleAsync(landId, price, onSale, {
+				gasPrice: window.web3.toWei(30, 'gwei'),
+			});
 			await this.waitTx(tx);
 		} catch (e) {
 			return dangerNotification('Error listing the land on sale', e.message);
