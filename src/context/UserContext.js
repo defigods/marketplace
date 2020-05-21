@@ -331,7 +331,6 @@ export class UserProvider extends Component {
 		successNotification('Successful land listing', 'Your land has been listed successfully');
 	};
 
-<<<<<<< HEAD
 
 	// Centralized Notifications
 
@@ -402,10 +401,11 @@ export class UserProvider extends Component {
 		);
 	};
 	
-=======
 	offerToBuyLand = async (hexId, price, expirationDate) => {
 		const landId = parseInt(hexId, 16);
-		const tx = await this.state.ico.offerToBuyLandAsync(landId, price, expirationDate);
+		const tx = await this.state.ico.offerToBuyLandAsync(landId, price, expirationDate, {
+			gasPrice: window.web3.toWei(30, 'gwei'),
+		});
 		await this.waitTx(tx);
 	};
 
@@ -421,7 +421,6 @@ export class UserProvider extends Component {
 		return offers;
 	};
 
->>>>>>> working on the buy offers
 	render() {
 		return (
 			<UserContext.Provider

@@ -28,7 +28,7 @@ const BuyOfferOverlay = (props) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [expirationDate, setExpirationDate] = useState(tomorrow);
 	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { approveOvrTokens, offerToBuyLand } = props.userProvider.actions;
 	const { setupComplete } = props.userProvider.state;
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
@@ -51,7 +51,7 @@ const BuyOfferOverlay = (props) => {
 			} else {
 				const now = Math.trunc(Date.now() / 1000);
 				const price = String(window.web3.toWei(proposedValue));
-				
+
 				if (now >= solidityExpirationDate) {
 					return warningNotification('Date error', 'The expiration date must be set in the future');
 				}
@@ -91,7 +91,7 @@ const BuyOfferOverlay = (props) => {
 
 	function sendBuyOffer() {
 		// Call API function
-		buyOffer(props.land.key, proposedValue, expirationDate)
+		buyOffer(hexId, proposedValue, expirationDate)
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
@@ -121,7 +121,7 @@ const BuyOfferOverlay = (props) => {
 	}
 
 	function handleDateChange(e) {
-		setSolidityExpirationDate(Math.trunc(e / 1000))
+		setSolidityExpirationDate(Math.trunc(e / 1000));
 		setExpirationDate(e);
 	}
 
@@ -232,7 +232,7 @@ const BuyOfferOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>{ metamaskMessage }</span>
+								<span>{metamaskMessage}</span>
 							</div>
 						</div>
 					</div>

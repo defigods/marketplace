@@ -6,7 +6,6 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { mintLand } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
-import { icoAddress } from '../../lib/contracts';
 
 const MintOverlay = (props) => {
 			
