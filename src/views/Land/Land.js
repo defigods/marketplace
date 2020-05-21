@@ -106,20 +106,24 @@ export class Land extends Component {
 		// Check is the land is ended by comparing the timestamp to 24 hours
 		const now = Math.trunc(Date.now() / 1000);
 		const landContractState = parseInt(land[4]);
-
+		
+		console.log('landContractState', landContractState)
 		// If 24 hours have passed, consider it sold
 		// Checks if you're the owner or not to display the appropriate button
 		if (landContractState === 2 || (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration)) {
 			if (landOwner == window.web3.eth.defaultAccount) {
+				console.log('one')
 				return this.setState({
 					marketStatus: 3,
 				});
 			} else {
+				console.log('two')
 				return this.setState({
 					marketStatus: 2,
 				});
 			}
 		} else {
+			console.log('three', landContractState)
 			this.setState({
 				marketStatus: landContractState,
 			});
