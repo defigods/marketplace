@@ -10,6 +10,7 @@ import SellOverlay from '../../components/SellOverlay/SellOverlay';
 import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
 import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
 import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
+import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 
 import { getLand } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
@@ -106,8 +107,15 @@ export class Land extends Component {
 		// Check is the land is ended by comparing the timestamp to 24 hours
 		const now = Math.trunc(Date.now() / 1000);
 		const landContractState = parseInt(land[4]);
+		const isOnSale = land[8];
 		
-		console.log('landContractState', landContractState)
+		// Checks if the land is on sale also to display the right buy button
+		if (isOnSale) {
+			return this.setState({
+				marketStatus: 4,
+			});
+		}
+
 		// If 24 hours have passed, consider it sold
 		// Checks if you're the owner or not to display the appropriate button
 		if (landContractState === 2 || (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration)) {
@@ -150,6 +158,11 @@ export class Land extends Component {
 	setActiveSellOverlay(e) {
 		e.preventDefault();
 		this.mapActions.changeActiveSellOverlay(true);
+	}
+
+	setActiveBuyOverlay(e) {
+		e.preventDefault();
+		this.mapActions.changeActiveBuyOverlay(true);
 	}
 
 	setActiveBuyOfferOverlay(e) {
@@ -277,6 +290,16 @@ export class Land extends Component {
 						text="Sell Land"
 						className="--purple"
 						onClick={(e) => this.setActiveSellOverlay(e)}
+					></HexButton>
+				);
+				break;
+			case 4:
+				button = (
+					<HexButton
+						url="/"
+						text="Buy Now"
+						className="--purple"
+						onClick={(e) => this.setActiveBuyOverlay(e)}
 					></HexButton>
 				);
 				break;
@@ -452,16 +475,19 @@ export class Land extends Component {
 	render() {
 		return (
 			<div className="Land">
+				<h1>aaaaaaaaaaaaaaaaaaaaaa</h1>
 				<BidOverlay
 					currentBid={this.state.value}
 					land={this.state}
 					realodLandStatefromApi={this.realodLandStatefromApi}
 				></BidOverlay>
+				<h1>bbbbbbbbbbbbbbb</h1>
 				<MintOverlay
 					currentBid={this.state.value}
 					land={this.state}
 					realodLandStatefromApi={this.realodLandStatefromApi}
 				></MintOverlay>
+				<h1>ccccccccccccccccccc</h1>
 				<SellOverlay
 					currentBid={this.state.value}
 					land={this.state}
@@ -472,6 +498,11 @@ export class Land extends Component {
 					land={this.state}
 					realodLandStatefromApi={this.realodLandStatefromApi}
 				></BuyOfferOverlay>
+				<BuyLandOverlay
+					currentBid={this.state.value}
+					land={this.state}
+					realodLandStatefromApi={this.realodLandStatefromApi}
+				></BuyLandOverlay>
 
 				<div className="o-container">
 					<div className="Land__heading__1">
