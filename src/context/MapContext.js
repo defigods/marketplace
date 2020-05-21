@@ -15,6 +15,7 @@ export class MapProvider extends Component {
 			activeMintOverlay: false,
 			activeSellOverlay: false,
 			activeBuyOfferOverlay: false,
+			activeBuyOverlay: false,
 			auctionList: [],
 			landData: {},
 		};
@@ -27,6 +28,7 @@ export class MapProvider extends Component {
 		this.changeActiveSellOverlay = this.changeActiveSellOverlay.bind(this);
 		this.changeActiveBuyOfferOverlay = this.changeActiveBuyOfferOverlay.bind(this);
 		this.changeLandData = this.changeLandData.bind(this);
+		this.changeActiveBuyOverlay = this.changeActiveBuyOverlay.bind(this);
 	}
 
 	changeHexId(hex_id) {
@@ -53,6 +55,9 @@ export class MapProvider extends Component {
 	changeActiveBuyOfferOverlay(activeVal) {
 		this.setState({ activeBuyOfferOverlay: activeVal });
 	}
+	changeActiveBuyOverlay(activeVal) {
+		this.setState({ activeBuyOverlay: activeVal });
+	}
 
 	render() {
 		return (
@@ -68,6 +73,7 @@ export class MapProvider extends Component {
 						changeActiveSellOverlay: this.changeActiveSellOverlay,
 						changeActiveBuyOfferOverlay: this.changeActiveBuyOfferOverlay,
 						changeLandData: this.changeLandData,
+						changeActiveBuyOverlay: this.changeActiveBuyOverlay,
 					},
 					overviewList: this.overviewList,
 				}}

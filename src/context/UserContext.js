@@ -284,7 +284,7 @@ export class UserProvider extends Component {
 		const existingApproval = await this.state.ovr721.getApprovedAsync(landId);
 		if (existingApproval === icoAddress) return true;
 		try {
-			const tx = await this.state.ovr721.setApprovalForAllAsync(icoAddress, true, {
+			const tx = await this.state.ovr721.approveAsync(icoAddress, landId, {
 				gasPrice: window.web3.toWei(30, 'gwei'),
 			});
 			await this.waitTx(tx);
@@ -318,7 +318,9 @@ export class UserProvider extends Component {
 
 	buyLand = async (hexId) => {
 		const landId = parseInt(hexId, 16);
-		const tx = await this.state.buyLand(landId);
+		const tx = await this.state.ico.buyLandAsync(landId, {
+			gasPrice: window.web3.toWei(30, 'gwei'),
+		});
 		await this.waitTx(tx);
 	};
 
