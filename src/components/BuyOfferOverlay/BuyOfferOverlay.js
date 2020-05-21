@@ -27,17 +27,45 @@ const BuyOfferOverlay = (props) => {
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
 	const [expirationDate, setExpirationDate] = useState(tomorrow);
+	const pathHexId = window.location.pathname.split('/')[3];
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
+	const { approveOvrTokens, offerToBuyLand } = props.userProvider.actions;
+	const { setupComplete } = props.userProvider.state;
+	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [solidityExpirationDate, setSolidityExpirationDate] = useState(0);
 
-	const handleNext = () => {
+	useEffect(() => {
+		if (setupComplete) setupListeners();
+	}, [setupComplete]);
+
+	const setupListeners = () => {
+		document.addEventListener('land-selected', (event) => {
+			setHexId(event.detail.hex_id);
+		});
+	};
+
+	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
 				warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			} else {
+				const now = Math.trunc(Date.now() / 1000);
+				const price = String(window.web3.toWei(proposedValue));
+				
+				if (now >= solidityExpirationDate) {
+					return warningNotification('Date error', 'The expiration date must be set in the future');
+				}
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);
-				//  TODO Remove timeout
-				setTimeout(function () {
-					sendBuyOffer();
-				}, 1500);
+				try {
+					setMetamaskMessage('Approving OVR tokens for the Smart Contract...');
+					await approveOvrTokens();
+					setMetamaskMessage('Waiting for MetaMask confirmation');
+					await offerToBuyLand(hexId, price, solidityExpirationDate);
+				} catch (e) {
+					return dangerNotification('Error processing the transaction', e.message);
+				}
+
+				sendBuyOffer();
 			}
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -93,7 +121,7 @@ const BuyOfferOverlay = (props) => {
 	}
 
 	function handleDateChange(e) {
-		console.log(e);
+		setSolidityExpirationDate(Math.trunc(e / 1000))
 		setExpirationDate(e);
 	}
 
@@ -204,7 +232,7 @@ const BuyOfferOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>Waiting for MetaMask confirmation</span>
+								<span>{ metamaskMessage }</span>
 							</div>
 						</div>
 					</div>

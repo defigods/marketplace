@@ -95,7 +95,7 @@ const BuyTokens = (context) => {
 		// tokensToBuy
 		let response;
 		const dataToSend = {
-			amount: window.web3.fromWei(tokensToBuy / perUsd),
+			amount: String(window.web3.fromWei(tokensToBuy / perUsd * 100)), // Must be in cents so 1 dollar is 100
 			addressReceiver: window.web3.eth.defaultAccount,
 			card: {
 				cardNum: cardNumber,
@@ -107,6 +107,7 @@ const BuyTokens = (context) => {
 			},
 			billingDetails: { zip },
 		};
+		console.log('data to send', dataToSend)
 		try {
 			const request = await fetch(FIAT_BUY_URL, {
 				method: 'post',
