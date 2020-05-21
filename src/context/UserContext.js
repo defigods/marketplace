@@ -401,6 +401,26 @@ export class UserProvider extends Component {
 		);
 	};
 	
+	offerToBuyLand = async (hexId, price, expirationDate) => {
+		const landId = parseInt(hexId, 16);
+		const tx = await this.state.ico.offerToBuyLandAsync(landId, price, expirationDate, {
+			gasPrice: window.web3.toWei(30, 'gwei'),
+		});
+		await this.waitTx(tx);
+	};
+
+	getOffersToBuyLand = async (hexId) => {
+		const landId = parseInt(hexId, 16);
+		const landOfferIds = await this.state.ico.getLandOffersAsync(landId);
+		let offers = [];
+		for (let i = 0; i < landOfferIds.length; i++) {
+			const landOfferId = landOfferIds[i];
+			const offer = await this.state.ico.landOffersAsync(landOfferId);
+			offers.push(offer);
+		}
+		return offers;
+	};
+
 	render() {
 		return (
 			<UserContext.Provider
@@ -421,6 +441,8 @@ export class UserProvider extends Component {
 						approveErc721Token: this.approveErc721Token,
 						approveOvrTokens: this.approveOvrTokens,
 						buyLand: this.buyLand,
+						offerToBuyLand: this.offerToBuyLand,
+						getOffersToBuyLand: this.getOffersToBuyLand,
 					},
 				}}
 			>
