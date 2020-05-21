@@ -3,17 +3,20 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 import TimeCounter from '../TimeCounter/TimeCounter';
 import HexButton from '../HexButton/HexButton';
 import Modal from '@material-ui/core/Modal';
-
+import { withMapContext } from '../../context/MapContext';
+import { withUserContext } from '../../context/UserContext';
 import { deleteBuyOffer, hitBuyOffer } from '../../lib/api';
-
 import { networkError, dangerNotification, successNotification, warningNotification } from '../../lib/notifications';
 
 export class BuyOfferOrder extends Component {
 	constructor(props) {
 		super(props);
 		console.log('BuyOfferOrderValues', props);
+		const pathHexId = window.location.pathname.split('/')[3];
 		this.state = {
 			openModal: false,
+			offerId: this.props.offerId,
+			hexId: pathHexId && pathHexId.length === 15 ? pathHexId : this.props.mapProvider.state.hex_id,
 		};
 
 		this.confirmDeleteBuyOffer = this.confirmDeleteBuyOffer.bind(this);
@@ -21,9 +24,22 @@ export class BuyOfferOrder extends Component {
 		this.handleOpen = this.handleOpen.bind(this);
 		this.handleClose = this.handleClose.bind(this);
 		this.buttonRender = this.buttonRender.bind(this);
+		this.putLandOnSale = this.props.userProvider.actions.putLandOnSale;
+		this.setupComplete = this.props.userProvider.state.setupComplete;
 	}
 
-	confirmDeleteBuyOffer() {
+	setupListeners() {
+		document.addEventListener('land-selected', (event) => {
+			this.setState({ hexId: event.detail.hex_id });
+		});
+	}
+
+	async confirmDeleteBuyOffer() {
+		try {
+			await this.putLandOnSale(this.state.hexId, 0, false);
+		} catch (e) {
+			return dangerNotification('Error deleting land', e.message);
+		}
 		deleteBuyOffer(this.props.order.orderUuid) // Call API function
 			.then((response) => {
 				if (response.data.result === true) {
@@ -67,7 +83,9 @@ export class BuyOfferOrder extends Component {
 		this.setState({ openModal: false });
 	}
 
-	componentDidMount() {}
+	componentDidMount() {
+		if (this.setupComplete) this.setupListeners();
+	}
 
 	buttonRender() {
 		let customRender;
@@ -167,4 +185,4 @@ export class BuyOfferOrder extends Component {
 	}
 }
 
-export default BuyOfferOrder;
+export default withUserContext(withMapContext(BuyOfferOrder));

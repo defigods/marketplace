@@ -16,10 +16,12 @@ import { getLand } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 
 import { Textfit } from 'react-textfit';
+import { ca } from 'date-fns/esm/locale';
 
 export class Land extends Component {
 	constructor(props) {
 		super(props);
+		const pathHexId = window.location.pathname.split('/')[3];
 		this.state = {
 			key: '8cbcc350c0ab5ff',
 			value: 10,
@@ -30,10 +32,35 @@ export class Land extends Component {
 			auction: null,
 			openSellOrder: null,
 			openBuyOffers: [],
+			hexId: pathHexId && pathHexId.length === 15 ? pathHexId : this.props.mapProvider.state.hex_id,
 		};
 		this.mapActions = this.props.mapProvider.actions;
-		this.setupListeners();
 	}
+
+	componentDidMount() {
+		const hex_id = this.props.match.params.id;
+		// Focus map on hex_id
+		this.mapActions.changeHexId(hex_id);
+		// Load data from API
+		this.loadLandStateFromApi(hex_id);
+		if (this.props.userProvider.state.setupComplete) this.setupListeners();
+		let setupInterval = setInterval(() => {
+			if (this.props.userProvider.state.setupComplete) {
+				this.setupListeners();
+				clearInterval(setupInterval);
+			}
+		}, 5e2);
+	}
+
+	setupListeners() {
+		this.getBuyOffers();
+		this.setContractPrice(this.state.hexId);
+		document.addEventListener('land-selected', (event) => {
+			this.setState({ hexId: event.detail.hex_id });
+			this.setContractPrice(event.detail.hex_id);
+			this.getBuyOffers();
+		});
+	};
 
 	loadLandStateFromApi(hex_id) {
 		// Call API function
@@ -71,14 +98,6 @@ export class Land extends Component {
 				console.log(error);
 				networkError();
 			});
-	}
-
-	componentDidMount() {
-		const hex_id = this.props.match.params.id;
-		// Focus map on hex_id
-		this.mapActions.changeHexId(hex_id);
-		// Load data from API
-		this.loadLandStateFromApi(hex_id);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -133,6 +152,10 @@ export class Land extends Component {
 				marketStatus: landContractState,
 			});
 		}
+	}
+
+	async getBuyOffers() {
+		const offers = await this.props.userProvider.actions.getOffersToBuyLand(this.hexId);
 	}
 
 	setActiveBidOverlay(e) {
@@ -307,15 +330,6 @@ export class Land extends Component {
 
 		return button;
 	}
-
-	setupListeners = () => {
-		// Get the hex id from the url
-		const hex_id = window.location.pathname.split('/')[3];
-		this.setContractPrice(hex_id);
-		document.addEventListener('land-selected', (event) => {
-			this.setContractPrice(event.detail.hex_id);
-		});
-	};
 
 	// Sets the price displayed below the map
 	setContractPrice = (hex_id) => {
