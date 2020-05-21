@@ -108,7 +108,7 @@ export class Land extends Component {
 		const now = Math.trunc(Date.now() / 1000);
 		const landContractState = parseInt(land[4]);
 		const isOnSale = land[8];
-		
+
 		// Checks if the land is on sale also to display the right buy button
 		if (isOnSale) {
 			return this.setState({
@@ -120,18 +120,15 @@ export class Land extends Component {
 		// Checks if you're the owner or not to display the appropriate button
 		if (landContractState === 2 || (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration)) {
 			if (landOwner == window.web3.eth.defaultAccount) {
-				console.log('one')
 				return this.setState({
 					marketStatus: 3,
 				});
 			} else {
-				console.log('two')
 				return this.setState({
 					marketStatus: 2,
 				});
 			}
 		} else {
-			console.log('three', landContractState)
 			this.setState({
 				marketStatus: landContractState,
 			});
@@ -475,19 +472,16 @@ export class Land extends Component {
 	render() {
 		return (
 			<div className="Land">
-				<h1>aaaaaaaaaaaaaaaaaaaaaa</h1>
 				<BidOverlay
 					currentBid={this.state.value}
 					land={this.state}
 					realodLandStatefromApi={this.realodLandStatefromApi}
 				></BidOverlay>
-				<h1>bbbbbbbbbbbbbbb</h1>
 				<MintOverlay
 					currentBid={this.state.value}
 					land={this.state}
 					realodLandStatefromApi={this.realodLandStatefromApi}
 				></MintOverlay>
-				<h1>ccccccccccccccccccc</h1>
 				<SellOverlay
 					currentBid={this.state.value}
 					land={this.state}

@@ -21,6 +21,7 @@ const BuyLandOverlay = (props) => {
 	}, [setupComplete]);
 
 	const setupListeners = () => {
+		setNextBidSelectedLand(hexId);
 		document.addEventListener('land-selected', (event) => {
 			setHexId(event.detail.hex_id);
 			setNextBidSelectedLand(event.detail.hex_id);
@@ -31,9 +32,10 @@ const BuyLandOverlay = (props) => {
 		if (!setupComplete || !ico || !ovr) {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
-		const initialBid = String(await ico.initialLandBidAsync());
-		let nextPayment = window.web3.fromWei(initialBid);
-		setNextBid(nextPayment);
+		const landId = parseInt(hexId, 16);
+		const land = await ico.landsAsync(landId);
+		const price = String(window.web3.fromWei(land[7]));
+		setNextBid(price);
 	};
 
 	const handleNext = async () => {
@@ -43,13 +45,20 @@ const BuyLandOverlay = (props) => {
 			}
 
 			try {
+				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
+				if (!currentBalance.greaterThan(nextBid))
+					return dangerNotification(
+						'Balance insufficient',
+						"You don't have enough tokens to buy that land get more and try again",
+					);
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);
 				setMetamaskMessage('Approving tokens first...');
 				await approveOvrTokens();
 				setMetamaskMessage('Waiting for land buying MetaMask confirmation');
-				await buyLand();
+				await buyLand(hexId);
 				sendMint();
 			} catch (e) {
+				console.log('Error', e);
 				return dangerNotification('Error processing the transactions', e.message);
 			}
 		} else {
@@ -91,7 +100,7 @@ const BuyLandOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Buy this OVRLand</div>
+							<div className="Overlay__title">Buy OVRLand</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -106,7 +115,7 @@ const BuyLandOverlay = (props) => {
 							</div>
 							<br />
 							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Place Bid" className={`--orange`} onClick={handleNext}></HexButton>
+								<HexButton url="#" text="Buy Now" className={`--orange`} onClick={handleNext}></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
@@ -116,7 +125,7 @@ const BuyLandOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Buying the OVRLand</div>
+							<div className="Overlay__title">Buying OVRLand</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -130,7 +139,7 @@ const BuyLandOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>{ metamaskMessage }</span>
+								<span>{metamaskMessage}</span>
 							</div>
 						</div>
 					</div>
@@ -139,7 +148,7 @@ const BuyLandOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Buying the OVRLand</div>
+							<div className="Overlay__title">Buying OVRLand</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
