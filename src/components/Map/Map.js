@@ -265,13 +265,12 @@ class Map extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		console.log(nextProps, nextState, nextContext);
 		if (this.context.state.onSingleView !== nextContext.state.onSingleView) {
 			return true;
 		}
-		if (this.context.state.auctionList.map((a) => a.uuid) !== nextContext.state.auctionList.map((a) => a.uuid)) {
-			return true;
-		}
+		// if (this.context.state.auctionList.map((a) => a.uuid) === nextContext.state.auctionList.map((a) => a.uuid)) {
+		// 	return false;
+		// }
 		return false;
 	}
 

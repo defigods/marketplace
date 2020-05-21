@@ -68,7 +68,6 @@ const Discover = () => {
 		// Call API function
 		indexLands(null, page)
 			.then((response) => {
-				console.log('wew', response.data.lands);
 				// Load Lands in MapContext
 				if (response.data.lands.length > 0) {
 					// Load user data in context store
