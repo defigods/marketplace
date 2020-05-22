@@ -43,9 +43,9 @@ export class Land extends Component {
 		this.mapActions.changeHexId(hex_id);
 		// Load data from API
 		this.loadLandStateFromApi(hex_id);
-		if (this.props.userProvider.state.setupComplete) this.setupListeners();
+		if (this.props.userProvider.state.setupComplete && this.props.userProvider.state.ico) this.setupListeners();
 		let setupInterval = setInterval(() => {
-			if (this.props.userProvider.state.setupComplete) {
+			if (this.props.userProvider.state.setupComplete && this.props.userProvider.state.ico) {
 				this.setupListeners();
 				clearInterval(setupInterval);
 			}
@@ -55,6 +55,10 @@ export class Land extends Component {
 	setupListeners() {
 		this.getBuyOffers();
 		this.setContractPrice(this.state.hexId);
+		// Update offers every half a second
+		setInterval(() => {
+			this.getBuyOffers();
+		}, 5e2);
 		document.addEventListener('land-selected', (event) => {
 			this.setState({ hexId: event.detail.hex_id });
 			this.setContractPrice(event.detail.hex_id);
@@ -75,7 +79,7 @@ export class Land extends Component {
 					// marketStatus: data.marketStatus,
 					userPerspective: data.userPerspective,
 					openSellOrder: data.openSellOrder,
-					openBuyOffers: data.openBuyOffers,
+					// openBuyOffers: data.openBuyOffers,
 					auction: data.auction,
 					// value: data.value,
 				};
@@ -155,7 +159,10 @@ export class Land extends Component {
 	}
 
 	async getBuyOffers() {
-		const offers = await this.props.userProvider.actions.getOffersToBuyLand(this.hexId);
+		let offers = await this.props.userProvider.actions.getOffersToBuyLand(this.state.hexId);
+		this.setState({
+			openBuyOffers: offers,
+		});
 	}
 
 	setActiveBidOverlay(e) {
@@ -447,15 +454,15 @@ export class Land extends Component {
 
 		// If there are Buy Offers
 		if (this.state.openBuyOffers.length > 0) {
-			displayBuyOffers =
-				this.state.userPerspective === 1 ||
-				(this.state.openBuyOffers != null &&
-					this.state.openBuyOffers.map((a) => a.userUuid).includes(this.props.userProvider.state.user.uuid));
+			// If the land is owned, is not yours and is not on sale show the buy offer option
+			displayBuyOffers = this.state.marketStatus === 2;
 
 			if (displayBuyOffers) {
-				openBuyOffers = this.state.openBuyOffers.map((obj) => (
+				openBuyOffers = this.state.openBuyOffers.map((offer) => (
 					<BuyOfferOrder
-						order={obj}
+						key={offer.id}
+						offer={offer}
+						isOwner={true}
 						userPerspective={this.state.userPerspective}
 						userProvider={this.props.userProvider}
 					></BuyOfferOrder>
@@ -463,7 +470,7 @@ export class Land extends Component {
 			}
 		}
 
-		if (this.state.openSellOrder || (displayBuyOffers && this.state.openBuyOffers.length > 0)) {
+		if (this.state.openSellOrder || displayBuyOffers) {
 			custom_return = (
 				<div className="Land__section">
 					<div className="o-container">

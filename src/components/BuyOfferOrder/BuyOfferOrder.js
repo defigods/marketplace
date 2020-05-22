@@ -11,11 +11,10 @@ import { networkError, dangerNotification, successNotification, warningNotificat
 export class BuyOfferOrder extends Component {
 	constructor(props) {
 		super(props);
-		console.log('BuyOfferOrderValues', props);
 		const pathHexId = window.location.pathname.split('/')[3];
 		this.state = {
 			openModal: false,
-			offerId: this.props.offerId,
+			offerId: this.props.offer.id,
 			hexId: pathHexId && pathHexId.length === 15 ? pathHexId : this.props.mapProvider.state.hex_id,
 		};
 
@@ -24,7 +23,7 @@ export class BuyOfferOrder extends Component {
 		this.handleOpen = this.handleOpen.bind(this);
 		this.handleClose = this.handleClose.bind(this);
 		this.buttonRender = this.buttonRender.bind(this);
-		this.putLandOnSale = this.props.userProvider.actions.putLandOnSale;
+		this.cancelBuyOffer = this.props.userProvider.actions.cancelBuyOffer;
 		this.setupComplete = this.props.userProvider.state.setupComplete;
 	}
 
@@ -34,41 +33,13 @@ export class BuyOfferOrder extends Component {
 		});
 	}
 
-	async confirmDeleteBuyOffer() {
-		try {
-			await this.putLandOnSale(this.state.hexId, 0, false);
-		} catch (e) {
-			return dangerNotification('Error deleting land', e.message);
-		}
-		deleteBuyOffer(this.props.order.orderUuid) // Call API function
-			.then((response) => {
-				if (response.data.result === true) {
-					successNotification('Action complete', 'Delete of buy offer complete');
-					this.handleClose();
-				} else {
-					dangerNotification('Unable to delete buy offer', response.data.errors[0].message);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
+	async confirmDeleteBuyOffer(offerId) {
+		await this.cancelBuyOffer(offerId);
+		this.handleClose();
 	}
 
 	confirmSell() {
-		hitBuyOffer(this.props.order.orderUuid) // Call API function
-			.then((response) => {
-				if (response.data.result === true) {
-					successNotification('Action complete', 'You sold the land');
-					this.handleClose();
-				} else {
-					dangerNotification('Unable to buy land', response.data.errors[0].message);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
+		// TODO When the user confirms to accept this buy offer
 	}
 
 	handleOpen() {
@@ -89,7 +60,7 @@ export class BuyOfferOrder extends Component {
 
 	buttonRender() {
 		let customRender;
-		if (this.props.userPerspective === 1) {
+		if (!this.props.isOwner) {
 			customRender = (
 				<>
 					<div className="section">
@@ -113,19 +84,19 @@ export class BuyOfferOrder extends Component {
 								<div className="OrderModal__bid">
 									<div className="Overlay__bid_title">Sell at</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={this.props.order.worth}></ValueCounter>
+										<ValueCounter value={this.props.offer.price}></ValueCounter>
 									</div>
 								</div>
 							</div>
 							<div className="Modal__buttons_container">
-								<HexButton url="#" text="Confirm" className={'--purple'} onClick={this.confirmSell}></HexButton>
+								<HexButton url="#" text="Confirm" className={'--purple'} onClick={() => this.confirmSell(this.props.offer.id)}></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
 						</div>
 					</Modal>
 				</>
 			);
-		} else if (this.props.userProvider.state.user.uuid === this.props.order.userUuid) {
+		} else {
 			customRender = (
 				<>
 					<div className="section">
@@ -150,7 +121,7 @@ export class BuyOfferOrder extends Component {
 									url="#"
 									text="Confirm"
 									className={'--purple'}
-									onClick={this.confirmDeleteBuyOffer}
+									onClick={() => this.confirmDeleteBuyOffer(this.props.offer.id)}
 								></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
@@ -163,25 +134,21 @@ export class BuyOfferOrder extends Component {
 	}
 
 	render() {
-		if (this.props.userProvider.state.user.uuid === this.props.order.userUuid || this.props.userPerspective === 1) {
-			return (
-				<div className="BuyOfferTile">
-					<div className="section">
-						<ValueCounter value={this.props.order.worth}></ValueCounter>
-					</div>
-					<div className="section">
-						<b>Buy Offer Order</b>
-					</div>
-					<div className="section">
-						<span className="c-small-tile-text">Expires</span>{' '}
-						<TimeCounter date_end={this.props.order.expirationDate}></TimeCounter>
-					</div>
-					{this.buttonRender()}
+		return (
+			<div className="BuyOfferTile">
+				<div className="section">
+					<ValueCounter value={this.props.offer.price}></ValueCounter>
 				</div>
-			);
-		} else {
-			return <></>;
-		}
+				<div className="section">
+					<b>Buy Offer Order</b>
+				</div>
+				<div className="section">
+					<span className="c-small-tile-text">Expires</span>{' '}
+					<TimeCounter date_end={new Date(this.props.offer.expirationDate * 1000)}></TimeCounter>
+				</div>
+				{this.buttonRender()}
+			</div>
+		);
 	}
 }
 

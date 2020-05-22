@@ -440,11 +440,34 @@ export class UserProvider extends Component {
 		let offers = [];
 		for (let i = 0; i < landOfferIds.length; i++) {
 			const landOfferId = landOfferIds[i];
-			const offer = await this.state.ico.landOffersAsync(landOfferId);
+			const offer = await this.state.ico.landOffersAsync(String(landOfferId));
+			const offerState = parseInt(offer[6]);
+			// If the state is not ACTIVE, ignore this one
+			if (offerState !== 1) continue;
 			offers.push(offer);
 		}
+		offers = offers.map(offer => ({
+			id: String(offer[0]),
+			by: offer[1],
+			landId: String(offer[2]),
+			price: String(window.web3.fromWei(offer[3])),
+			timestamp: String(offer[4]),
+			expirationDate: String(offer[5]),
+			state: String(offer[6]),
+		}));
 		return offers;
 	};
+
+	cancelBuyOffer = async (offerId) => {
+		try {
+			await this.state.ico.cancelBuyOfferAsync(offerId, {
+				gasPrice: window.web3.toWei(30, 'gwei')
+			})
+		} catch (e) {
+			return dangerNotification('Error cancelling buy offer', e.message);
+		}
+		successNotification('Delete in progress', 'Your order request will be processed in a few seconds on the blockchain');
+	}
 
 	render() {
 		return (
@@ -468,6 +491,7 @@ export class UserProvider extends Component {
 						buyLand: this.buyLand,
 						offerToBuyLand: this.offerToBuyLand,
 						getOffersToBuyLand: this.getOffersToBuyLand,
+						cancelBuyOffer: this.cancelBuyOffer,
 					},
 				}}
 			>
