@@ -16,10 +16,12 @@ import { getLand } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 
 import { Textfit } from 'react-textfit';
+import { ca } from 'date-fns/esm/locale';
 
 export class Land extends Component {
 	constructor(props) {
 		super(props);
+		const pathHexId = window.location.pathname.split('/')[3];
 		this.state = {
 			key: '8cbcc350c0ab5ff',
 			value: 10,
@@ -30,10 +32,40 @@ export class Land extends Component {
 			auction: null,
 			openSellOrder: null,
 			openBuyOffers: [],
+			hexId: pathHexId && pathHexId.length === 15 ? pathHexId : this.props.mapProvider.state.hex_id,
 		};
 		this.mapActions = this.props.mapProvider.actions;
-		this.setupListeners();
 	}
+
+	componentDidMount() {
+		const hex_id = this.props.match.params.id;
+		// Focus map on hex_id
+		this.mapActions.changeHexId(hex_id);
+		// Load data from API
+		this.loadLandStateFromApi(hex_id);
+		if (this.props.userProvider.state.setupComplete && this.props.userProvider.state.ico) this.setupListeners();
+		let setupInterval = setInterval(() => {
+			if (this.props.userProvider.state.setupComplete && this.props.userProvider.state.ico) {
+				this.setupListeners();
+				clearInterval(setupInterval);
+			}
+		}, 5e2);
+	}
+
+	setupListeners() {
+		this.getBuyOffers();
+		this.setContractPrice(this.state.hexId);
+		// Update offers every half a second
+		setInterval(() => {
+			this.getBuyOffers();
+			this.updateMarketStatusFromSmartContract(this.state.hexId);
+		}, 5e2);
+		document.addEventListener('land-selected', (event) => {
+			this.setState({ hexId: event.detail.hex_id });
+			this.setContractPrice(event.detail.hex_id);
+			this.getBuyOffers();
+		});
+	};
 
 	loadLandStateFromApi(hex_id) {
 		// Call API function
@@ -48,7 +80,7 @@ export class Land extends Component {
 					// marketStatus: data.marketStatus,
 					userPerspective: data.userPerspective,
 					openSellOrder: data.openSellOrder,
-					openBuyOffers: data.openBuyOffers,
+					// openBuyOffers: data.openBuyOffers,
 					auction: data.auction,
 					// value: data.value,
 				};
@@ -71,14 +103,6 @@ export class Land extends Component {
 				console.log(error);
 				networkError();
 			});
-	}
-
-	componentDidMount() {
-		const hex_id = this.props.match.params.id;
-		// Focus map on hex_id
-		this.mapActions.changeHexId(hex_id);
-		// Load data from API
-		this.loadLandStateFromApi(hex_id);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -133,6 +157,13 @@ export class Land extends Component {
 				marketStatus: landContractState,
 			});
 		}
+	}
+
+	async getBuyOffers() {
+		let offers = await this.props.userProvider.actions.getOffersToBuyLand(this.state.hexId);
+		this.setState({
+			openBuyOffers: offers,
+		});
 	}
 
 	setActiveBidOverlay(e) {
@@ -308,15 +339,6 @@ export class Land extends Component {
 		return button;
 	}
 
-	setupListeners = () => {
-		// Get the hex id from the url
-		const hex_id = window.location.pathname.split('/')[3];
-		this.setContractPrice(hex_id);
-		document.addEventListener('land-selected', (event) => {
-			this.setContractPrice(event.detail.hex_id);
-		});
-	};
-
 	// Sets the price displayed below the map
 	setContractPrice = (hex_id) => {
 		let ico = this.props.userProvider.state.ico;
@@ -418,30 +440,30 @@ export class Land extends Component {
 		let custom_return = <></>;
 		let openSell = <></>;
 		let openBuyOffers = <></>;
-		let displayBuyOffers = false;
+		const  displayBuyOffers = this.state.marketStatus === 2;
+		const displaySells = this.state.marketStatus === 3;
 
-		// If there are open Sell Orders
-		if (this.state.openSellOrder != null) {
-			openSell = (
-				<OpenSellOrder
-					order={this.state.openSellOrder}
-					userPerspective={this.state.userPerspective}
-					userProvider={this.props.userProvider}
-				></OpenSellOrder>
-			);
-		}
 
 		// If there are Buy Offers
 		if (this.state.openBuyOffers.length > 0) {
-			displayBuyOffers =
-				this.state.userPerspective === 1 ||
-				(this.state.openBuyOffers != null &&
-					this.state.openBuyOffers.map((a) => a.userUuid).includes(this.props.userProvider.state.user.uuid));
-
+			// If the land is owned, is not yours and is not on sale show the buy offer option
 			if (displayBuyOffers) {
-				openBuyOffers = this.state.openBuyOffers.map((obj) => (
+				openBuyOffers = this.state.openBuyOffers.map((offer) => (
 					<BuyOfferOrder
-						order={obj}
+						key={offer.id}
+						offer={offer}
+						isOwner={true}
+						userPerspective={this.state.userPerspective}
+						userProvider={this.props.userProvider}
+					></BuyOfferOrder>
+				));
+			// Else show the offers for the seller to accept or decline them
+			} else if (displaySells) {
+				openSell = this.state.openBuyOffers.map((offer) => (
+					<BuyOfferOrder
+						key={offer.id}
+						offer={offer}
+						isOwner={false}
 						userPerspective={this.state.userPerspective}
 						userProvider={this.props.userProvider}
 					></BuyOfferOrder>
@@ -449,7 +471,7 @@ export class Land extends Component {
 			}
 		}
 
-		if (this.state.openSellOrder || (displayBuyOffers && this.state.openBuyOffers.length > 0)) {
+		if (displaySells || displayBuyOffers) {
 			custom_return = (
 				<div className="Land__section">
 					<div className="o-container">

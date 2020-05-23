@@ -4,8 +4,7 @@ import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { mintLand } from '../../lib/api';
-import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
+import { successNotification, warningNotification, dangerNotification } from '../../lib/notifications';
 
 const BuyLandOverlay = (props) => {
 	const { approveOvrTokens, buyLand } = props.userProvider.actions;
@@ -56,7 +55,10 @@ const BuyLandOverlay = (props) => {
 				await approveOvrTokens();
 				setMetamaskMessage('Waiting for land buying MetaMask confirmation');
 				await buyLand(hexId);
-				sendMint();
+				successNotification('Land purchased successfully!', "You completed the land purchase successfully and now it's yours the page will be updated automatically");
+				setTimeout(() => {
+					window.reload();
+				}, 2e3);
 			} catch (e) {
 				console.log('Error', e);
 				return dangerNotification('Error processing the transactions', e.message);
@@ -70,28 +72,6 @@ const BuyLandOverlay = (props) => {
 		e.preventDefault();
 		props.mapProvider.actions.changeActiveMintOverlay(false);
 		setActiveStep(0);
-	}
-
-	function sendMint() {
-		// Call API function
-		mintLand(hexId)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.realodLandStatefromApi(props.land.key);
-					console.log('props.land.key', props);
-					setActiveStep(2);
-				} else {
-					console.log('responseFalse');
-					dangerNotification('Unable to buy land', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
 	}
 
 	function getStepContent(step) {
