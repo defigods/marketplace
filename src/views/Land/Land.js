@@ -439,24 +439,13 @@ export class Land extends Component {
 		let custom_return = <></>;
 		let openSell = <></>;
 		let openBuyOffers = <></>;
-		let displayBuyOffers = false;
+		const  displayBuyOffers = this.state.marketStatus === 2;
+		const displaySells = this.state.marketStatus === 3;
 
-		// If there are open Sell Orders
-		if (this.state.openSellOrder != null) {
-			openSell = (
-				<OpenSellOrder
-					order={this.state.openSellOrder}
-					userPerspective={this.state.userPerspective}
-					userProvider={this.props.userProvider}
-				></OpenSellOrder>
-			);
-		}
 
 		// If there are Buy Offers
 		if (this.state.openBuyOffers.length > 0) {
 			// If the land is owned, is not yours and is not on sale show the buy offer option
-			displayBuyOffers = this.state.marketStatus === 2;
-
 			if (displayBuyOffers) {
 				openBuyOffers = this.state.openBuyOffers.map((offer) => (
 					<BuyOfferOrder
@@ -467,10 +456,21 @@ export class Land extends Component {
 						userProvider={this.props.userProvider}
 					></BuyOfferOrder>
 				));
+			// Else show the offers for the seller to accept or decline them
+			} else if (displaySells) {
+				openSell = this.state.openBuyOffers.map((offer) => (
+					<BuyOfferOrder
+						key={offer.id}
+						offer={offer}
+						isOwner={false}
+						userPerspective={this.state.userPerspective}
+						userProvider={this.props.userProvider}
+					></BuyOfferOrder>
+				));
 			}
 		}
 
-		if (this.state.openSellOrder || displayBuyOffers) {
+		if (displaySells || displayBuyOffers) {
 			custom_return = (
 				<div className="Land__section">
 					<div className="o-container">

@@ -57,7 +57,7 @@ export class UserProvider extends Component {
 
 	componentDidMount() {
 		if (isLogged()) {
-			this.lightSetupWeb3()
+			this.lightSetupWeb3();
 
 			userProfile()
 				.then((response) => {
@@ -127,7 +127,7 @@ export class UserProvider extends Component {
 
 	// Note: the web3 version is always 0.20.7 because of metamask
 	setupWeb3 = async () => {
-		console.log('render setupweb3')
+		console.log('render setupweb3');
 		const ethereum = window.ethereum;
 		if (typeof ethereum !== 'undefined') {
 			try {
@@ -144,7 +144,7 @@ export class UserProvider extends Component {
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 
 		// Sign nonce for centralized login
-		let publicAddress = window.web3.eth.defaultAccount.toLowerCase()
+		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
 		this.handleCentralizedLogin(publicAddress);
 
 		// Helpers
@@ -161,7 +161,7 @@ export class UserProvider extends Component {
 		this.updateBalanceWhenChanged();
 		await this.setupContracts();
 		await this.getOvrsOwned();
-	}
+	};
 
 	setupContracts = async () => {
 		const _dai = window.web3.eth.contract(erc20Abi).at(daiAddress);
@@ -185,11 +185,11 @@ export class UserProvider extends Component {
 
 	// Refreshes the page when the metamask account is changed
 	refreshWhenAccountsChanged = () => {
-		console.log('init refresh')
+		console.log('init refresh');
 		window.ethereum.on('accountsChanged', (accounts) => {
-			console.log('this.state.isLoggedIn', this.state.isLoggedIn)
-			if(this.state.isLoggedIn){
-				console.log('isLoggedin')
+			console.log('this.state.isLoggedIn', this.state.isLoggedIn);
+			if (this.state.isLoggedIn) {
+				console.log('isLoggedin');
 				this.logOutUser();
 				this.setupWeb3();
 			} else {
@@ -204,62 +204,62 @@ export class UserProvider extends Component {
 	};
 
 	getOvrsOwned = async () => {
-		if (this.state.ovr && this.state.setupComplete && window.web3.eth.defaultAccount){
-			const ovrsOwned = String(window.web3.fromWei(await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount)));
+		if (this.state.ovr && this.state.setupComplete && window.web3.eth.defaultAccount) {
+			const ovrsOwned = String(
+				window.web3.fromWei(await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount)),
+			);
 			this.setState({ ovrsOwned });
 		}
 	};
 
-
-	// 
+	//
 	// Centralized authentication with Metamask
-	//  
+	//
 
-	handleCentralizedLogin(publicAddress){
+	handleCentralizedLogin(publicAddress) {
 		getUserNonce(publicAddress).then((response) => {
 			if (response.data.result === true) {
-				let nonce = response.data.user.nonce
-				this.handleUserSignMessage(publicAddress, nonce)
+				let nonce = response.data.user.nonce;
+				this.handleUserSignMessage(publicAddress, nonce);
 			} else {
-				this.handleCentralizedSignup(publicAddress)
+				this.handleCentralizedSignup(publicAddress);
 			}
-		})
-	};
+		});
+	}
 
-	handleCentralizedSignup = publicAddress => {
+	handleCentralizedSignup = (publicAddress) => {
 		signUpPublicAddress(publicAddress).then((response) => {
 			if (response.data.result === true) {
-				this.handleCentralizedLogin(publicAddress)
+				this.handleCentralizedLogin(publicAddress);
 			} else {
 				dangerNotification('Unable to register public address', response.data.errors[0].message);
 			}
-		})
+		});
 	};
 
 	handleUserSignMessage = (publicAddress, nonce) => {
 		return new Promise((resolve, reject) =>
 			window.web3.personal.sign(
-					window.web3.fromUtf8(`I am signing my one-time nonce: ${nonce}`),
-					publicAddress,
-					(err, signature) => {
-							if (err) return reject(err);
-							this.handleAuthenticate(publicAddress, signature)
-					}
-			)
+				window.web3.fromUtf8(`I am signing my one-time nonce: ${nonce}`),
+				publicAddress,
+				(err, signature) => {
+					if (err) return reject(err);
+					this.handleAuthenticate(publicAddress, signature);
+				},
+			),
 		);
 	};
 
-	handleAuthenticate = ( publicAddress, signature ) => {
+	handleAuthenticate = (publicAddress, signature) => {
 		signIn(publicAddress, signature).then((response) => {
 			if (response.data.result === true) {
-				// Save data in store 
+				// Save data in store
 				this.loginUser(response.data.token, response.data.user);
 			} else {
 				dangerNotification('Unable to login', response.data.errors[0].message);
 			}
-		})
+		});
 	};
-
 
 	// Web3 Lands
 
@@ -277,7 +277,7 @@ export class UserProvider extends Component {
 			if (landState != 2 && land[0] == window.web3.eth.defaultAccount && timePassedInSeconds >= auctionTime) {
 				try {
 					await this.state.ico.redeemWonLandAsync(activeLandsIds[i], {
-						gasPrice: window.web3.toWei(30, 'gwei')
+						gasPrice: window.web3.toWei(30, 'gwei'),
 					});
 					landsRedeemed++;
 				} catch (e) {
@@ -296,8 +296,11 @@ export class UserProvider extends Component {
 	};
 
 	// Returns true for a successful approval or false otherwise
-	approveErc721Token = async (hexId) => {
-		const landId = parseInt(hexId, 16);
+	approveErc721Token = async (hexId, isLandId) => {
+		let landId = parseInt(hexId, 16);
+		if (isLandId) {
+			landId = hexId
+		}
 		const existingApproval = await this.state.ovr721.getApprovedAsync(landId);
 		if (existingApproval === icoAddress) return true;
 		try {
@@ -355,7 +358,6 @@ export class UserProvider extends Component {
 		}
 		successNotification('Successful land listing', 'Your land has been listed successfully');
 	};
-
 
 	// Centralized Notifications
 
@@ -425,7 +427,7 @@ export class UserProvider extends Component {
 			},
 		);
 	};
-	
+
 	offerToBuyLand = async (hexId, price, expirationDate) => {
 		const landId = parseInt(hexId, 16);
 		const tx = await this.state.ico.offerToBuyLandAsync(landId, price, expirationDate, {
@@ -438,36 +440,61 @@ export class UserProvider extends Component {
 		const landId = parseInt(hexId, 16);
 		const landOfferIds = await this.state.ico.getLandOffersAsync(landId);
 		let offers = [];
+		let latestOfferGroup = 0;
 		for (let i = 0; i < landOfferIds.length; i++) {
 			const landOfferId = landOfferIds[i];
 			const offer = await this.state.ico.landOffersAsync(String(landOfferId));
 			const offerState = parseInt(offer[6]);
 			// If the state is not ACTIVE, ignore this one
 			if (offerState !== 1) continue;
+			// Group
+			if (parseInt(offer[2]) > latestOfferGroup) latestOfferGroup = parseInt(offer[2]);
 			offers.push(offer);
 		}
-		offers = offers.map(offer => ({
+		console.log('Hex id', hexId, 'land id', landId)
+		console.log('Hex id', hexId, 'land id', landId)
+		console.log('Hex id', hexId, 'land id', landId)
+		console.log('Hex id', hexId, 'land id', landId)
+		// TODO Check this
+		// TODO Check this
+		// TODO Check this
+		// TODO Check this
+		// TODO Check this
+		console.log('offers before', offers)
+		offers = offers.filter(offer => {
+			return offer[2] >= latestOfferGroup;
+		})
+		console.log('offers after', offers)
+		offers = offers.map((offer) => ({
 			id: String(offer[0]),
 			by: offer[1],
-			landId: String(offer[2]),
-			price: String(window.web3.fromWei(offer[3])),
-			timestamp: String(offer[4]),
-			expirationDate: String(offer[5]),
-			state: String(offer[6]),
+			group: parseInt(offer[2]),
+			landId: String(offer[3]),
+			price: String(window.web3.fromWei(offer[4])),
+			timestamp: String(offer[5]),
+			expirationDate: String(offer[6]),
+			state: String(offer[7]),
 		}));
 		return offers;
 	};
 
 	cancelBuyOffer = async (offerId) => {
-		try {
-			await this.state.ico.cancelBuyOfferAsync(offerId, {
-				gasPrice: window.web3.toWei(30, 'gwei')
-			})
-		} catch (e) {
-			return dangerNotification('Error cancelling buy offer', e.message);
-		}
-		successNotification('Delete in progress', 'Your order request will be processed in a few seconds on the blockchain');
-	}
+		return this.state.ico.cancelBuyOfferAsync(offerId, {
+			gasPrice: window.web3.toWei(30, 'gwei'),
+		});
+	};
+
+	declineBuyOffer = async (offerId) => {
+		return this.state.ico.respondToBuyOfferAsync(offerId, false, {
+			gasPrice: window.web3.toWei(30, 'gwei'),
+		});
+	};
+
+	acceptBuyOffer = async (offerId) => {
+		return this.state.ico.respondToBuyOfferAsync(offerId, true, {
+			gasPrice: window.web3.toWei(30, 'gwei'),
+		});
+	};
 
 	render() {
 		return (
@@ -492,6 +519,8 @@ export class UserProvider extends Component {
 						offerToBuyLand: this.offerToBuyLand,
 						getOffersToBuyLand: this.getOffersToBuyLand,
 						cancelBuyOffer: this.cancelBuyOffer,
+						declineBuyOffer: this.declineBuyOffer,
+						acceptBuyOffer: this.acceptBuyOffer,
 					},
 				}}
 			>
