@@ -58,6 +58,7 @@ export class Land extends Component {
 		// Update offers every half a second
 		setInterval(() => {
 			this.getBuyOffers();
+			this.updateMarketStatusFromSmartContract(this.state.hexId);
 		}, 5e2);
 		document.addEventListener('land-selected', (event) => {
 			this.setState({ hexId: event.detail.hex_id });

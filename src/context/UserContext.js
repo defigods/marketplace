@@ -440,31 +440,14 @@ export class UserProvider extends Component {
 		const landId = parseInt(hexId, 16);
 		const landOfferIds = await this.state.ico.getLandOffersAsync(landId);
 		let offers = [];
-		let latestOfferGroup = 0;
+		const latestGroupCounter = String(await this.state.ico.groupCountersAsync(landId));
 		for (let i = 0; i < landOfferIds.length; i++) {
 			const landOfferId = landOfferIds[i];
 			const offer = await this.state.ico.landOffersAsync(String(landOfferId));
-			const offerState = parseInt(offer[6]);
-			// If the state is not ACTIVE, ignore this one
-			if (offerState !== 1) continue;
-			// Group
-			if (parseInt(offer[2]) > latestOfferGroup) latestOfferGroup = parseInt(offer[2]);
+			// If this offer is not for the most recent group, skip it
+			if (parseInt(offer[2]) != latestGroupCounter) continue;
 			offers.push(offer);
 		}
-		console.log('Hex id', hexId, 'land id', landId)
-		console.log('Hex id', hexId, 'land id', landId)
-		console.log('Hex id', hexId, 'land id', landId)
-		console.log('Hex id', hexId, 'land id', landId)
-		// TODO Check this
-		// TODO Check this
-		// TODO Check this
-		// TODO Check this
-		// TODO Check this
-		console.log('offers before', offers)
-		offers = offers.filter(offer => {
-			return offer[2] >= latestOfferGroup;
-		})
-		console.log('offers after', offers)
 		offers = offers.map((offer) => ({
 			id: String(offer[0]),
 			by: offer[1],
