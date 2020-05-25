@@ -119,7 +119,7 @@ export class Land extends Component {
 		// If 24 hours have passed, consider it sold
 		// Checks if you're the owner or not to display the appropriate button
 		if (landContractState === 2 || (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration)) {
-			if (landOwner == window.web3.eth.defaultAccount) {
+			if (landOwner === window.web3.eth.defaultAccount) {
 				return this.setState({
 					marketStatus: 3,
 				});
@@ -327,7 +327,7 @@ export class Land extends Component {
 				const landId = parseInt(hex_id, 16);
 				const land = await ico.landsAsync(landId);
 				let currentBid = String(window.web3.fromWei(land[2]));
-				if (currentBid == 0) {
+				if (currentBid === 0) {
 					currentBid = String(window.web3.fromWei(await ico.initialLandBidAsync()));
 				}
 
@@ -421,7 +421,7 @@ export class Land extends Component {
 		let displayBuyOffers = false;
 
 		// If there are open Sell Orders
-		if (this.state.openSellOrder != null) {
+		if (this.state.openSellOrder !==null) {
 			openSell = (
 				<OpenSellOrder
 					order={this.state.openSellOrder}
@@ -435,7 +435,7 @@ export class Land extends Component {
 		if (this.state.openBuyOffers.length > 0) {
 			displayBuyOffers =
 				this.state.userPerspective === 1 ||
-				(this.state.openBuyOffers != null &&
+				(this.state.openBuyOffers !==null &&
 					this.state.openBuyOffers.map((a) => a.userUuid).includes(this.props.userProvider.state.user.uuid));
 
 			if (displayBuyOffers) {

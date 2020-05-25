@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import HexButton from '../../components/HexButton/HexButton';
-import { Icon } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
@@ -9,6 +8,8 @@ import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 import config from '../../lib/config';
 import { UserContext, withUserContext } from '../../context/UserContext';
 import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 /**
  * Signup page component
@@ -18,6 +19,10 @@ const Signup = () => {
 	// const context = useContext(UserContext);
 	// let history = useHistory();
 	const [activeStep, setActiveStep] = useState(0);
+	const [userEmail, setUserEmail] = useState('');
+	const [isEmailLoading, setIsEmailLoading] = useState(false);
+	const [userEmailValid, setUserEmailValid] = useState(false);
+	const [userEmailInputError, setUserEmailInputError] = useState(false);
 
 	useEffect(() => {
 		// console.log(web3NetworkName);
@@ -29,6 +34,24 @@ const Signup = () => {
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}
+	};
+
+	const updateUserEmail = (e) => {
+		setUserEmailInputError(false);
+		if (userEmail === '') {
+			setUserEmailValid(false);
+		} else {
+			setUserEmailValid(true);
+		}
+		setUserEmail(e.target.value);
+	};
+
+	const handleEmailAuditSubscribe = () => {
+		setIsEmailLoading(true);
+		// Todo call api
+		console.log('userEmail', userEmail);
+		setUserEmailInputError('The email you used its connected with another account');
+		setUserEmailValid(false);
 	};
 
 	function getStepContent(step) {
@@ -238,21 +261,41 @@ const Signup = () => {
 										></HexButton>
 									</div>
 								</>
-							}
-							
+							};
 						</div>
 					</div>
 				);
 			case 2:
 				return (
 					<div className="o-container">
-						<h2>Welcome back to OVR</h2>
-						<div className="Signup__section">
-							We use MetaMask to authenticate Users. Please sign the nonce which will be used for this session.
-						</div>
-						<div className="Signup__footer">
-							If you have any question about your account visit <Link to="/FAQs">FAQs</Link> or contact{' '}
-							<Link to="mailto:info@ovr.ai">info@ovr.ai</Link>
+						<div className="o-box --left">
+							<h1>Signup</h1>
+							<div className="Signup__section">
+								<TextField
+									id="quantity"
+									label="Email address"
+									type="text"
+									className="Signup__email_textfield"
+									error={userEmailInputError !== false ? true : false}
+									helperText={userEmailInputError !== false ? userEmailInputError : ''}
+									value={userEmail}
+									onFocus={updateUserEmail}
+									onChange={updateUserEmail}
+									onKeyUp={updateUserEmail}
+								/>
+							</div>
+							<div className="Signup__section --small">
+								Account info are stored privately off the blockchain. <Link to="#">Read more</Link>.
+							</div>
+							<div className="Signup__section">
+								<HexButton
+									url="#"
+									text="Continue"
+									className={`--purple ${userEmailValid ? '' : '--disabled'}`}
+									onClick={handleEmailAuditSubscribe}
+								></HexButton>
+								{isEmailLoading && <CircularProgress />}
+							</div>
 						</div>
 					</div>
 				);

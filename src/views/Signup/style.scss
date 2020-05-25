@@ -65,6 +65,11 @@
   clear: both;
   display: inline-block;
   width: 100%;
+  &.--small{
+    margin-top: 10px;
+    font-size: 10px;
+    color: $ovr-sideral-grey;
+  }
 }
 .Signup__form-container{
   margin-top: 20px;
@@ -98,5 +103,18 @@
     color: #000;
     text-decoration: none;
     font-weight: 400;
+  }
+}
+.Signup__email_textfield{
+  width: 80%;
+}
+.MuiCircularProgress-root{
+  width: 25px!important;
+  height: 25px!important;
+  top: 8px;
+  position: relative;
+  left: 15px;
+  svg{
+    color: rebeccapurple;
   }
 }
