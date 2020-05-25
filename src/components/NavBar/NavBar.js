@@ -7,7 +7,7 @@ import { UserContext, withUserContext } from '../../context/UserContext';
 import Blockies from 'react-blockies';
 
 class NavBar extends Component {
-	static contextType = UserContext;
+
 
 	toggleNotificationCenter = (e) => {
 		e.preventDefault();
@@ -255,5 +255,6 @@ class NavBar extends Component {
 		);
 	}
 }
+NavBar.contextType = UserContext;
 
 export default withUserContext(NavBar);

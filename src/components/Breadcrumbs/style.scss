@@ -9,6 +9,8 @@
 .breadcrumbs--items {
 }
 .breadcrumbs--prevlink {
+	text-decoration: none;
+	color: $ovr-grey;
 }
 .breadcrumbs--currentlabel {
 	font-weight: bold;
