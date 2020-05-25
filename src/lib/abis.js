@@ -1064,6 +1064,11 @@ const icoAbi = [
         },
         {
           "internalType": "uint256",
+          "name": "group",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
           "name": "landId",
           "type": "uint256"
         },
@@ -1280,6 +1285,27 @@ const icoAbi = [
         }
       ],
       "name": "landsOnSaleOrSold",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "groupCounters",
       "outputs": [
         {
           "internalType": "uint256",
@@ -1584,6 +1610,19 @@ const icoAbi = [
       "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "LandOfferCancelled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": false,
           "internalType": "address",
           "name": "account",
@@ -1791,6 +1830,21 @@ const icoAbi = [
         }
       ],
       "name": "offerToBuyLand",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "cancelBuyOffer",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",

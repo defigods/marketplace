@@ -14,6 +14,7 @@ const MintOverlay = (props) => {
 	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
+	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 
 	useEffect(() => {
 		if (setupComplete) setupListeners();
@@ -47,6 +48,8 @@ const MintOverlay = (props) => {
 			}
 
 			try {
+				setMetamaskMessage('Approving OVR tokens first...');
+				setActiveStep((prevActiveStep) => prevActiveStep + 1);
 				await approveOvrTokens();
 				const initialBid = String(await ico.initialLandBidAsync());
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
@@ -62,7 +65,7 @@ const MintOverlay = (props) => {
 				const tx = await ico.participateInAuctionAsync(landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
+				setMetamaskMessage('Waiting for MetaMask confirmation');
 				await waitTx(tx);
 				sendMint();
 			} catch (e) {
@@ -150,7 +153,7 @@ const MintOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>Waiting for MetaMask confirmation</span>
+								<span>{ metamaskMessage }</span>
 							</div>
 						</div>
 					</div>
