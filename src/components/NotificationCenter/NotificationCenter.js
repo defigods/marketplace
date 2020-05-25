@@ -15,7 +15,7 @@ export class NotificationCenter extends Component {
 		let notifications;
 		console.log('Notification Center this.context.state.user', this.context.state.user);
 		if (
-			this.context.state.user.notifications != null &&
+			this.context.state.user.notifications !==null &&
 			this.context.state.user.notifications.content &&
 			this.context.state.user.notifications.content.length > 0
 		) {

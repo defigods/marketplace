@@ -274,7 +274,7 @@ export class UserProvider extends Component {
 			const landState = parseInt(land[4]);
 
 			// If this is your land and it hasn't been redeemed already and the auction is done
-			if (landState != 2 && land[0] == window.web3.eth.defaultAccount && timePassedInSeconds >= auctionTime) {
+			if (landState !== 2 && land[0] === window.web3.eth.defaultAccount && timePassedInSeconds >= auctionTime) {
 				try {
 					await this.state.ico.redeemWonLandAsync(activeLandsIds[i], {
 						gasPrice: window.web3.toWei(30, 'gwei'),
@@ -285,7 +285,7 @@ export class UserProvider extends Component {
 				}
 			}
 		}
-		if (landsRedeemed == 0) {
+		if (landsRedeemed === 0) {
 			warningNotification(
 				'No lands to redeem',
 				"You don't have any lands to redeem for now. Check in a few hours when the auction time is reached.",

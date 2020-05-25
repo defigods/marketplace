@@ -17,7 +17,7 @@ class NavBar extends Component {
 	render() {
 		let rightContainer = <div></div>;
 		let state = this.context.state;
-		if (state.isLoggedIn === true && state.user != null) {
+		if (state.isLoggedIn === true && state.user !==null) {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
@@ -87,11 +87,14 @@ class NavBar extends Component {
 			);
 		} else {
 			rightContainer = (
-				<>
-					<NavLink className="NavBar__link General__link AuthLogin__link" to="/login">
+				<div className="AuthLogin__link">
+					<NavLink className="NavBar__link General__link" to="/login">
 						Login
 					</NavLink>
-				</>
+					<NavLink className="NavBar__link General__link" to="/signup">
+						Signup
+					</NavLink>
+				</div>
 			);
 		}
 
