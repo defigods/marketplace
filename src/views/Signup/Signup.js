@@ -6,6 +6,10 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 
 import config from '../../lib/config';
+import { signUpHybrid } from '../../lib/api';
+import { dangerNotification } from '../../lib/notifications';
+
+
 import { UserContext, withUserContext } from '../../context/UserContext';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -16,13 +20,19 @@ import CircularProgress from '@material-ui/core/CircularProgress';
  */
 
 const Signup = () => {
-	// const context = useContext(UserContext);
+	const context = useContext(UserContext);
 	// let history = useHistory();
 	const [activeStep, setActiveStep] = useState(0);
 	const [userEmail, setUserEmail] = useState('');
-	const [isEmailLoading, setIsEmailLoading] = useState(false);
+
+	const [isSignupLoading, setIsSignupLoading] = useState(false);
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
+
+	const [username, setUsername] = useState('');
+	const [usernameValid, setUsernameValid] = useState(false);
+	const [usernameInputError, setUsernameInputError] = useState(false);
+
 
 	useEffect(() => {
 		// console.log(web3NetworkName);
@@ -36,6 +46,15 @@ const Signup = () => {
 		}
 	};
 
+	const emailRegexAndNext = async () => {
+		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)){
+			handleNext();
+		} else {
+			setUserEmailInputError('The inserted email address is not a valid email address');
+			setUserEmailValid(false);
+		}
+	};
+
 	const updateUserEmail = (e) => {
 		setUserEmailInputError(false);
 		if (userEmail === '') {
@@ -46,13 +65,38 @@ const Signup = () => {
 		setUserEmail(e.target.value);
 	};
 
-	const handleEmailAuditSubscribe = () => {
-		setIsEmailLoading(true);
-		// Todo call api
-		console.log('userEmail', userEmail);
-		setUserEmailInputError('The email you used its connected with another account');
-		setUserEmailValid(false);
+	const updateUsername = (e) => {
+		setUsernameInputError(false);
+		if (username === '') {
+			setUsernameValid(false);
+		} else {
+			setUsernameValid(true);
+		}
+		setUsername(e.target.value);
 	};
+
+	const handleSubscribe = () => {
+		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
+		console.log(userEmail, username, publicAddress);
+		signUpHybrid(userEmail, username, publicAddress).then((response) => {
+			if (response.data.result === true) {
+				// TODO next page, signin nounce link
+				handleNext();
+				console.log('response', response)
+			} else {
+				dangerNotification('Unable to register', response.data.errors[0].message);
+				console.log(response.data.errors[0]);
+				//TODO go to email page or username according to error
+			}
+		});
+	}
+	// const handleEmailAuditSubscribe = () => {
+	// 	setIsSignupLoading(true);
+	// 	// Todo call api
+	// 	console.log('userEmail', userEmail);
+	// 	setUserEmailInputError('The email you used its connected with another account');
+	// 	setUserEmailValid(false);
+	// };
 
 	function getStepContent(step) {
 		let isWeb3Active = typeof window.web3 !== 'undefined';
@@ -274,7 +318,7 @@ const Signup = () => {
 								<TextField
 									id="quantity"
 									label="Email address"
-									type="text"
+									type="email"
 									className="Signup__email_textfield"
 									error={userEmailInputError !== false ? true : false}
 									helperText={userEmailInputError !== false ? userEmailInputError : ''}
@@ -292,9 +336,57 @@ const Signup = () => {
 									url="#"
 									text="Continue"
 									className={`--purple ${userEmailValid ? '' : '--disabled'}`}
-									onClick={handleEmailAuditSubscribe}
+									onClick={emailRegexAndNext}
 								></HexButton>
-								{isEmailLoading && <CircularProgress />}
+								{isSignupLoading && <CircularProgress />}
+							</div>
+						</div>
+					</div>
+				);
+			case 3:
+				return (
+					<div className="o-container">
+						<div className="o-box --left">
+							<h1>Signup</h1>
+							<div className="Signup__section">
+								<TextField
+									id="quantity"
+									label="Username"
+									type="text"
+									className="Signup__userpass_textfield"
+									error={usernameInputError !== false ? true : false}
+									helperText={usernameInputError !== false ? usernameInputError : ''}
+									value={username}
+									onFocus={updateUsername}
+									onChange={updateUsername}
+									onKeyUp={updateUsername}
+								/>
+							</div>
+							{/* <div className="Signup__section Signup__pass_cont">
+								<TextField
+									id="quantity"
+									label="Password"
+									type="password"
+									className="Signup__userpass_textfield"
+									error={usernameInputError !== false ? true : false}
+									helperText={usernameInputError !== false ? usernameInputError : ''}
+									value={username}
+									onFocus={updateUsername}
+									onChange={updateUsername}
+									onKeyUp={updateUsername}
+								/>
+							</div> */}
+							<div className="Signup__section --small">
+								Account info are stored privately off the blockchain. <Link to="#">Read more</Link>.
+							</div>
+							<div className="Signup__section">
+								<HexButton
+									url="#"
+									text="Continue"
+									className={`--purple ${isSignupLoading || usernameValid ? '' : '--disabled'}`}
+									onClick={handleSubscribe}
+								></HexButton>
+								{isSignupLoading && <CircularProgress />}
 							</div>
 						</div>
 					</div>

@@ -53,6 +53,14 @@ export function signUp(userName, password, email) {
 	);
 }
 
+export function signUpHybrid(email, userName, publicAddress) {
+	return request(
+		{ url: '/user/registration', method: 'POST' },
+		{ email: email, username: userName, public_address: publicAddress },
+		null,
+	);
+}
+
 export function signUpPublicAddress(publicAddress) {
 	return request({ url: '/user/registration', method: 'POST' }, { public_address: publicAddress }, null);
 }
