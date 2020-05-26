@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+
 import './style.scss';
 import { MapContext } from '../../context/MapContext';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';

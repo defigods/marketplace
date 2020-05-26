@@ -14,9 +14,8 @@ const Login = () => {
 
 	useEffect(() => {
 		// Login via web3
-		context.actions.setupWeb3().then(() => {
-			// Redirect to overview
-			//history.push('/map/overview');
+		context.actions.setupWeb3(() => {
+			history.push('map/discover');
 		});
 	}, []);
 

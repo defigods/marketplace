@@ -4,11 +4,12 @@ import TextField from '@material-ui/core/TextField';
 
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import config from '../../lib/config';
 import { signUpHybrid } from '../../lib/api';
+import { saveToken } from '../../lib/auth';
 import { dangerNotification } from '../../lib/notifications';
-
 
 import { UserContext, withUserContext } from '../../context/UserContext';
 import { useHistory } from 'react-router-dom';
@@ -21,7 +22,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const Signup = () => {
 	const context = useContext(UserContext);
-	// let history = useHistory();
+	let history = useHistory();
 	const [activeStep, setActiveStep] = useState(0);
 	const [userEmail, setUserEmail] = useState('');
 
@@ -32,7 +33,6 @@ const Signup = () => {
 	const [username, setUsername] = useState('');
 	const [usernameValid, setUsernameValid] = useState(false);
 	const [usernameInputError, setUsernameInputError] = useState(false);
-
 
 	useEffect(() => {
 		// console.log(web3NetworkName);
@@ -76,27 +76,37 @@ const Signup = () => {
 	};
 
 	const handleSubscribe = () => {
+		setIsSignupLoading(true);
 		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
-		console.log(userEmail, username, publicAddress);
 		signUpHybrid(userEmail, username, publicAddress).then((response) => {
+			setIsSignupLoading(false);
 			if (response.data.result === true) {
-				// TODO next page, signin nounce link
 				handleNext();
-				console.log('response', response)
 			} else {
-				dangerNotification('Unable to register', response.data.errors[0].message);
-				console.log(response.data.errors[0]);
-				//TODO go to email page or username according to error
+				let error_code = response.data.errors[0].code;
+				let error_message = response.data.errors[0].message;
+				if (error_code == 'public_address') {
+					dangerNotification(error_message, 'Try to login instead');
+					setActiveStep(0);
+				} else if (error_code == 'email') {
+					setActiveStep(2);
+					setUserEmailValid(false);
+					setUserEmailInputError(error_message);
+				} else if (error_code == 'username') {
+					setActiveStep(3);
+					setUsernameValid(false);
+					setUsernameInputError(error_message);
+				}
 			}
 		});
-	}
-	// const handleEmailAuditSubscribe = () => {
-	// 	setIsSignupLoading(true);
-	// 	// Todo call api
-	// 	console.log('userEmail', userEmail);
-	// 	setUserEmailInputError('The email you used its connected with another account');
-	// 	setUserEmailValid(false);
-	// };
+	};
+
+	const handleLogin = () => {
+		context.actions.setupWeb3(() => {
+			saveToken('firstAfterSignup', true);
+			history.push('map/discover');
+		});
+	};
 
 	function getStepContent(step) {
 		let isWeb3Active = typeof window.web3 !== 'undefined';
@@ -382,11 +392,45 @@ const Signup = () => {
 							<div className="Signup__section">
 								<HexButton
 									url="#"
-									text="Continue"
+									text="Signup"
 									className={`--purple ${isSignupLoading || usernameValid ? '' : '--disabled'}`}
 									onClick={handleSubscribe}
 								></HexButton>
 								{isSignupLoading && <CircularProgress />}
+							</div>
+						</div>
+					</div>
+				);
+			case 4:
+				return (
+					<div className="o-container">
+						<div className="o-box">
+							<h1>Signup completed</h1>
+							<div className="Signup__section">
+								<CheckCircleIcon className="CheckCircleIcon" />
+							</div>
+							<div className="Signup__section">
+								You've succesfully registered your account. From now on you can log in with Metamask by signing a secret code with one click.
+							</div>
+							{/* <div className="Signup__section Signup__pass_cont">
+								<TextField
+									id="quantity"
+									label="Password"
+									type="password"
+									className="Signup__userpass_textfield"
+									error={usernameInputError !== false ? true : false}
+									helperText={usernameInputError !== false ? usernameInputError : ''}
+									value={username}
+									onFocus={updateUsername}
+									onChange={updateUsername}
+									onKeyUp={updateUsername}
+								/>
+							</div> */}
+							<div className="Signup__section --small">
+								Account info are stored privately off the blockchain. <Link to="#">Read more</Link>.
+							</div>
+							<div className="Signup__section">
+								<HexButton url="#" text="Log me in" className="--purple" onClick={handleLogin}></HexButton>
 							</div>
 						</div>
 					</div>

@@ -44,11 +44,11 @@
   }
   .Signup__msg{
     &.--positive{
-      background: rgba(#00C8A1, 0.3);
+      background: rgba(#00C8A1, 0.1);
       border: 1px solid #00C8A1;
     }
     &.--negative{
-      background: rgba(#DC6A5B, 0.3);
+      background: rgba(#DC6A5B, 0.1);
       border: 1px solid #DC6A5B;
     }
     border-radius: 5px;
@@ -123,4 +123,11 @@
 }
 .Signup__pass_cont{
   margin-top: 15px;
+}
+.MuiSvgIcon-root.CheckCircleIcon{
+  height: 80px;
+  width: 80px;
+  fill: #00C8A1;
+  stroke: #00C8A1;
+  margin-bottom: 20px;
 }

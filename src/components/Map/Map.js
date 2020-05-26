@@ -12,6 +12,7 @@ import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
 import MapNavigationBox from '../MapNavigationBox/MapNavigationBox';
 
 class Map extends Component {
+
 	constructor(props) {
 		super(props);
 

@@ -14,6 +14,7 @@ import BuyTokens from './views/BuyTokens/BuyTokens';
 import NavBar from './components/NavBar/NavBar';
 import Map from './components/Map/Map';
 import Footer from './components/Footer/Footer';
+import BannerNotification from './components/BannerNotification/BannerNotification';
 
 import ReactNotification from 'react-notifications-component';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
@@ -34,6 +35,7 @@ function App() {
 											<div className="App">
 												<ReactNotification />
 												<NavBar></NavBar>
+												<BannerNotification></BannerNotification>
 												<div className="o-container">
 													<Route path="/map/" component={Map}></Route>
 												</div>

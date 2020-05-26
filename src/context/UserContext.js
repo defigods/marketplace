@@ -126,7 +126,7 @@ export class UserProvider extends Component {
 	};
 
 	// Note: the web3 version is always 0.20.7 because of metamask
-	setupWeb3 = async () => {
+	setupWeb3 = async (callback) => {
 		console.log('render setupweb3');
 		const ethereum = window.ethereum;
 		if (typeof ethereum !== 'undefined') {
@@ -145,11 +145,12 @@ export class UserProvider extends Component {
 
 		// Sign nonce for centralized login
 		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
-		this.handleCentralizedLogin(publicAddress);
+		await this.handleCentralizedLogin(publicAddress, callback);
 
 		// Helpers
-		this.refreshWhenAccountsChanged();
-		this.updateBalanceWhenChanged();
+		await this.refreshWhenAccountsChanged();
+		await this.updateBalanceWhenChanged();
+		
 		await this.setupContracts();
 		await this.getOvrsOwned();
 	};
@@ -157,8 +158,8 @@ export class UserProvider extends Component {
 	// if the user is logged in with a valid token just reload datas
 	lightSetupWeb3 = async () => {
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
-		this.refreshWhenAccountsChanged();
-		this.updateBalanceWhenChanged();
+		await this.refreshWhenAccountsChanged();
+		await this.updateBalanceWhenChanged();
 		await this.setupContracts();
 		await this.getOvrsOwned();
 	};
@@ -216,45 +217,38 @@ export class UserProvider extends Component {
 	// Centralized authentication with Metamask
 	//
 
-	handleCentralizedLogin(publicAddress) {
+	handleCentralizedLogin(publicAddress, callback) {
 		getUserNonce(publicAddress).then((response) => {
 			if (response.data.result === true) {
 				let nonce = response.data.user.nonce;
-				this.handleUserSignMessage(publicAddress, nonce);
+				this.handleUserSignMessage(publicAddress, nonce, callback);
 			} else {
-				this.handleCentralizedSignup(publicAddress);
+				// TODO User not found notification
 			}
 		});
 	}
 
-	handleCentralizedSignup = (publicAddress) => {
-		signUpPublicAddress(publicAddress).then((response) => {
-			if (response.data.result === true) {
-				this.handleCentralizedLogin(publicAddress);
-			} else {
-				dangerNotification('Unable to register public address', response.data.errors[0].message);
-			}
-		});
-	};
-
-	handleUserSignMessage = (publicAddress, nonce) => {
+	handleUserSignMessage = (publicAddress, nonce, callback) => {
 		return new Promise((resolve, reject) =>
 			window.web3.personal.sign(
 				window.web3.fromUtf8(`I am signing my one-time nonce: ${nonce}`),
 				publicAddress,
 				(err, signature) => {
 					if (err) return reject(err);
-					this.handleAuthenticate(publicAddress, signature);
+					this.handleAuthenticate(publicAddress, signature, callback);
 				},
 			),
 		);
 	};
 
-	handleAuthenticate = (publicAddress, signature) => {
+	handleAuthenticate = (publicAddress, signature, callback) => {
 		signIn(publicAddress, signature).then((response) => {
 			if (response.data.result === true) {
 				// Save data in store
 				this.loginUser(response.data.token, response.data.user);
+				if (callback){
+					callback();
+				}
 			} else {
 				dangerNotification('Unable to login', response.data.errors[0].message);
 			}
