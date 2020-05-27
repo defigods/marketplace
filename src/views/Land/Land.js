@@ -126,9 +126,9 @@ export class Land extends Component {
 		const ico = this.props.userProvider.state.ico;
 		const landId = parseInt(hex_id, 16);
 		const land = await ico.landsAsync(landId);
-		const lastPaymentTimestamp = land[3];
+		const lastPaymentTimestamp = parseInt(land[3]);
 		const landOwner = land[0];
-		const auctionLandDuration = await ico.auctionLandDurationAsync();
+		const auctionLandDuration = parseInt(await ico.auctionLandDurationAsync());
 		// Check is the land is ended by comparing the timestamp to 24 hours
 		const now = Math.trunc(Date.now() / 1000);
 		const landContractState = parseInt(land[4]);
