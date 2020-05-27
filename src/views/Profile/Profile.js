@@ -57,9 +57,9 @@ const ProfileContent = () => {
 				<h3 className="p-section-title">WALLET</h3>
 				<div className="p-section-content">
 					<h4 className="p-content-title">Wallet address</h4>
-					<div className="p-wallet-address">0xe9c117536f07ec74af259560c548ccd7d21f89eb</div>
+					<div className="p-wallet-address">{window.web3.eth.defaultAccount.toLowerCase()}</div>
 					<div className="p-balance">
-						<div>Balance</div>
+						<div className="p-small-title">Balance</div>
 						<div className="p-balance-value">
 							<ValueCounter value={state.ovrsOwned} />
 							<div>
@@ -68,6 +68,38 @@ const ProfileContent = () => {
 						</div>
 					</div>
 				</div>
+				{/*
+					<div key="notifications" className="p-section">
+						<h3 className="p-section-title">NOTIFICATIONS</h3>
+						<div className="p-section-content">
+							<h4 className="p-content-title">General</h4>
+							<div>
+								<div className="o-half">
+									<CheckBox label="Hottest Auctions" text="Authorize the Marketplace to operate OVR on my behalf" />
+								</div>
+								<div className="o-half">
+									<CheckBox label="Area of interest" text="Authorize the Marketplace to operate OVR on my behalf" />
+								</div>
+							</div>
+							<div>
+								<div className="o-half">
+									<h4 className="p-content-title">My OVRLands</h4>
+									<CheckBox label="New sell request" text="Authorize the Marketplace to operate OVR on my behalf" />
+									<CheckBox label="OVRLand sold" text="Authorize the Marketplace to operate OVR on my behalf" />
+								</div>
+								<div className="o-half">
+									<h4 className="p-content-title">My auctions</h4>
+									<CheckBox label="Over bidded" text="Authorize the Marketplace to operate OVR on my behalf" />
+									<CheckBox label="Auction won" text="Authorize the Marketplace to operate OVR on my behalf" />
+								</div>
+							</div>
+						</div>
+
+						<div className="p-email-subscription">
+							<EmailConfirmation />
+						</div>
+					</div>
+				*/}
 			</div>
 		</div>
 	);
