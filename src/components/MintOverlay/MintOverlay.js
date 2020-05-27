@@ -69,6 +69,7 @@ const MintOverlay = (props) => {
 				await waitTx(tx);
 				sendMint();
 			} catch (e) {
+				setActiveStep((prevActiveStep) => prevActiveStep - 1);
 				return dangerNotification('Error processing the transactions', e.message);
 			}
 		} else {
