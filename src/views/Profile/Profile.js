@@ -61,62 +61,12 @@ const ProfileContent = () => {
 					<div className="p-balance">
 						<div>Balance</div>
 						<div className="p-balance-value">
-							<ValueCounter value="30000" />
+							<ValueCounter value={state.ovrsOwned} />
 							<div>
-								<HexButton className="--orange" text="BUY MORE"></HexButton>
-							</div>
-							<div>
-								<HexButton className="--hollow-orange" text="TRANSFER"></HexButton>
+								<HexButton url="/buy-tokens" className="--orange" text="BUY MORE"></HexButton>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div key="authorizations" className="p-section">
-				<h3 className="p-section-title">AUTHORIZATIONS</h3>
-				<div className="p-section-content">
-					<div className="o-half">
-						<h4 className="p-content-title">For Buying</h4>
-						<CheckBox label="ERC721 using OVR" text="Authorize the Marketplace to operate OVR on my behalf" />
-						<CheckBox label="ERC721 using OVR" text="Authorize the Marketplace to operate OVR on my behalf" />
-						<CheckBox label="ERC721 using OVR" text="Authorize the Marketplace to operate OVR on my behalf" />
-					</div>
-					<div className="o-half">
-						<h4 className="p-content-title">For Selling</h4>
-						<CheckBox label="ERC721 using OVR" text="Authorize the Marketplace to operate OVR on my behalf" />
-						<CheckBox label="ERC721 using OVR" text="Authorize the Marketplace to operate OVR on my behalf" />
-						<CheckBox label="ERC721 using OVR" text="Authorize the Marketplace to operate OVR on my behalf" />
-					</div>
-				</div>
-			</div>
-			<div key="notifications" className="p-section">
-				<h3 className="p-section-title">NOTIFICATIONS</h3>
-				<div className="p-section-content">
-					<h4 className="p-content-title">General</h4>
-					<div>
-						<div className="o-half">
-							<CheckBox label="Hottest Auctions" text="Authorize the Marketplace to operate OVR on my behalf" />
-						</div>
-						<div className="o-half">
-							<CheckBox label="Area of interest" text="Authorize the Marketplace to operate OVR on my behalf" />
-						</div>
-					</div>
-					<div>
-						<div className="o-half">
-							<h4 className="p-content-title">My OVRLands</h4>
-							<CheckBox label="New sell request" text="Authorize the Marketplace to operate OVR on my behalf" />
-							<CheckBox label="OVRLand sold" text="Authorize the Marketplace to operate OVR on my behalf" />
-						</div>
-						<div className="o-half">
-							<h4 className="p-content-title">My auctions</h4>
-							<CheckBox label="Over bidded" text="Authorize the Marketplace to operate OVR on my behalf" />
-							<CheckBox label="Auction won" text="Authorize the Marketplace to operate OVR on my behalf" />
-						</div>
-					</div>
-				</div>
-
-				<div className="p-email-subscription">
-					<EmailConfirmation />
 				</div>
 			</div>
 		</div>
