@@ -66,7 +66,7 @@ export class UserProvider extends Component {
 						this.liveSocket();
 					} else {
 						dangerNotification('Session expired', 'Please login again');
-						removeUser();
+						this.logOutUser();
 					}
 				})
 				.catch(() => {

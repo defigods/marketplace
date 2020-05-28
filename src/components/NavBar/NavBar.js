@@ -11,7 +11,9 @@ class NavBar extends Component {
 
 	toggleNotificationCenter = (e) => {
 		e.preventDefault();
-		this.context.actions.toggleShowNotificationCenter();
+		if(!this.context.state.showNotificationCenter){
+			this.context.actions.toggleShowNotificationCenter();
+		}
 	};
 
 	render() {
