@@ -359,6 +359,10 @@ export class UserProvider extends Component {
 		this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
 	};
 
+	closeNotificationCenter = () => {
+		this.setState({ showNotificationCenter: false });
+	};
+
 	setNotificationAsReaded = (notification_uuid) => {
 		let notifications_content = this.state.user.notifications.content;
 		let unreaded_count = this.state.user.notifications.unreadedCount;
@@ -481,6 +485,7 @@ export class UserProvider extends Component {
 					actions: {
 						loginUser: this.loginUser,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
+						closeNotificationCenter: this.closeNotificationCenter,
 						notification: {
 							setAsReaded: this.setNotificationAsReaded,
 							setAllAsReaded: this.setAllNotificationsAsReaded,

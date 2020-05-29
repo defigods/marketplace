@@ -1,4 +1,4 @@
-import React, { Component, useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 
 import { Link } from 'react-router-dom';
 import Notification from '../Notification/Notification';
@@ -43,7 +43,7 @@ const NotificationCenterContent = () => {
 	const setAllAsReaded = () => {
 		readAllNotifications().then(() => {
 			actions.notification.setAllAsReaded();
-			actions.toggleShowNotificationCenter();
+			actions.closeNotificationCenter();
 		});
 	};
 
@@ -53,12 +53,13 @@ const NotificationCenterContent = () => {
 			 * Alert if clicked on outside of element
 			 */
 			function handleClickOutside(event) {
+				// document.c Notifications__link
 				if (
 					ref.current &&
 					!ref.current.contains(event.target) &&
-					!event.target.classList.contains('MuiButtonBase-root')
+					!document.getElementById('js-open-notification-link').contains(event.target)
 				) {
-					actions.toggleShowNotificationCenter();
+					actions.closeNotificationCenter();
 				}
 			}
 

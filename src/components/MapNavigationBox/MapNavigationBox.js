@@ -37,7 +37,6 @@ class CircularList {
 
 const MapNavigationBox = () => {
 	const { state } = useContext(MapContext);
-	console.log('MapContext state', state);
 	const { auctionList } = state;
 
 	const items = new CircularList(

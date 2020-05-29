@@ -7,13 +7,11 @@ import { UserContext, withUserContext } from '../../context/UserContext';
 import Blockies from 'react-blockies';
 
 class NavBar extends Component {
-
+	// const { state, actions } = useContext(UserContext);
 
 	toggleNotificationCenter = (e) => {
 		e.preventDefault();
-		if(!this.context.state.showNotificationCenter){
-			this.context.actions.toggleShowNotificationCenter();
-		}
+		this.context.actions.toggleShowNotificationCenter(true);
 	};
 
 	render() {
@@ -23,7 +21,7 @@ class NavBar extends Component {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
-						<Link to="/" className="Notifications__link" onClick={this.toggleNotificationCenter}>
+						<Link to="/" id="js-open-notification-link" className="Notifications__link" onClick={this.toggleNotificationCenter}>
 							<div className="Notifications__icon">
 								<svg width="18px" height="20px" viewBox="0 0 18 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
 									<title>icons/icon_notification</title>
