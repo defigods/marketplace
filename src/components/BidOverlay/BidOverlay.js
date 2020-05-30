@@ -7,7 +7,6 @@ import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { bidAuction } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
-import { icoAddress } from '../../lib/contracts';
 
 const BidOverlay = (props) => {
 	const [nextBid, setNextBid] = useState(10);
@@ -19,6 +18,7 @@ const BidOverlay = (props) => {
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
+	const [bid, setBid] = useState(0);
 	let priceInterval = null; // Checks for price changes every half a second
 
 	useEffect(() => {
@@ -52,6 +52,7 @@ const BidOverlay = (props) => {
 	};
 
 	const handleNext = async () => {
+		if (bid < nextBid) return warningNotification('Invalid bid', "Your bid must be equal or larger than the minimum bid");
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
 				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
@@ -60,7 +61,8 @@ const BidOverlay = (props) => {
 			const landId = parseInt(hexId, 16);
 			try {
 				await approveOvrTokens();
-				const tx = await ico.participateInAuctionAsync(landId, {
+				const weiBid = String(window.web3.toWei(bid))
+				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -74,14 +76,14 @@ const BidOverlay = (props) => {
 		}
 	};
 
-	const updateNewBidValue = (e) => {
-		if (nextBid >= props.currentBid * 2) {
+	const updateNewBidValue = (myBid) => {
+		if (myBid >= nextBid) {
 			setBidValid(true);
 		} else {
 			setBidValid(false);
 		}
 
-		setNextBid(e.target.value);
+		setBid(myBid);
 	};
 
 	function sendBid() {
@@ -164,9 +166,18 @@ const BidOverlay = (props) => {
 										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
+								<div className="Overlay__minimum_bid">
+									<div className="Overlay__bid_title">Your bid</div>
+									<div>
+										<TextField type="number" onChange={e => {
+											const eventBid = e.target.value;
+											if (eventBid > 0) updateNewBidValue(eventBid);
+										}}/>
+									</div>
+								</div>
 							</div>
 							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Place Bid" className="--orange" onClick={handleNext}></HexButton>
+								<HexButton url="#" text="Place Bid" className={`--orange ${bidValid ? '' : '--disabled'}`} onClick={handleNext}></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>

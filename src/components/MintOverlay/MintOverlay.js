@@ -62,7 +62,7 @@ const MintOverlay = (props) => {
 						`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
 					);
 				}
-				const tx = await ico.participateInAuctionAsync(landId, {
+				const tx = await ico.participateInAuctionAsync(initialBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
 				setMetamaskMessage('Waiting for MetaMask confirmation');

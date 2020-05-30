@@ -1710,6 +1710,11 @@ const icoAbi = [
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "_bid",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
           "name": "_landId",
           "type": "uint256"
         }

@@ -1,8 +1,8 @@
 // TODO change this for the final addresses these are the deployed ropsten ones
-export const tokenBuyAddress = '0x312Fc53504A20154C681d9d57606aA2E8B48ee7b';
-export const daiAddress = '0x2896b548d6AeC66389205Ac7c569f6ED06B8dAf0';
-export const tetherAddress = '0x13a4CcdA281A304DCd87010A4Ad3f7e68258A9FA';
-export const usdcAddress = '0x47D535B1E67A8cC070E150F0177e8ca99Cbf8134';
-export const ovrAddress = '0xaBeb208e1b394c24962B51C301aE6D6dF9a89BFE';
-export const icoAddress = '0x208191dd0DD9C296765BE384303f6E4577F8A81E';
-export const ovr721Address = '0x958b3760dFc71C70D8155FD0A5e710554A2F6b1A';
+export const tokenBuyAddress = '0xB33164a14877C1aA297836086D4B2d369ff61689';
+export const daiAddress = '0x19d1BbAfd2c60b55f20356730E24D25Ff027E573';
+export const tetherAddress = '0x38D778BF83A8de1db0e80da1243Ad92633cC910e';
+export const usdcAddress = '0xe382122a4378A938B9F1bC0a66DFf5FBCc38EeCC';
+export const ovrAddress = '0x279e897E168236522b1bc675E337933fe070fc7a';
+export const icoAddress = '0xEC3bfB332208c0E5542149935fAC0bFad36Bb199';
+export const ovr721Address = '0x198d2150FBf5507E694AC862556EdA6637DB7fc9';
