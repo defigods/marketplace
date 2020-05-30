@@ -223,7 +223,7 @@ export class UserProvider extends Component {
 				let nonce = response.data.user.nonce;
 				this.handleUserSignMessage(publicAddress, nonce, callback);
 			} else {
-				// TODO User not found notification
+				dangerNotification('Unable to login', response.data.errors);
 			}
 		});
 	}
