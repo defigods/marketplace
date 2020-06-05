@@ -289,6 +289,18 @@ export class UserProvider extends Component {
 		}
 	};
 
+	redeemSingleLand = async hexId => {
+		const landId = parseInt(hexId, 16)
+		try {
+			const tx = await this.state.ico.redeemWonLandAsync(landId, {
+				gasPrice: window.web3.toWei(30, 'gwei'),
+			});
+			await this.waitTx(tx);
+		} catch (e) {
+			return dangerNotification(`Error redeeming the land ${landId}`, e.message);
+		}
+	}
+
 	// Returns true for a successful approval or false otherwise
 	approveErc721Token = async (hexId, isLandId) => {
 		let landId = parseInt(hexId, 16);
@@ -503,6 +515,7 @@ export class UserProvider extends Component {
 						cancelBuyOffer: this.cancelBuyOffer,
 						declineBuyOffer: this.declineBuyOffer,
 						acceptBuyOffer: this.acceptBuyOffer,
+						redeemSingleLand: this.redeemSingleLand,
 					},
 				}}
 			>

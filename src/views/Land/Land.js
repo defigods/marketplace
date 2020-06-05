@@ -33,6 +33,7 @@ export class Land extends Component {
 			openSellOrder: null,
 			openBuyOffers: [],
 			hexId: pathHexId && pathHexId.length === 15 ? pathHexId : this.props.mapProvider.state.hex_id,
+			isRedeemingLand: false,
 		};
 		this.mapActions = this.props.mapProvider.actions;
 	}
@@ -66,7 +67,7 @@ export class Land extends Component {
 			this.setContractPrice(event.detail.hex_id);
 			this.getBuyOffers();
 		});
-	};
+	}
 
 	loadLandStateFromApi(hex_id) {
 		// Call API function
@@ -143,7 +144,13 @@ export class Land extends Component {
 
 		// If 24 hours have passed, consider it sold
 		// Checks if you're the owner or not to display the appropriate button
-		if (landContractState === 2 || (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration)) {
+		if (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration) {
+			return this.setState({
+				marketStatus: 5, // Render redeem land button
+			});
+		}
+
+		if (landContractState === 2) {
 			if (landOwner === window.web3.eth.defaultAccount) {
 				return this.setState({
 					marketStatus: 3,
@@ -165,6 +172,13 @@ export class Land extends Component {
 		this.setState({
 			openBuyOffers: offers,
 		});
+	}
+
+	async redeemLand(e) {
+		e.preventDefault();
+		this.setState({ isRedeemingLand: true });
+		await this.props.userProvider.actions.redeemSingleLand(this.state.hexId);
+		this.setState({ isRedeemingLand: false });
 	}
 
 	setActiveBidOverlay(e) {
@@ -332,6 +346,19 @@ export class Land extends Component {
 					></HexButton>
 				);
 				break;
+			case 5:
+				button = (
+					<div className="redeem-land-map-button">
+						<HexButton
+							url="/"
+							text="Redeem Land"
+							className={this.state.isRedeemingLand ? '--purple --disabled' : '--purple'}
+							onClick={(e) => this.redeemLand(e)}
+						></HexButton>
+						{!this.state.isRedeemingLand ? null : <p className="Overlay__message__container">Redeeming land...</p>}
+					</div>
+				);
+				break;
 			default:
 				button = <div>&nbsp;</div>;
 				break;
@@ -441,9 +468,8 @@ export class Land extends Component {
 		let custom_return = <></>;
 		let openSell = <></>;
 		let openBuyOffers = <></>;
-		const  displayBuyOffers = this.state.marketStatus === 2;
+		const displayBuyOffers = this.state.marketStatus === 2;
 		const displaySells = this.state.marketStatus === 3;
-
 
 		// If there are Buy Offers
 		if (this.state.openBuyOffers.length > 0) {
@@ -458,7 +484,7 @@ export class Land extends Component {
 						userProvider={this.props.userProvider}
 					></BuyOfferOrder>
 				));
-			// Else show the offers for the seller to accept or decline them
+				// Else show the offers for the seller to accept or decline them
 			} else if (displaySells) {
 				openSell = this.state.openBuyOffers.map((offer) => (
 					<BuyOfferOrder

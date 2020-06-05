@@ -67,3 +67,13 @@
     }
 }
 
+.redeem-land-map-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
+	.Overlay__message__container {
+		margin-top: 10px;
+	}
+}

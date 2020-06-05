@@ -1,3 +1,11 @@
+.bids {
+	display: flex;
+
+	.my-bid {
+		margin-left: 20px;
+	}
+}
+
 .MintOverlay{
   background: linear-gradient(138deg, #0081DD, #022136);
   background-size: 400% 400%;

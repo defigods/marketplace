@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
+import TextField from '@material-ui/core/TextField';
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import ValueCounter from '../ValueCounter/ValueCounter';
@@ -8,13 +9,15 @@ import { mintLand } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
 
 const MintOverlay = (props) => {
-			
 	const { waitTx, approveOvrTokens } = props.userProvider.actions;
-	const { hex_id } = props.mapProvider.state;
+	const [bidValid, setBidValid] = useState(false);
+	const pathHexId = window.location.pathname.split('/')[3];
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [bid, setBid] = useState(0);
 
 	useEffect(() => {
 		if (setupComplete) setupListeners();
@@ -22,7 +25,8 @@ const MintOverlay = (props) => {
 
 	const setupListeners = () => {
 		document.addEventListener('land-selected', (event) => {
-			setNextBidSelectedLand(event.detail.hex_id);
+			setHexId(event.detail.hex_id);
+			setNextBidSelectedLand(event.detail.hexId);
 		});
 	};
 
@@ -35,13 +39,25 @@ const MintOverlay = (props) => {
 		setNextBid(nextPayment);
 	};
 
+	const updateNewBidValue = (myBid) => {
+		if (myBid >= nextBid) {
+			setBidValid(true);
+		} else {
+			setBidValid(false);
+		}
+
+		setBid(myBid);
+	};
+
 	const handleNext = async () => {
+		if (bid < nextBid)
+			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
 				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			}
 			// Participate in the auction
-			const landId = parseInt(hex_id, 16);
+			const landId = parseInt(hexId, 16);
 			const isAvailableInThisEpoch = await ico.checkEpochAsync(landId);
 			if (!isAvailableInThisEpoch) {
 				return warningNotification('Epoch issue', 'The current land is not available in this epoch');
@@ -53,16 +69,16 @@ const MintOverlay = (props) => {
 				await approveOvrTokens();
 				const initialBid = String(await ico.initialLandBidAsync());
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-				let nextPayment = window.web3.fromWei(initialBid);
+				const weiBid = String(window.web3.toWei(bid));
 
 				// Check if the user has enough balance to buy those tokens
-				if (currentBalance.lessThan(nextPayment)) {
+				if (currentBalance.lessThan(weiBid)) {
 					return warningNotification(
 						'Not enough tokens',
-						`You don't have enough to pay ${window.web3.fromWei(nextPayment)} OVR tokens`,
+						`You don't have enough to pay ${weiBid} OVR tokens`,
 					);
 				}
-				const tx = await ico.participateInAuctionAsync(initialBid, landId, {
+				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
 				setMetamaskMessage('Waiting for MetaMask confirmation');
@@ -120,17 +136,36 @@ const MintOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__bid_container">
-								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Next bid</div>
-									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+							<div className="bids">
+								<div className="Overlay__bid_container">
+									<div className="Overlay__minimum_bid">
+										<div className="Overlay__bid_title">Next bid</div>
+										<div className="Overlay__bid_cont">
+											<ValueCounter value={nextBid}></ValueCounter>
+										</div>
+									</div>
+								</div>
+								<div className="Overlay__minimum_bid my-bid">
+									<div className="Overlay__bid_title">Your bid</div>
+									<div>
+										<TextField
+											type="number"
+											onChange={(e) => {
+												const eventBid = e.target.value;
+												if (eventBid > 0) updateNewBidValue(eventBid);
+											}}
+										/>
 									</div>
 								</div>
 							</div>
 							<br />
 							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Place Bid" className={`--orange`} onClick={handleNext}></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={handleNext}
+								></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
@@ -149,12 +184,12 @@ const MintOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Your bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+										<ValueCounter value={bid}></ValueCounter>
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>{ metamaskMessage }</span>
+								<span>{metamaskMessage}</span>
 							</div>
 						</div>
 					</div>
@@ -172,7 +207,7 @@ const MintOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+										<ValueCounter value={bid}></ValueCounter>
 									</div>
 								</div>
 							</div>
