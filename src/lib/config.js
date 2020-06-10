@@ -16,7 +16,7 @@ const apis = {
 	socket:
 		environment === 'PRODUCTION'
 			? 'ws://localhost:3000/cable'
-			: (environment === 'STAGING' ? 'ws://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable')
+			: (environment === 'STAGING' ? 'wss://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable')
 };
 
 const map = {
