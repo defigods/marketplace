@@ -1,4 +1,9 @@
 .profile {
+	.identicon{
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+	}
 	.profile-image {
 		width: 80%;
 		height: auto;
@@ -25,6 +30,12 @@
 		}
 	}
 	.p-section {
+		.--m-t{
+			margin-top: 50px;
+		}
+		.c-status-badge{
+			text-transform: uppercase;
+		}
 		.p-section-title {
 			color: $ovr-grey;
 			font-family: $font-family-body;
@@ -32,6 +43,7 @@
 		}
 		.p-section-content {
 			display: inline-block;
+			width: 50%;
 		}
 		.p-content-title {
 			margin: 0 0 0.5rem 0;

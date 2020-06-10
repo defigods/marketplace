@@ -12,11 +12,11 @@ const apis = {
 	hostname:
 		environment === 'PRODUCTION'
 			? 'http://localhost:3000/api/v1'
-			: (environment === 'STAGING' ? 'http://47.254.135.104:8003/api/v1' : 'http://localhost:3000/api/v1'),
+			: (environment === 'STAGING' ? 'https://marketplace-staging.ovr.ai/api/v1' : 'http://localhost:3000/api/v1'),
 	socket:
 		environment === 'PRODUCTION'
 			? 'ws://localhost:3000/cable'
-			: (environment === 'STAGING' ? 'ws://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable')
+			: (environment === 'STAGING' ? 'ws://marketplace-staging.ovr.ai/cable' : 'ws://localhost:3000/cable')
 };
 
 const map = {
