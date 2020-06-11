@@ -228,6 +228,11 @@ export function hideNotification(notificationUuid = null) {
 	);
 }
 
+// KYC - SUMSUB
+export function getSumsubData() {
+	return request({ url: '/user/sumsub/access_token', method: 'GET' }, {}, null);
+}
+
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------
 
