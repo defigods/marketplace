@@ -93,16 +93,26 @@ export function bidAuction(landUuid = null, worth = 10) {
 	);
 }
 
-export function mintLand(landUuid = null, worth = 10) {
+export function auctionPreStart(landUuid = null, worth = 10) {
 	return request(
-		{ url: '/land/mint', method: 'POST' },
+		{ url: '/auction/start/pre', method: 'POST' },
 		{
 			land_uuid: landUuid,
 			worth: worth,
 		},
 		null,
 	);
-}
+};
+
+export function auctionConfirmStart(landUuid = null) {
+	return request(
+		{ url: '/auction/start/confirm', method: 'POST' },
+		{
+			land_uuid: landUuid,
+		},
+		null,
+	);
+};
 
 // LANDS
 export function getLand(hex_id = null) {
