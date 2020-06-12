@@ -5,7 +5,7 @@ import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { mintLand } from '../../lib/api';
+import { auctionConfirmStart, auctionPreStart } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
 
 const MintOverlay = (props) => {
@@ -74,12 +74,13 @@ const MintOverlay = (props) => {
 				if (currentBalance.lessThan(weiBid)) {
 					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
 				}
+				sendPreAuctionStart();
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
 				setMetamaskMessage('Waiting for MetaMask confirmation');
 				await waitTx(tx);
-				sendMint();
+				sendConfirmAuctionStart();
 			} catch (e) {
 				setActiveStep((prevActiveStep) => prevActiveStep - 1);
 				return dangerNotification('Error processing the transactions', e.message);
@@ -95,9 +96,21 @@ const MintOverlay = (props) => {
 		setActiveStep(0);
 	}
 
-	function sendMint() {
+	function sendPreAuctionStart() {
+		auctionPreStart(props.land.key, nextBid)
+			.then((response) => {
+				console.log('response', response.data);
+			})
+			.catch((error) => {
+				// Notify user if network error
+				console.log(error);
+				networkError();
+			});
+	}
+	
+	function sendConfirmAuctionStart() {
 		// Call API function
-		mintLand(props.land.key, nextBid)
+		auctionConfirmStart(props.land.key)
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
