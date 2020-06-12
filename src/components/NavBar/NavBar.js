@@ -57,9 +57,9 @@ class NavBar extends Component {
 							}}>
 								Redeem Lands
 							</Link>
-							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
+							{/* <Link to="/buy-tokens" className="Funds__buy HexButton --blue">
 								Buy OVR
-							</Link>
+							</Link> */}
 						</div>
 
 						<Link to="/" className="Profile__link">

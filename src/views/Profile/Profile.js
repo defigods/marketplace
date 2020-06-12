@@ -44,7 +44,7 @@ const ProfileLayout = (props) => {
 						<Blockies
 							seed={props.state.user.uuid || 'wewewe'}
 							size={12}
-							scale={15}
+							scale={13}
 							color="#7521c8"
 							bgColor="#EC663C"
 							spotColor="#F9B426"

@@ -47,6 +47,7 @@ const BuyOfferOverlay = (props) => {
 	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
+				setActiveStep(0);
 				warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			} else {
 				const now = Math.trunc(Date.now() / 1000);
