@@ -48,8 +48,6 @@ const BidOverlay = (props) => {
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
 		const currentBid = String(window.web3.fromWei(land[2]));
-		console.log('hex id', hexId)
-		console.log('current bid', currentBid)
 		setCurrentBid(currentBid);
 		setNextBid(currentBid * 2);
 	};
