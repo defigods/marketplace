@@ -19,6 +19,9 @@ import { zhCN } from 'date-fns/esm/locale';
 
 let ActionCable = require('actioncable');
 
+// TODO Change this to the final address
+const FIAT_BUY_URL = 'http://staging-credit-card.ovr.ai/buy';
+
 const promisify = (inner) =>
 	new Promise((resolve, reject) =>
 		inner((err, res) => {
@@ -52,6 +55,8 @@ export class UserProvider extends Component {
 			ico: null,
 			ovr721: null,
 			setupComplete: false,
+			perEth: 0,
+			perUsd: 0,
 		};
 	}
 
@@ -150,7 +155,7 @@ export class UserProvider extends Component {
 		// Helpers
 		await this.refreshWhenAccountsChanged();
 		await this.updateBalanceWhenChanged();
-		
+
 		await this.setupContracts();
 		await this.getOvrsOwned();
 	};
@@ -246,7 +251,7 @@ export class UserProvider extends Component {
 			if (response.data.result === true) {
 				// Save data in store
 				this.loginUser(response.data.token, response.data.user);
-				if (callback){
+				if (callback) {
 					callback();
 				}
 			} else {
@@ -289,8 +294,8 @@ export class UserProvider extends Component {
 		}
 	};
 
-	redeemSingleLand = async hexId => {
-		const landId = parseInt(hexId, 16)
+	redeemSingleLand = async (hexId) => {
+		const landId = parseInt(hexId, 16);
 		try {
 			const tx = await this.state.ico.redeemWonLandAsync(landId, {
 				gasPrice: window.web3.toWei(30, 'gwei'),
@@ -299,13 +304,13 @@ export class UserProvider extends Component {
 		} catch (e) {
 			return dangerNotification(`Error redeeming the land ${landId}`, e.message);
 		}
-	}
+	};
 
 	// Returns true for a successful approval or false otherwise
 	approveErc721Token = async (hexId, isLandId) => {
 		let landId = parseInt(hexId, 16);
 		if (isLandId) {
-			landId = hexId
+			landId = hexId;
 		}
 		const existingApproval = await this.state.ovr721.getApprovedAsync(landId);
 		if (existingApproval === icoAddress) return true;
@@ -489,6 +494,154 @@ export class UserProvider extends Component {
 		});
 	};
 
+	/**
+	 * Sets the number of tokens you get per ether and the number of tokens for stablecoins
+	 */
+	getPrices = () => {
+		return new Promise(async resolve => {
+			const receivedPerEth = Number(await this.state.tokenBuy.tokensPerEthAsync());
+			const receivedPerUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
+			this.setState({
+				perEth: receivedPerEth,
+				perUsd: receivedPerUsd,
+			}, resolve);
+		})
+	};
+
+	/**
+	 * To buy OVR ERC20 tokens from the TokenBuy contract.
+	 * When buying with stablecoins, you must first approve them which is done here automatically that's why you can expect to receive 2 transaction notifications from metamask
+	 * @param {String} type The type of payment chosen
+	 */
+	buy = async (tokensToBuy, type) => {
+		if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
+		await this.getPrices()
+		try {
+			switch (type) {
+				case 'eth':
+					const value = tokensToBuy / this.state.perEth;
+					const tx = await this.state.tokenBuy.buyTokensWithEthAsync({
+						value,
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
+					await this.waitTx(tx);
+					break;
+				case 'usdt':
+					await this.buyWithToken(tokensToBuy, this.state.tether, 'usdt');
+					break;
+				case 'usdc':
+					await this.buyWithToken(tokensToBuy, this.state.usdc, 'usdc');
+					break;
+				case 'dai':
+					await this.buyWithToken(tokensToBuy, this.state.dai, 'dai');
+					break;
+				default:
+					warningNotification('Error', 'The currency selected is not correct');
+					break;
+			}
+			this.getOvrsOwned();
+		} catch (e) {
+			console.log('Error', e);
+			warningNotification(
+				'Error buying tokens',
+				'There was an error processing your transaction refresh this page and try again',
+			);
+		}
+	};
+
+	buyWithCard = async (tokensToBuy, cardNum, month, year, cvv, zip) => {
+		await this.getPrices()
+		// tokensToBuy
+		let response;
+		const dataToSend = {
+			amount: String(window.web3.fromWei((tokensToBuy / this.state.perUsd) * 100)), // Must be in cents so 1 dollar is 100
+			addressReceiver: window.web3.eth.defaultAccount,
+			card: {
+				cardNum,
+				cardExpiry: {
+					month,
+					year,
+				},
+				cvv,
+			},
+			billingDetails: { zip },
+		};
+
+		try {
+			const request = await fetch(FIAT_BUY_URL, {
+				method: 'post',
+				headers: {
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify(dataToSend),
+			});
+			response = await request.json();
+		} catch (e) {
+			return dangerNotification(
+				'Error processing the payment',
+				'There was an error making the credit card purchase refresh the page and try again later',
+			);
+		}
+
+		if (!response) {
+			return dangerNotification('Error', 'No response received from the payment server');
+		} else if (!response.ok) {
+			return dangerNotification('Error buying', response.msg);
+		}
+
+		successNotification(
+			'Purchase successful',
+			'The purchase was completed successfully. It may take between 1 and 3 minutes to see your new tokens.',
+		);
+	};
+
+	buyWithToken = async (tokensToBuy, token, type) => {
+		let currentBalance = await token.balanceOfAsync(window.web3.eth.defaultAccount);
+		let currentAllowance = await token.allowanceAsync(window.web3.eth.defaultAccount, tokenBuyAddress);
+		// Allow all the tokens
+		if (currentBalance.greaterThan(currentAllowance)) {
+			try {
+				const response = await token.approveAsync(tokenBuyAddress, currentBalance);
+				await this.waitTx(response);
+			} catch (e) {
+				return warningNotification('Error approving tokens', 'There was an error approving the tokens');
+			}
+		}
+		// Check if the user has enough balance to buy those tokens
+		if (currentBalance.lessThan(tokensToBuy)) {
+			return warningNotification(
+				'Not enough tokens',
+				`You don't have enough to buy ${window.web3.fromWei(tokensToBuy)} OVR tokens`,
+			);
+		}
+		try {
+			let tx;
+			switch (type) {
+				case 'dai':
+					tx = await this.state.tokenBuy.buyTokensWithDaiAsync(tokensToBuy, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
+					break;
+				case 'usdt':
+					tx = await this.state.tokenBuy.buyTokensWithUsdtAsync(tokensToBuy, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
+					break;
+				case 'usdc':
+					tx = await this.state.tokenBuy.buyTokensWithUsdcAsync(tokensToBuy, {
+						gasPrice: window.web3.toWei(30, 'gwei'),
+					});
+					break;
+				default:
+					warningNotification('Error', 'The currency selected is not correct');
+					break;
+			}
+			await this.waitTx(tx);
+		} catch (e) {
+			return warningNotification('Error buying', `There was an error buying your OVR tokens`);
+		}
+	};
+
 	render() {
 		return (
 			<UserContext.Provider
@@ -516,6 +669,10 @@ export class UserProvider extends Component {
 						declineBuyOffer: this.declineBuyOffer,
 						acceptBuyOffer: this.acceptBuyOffer,
 						redeemSingleLand: this.redeemSingleLand,
+						buyWithToken: this.buyWithToken,
+						buyWithCard: this.buyWithCard,
+						buy: this.buy,
+						getPrices: this.getPrices,
 					},
 				}}
 			>
