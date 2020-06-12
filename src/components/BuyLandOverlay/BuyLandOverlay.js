@@ -7,7 +7,7 @@ import HexButton from '../HexButton/HexButton';
 import { successNotification, warningNotification, dangerNotification } from '../../lib/notifications';
 
 const BuyLandOverlay = (props) => {
-	const { approveOvrTokens, buyLand } = props.userProvider.actions;
+	const { approveOvrTokens, buy, buyLand } = props.userProvider.actions;
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
@@ -50,8 +50,7 @@ const BuyLandOverlay = (props) => {
 						'Balance insufficient',
 						"You don't have enough tokens to buy that land get more and try again",
 					);
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
-				setMetamaskMessage('Approving tokens first...');
+				setMetamaskMessage('Approving tokens...');
 				await approveOvrTokens();
 				setMetamaskMessage('Waiting for land buying MetaMask confirmation');
 				await buyLand(hexId);
@@ -95,7 +94,65 @@ const BuyLandOverlay = (props) => {
 							</div>
 							<br />
 							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Buy Now" className={`--orange`} onClick={handleNext}></HexButton>
+							<HexButton
+									url="#"
+									text="Buy With OVR"
+									className="--orange"
+									onClick={() => {
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Buy With ETH"
+									className="--orange"
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(nextBid), 'eth');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Buy With DAI"
+									className="--orange"
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(nextBid), 'dai');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Buy With Tether"
+									className="--orange"
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(nextBid), 'usdt');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Buy With USDC"
+									className="--orange"
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(nextBid), 'usdc');
+										handleNext();
+									}}
+								></HexButton>
+								{/* <HexButton
+									url="#"
+									text="Place Bid With Dollars"
+									className="--orange"
+									onClick={handleNext}
+								></HexButton> */}
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>

@@ -9,7 +9,7 @@ import { mintLand } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
 
 const MintOverlay = (props) => {
-	const { waitTx, approveOvrTokens } = props.userProvider.actions;
+	const { waitTx, buy, approveOvrTokens } = props.userProvider.actions;
 	const [bidValid, setBidValid] = useState(false);
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
@@ -64,8 +64,7 @@ const MintOverlay = (props) => {
 			}
 
 			try {
-				setMetamaskMessage('Approving OVR tokens first...');
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
+				setMetamaskMessage('Approving OVR tokens...');
 				await approveOvrTokens();
 				const initialBid = String(await ico.initialLandBidAsync());
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
@@ -73,10 +72,7 @@ const MintOverlay = (props) => {
 
 				// Check if the user has enough balance to buy those tokens
 				if (currentBalance.lessThan(weiBid)) {
-					return warningNotification(
-						'Not enough tokens',
-						`You don't have enough to pay ${weiBid} OVR tokens`,
-					);
+					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
 				}
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
@@ -162,10 +158,63 @@ const MintOverlay = (props) => {
 							<div className="Overlay__buttons_container">
 								<HexButton
 									url="#"
-									text="Place Bid"
+									text="Place Bid With OVR"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={() => {
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With ETH"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'eth');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With DAI"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'dai');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With Tether"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'usdt');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With USDC"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'usdc');
+										handleNext();
+									}}
+								></HexButton>
+								{/* <HexButton
+									url="#"
+									text="Place Bid With Dollars"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									onClick={handleNext}
-								></HexButton>
+								></HexButton> */}
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>

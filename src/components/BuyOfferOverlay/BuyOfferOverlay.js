@@ -29,7 +29,7 @@ const BuyOfferOverlay = (props) => {
 	const [expirationDate, setExpirationDate] = useState(tomorrow);
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
-	const { approveOvrTokens, offerToBuyLand } = props.userProvider.actions;
+	const { approveOvrTokens, buy, offerToBuyLand } = props.userProvider.actions;
 	const { setupComplete } = props.userProvider.state;
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	const [solidityExpirationDate, setSolidityExpirationDate] = useState(0);
@@ -53,9 +53,10 @@ const BuyOfferOverlay = (props) => {
 				const price = String(window.web3.toWei(proposedValue));
 
 				if (now >= solidityExpirationDate) {
-					return warningNotification('Date error', 'The expiration date must be set in the future');
+					warningNotification('Date error', 'The expiration date must be set in the future');
+					setActiveStep((prevActiveStep) => 0);
+					return;
 				}
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
 				try {
 					setMetamaskMessage('Approving OVR tokens for the Smart Contract...');
 					await approveOvrTokens();
@@ -172,12 +173,65 @@ const BuyOfferOverlay = (props) => {
 								</MuiPickersUtilsProvider>
 							</div>
 							<div className="Overlay__buttons_container">
+							<HexButton
+									url="#"
+									text="Place Order With OVR"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={() => {
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										handleNext();
+									}}
+								></HexButton>
 								<HexButton
 									url="#"
-									text="Place Order"
+									text="Place Order With ETH"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(proposedValue), 'eth');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Order With DAI"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(proposedValue), 'dai');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Order With Tether"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(proposedValue), 'usdt');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Order With USDC"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(proposedValue), 'usdc');
+										handleNext();
+									}}
+								></HexButton>
+								{/* <HexButton
+									url="#"
+									text="Place Bid With Dollars"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									onClick={handleNext}
-								></HexButton>
+								></HexButton> */}
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>

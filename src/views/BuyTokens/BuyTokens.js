@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
-import { successNotification, warningNotification, dangerNotification } from '../../lib/notifications';
-import { tokenBuyAddress } from '../../lib/contracts';
 import { withUserContext } from '../../context/UserContext';
-
-// TODO Change this to the final address
-const FIAT_BUY_URL = 'http://staging-credit-card.ovr.ai/buy';
 
 /**
  * Buy tokens component
  */
 const BuyTokens = (context) => {
-	const { tokenBuy, dai, tether, usdc, setupComplete } = context.userProvider.state;
-	const { waitTx } = context.userProvider.actions;
-	const [perEth, setPerEth] = useState(0);
-	const [perUsd, setPerUsd] = useState(0);
+	const { perEth, perUsd, setupComplete } = context.userProvider.state;
+	const { getPrices, buy, buyWithCard } = context.userProvider.actions;
 	const [tokensToBuy, setTokensToBuy] = useState(0);
 	// Fiat variables
 	const [showCardForm, setShowCardForm] = useState(false);
@@ -27,157 +20,6 @@ const BuyTokens = (context) => {
 	useEffect(() => {
 		if (setupComplete) getPrices();
 	}, [setupComplete]);
-
-	const requireSetup = () => {
-		if (!setupComplete) {
-			warningNotification('Metamask not detected', 'You must login to metamask to use this application');
-			return false;
-		}
-		return true;
-	};
-
-	/**
-	 * Sets the number of tokens you get per ether and the number of tokens for stablecoins
-	 */
-	const getPrices = async () => {
-		if (!requireSetup()) return;
-		const receivedPerEth = Number(await tokenBuy.tokensPerEthAsync());
-		const receivedPerUsd = Number(await tokenBuy.tokensPerUsdAsync());
-		setPerEth(receivedPerEth);
-		setPerUsd(receivedPerUsd);
-	};
-
-	/**
-	 * To buy OVR ERC20 tokens from the TokenBuy contract.
-	 * When buying with stablecoins, you must first approve them which is done here automatically that's why you can expect to receive 2 transaction notifications from metamask
-	 * @param {String} type The type of payment chosen
-	 */
-	const buy = async (type) => {
-		if (!requireSetup()) return;
-		if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
-		try {
-			switch (type) {
-				case 'eth':
-					const value = tokensToBuy / perEth;
-					const tx = await tokenBuy.buyTokensWithEthAsync({
-						value,
-						gasPrice: window.web3.toWei(30, 'gwei'),
-					});
-					await waitTx(tx);
-					break;
-				case 'fiat':
-					await buyWithCard();
-					break;
-				case 'usdt':
-					await buyWithToken(tether, 'usdt');
-					break;
-				case 'usdc':
-					await buyWithToken(usdc, 'usdc');
-					break;
-				case 'dai':
-					await buyWithToken(dai, 'dai');
-					break;
-				default:
-					warningNotification('Error', 'The currency selected is not correct');
-					break;
-			}
-			context.userProvider.actions.getOvrsOwned();
-		} catch (e) {
-			console.log('Error', e);
-			warningNotification(
-				'Error buying tokens',
-				'There was an error processing your transaction refresh this page and try again',
-			);
-		}
-	};
-
-	const buyWithCard = async () => {
-		// tokensToBuy
-		let response;
-		const dataToSend = {
-			amount: String(window.web3.fromWei(tokensToBuy / perUsd * 100)), // Must be in cents so 1 dollar is 100
-			addressReceiver: window.web3.eth.defaultAccount,
-			card: {
-				cardNum: cardNumber,
-				cardExpiry: {
-					month: cardExpiryMonth,
-					year: cardExpiryYear,
-				},
-				cvv,
-			},
-			billingDetails: { zip },
-		};
-		console.log('data to send', dataToSend)
-		try {
-			const request = await fetch(FIAT_BUY_URL, {
-				method: 'post',
-				headers: {
-					'content-type': 'application/json',
-				},
-				body: JSON.stringify(dataToSend),
-			});
-			response = await request.json();
-		} catch (e) {
-			return dangerNotification(
-				'Error processing the payment',
-				'There was an error making the credit card purchase refresh the page and try again later',
-			);
-		}
-
-		if (!response) {
-			return dangerNotification('Error', 'No response received from the payment server');
-		} else if (!response.ok) {
-			return dangerNotification('Error buying', response.msg);
-		}
-
-		successNotification('Purchase successful', 'The purchase was completed successfully. It may take between 1 and 3 minutes to see your new tokens.');
-	};
-
-	const buyWithToken = async (token, type) => {
-		if (!requireSetup()) return;
-		let currentBalance = await token.balanceOfAsync(window.web3.eth.defaultAccount);
-		let currentAllowance = await token.allowanceAsync(window.web3.eth.defaultAccount, tokenBuyAddress);
-		// Allow all the tokens
-		if (currentBalance.greaterThan(currentAllowance)) {
-			try {
-				const response = await token.approveAsync(tokenBuyAddress, currentBalance);
-				await waitTx(response);
-			} catch (e) {}
-		}
-		// Check if the user has enough balance to buy those tokens
-		if (currentBalance.lessThan(tokensToBuy)) {
-			return warningNotification(
-				'Not enough tokens',
-				`You don't have enough to buy ${window.web3.fromWei(tokensToBuy)} OVR tokens`,
-			);
-		}
-		try {
-			let tx;
-			switch (type) {
-				case 'dai':
-					tx = await tokenBuy.buyTokensWithDaiAsync(tokensToBuy, {
-						gasPrice: window.web3.toWei(30, 'gwei'),
-					});
-					break;
-				case 'usdt':
-					tx = await tokenBuy.buyTokensWithUsdtAsync(tokensToBuy, {
-						gasPrice: window.web3.toWei(30, 'gwei'),
-					});
-					break;
-				case 'usdc':
-					tx = await tokenBuy.buyTokensWithUsdcAsync(tokensToBuy, {
-						gasPrice: window.web3.toWei(30, 'gwei'),
-					});
-					break;
-				default:
-					warningNotification('Error', 'The currency selected is not correct');
-					break;
-			}
-			await waitTx(tx);
-		} catch (e) {
-			return warningNotification('Error buying', `There was an error buying your OVR tokens`);
-		}
-	};
 
 	return (
 		<div className="BuyTokens__container">
@@ -210,7 +52,7 @@ const BuyTokens = (context) => {
 					setTokensToBuy(window.web3.toWei(e.target.value));
 				}}
 			/>
-			<button className="HexButton --blue" onClick={() => buy('eth')}>
+			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'eth')}>
 				Buy with ETH
 			</button>
 			<button
@@ -221,13 +63,13 @@ const BuyTokens = (context) => {
 			>
 				Buy with Dollars
 			</button>
-			<button className="HexButton --blue" onClick={() => buy('usdt')}>
+			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'usdt')}>
 				Buy with Tether
 			</button>
-			<button className="HexButton --blue" onClick={() => buy('usdc')}>
+			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'usdc')}>
 				Buy with USDC
 			</button>
-			<button className="HexButton --blue" onClick={() => buy('dai')}>
+			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'dai')}>
 				Buy with DAI
 			</button>
 			<p className="full-size">
@@ -277,8 +119,11 @@ const BuyTokens = (context) => {
 						setZip(e.target.value);
 					}}
 				/>
-				<button className="HexButton --blue pay-with-card-button" onClick={() => buy('fiat')}>
-					Buy {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens Paying {tokensToBuy == 0 ? '' :  '$'+window.web3.fromWei(tokensToBuy / perUsd)} USD
+				<button className="HexButton --blue pay-with-card-button" onClick={() => 
+					buyWithCard(tokensToBuy, cardNumber, cardExpiryMonth, cardExpiryYear, cvv, zip)
+				}>
+					Buy {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens Paying{' '}
+					{tokensToBuy == 0 ? '' : '$' + window.web3.fromWei(tokensToBuy / perUsd)} USD
 				</button>
 			</div>
 		</div>

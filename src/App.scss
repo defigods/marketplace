@@ -134,3 +134,13 @@ body {
 	border-left: #1d0333 !important;
 	background: linear-gradient(138deg, #1d0333, #805e9d) !important;
 }
+
+.Overlay__buttons_container{
+	margin-top: 0;
+	display: grid;
+	grid-gap: 5px;
+	
+    .HexButton{
+        margin-right: 25px;
+    }
+}

@@ -14,11 +14,12 @@ const BidOverlay = (props) => {
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
-	const { waitTx, approveOvrTokens } = props.userProvider.actions;
+	const { waitTx, buy, approveOvrTokens } = props.userProvider.actions;
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [bid, setBid] = useState(0);
+	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for Metamask confirmation');
 	let priceInterval = null; // Checks for price changes every half a second
 
 	useEffect(() => {
@@ -47,6 +48,8 @@ const BidOverlay = (props) => {
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
 		const currentBid = String(window.web3.fromWei(land[2]));
+		console.log('hex id', hexId)
+		console.log('current bid', currentBid)
 		setCurrentBid(currentBid);
 		setNextBid(currentBid * 2);
 	};
@@ -60,13 +63,14 @@ const BidOverlay = (props) => {
 			// Participate in the auction
 			const landId = parseInt(hexId, 16);
 			try {
+				setMetamaskMessage('Approving OVR tokens...');
 				await approveOvrTokens();
 				const weiBid = String(window.web3.toWei(bid))
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
-				setActiveStep((prevActiveStep) => prevActiveStep + 1);
 				await waitTx(tx);
+				setActiveStep(2);
 			} catch (e) {
 				return dangerNotification('Error processing the transaction', e.message);
 			}
@@ -177,7 +181,65 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Place Bid" className={`--orange ${bidValid ? '' : '--disabled'}`} onClick={handleNext}></HexButton>
+							<HexButton
+									url="#"
+									text="Place Bid With OVR"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={() => {
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With ETH"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'eth');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With DAI"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'dai');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With Tether"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'usdt');
+										handleNext();
+									}}
+								></HexButton>
+								<HexButton
+									url="#"
+									text="Place Bid With USDC"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={async () => {
+										setMetamaskMessage('Getting OVR first...');
+										setActiveStep((prevActiveStep) => prevActiveStep + 1);
+										await buy(window.web3.toWei(bid), 'usdc');
+										handleNext();
+									}}
+								></HexButton>
+								{/* <HexButton
+									url="#"
+									text="Place Bid With Dollars"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={handleNext}
+								></HexButton> */}
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
@@ -232,7 +294,7 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__message__container">
-								<span>Waiting for MetaMask confirmation</span>
+								<span>{metamaskMessage}</span>
 							</div>
 						</div>
 					</div>

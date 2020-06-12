@@ -1744,6 +1744,21 @@ const icoAbi = [
       "constant": false,
       "inputs": [
         {
+          "internalType": "uint256[]",
+          "name": "_landIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "redeemBulkLands",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_landId",
           "type": "uint256"
