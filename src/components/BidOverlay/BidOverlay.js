@@ -32,7 +32,7 @@ const BidOverlay = (props) => {
 			setNextBidSelectedLand();
 		}, 5e2);
 		document.addEventListener('land-selected', (event) => {
-			setHexId(event.detail.hex_id);
+			setHexId(window.location.pathname.split('/')[3]);
 			clearInterval(priceInterval);
 			priceInterval = setInterval(() => {
 				setNextBidSelectedLand();
@@ -45,6 +45,7 @@ const BidOverlay = (props) => {
 		if (!setupComplete || !ico || !ovr) {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
+		setHexId(window.location.pathname.split('/')[3]);
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
 		const currentBid = String(window.web3.fromWei(land[2]));
@@ -53,7 +54,8 @@ const BidOverlay = (props) => {
 	};
 
 	const handleNext = async () => {
-		if (bid < nextBid) return warningNotification('Invalid bid', "Your bid must be equal or larger than the minimum bid");
+		if (bid < nextBid)
+			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
 				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
@@ -63,7 +65,7 @@ const BidOverlay = (props) => {
 			try {
 				setMetamaskMessage('Approving OVR tokens...');
 				await approveOvrTokens();
-				const weiBid = String(window.web3.toWei(bid))
+				const weiBid = String(window.web3.toWei(bid));
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
@@ -171,15 +173,18 @@ const BidOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Your bid</div>
 									<div>
-										<TextField type="number" onChange={e => {
-											const eventBid = e.target.value;
-											if (eventBid > 0) updateNewBidValue(eventBid);
-										}}/>
+										<TextField
+											type="number"
+											onChange={(e) => {
+												const eventBid = e.target.value;
+												if (eventBid > 0) updateNewBidValue(eventBid);
+											}}
+										/>
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__buttons_container">
-							<HexButton
+								<HexButton
 									url="#"
 									text="Place Bid With OVR"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
