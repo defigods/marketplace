@@ -56,7 +56,7 @@ const MintOverlay = (props) => {
 	};
 
 	const updateNewBidValue = (myBid) => {
-		if (myBid >= nextBid) {
+		if (myBid >= nextBid && myBid >= 10) {
 			setBidValid(true);
 		} else {
 			setBidValid(false);
