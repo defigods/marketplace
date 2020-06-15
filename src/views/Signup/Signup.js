@@ -16,6 +16,8 @@ import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import Web3 from 'web3';
+
 /**
  * Signup page component
  */
@@ -35,7 +37,22 @@ const Signup = () => {
 	const [usernameInputError, setUsernameInputError] = useState(false);
 
 	useEffect(() => {
-		// console.log(web3NetworkName);
+		// Load Web3
+		const ethereum = window.ethereum;
+		async function startEth() {
+			if (typeof ethereum !== 'undefined') {
+				try {
+					await ethereum.enable();
+				} catch (e) {
+					console.log(e);
+				}
+				window.web3 = new Web3(ethereum);
+			} else if (typeof window.web3 !== 'undefined') {
+				window.web3 = new Web3(window.web3.currentProvider);
+			}
+			window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+		}
+		startEth();
 	}, []);
 
 	const handleNext = async () => {
@@ -112,7 +129,7 @@ const Signup = () => {
 		let isWeb3Active = typeof window.web3 !== 'undefined';
 		let isWeb3Account = false;
 		let web3NetworkVersion = false;
-		if (isWeb3Active){
+		if (isWeb3Active) {
 			isWeb3Account = window.web3.eth.accounts.length > 0;
 			web3NetworkVersion = window.ethereum.networkVersion === config.web3network;
 		}

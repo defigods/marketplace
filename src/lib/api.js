@@ -82,9 +82,20 @@ export function indexMyOpenAuctions(sort = null, page = 1) {
 	);
 }
 
-export function bidAuction(landUuid = null, worth = 10) {
+export function auctionBidPre(landUuid = null, worth = 10) {
 	return request(
-		{ url: '/auction/bid', method: 'POST' },
+		{ url: '/auction/bid/pre', method: 'POST' },
+		{
+			land_uuid: landUuid,
+			worth: worth,
+		},
+		null,
+	);
+}
+
+export function auctionBidConfirm(landUuid = null, worth = 10) {
+	return request(
+		{ url: '/auction/bid/confirm', method: 'POST' },
 		{
 			land_uuid: landUuid,
 			worth: worth,
@@ -102,7 +113,7 @@ export function auctionPreStart(landUuid = null, worth = 10) {
 		},
 		null,
 	);
-};
+}
 
 export function auctionConfirmStart(landUuid = null) {
 	return request(
@@ -112,7 +123,7 @@ export function auctionConfirmStart(landUuid = null) {
 		},
 		null,
 	);
-};
+}
 
 // LANDS
 export function getLand(hex_id = null) {

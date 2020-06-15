@@ -41,6 +41,7 @@ export class UserProvider extends Component {
 
 		this.state = {
 			isLoggedIn: false,
+			subscribedToLiveSockets: false,
 			showNotificationCenter: false,
 			token: null,
 			user: {
@@ -103,13 +104,18 @@ export class UserProvider extends Component {
 		return new Promise((resolve, reject) => {
 			let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
 			// Wait for tx to be finished
+			console.log('WEWEW 1')
+
 			let filter = window.web3.eth.filter('latest').watch(async (err, blockHash) => {
+				console.log('WEWEW 2')
 				if (err) {
 					filter.stopWatching();
 					filter = null;
+					console.log('WEWEW 3')
 					return reject(err);
 				}
 				if (blockCounter <= 0) {
+					console.log('WEWEW 4')
 					filter.stopWatching();
 					filter = null;
 					console.warn('!! Tx expired !!');
@@ -118,8 +124,10 @@ export class UserProvider extends Component {
 				// Get info about latest Ethereum block
 				const block = await promisify((cb) => window.web3.eth.getBlock(blockHash, cb));
 				--blockCounter;
+				console.log('WEWEW 5')
 				// Found tx hash?
 				if (block.transactions.indexOf(txHash) > -1) {
+					console.log('WEWEW 6')
 					// Tx is finished
 					filter.stopWatching();
 					filter = null;
@@ -417,30 +425,35 @@ export class UserProvider extends Component {
 	// Sockets
 
 	liveSocket = () => {
-		var cable = ActionCable.createConsumer(config.apis.socket);
+		if (this.state.isLoggedIn && !this.state.subscribedToLiveSockets){
+			console.log(this.state.user.uuid)
+			this.setState({subscribedToLiveSockets: true})
+			var cable = ActionCable.createConsumer(config.apis.socket);
 
-		cable.subscriptions.create(
-			{ channel: 'UsersChannel', user_uuid: this.state.user.uuid },
-			{
-				received: (data) => {
-					const { notification } = data;
-					const { balance } = data;
-					const { unreaded_count } = data;
+			cable.subscriptions.create(
+				{ channel: 'UsersChannel', user_uuid: this.state.user.uuid },
+				{
+					received: (data) => {
+						const { notification } = data;
+						const { balance } = data;
+						const { unreaded_count } = data;
 
-					this.setState({
-						user: {
-							...this.state.user,
-							balance: balance,
-							notifications: {
-								...this.state.user.notifications,
-								unreadedCount: unreaded_count,
-								content: [notification, ...this.state.user.notifications.content],
+						this.setState({
+							user: {
+								...this.state.user,
+								balance: balance,
+								notifications: {
+									...this.state.user.notifications,
+									unreadedCount: unreaded_count,
+									content: [notification, ...this.state.user.notifications.content],
+								},
 							},
-						},
-					});
+						});
+					},
 				},
-			},
-		);
+			);
+		}
+		console.log('liveSockets Called')
 	};
 
 	offerToBuyLand = async (hexId, price, expirationDate) => {
