@@ -83,3 +83,19 @@
 	cursor: not-allowed;
 	filter: grayscale(100%);
 }
+
+.Overlay__buttons_container{
+	margin-top: 10px;
+	// display: grid;
+	// grid-gap: 5px;
+	
+    .HexButton{
+        margin-right: 25px;
+    }
+}
+
+.bid-fade-menu{
+	&.--cons-option{	
+		color: $ovr-orange;
+	}
+}

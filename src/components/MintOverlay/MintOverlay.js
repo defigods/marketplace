@@ -5,19 +5,27 @@ import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { mintLand } from '../../lib/api';
+import { auctionConfirmStart, auctionPreStart } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
+import PropTypes from 'prop-types';
+
+import Fade from '@material-ui/core/Fade';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const MintOverlay = (props) => {
 	const { waitTx, buy, approveOvrTokens } = props.userProvider.actions;
 	const [bidValid, setBidValid] = useState(false);
 	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	const [bid, setBid] = useState(0);
+
+	const [anchorEl, setAnchorEl] = React.useState(null);
+	const open = Boolean(anchorEl);
 
 	useEffect(() => {
 		if (setupComplete) setupListeners();
@@ -39,6 +47,14 @@ const MintOverlay = (props) => {
 		setNextBid(nextPayment);
 	};
 
+	// Menu currencies
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+	const handleClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+
 	const updateNewBidValue = (myBid) => {
 		if (myBid >= nextBid) {
 			setBidValid(true);
@@ -49,12 +65,21 @@ const MintOverlay = (props) => {
 		setBid(myBid);
 	};
 
+	const checkUserLoggedIn = () => {
+		if (!props.userProvider.state.isLoggedIn) {
+			setActiveStep(0);
+			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			return false;
+		}
+		return true;
+	};
+
 	const handleNext = async () => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
 		if (activeStep + 1 === 1) {
-			if (!props.userProvider.state.isLoggedIn) {
-				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			if (checkUserLoggedIn() === false) {
+				return false;
 			}
 			// Participate in the auction
 			const landId = parseInt(hexId, 16);
@@ -66,20 +91,22 @@ const MintOverlay = (props) => {
 			try {
 				setMetamaskMessage('Approving OVR tokens...');
 				await approveOvrTokens();
-				const initialBid = String(await ico.initialLandBidAsync());
+				await ico.initialLandBidAsync();
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
 				const weiBid = String(window.web3.toWei(bid));
 
 				// Check if the user has enough balance to buy those tokens
 				if (currentBalance.lessThan(weiBid)) {
+					setActiveStep(0);
 					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
 				}
+				sendPreAuctionStart();
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
 				setMetamaskMessage('Waiting for MetaMask confirmation');
 				await waitTx(tx);
-				sendMint();
+				sendConfirmAuctionStart();
 			} catch (e) {
 				setActiveStep((prevActiveStep) => prevActiveStep - 1);
 				return dangerNotification('Error processing the transactions', e.message);
@@ -95,9 +122,21 @@ const MintOverlay = (props) => {
 		setActiveStep(0);
 	}
 
-	function sendMint() {
+	function sendPreAuctionStart() {
+		auctionPreStart(props.land.key, nextBid)
+			.then((response) => {
+				console.log('response', response.data);
+			})
+			.catch((error) => {
+				// Notify user if network error
+				console.log(error);
+				networkError();
+			});
+	}
+
+	function sendConfirmAuctionStart() {
 		// Call API function
-		mintLand(props.land.key, nextBid)
+		auctionConfirmStart(props.land.key)
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
@@ -135,7 +174,7 @@ const MintOverlay = (props) => {
 							<div className="bids">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__minimum_bid">
-										<div className="Overlay__bid_title">Next bid</div>
+										<div className="Overlay__bid_title">Min bid</div>
 										<div className="Overlay__bid_cont">
 											<ValueCounter value={nextBid}></ValueCounter>
 										</div>
@@ -156,65 +195,92 @@ const MintOverlay = (props) => {
 							</div>
 							<br />
 							<div className="Overlay__buttons_container">
-								<HexButton
-									url="#"
-									text="Place Bid With OVR"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={() => {
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Bid With ETH"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(bid), 'eth');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Bid With DAI"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(bid), 'dai');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Bid With Tether"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(bid), 'usdt');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Bid With USDC"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(bid), 'usdc');
-										handleNext();
-									}}
-								></HexButton>
+								<Menu
+									id="fade-menu"
+									anchorEl={anchorEl}
+									keepMounted
+									open={open}
+									onClose={handleClose}
+									TransitionComponent={Fade}
+								>
+									<MenuItem
+										onClick={() => {
+											setActiveStep((prevActiveStep) => prevActiveStep + 1);
+											handleNext();
+											handleClose();
+										}}
+										className="bid-fade-menu --cons-option"
+									>
+										Bid using OVR
+									</MenuItem>
+									<MenuItem
+										onClick={async () => {
+											if (checkUserLoggedIn() === false) {
+												return false;
+											}
+											setActiveStep((prevActiveStep) => prevActiveStep + 1);
+											await buy(window.web3.toWei(bid), 'eth');
+											handleNext();
+										}}
+										className="bid-fade-menu"
+									>
+										Bid using ETH
+									</MenuItem>
+									<MenuItem
+										onClick={async () => {
+											setMetamaskMessage('Getting OVR first...');
+											if (checkUserLoggedIn() === false) {
+												return false;
+											}
+											setActiveStep((prevActiveStep) => prevActiveStep + 1);
+											await buy(window.web3.toWei(bid), 'dai');
+											handleNext();
+										}}
+										className="bid-fade-menu"
+									>
+										Bid using DAI
+									</MenuItem>
+									<MenuItem
+										onClick={async () => {
+											setMetamaskMessage('Getting OVR first...');
+											if (checkUserLoggedIn() === false) {
+												return false;
+											}
+											setActiveStep((prevActiveStep) => prevActiveStep + 1);
+											await buy(window.web3.toWei(bid), 'usdt');
+											handleNext();
+										}}
+										className="bid-fade-menu"
+									>
+										Bid using Tether
+									</MenuItem>
+									<MenuItem
+										onClick={async () => {
+											setMetamaskMessage('Getting OVR first...');
+											if (checkUserLoggedIn() === false) {
+												return false;
+											}
+											setActiveStep((prevActiveStep) => prevActiveStep + 1);
+											await buy(window.web3.toWei(bid), 'usdc');
+											handleNext();
+										}}
+										className="bid-fade-menu"
+									>
+										Bid using USDC
+									</MenuItem>
+								</Menu>
 								{/* <HexButton
 									url="#"
 									text="Place Bid With Dollars"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									onClick={handleNext}
 								></HexButton> */}
+								<HexButton
+									url="#"
+									text="Place bid"
+									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									onClick={handleClick}
+								></HexButton>
 								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
@@ -293,9 +359,9 @@ const MintOverlay = (props) => {
 				} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
-					<div className={`Icon Overlay__close_button`} onClick={setDeactiveOverlay}>
+					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>
 						<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fill-opacity="0.5">
+							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0.5">
 								<g
 									id="Biddign-Single-Auction"
 									transform="translate(-398.000000, -298.000000)"
@@ -311,9 +377,9 @@ const MintOverlay = (props) => {
 						</svg>
 					</div>
 					<div className="Overlay__hex_cont">
-						<div className={`Icon Overlay__hex`}>
+						<div className="Icon Overlay__hex">
 							<svg width="152px" height="176px" viewBox="0 0 152 176" version="1.1" xmlns="http://www.w3.org/2000/svg">
-								<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fill-opacity="0.2">
+								<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0.2">
 									<g
 										id="Biddign-Single-Auction"
 										transform="translate(-439.000000, -349.000000)"
@@ -335,6 +401,15 @@ const MintOverlay = (props) => {
 			</div>
 		</ReactCSSTransitionGroup>
 	);
+};
+
+MintOverlay.propTypes = {
+	realodLandStatefromApi: PropTypes.func,
+	userProvider: PropTypes.object,
+	mapProvider: PropTypes.object,
+	land: PropTypes.object,
+	className: PropTypes.string,
+	url: PropTypes.string,
 };
 
 export default withUserContext(withMapContext(MintOverlay));

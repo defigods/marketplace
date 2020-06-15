@@ -57,7 +57,8 @@ const NotificationCenterContent = () => {
 				if (
 					ref.current &&
 					!ref.current.contains(event.target) &&
-					!document.getElementById('js-open-notification-link').contains(event.target)
+					!document.getElementById('js-open-notification-link').contains(event.target) &&
+					!event.target.classList.contains('MuiMenuItem-root')
 				) {
 					actions.closeNotificationCenter();
 				}

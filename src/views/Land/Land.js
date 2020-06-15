@@ -8,7 +8,7 @@ import BidOverlay from '../../components/BidOverlay/BidOverlay';
 import MintOverlay from '../../components/MintOverlay/MintOverlay';
 import SellOverlay from '../../components/SellOverlay/SellOverlay';
 import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
-import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
+// import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
 import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 
@@ -16,7 +16,7 @@ import { getLand } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 
 import { Textfit } from 'react-textfit';
-import { ca } from 'date-fns/esm/locale';
+// import { ca } from 'date-fns/esm/locale';
 
 export class Land extends Component {
 	constructor(props) {

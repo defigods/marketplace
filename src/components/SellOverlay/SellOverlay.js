@@ -59,6 +59,7 @@ const SellOverlay = (props) => {
 	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
+				setActiveStep(0);
 				warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			} else {
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);

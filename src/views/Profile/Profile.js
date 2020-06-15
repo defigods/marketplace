@@ -44,7 +44,7 @@ const ProfileLayout = (props) => {
 						<Blockies
 							seed={props.state.user.uuid || 'wewewe'}
 							size={12}
-							scale={15}
+							scale={13}
 							color="#7521c8"
 							bgColor="#EC663C"
 							spotColor="#F9B426"
@@ -131,7 +131,7 @@ const ProfileContent = () => {
 						<div className="p-balance-value">
 							<ValueCounter value={state.ovrsOwned} />
 							<div>
-								<HexButton url="/buy-tokens" className="--orange" text="BUY MORE"></HexButton>
+								<HexButton url="/buy-tokens" className="--orange" text="BUY OVR"></HexButton>
 							</div>
 						</div>
 					</div>
@@ -148,6 +148,30 @@ const ProfileContent = () => {
 									className="--blue"
 									text="START VERIFICATION"
 									onClick={toggleKycVerificationFrame}
+								></HexButton>
+							</div>
+						</div>
+					</div>
+					{sumsubExternalUserId != 0 && (
+						<IdensicComp
+							baseUrl="https://test-api.sumsub.com"
+							externalUserId={sumsubExternalUserId}
+							accessToken={sumsubAccessToken}
+						/>
+					)}
+				</div>
+				<div key="redeem-land" className="p-section --m-t">
+					<h3 className="p-section-title">Redeem lands</h3>
+					<div className="p-section-content">
+						<h4 className="p-content-title">Waiting to be redeemed</h4>
+						<div className="p-balance-value">
+							0
+							<div>
+								<HexButton
+									url=""
+									className="Funds__buy HexButton --blue redeem-button"
+									text="Redeem lands"
+									onClick={actions.redeemLands}
 								></HexButton>
 							</div>
 						</div>

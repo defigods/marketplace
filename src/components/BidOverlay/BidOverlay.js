@@ -58,6 +58,7 @@ const BidOverlay = (props) => {
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
+				setActiveStep(0);
 				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			}
 			// Participate in the auction

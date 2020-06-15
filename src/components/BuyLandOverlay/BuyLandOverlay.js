@@ -40,6 +40,7 @@ const BuyLandOverlay = (props) => {
 	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
 			if (!props.userProvider.state.isLoggedIn) {
+				setActiveStep(0);
 				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
 			}
 

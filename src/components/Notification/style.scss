@@ -59,3 +59,12 @@
   font-size: 14px!important;
   font-weight: 200!important;
 }
+
+
+.notification-danger {
+	background-color: $ovr-red !important;
+}
+.notification-warning {
+	border-left: #1d0333 !important;
+	background: linear-gradient(138deg, #1d0333, #805e9d) !important;
+}
