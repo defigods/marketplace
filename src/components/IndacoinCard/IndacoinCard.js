@@ -1,6 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
 const IndacoinCard = () => {
 	return (
@@ -15,11 +13,4 @@ const IndacoinCard = () => {
 		</form>
 	)
 };
-// HexButton.propTypes = {
-// 	className: PropTypes.string,
-// 	target: PropTypes.string,
-// 	onClick: PropTypes.func,
-// 	url: PropTypes.string,
-// 	text: PropTypes.string,
-// };
 export default IndacoinCard;
