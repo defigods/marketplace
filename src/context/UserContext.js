@@ -3,7 +3,7 @@ import Web3 from 'web3';
 import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
-import config from '../lib/config';
+import config, { camelCaseKeys } from '../lib/config';
 import { promisifyAll } from 'bluebird';
 import {
 	tokenBuyAddress,
@@ -157,7 +157,7 @@ export class UserProvider extends Component {
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 
 		// Sign nonce for centralized login
-		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
+ 		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
 		await this.handleCentralizedLogin(publicAddress, callback);
 
 		// Helpers
@@ -170,6 +170,8 @@ export class UserProvider extends Component {
 
 	// if the user is logged in with a valid token just reload datas
 	lightSetupWeb3 = async () => {
+		const ethereum = window.ethereum;
+		await ethereum.enable();
 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		await this.refreshWhenAccountsChanged();
 		await this.updateBalanceWhenChanged();
@@ -437,7 +439,7 @@ export class UserProvider extends Component {
 						const { notification } = data;
 						const { balance } = data;
 						const { unreaded_count } = data;
-
+						// Update state on new notification
 						this.setState({
 							user: {
 								...this.state.user,
@@ -445,7 +447,7 @@ export class UserProvider extends Component {
 								notifications: {
 									...this.state.user.notifications,
 									unreadedCount: unreaded_count,
-									content: [notification, ...this.state.user.notifications.content],
+									content: [camelCaseKeys(notification), ...this.state.user.notifications.content],
 								},
 							},
 						});

@@ -10,9 +10,12 @@ const NotificationCenterContent = () => {
 	const { state, actions } = useContext(UserContext);
 	const wrapperRef = useRef(null);
 
+	useEffect(() => {
+		console.log('useEffect on Notification Center', state.user.notifications);
+	}, [state.user.notifications]);
+
 	const renderNotifications = () => {
 		let notifications;
-		console.log('Notification Center this.context.state.user', state.user);
 		if (
 			state.user.notifications !== null &&
 			state.user.notifications.content &&

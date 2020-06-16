@@ -94,6 +94,7 @@ const Signup = () => {
 
 	const handleSubscribe = () => {
 		setIsSignupLoading(true);
+		// window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
 		signUpHybrid(userEmail, username, publicAddress).then((response) => {
 			setIsSignupLoading(false);
