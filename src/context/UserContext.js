@@ -94,7 +94,6 @@ export class UserProvider extends Component {
 
 	logOutUser = () => {
 		this.setState({ isLoggedIn: false, token: null, user: { uuid: null } });
-
 		// Cookie management
 		removeToken('userToken');
 		removeToken('userUuid');
@@ -104,18 +103,14 @@ export class UserProvider extends Component {
 		return new Promise((resolve, reject) => {
 			let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
 			// Wait for tx to be finished
-			console.log('WEWEW 1')
-
+			console.log('watching txHash', txHash);
 			let filter = window.web3.eth.filter('latest').watch(async (err, blockHash) => {
-				console.log('WEWEW 2')
 				if (err) {
 					filter.stopWatching();
 					filter = null;
-					console.log('WEWEW 3')
 					return reject(err);
 				}
 				if (blockCounter <= 0) {
-					console.log('WEWEW 4')
 					filter.stopWatching();
 					filter = null;
 					console.warn('!! Tx expired !!');
@@ -124,11 +119,10 @@ export class UserProvider extends Component {
 				// Get info about latest Ethereum block
 				const block = await promisify((cb) => window.web3.eth.getBlock(blockHash, cb));
 				--blockCounter;
-				console.log('WEWEW 5')
 				// Found tx hash?
 				if (block.transactions.indexOf(txHash) > -1) {
-					console.log('WEWEW 6')
 					// Tx is finished
+					console.log('Tx has completed')
 					filter.stopWatching();
 					filter = null;
 					return resolve();

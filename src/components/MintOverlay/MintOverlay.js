@@ -58,6 +58,7 @@ const MintOverlay = (props) => {
 	const updateNewBidValue = (myBid) => {
 		if (myBid >= nextBid && myBid >= 10) {
 			setBidValid(true);
+			setNextBid(myBid);
 		} else {
 			setBidValid(false);
 		}
@@ -123,6 +124,7 @@ const MintOverlay = (props) => {
 	}
 
 	function sendPreAuctionStart() {
+		console.log('Auction nextBid', nextBid)
 		auctionPreStart(props.land.key, nextBid)
 			.then((response) => {
 				console.log('response', response.data);
@@ -176,7 +178,7 @@ const MintOverlay = (props) => {
 									<div className="Overlay__minimum_bid">
 										<div className="Overlay__bid_title">Min bid</div>
 										<div className="Overlay__bid_cont">
-											<ValueCounter value={nextBid}></ValueCounter>
+											<ValueCounter value={10}></ValueCounter>
 										</div>
 									</div>
 								</div>

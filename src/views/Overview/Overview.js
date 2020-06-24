@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './style.scss';
 import { MapContext } from '../../context/MapContext';
+import { UserContext } from '../../context/UserContext';
+
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import LandCard from '../../components/LandCard/LandCard';
 
@@ -18,7 +20,8 @@ const Overview = () => {
 	const [currentLandPage, setCurrentLandPage] = useState(1);
 	const [userAuthenticated, setUserAuthenticated] = useState(true);
 
-	const { actions } = useContext(MapContext);
+	const { actions: mapActions } = useContext(MapContext);
+	const { state: userState } = useContext(UserContext);
 
 	function loadAuctionsByPage(page) {
 		// Call API function
@@ -27,7 +30,7 @@ const Overview = () => {
 				console.log(response);
 				if (response.data.result === true) {
 					// Load Auctions in MapContext
-					actions.changeAuctionList(response.data.auctions);
+					mapActions.changeAuctionList(response.data.auctions);
 
 					if (response.data.auctions.length > 0) {
 						// Load user data in context store
@@ -119,11 +122,95 @@ const Overview = () => {
 		setCurrentLandPage(number);
 	}
 
+	function loadWeb3Transactions() {
+		if (userState.ico) {
+			// let trans = window.web3.eth.getBlock('pending').transactions;
+			// console.log(trans);
+
+			// window.addEventListener('load', async () => {
+			// 	let trans = await window.web3.eth.getBlock('pending', function (err, transactionHash) {
+			// 		if (!err) {
+			// 			console.log(transactionHash);
+			// 		}
+			// 	});
+			// });
+			// BEST
+			// console.log('window.ethereum.networkVersion', window.ethereum.networkVersion)
+			// let userAddress = window.web3.eth.defaultAccount;
+			// console.log(userAddress);
+			// window.web3.eth.getTransactionCount(userAddress, (err, txCount) => {
+			// 	console.log('txCount', txCount);
+			// 	let n = txCount;
+			// 	window.web3.eth.getBlockNumber((err, currentBlock) => {
+			// 		console.log('error', err);
+			// 		console.log('currentBlock', currentBlock);
+			// 		window.web3.eth.getBalance(userAddress, currentBlock, (err, balance) => {
+			// 			console.log('balance', balance);
+			// 			let bal = userState.ovrsOwned;
+			// 			console.log('bal', bal);
+			// 			console.log('bal', bal > 0);
+			// 			for (var i = currentBlock; i >= currentBlock - 5 && (n > 0 || bal > 0); --i) {
+			// 				window.web3.eth.getBlock(i, true, (err, block) => {
+			// 					// console.log('block', block)
+			// 					if (block && block.transactions) {
+			// 						block.transactions.forEach(function (e) {
+			// 							// console.log('userAddress ->', userAddress);
+			// 							// console.log('e.from ->', e.from);
+			// 							if (userAddress == e.from) {
+			// 								console.log('transaction from', e);
+			// 								if (e.from != e.to) bal = bal.plus(e.value);
+			// 								console.log(i, e.from, e.to, e.value.toString(10));
+			// 								--n;
+			// 							}
+			// 							if (userAddress == e.to) {
+			// 								console.log('transaction to', e);
+			// 								if (e.from != e.to) bal = bal.minus(e.value);
+			// 								console.log(i, e.from, e.to, e.value.toString(10));
+			// 							}
+			// 						});
+			// 					}
+			// 				});
+			// 			}
+			// 		});
+			// 	});
+			// });
+
+			console.log('window.web3.eth', window.web3.eth)
+
+			// console.log('currentBlock',currentBlock)
+			// var n = txCount
+			// var bal = window.web3.eth.getBalance(userAddress, currentBlock);
+			// for (var i = currentBlock; i >= 0 && (n > 0 || bal > 0); --i) {
+			// 	try {
+			// 		var block = window.web3.eth.getBlock(i, true);
+			// 		if (block && block.transactions) {
+			// 			block.transactions.forEach(function (e) {
+			// 				if (userAddress == e.from) {
+			// 					if (e.from != e.to) bal = bal.plus(e.value);
+			// 					console.log(i, e.from, e.to, e.value.toString(10));
+			// 					--n;
+			// 				}
+			// 				if (userAddress == e.to) {
+			// 					if (e.from != e.to) bal = bal.minus(e.value);
+			// 					console.log(i, e.from, e.to, e.value.toString(10));
+			// 				}
+			// 			});
+			// 		}
+			// 	} catch (e) {
+			// 		console.error('Error in block ' + i, e);
+			// 	}
+			// }
+		}
+		// getTransactionsByAccount(eth.accounts[0])
+		// window.web3.eth.getPendingTransactions().then(console.log);
+	}
+
 	useEffect(() => {
-		actions.disableSingleView();
+		mapActions.disableSingleView();
 		loadAuctionsByPage();
 		loadLandsByPage();
-	}, []);
+		loadWeb3Transactions();
+	}, [userState.ico, userState.ovrsOwned]);
 
 	let customReturn;
 
