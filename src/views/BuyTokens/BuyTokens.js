@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { withUserContext } from '../../context/UserContext';
+import { warningNotification } from '../../lib/notifications';
+
+const partnerName = 'ovr';
+const userId = 'EXAMPLE'; // TODO CHANGE THIS
 
 /**
  * Buy tokens component
@@ -9,17 +13,20 @@ const BuyTokens = (context) => {
 	const { perEth, perUsd, setupComplete } = context.userProvider.state;
 	const { getPrices, buy, buyWithCard } = context.userProvider.actions;
 	const [tokensToBuy, setTokensToBuy] = useState(0);
-	// Fiat variables
-	const [showCardForm, setShowCardForm] = useState(false);
-	const [cardNumber, setCardNumber] = useState(0);
-	const [cardExpiryMonth, setCardExpiryMonth] = useState(0);
-	const [cardExpiryYear, setCardExpiryYear] = useState(0);
-	const [cvv, setCvv] = useState(0);
-	const [zip, setZip] = useState(0);
 
 	useEffect(() => {
 		if (setupComplete) getPrices();
 	}, [setupComplete]);
+
+	const buyWithIndacoin = () => {
+		if (tokensToBuy <= 0)
+			return warningNotification("Amount can't be empty", 'You must specify an amount of OVR tokens to buy');
+
+		const url = `https://indacoin.com/gw/payment_form?partner=${partnerName}&cur_from=USD&cur_to=INTT&amount=${window.web3.fromWei(
+			tokensToBuy,
+		)}&address=${window.web3.eth.accounts[0]}&user_id=${userId}`;
+		window.location = url;
+	};
 
 	return (
 		<div className="BuyTokens__container">
@@ -55,12 +62,7 @@ const BuyTokens = (context) => {
 			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'eth')}>
 				Buy with ETH
 			</button>
-			<button
-				className="HexButton --blue"
-				onClick={() => {
-					setShowCardForm(!showCardForm);
-				}}
-			>
+			<button className="HexButton --blue" onClick={buyWithIndacoin}>
 				Buy with Dollars
 			</button>
 			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'usdt')}>
@@ -76,56 +78,6 @@ const BuyTokens = (context) => {
 				Note: when paying with stablecoins you will receive 2 metamask notifications, simply approve them both to
 				complete the payment.
 			</p>
-
-			<div className={showCardForm ? 'CardForm full-size' : 'hidden'}>
-				<h2 className="card-title">Card details</h2>
-				<input
-					type="number"
-					placeholder="Card number..."
-					className="card-number"
-					onChange={(e) => {
-						setCardNumber(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Month"
-					className="expiration-month"
-					onChange={(e) => {
-						setCardExpiryMonth(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Year"
-					className="expiration-year"
-					onChange={(e) => {
-						setCardExpiryYear(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Cvv"
-					className="cvv"
-					onChange={(e) => {
-						setCvv(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Postal code zip..."
-					className="zip"
-					onChange={(e) => {
-						setZip(e.target.value);
-					}}
-				/>
-				<button className="HexButton --blue pay-with-card-button" onClick={() => 
-					buyWithCard(tokensToBuy, cardNumber, cardExpiryMonth, cardExpiryYear, cvv, zip)
-				}>
-					Buy {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens Paying{' '}
-					{tokensToBuy == 0 ? '' : '$' + window.web3.fromWei(tokensToBuy / perUsd)} USD
-				</button>
-			</div>
 		</div>
 	);
 };
