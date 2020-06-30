@@ -74,6 +74,23 @@
 .HexButton.--outline {
 
 }
+.HexButton.--orange-light{
+	background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
+	background-clip: padding-box; /* !importanté */
+	border: solid 2px transparent; /* !importanté */
+	box-sizing: border-box;
+	color: $ovr-orange;
+	opacity: 0.8;
+	&:before {
+			content: '';
+			position: absolute;
+			top: 0; right: 0; bottom: 0; left: 0;
+			z-index: -1;
+			margin: 2px;
+			border-radius: inherit;
+			background: #fff;
+	}
+}
 .HexButton.--hollow {
 
 }

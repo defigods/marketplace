@@ -1,27 +1,74 @@
-import React, { Component } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import NotificationCenter from '../NotificationCenter/NotificationCenter';
 
 import { UserContext, withUserContext } from '../../context/UserContext';
 import Blockies from 'react-blockies';
+import { Web3Context, withWeb3Context } from '../../context/Web3Context';
 
-class NavBar extends Component {
-	// const { state, actions } = useContext(UserContext);
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
+import { useHistory } from 'react-router-dom';
 
-	toggleNotificationCenter = (e) => {
-		e.preventDefault();
-		this.context.actions.toggleShowNotificationCenter(true);
+const NavBar = () => {
+	const { state: userState, actions: userActions } = useContext(UserContext);
+	const { state: web3State } = useContext(Web3Context);
+
+	// START - Profile sub menu
+	const [open, setOpen] = React.useState(false);
+	const anchorRef = React.useRef(null);
+
+	let history = useHistory();
+
+	const handleToggle = () => {
+		setOpen((prevOpen) => !prevOpen);
 	};
 
-	render() {
+	const handleGoTo = (link) => {
+		history.push(link);
+	};
+
+	const handleClose = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+		setOpen(false);
+	};
+
+	const prevOpen = React.useRef(open);
+	React.useEffect(() => {
+		if (userState.isLoggedIn) {
+			if (prevOpen.current === true && open === false) {
+				anchorRef.current.focus();
+			}
+			prevOpen.current = open;
+		}
+	}, [open]);
+	// END - Profile sub menu
+
+	function toggleNotificationCenter(e) {
+		e.preventDefault();
+		userActions.toggleShowNotificationCenter(true);
+	}
+
+	function rightContainer() {
 		let rightContainer = <div></div>;
-		let state = this.context.state;
-		if (state.isLoggedIn === true && state.user !==null) {
+		if (userState.isLoggedIn === true && userState.user !== null) {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
-						<Link to="/" id="js-open-notification-link" className="Notifications__link" onClick={this.toggleNotificationCenter}>
+						<Link
+							to="/"
+							id="js-open-notification-link"
+							className="Notifications__link"
+							onClick={toggleNotificationCenter}
+						>
 							<div className="Notifications__icon">
 								<svg width="18px" height="20px" viewBox="0 0 18 20" version="1.1" xmlns="http://www.w3.org/2000/svg">
 									<title>icons/icon_notification</title>
@@ -44,26 +91,32 @@ class NavBar extends Component {
 								</svg>
 							</div>
 							<div className="Notifications__counter">
-								{state.user.notifications ? state.user.notifications.unreadedCount : 0}
+								{userState.notifications ? userState.notifications.unreadedCount : 0}
 							</div>
 						</Link>
 
 						<div className="Funds__container">
 							<Link to="/" className="Funds__link">
-								<ValueCounter value={state.ovrsOwned}></ValueCounter>
+								<ValueCounter value={web3State.ovrsOwned}></ValueCounter>
 							</Link>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
 							}}>
 								Redeem Lands
 							</Link>
-							 <Link to="/buy-tokens" className="Funds__buy HexButton --blue">
+							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
 								Buy OVR
 							</Link> */}
 						</div>
 
-						<Link to="/" className="Profile__link">
-							<span>{state.user.username}</span>
+						<Link
+							ref={anchorRef}
+							aria-controls={open ? 'menu-list-grow' : undefined}
+							aria-haspopup="true"
+							className="Profile__link"
+							onClick={handleToggle}
+						>
+							<span>{userState.username}</span>
 							<div className="Profile__img-cont">
 								<div
 									id="Profile__img"
@@ -71,7 +124,7 @@ class NavBar extends Component {
 									style={{ backgroundImage: 'url(../../assets/img/auction-map.png)' }}
 								>
 									<Blockies
-										seed={state.user.uuid || 'wewewe'}
+										seed={(userState.user && userState.user.uuid) || 'wewewe'}
 										size={12}
 										scale={3}
 										color="#7521c8"
@@ -81,6 +134,45 @@ class NavBar extends Component {
 								</div>
 							</div>
 						</Link>
+						<Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+							{({ TransitionProps, placement }) => (
+								<Grow
+									{...TransitionProps}
+									style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+								>
+									<Paper>
+										<ClickAwayListener onClickAway={handleClose}>
+											<MenuList autoFocusItem={open} id="menu-list-grow">
+												<MenuItem
+													onClick={(e) => {
+														handleClose(e);
+														handleGoTo('/profile');
+													}}
+												>
+													Profile
+												</MenuItem>
+												<MenuItem
+													onClick={(e) => {
+														handleClose(e);
+														handleGoTo('/activity');
+													}}
+												>
+													Activity
+												</MenuItem>
+												<MenuItem
+													onClick={(e) => {
+														handleClose(e);
+														userActions.logoutUser();
+													}}
+												>
+													Logout
+												</MenuItem>
+											</MenuList>
+										</ClickAwayListener>
+									</Paper>
+								</Grow>
+							)}
+						</Popper>
 						<NotificationCenter></NotificationCenter>
 					</div>
 				</>
@@ -97,164 +189,137 @@ class NavBar extends Component {
 				</div>
 			);
 		}
+		return rightContainer;
+	}
 
-		return (
-			<div className="NavBar">
-				<Link to="/" className="Logo__link">
-					<div className="Icon NavBar__logo">
-						<svg
-							width="234px"
-							height="260px"
-							viewBox="0 0 234 260"
-							version="1.1"
-							xmlns="http://www.w3.org/2000/svg"
-							xmlnsXlink="http://www.w3.org/1999/xlink"
-						>
-							<title>Group</title>
-							<desc>Created with Sketch.</desc>
-							<defs>
-								<linearGradient
-									x1="25.3511512%"
-									y1="49.9738242%"
-									x2="107.245785%"
-									y2="49.9738242%"
-									id="linearGradient-1"
-								>
-									<stop stopColor="#6B32C1" offset="0%"></stop>
-									<stop stopColor="#C81D5E" offset="99.6%"></stop>
-								</linearGradient>
-								<linearGradient x1="0%" y1="49.997576%" x2="100.032735%" y2="49.997576%" id="linearGradient-2">
-									<stop stopColor="#EC663C" offset="0%"></stop>
-									<stop stopColor="#F9B426" offset="100%"></stop>
-								</linearGradient>
-								<linearGradient
-									x1="52.9498211%"
-									y1="9.77958549%"
-									x2="46.413551%"
-									y2="97.6215544%"
-									id="linearGradient-3"
-								>
-									<stop stopColor="#0081DD" offset="0%"></stop>
-									<stop stopColor="#0589E0" offset="18.55%"></stop>
-									<stop stopColor="#11A0E9" offset="47.85%"></stop>
-									<stop stopColor="#25C5F8" offset="84.03%"></stop>
-									<stop stopColor="#2FD7FF" offset="99.72%"></stop>
-								</linearGradient>
-								<linearGradient
-									x1="50.0693857%"
-									y1="83.9637181%"
-									x2="50.0693857%"
-									y2="-0.0504747626%"
-									id="linearGradient-4"
-								>
-									<stop stopColor="#4E4D4C" offset="0%"></stop>
-									<stop stopColor="#5A5858" offset="12.43%"></stop>
-									<stop stopColor="#747273" offset="46.61%"></stop>
-									<stop stopColor="#848183" offset="76.91%"></stop>
-									<stop stopColor="#8A8789" offset="100%"></stop>
-								</linearGradient>
-								<radialGradient
-									cx="35.4086957%"
-									cy="34.4852355%"
-									fx="35.4086957%"
-									fy="34.4852355%"
-									r="66.2842391%"
-									id="radialGradient-5"
-								>
-									<stop stopColor="#FFFFFF" offset="0%"></stop>
-									<stop stopColor="#FDFDFC" stopOpacity="0.8589" offset="35.27%"></stop>
-									<stop stopColor="#F6F6F2" stopOpacity="0.7424" offset="64.4%"></stop>
-									<stop stopColor="#EAEBE0" stopOpacity="0.635" offset="91.26%"></stop>
-									<stop stopColor="#E5E6D9" stopOpacity="0.6" offset="100%"></stop>
-								</radialGradient>
-								<linearGradient
-									x1="21.2472955%"
-									y1="18.1560041%"
-									x2="81.1871703%"
-									y2="81.6403727%"
-									id="linearGradient-6"
-								>
-									<stop stopColor="#FFFFFF" offset="0%"></stop>
-									<stop stopColor="#FFFFFF" stopOpacity="0.5" offset="99.99%"></stop>
-								</linearGradient>
-								<linearGradient
-									x1="37.2050099%"
-									y1="17.2946945%"
-									x2="63.1259484%"
-									y2="89.469351%"
-									id="linearGradient-7"
-								>
-									<stop stopColor="#FFFFFF" offset="0%"></stop>
-									<stop stopColor="#FFFFFF" stopOpacity="0.3" offset="99.99%"></stop>
-								</linearGradient>
-							</defs>
-							<g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-								<g id="logo_ovr">
-									<g id="Group">
-										<path
-											d="M228.9,48.9 C226,44.9 222,41.6 217.3,39.7 L182.3,25 L127.6,2.1 C124.2,0.7 120.6,0 117,0 L117,96.6 L117,163.6 L228.9,210.5 C232.2,205.9 234,200.4 234,194.5 L234,64.9 C234.1,59.1 232.2,53.5 228.9,48.9 Z"
-											id="h_viola_1_"
-											fill={`url(${window.location}#linearGradient-1`}
-										></path>
-										<path
-											d="M106.5,2.1 L19.8,38.4 L16.8,39.7 C12,41.7 8.1,44.9 5.2,48.9 C1.9,53.5 0,59.1 0,64.9 L0,194.4 C0,200.3 1.9,205.8 5.1,210.4 L117,163.5 L117,96.5 L117,0 C113.4,0 109.8,0.7 106.5,2.1 Z"
-											id="h_org_1_"
-											fill={`url(${window.location}#linearGradient-2`}
-										></path>
-										<path
-											d="M117,163.5 L5.1,210.4 C8,214.4 11.9,217.6 16.6,219.6 L88.7,250.3 L106.2,257.8 C109.6,259.3 113.3,260 116.9,260 C120.6,260 124.2,259.3 127.6,257.8 L139.8,252.6 L217.2,219.6 C221.9,217.6 225.9,214.4 228.7,210.4 L117,163.5 Z"
-											id="h_blu_1_"
-											fill={`url(${window.location}#linearGradient-3`}
-										></path>
-										<path
-											d="M198.7,67.6 C196.6,64.5 193.7,62 190.2,60.5 L164.7,49.2 L124.8,31.6 C122.3,30.5 119.7,30 117.1,30 C114.5,30 111.8,30.5 109.4,31.6 L46.1,59.5 L43.9,60.5 C40.4,62 37.5,64.5 35.4,67.6 C33,71.1 31.6,75.4 31.6,79.9 L31.6,179.6 C31.6,184.1 33,188.4 35.3,191.9 C37.4,195 40.3,197.5 43.7,199 L96.3,222.6 L109.1,228.4 C111.6,229.5 114.3,230.1 116.9,230.1 C119.5,230.1 122.2,229.5 124.7,228.4 L133.6,224.4 L190.1,199 C193.5,197.5 196.4,195 198.5,191.9 C200.9,188.4 202.2,184.1 202.2,179.6 L202.2,79.9 C202.5,75.4 201.1,71.1 198.7,67.6 Z"
-											id="h_hex-trasp_1_"
-											fill={`url(${window.location}#linearGradient-4`}
-											opacity="0.45"
-											style={{ mixBlendMode: 'color-burn' }}
-										></path>
-										<circle
-											id="h_sphere_1_"
-											fill={`url(${window.location}#radialGradient-5)`}
-											cx="117"
-											cy="129.6"
-											r="55.2"
-										></circle>
-										<path
-											d="M217.3,39.7 L182.3,25 L127.6,2.1 C124.2,0.7 120.6,0 117,0 C113.4,0 109.8,0.7 106.4,2.1 L19.8,38.4 L16.8,39.7 C12,41.7 8.1,44.9 5.2,48.9 L117,96.6 L228.9,49 C226,44.9 222,41.7 217.3,39.7 Z"
-											id="h_top_1_"
-											fill={`url(${window.location}#linearGradient-6`}
-											opacity="0.76"
-											style={{ mixBlendMode: 'soft-light' }}
-										></path>
-										<path
-											d="M228.9,48.9 L117,96.6 L117,163.6 L117,260 C120.7,260 124.3,259.3 127.7,257.8 L139.9,252.6 L217.3,219.6 C222,217.6 226,214.4 228.8,210.4 C232.1,205.8 233.9,200.3 233.9,194.4 L233.9,64.9 C234.1,59.1 232.2,53.5 228.9,48.9 Z"
-											id="h_left_1_"
-											fill={`url(${window.location}#linearGradient-7`}
-											style={{ mixBlendMode: 'soft-light' }}
-										></path>
-									</g>
+	return (
+		<div className="NavBar">
+			<Link to="/" className="Logo__link">
+				<div className="Icon NavBar__logo">
+					<svg
+						width="234px"
+						height="260px"
+						viewBox="0 0 234 260"
+						version="1.1"
+						xmlns="http://www.w3.org/2000/svg"
+						xmlnsXlink="http://www.w3.org/1999/xlink"
+					>
+						<title>Group</title>
+						<desc>Created with Sketch.</desc>
+						<defs>
+							<linearGradient x1="25.3511512%" y1="49.9738242%" x2="107.245785%" y2="49.9738242%" id="linearGradient-1">
+								<stop stopColor="#6B32C1" offset="0%"></stop>
+								<stop stopColor="#C81D5E" offset="99.6%"></stop>
+							</linearGradient>
+							<linearGradient x1="0%" y1="49.997576%" x2="100.032735%" y2="49.997576%" id="linearGradient-2">
+								<stop stopColor="#EC663C" offset="0%"></stop>
+								<stop stopColor="#F9B426" offset="100%"></stop>
+							</linearGradient>
+							<linearGradient x1="52.9498211%" y1="9.77958549%" x2="46.413551%" y2="97.6215544%" id="linearGradient-3">
+								<stop stopColor="#0081DD" offset="0%"></stop>
+								<stop stopColor="#0589E0" offset="18.55%"></stop>
+								<stop stopColor="#11A0E9" offset="47.85%"></stop>
+								<stop stopColor="#25C5F8" offset="84.03%"></stop>
+								<stop stopColor="#2FD7FF" offset="99.72%"></stop>
+							</linearGradient>
+							<linearGradient
+								x1="50.0693857%"
+								y1="83.9637181%"
+								x2="50.0693857%"
+								y2="-0.0504747626%"
+								id="linearGradient-4"
+							>
+								<stop stopColor="#4E4D4C" offset="0%"></stop>
+								<stop stopColor="#5A5858" offset="12.43%"></stop>
+								<stop stopColor="#747273" offset="46.61%"></stop>
+								<stop stopColor="#848183" offset="76.91%"></stop>
+								<stop stopColor="#8A8789" offset="100%"></stop>
+							</linearGradient>
+							<radialGradient
+								cx="35.4086957%"
+								cy="34.4852355%"
+								fx="35.4086957%"
+								fy="34.4852355%"
+								r="66.2842391%"
+								id="radialGradient-5"
+							>
+								<stop stopColor="#FFFFFF" offset="0%"></stop>
+								<stop stopColor="#FDFDFC" stopOpacity="0.8589" offset="35.27%"></stop>
+								<stop stopColor="#F6F6F2" stopOpacity="0.7424" offset="64.4%"></stop>
+								<stop stopColor="#EAEBE0" stopOpacity="0.635" offset="91.26%"></stop>
+								<stop stopColor="#E5E6D9" stopOpacity="0.6" offset="100%"></stop>
+							</radialGradient>
+							<linearGradient x1="21.2472955%" y1="18.1560041%" x2="81.1871703%" y2="81.6403727%" id="linearGradient-6">
+								<stop stopColor="#FFFFFF" offset="0%"></stop>
+								<stop stopColor="#FFFFFF" stopOpacity="0.5" offset="99.99%"></stop>
+							</linearGradient>
+							<linearGradient x1="37.2050099%" y1="17.2946945%" x2="63.1259484%" y2="89.469351%" id="linearGradient-7">
+								<stop stopColor="#FFFFFF" offset="0%"></stop>
+								<stop stopColor="#FFFFFF" stopOpacity="0.3" offset="99.99%"></stop>
+							</linearGradient>
+						</defs>
+						<g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+							<g id="logo_ovr">
+								<g id="Group">
+									<path
+										d="M228.9,48.9 C226,44.9 222,41.6 217.3,39.7 L182.3,25 L127.6,2.1 C124.2,0.7 120.6,0 117,0 L117,96.6 L117,163.6 L228.9,210.5 C232.2,205.9 234,200.4 234,194.5 L234,64.9 C234.1,59.1 232.2,53.5 228.9,48.9 Z"
+										id="h_viola_1_"
+										fill={`url(${window.location}#linearGradient-1`}
+									></path>
+									<path
+										d="M106.5,2.1 L19.8,38.4 L16.8,39.7 C12,41.7 8.1,44.9 5.2,48.9 C1.9,53.5 0,59.1 0,64.9 L0,194.4 C0,200.3 1.9,205.8 5.1,210.4 L117,163.5 L117,96.5 L117,0 C113.4,0 109.8,0.7 106.5,2.1 Z"
+										id="h_org_1_"
+										fill={`url(${window.location}#linearGradient-2`}
+									></path>
+									<path
+										d="M117,163.5 L5.1,210.4 C8,214.4 11.9,217.6 16.6,219.6 L88.7,250.3 L106.2,257.8 C109.6,259.3 113.3,260 116.9,260 C120.6,260 124.2,259.3 127.6,257.8 L139.8,252.6 L217.2,219.6 C221.9,217.6 225.9,214.4 228.7,210.4 L117,163.5 Z"
+										id="h_blu_1_"
+										fill={`url(${window.location}#linearGradient-3`}
+									></path>
+									<path
+										d="M198.7,67.6 C196.6,64.5 193.7,62 190.2,60.5 L164.7,49.2 L124.8,31.6 C122.3,30.5 119.7,30 117.1,30 C114.5,30 111.8,30.5 109.4,31.6 L46.1,59.5 L43.9,60.5 C40.4,62 37.5,64.5 35.4,67.6 C33,71.1 31.6,75.4 31.6,79.9 L31.6,179.6 C31.6,184.1 33,188.4 35.3,191.9 C37.4,195 40.3,197.5 43.7,199 L96.3,222.6 L109.1,228.4 C111.6,229.5 114.3,230.1 116.9,230.1 C119.5,230.1 122.2,229.5 124.7,228.4 L133.6,224.4 L190.1,199 C193.5,197.5 196.4,195 198.5,191.9 C200.9,188.4 202.2,184.1 202.2,179.6 L202.2,79.9 C202.5,75.4 201.1,71.1 198.7,67.6 Z"
+										id="h_hex-trasp_1_"
+										fill={`url(${window.location}#linearGradient-4`}
+										opacity="0.45"
+										style={{ mixBlendMode: 'color-burn' }}
+									></path>
+									<circle
+										id="h_sphere_1_"
+										fill={`url(${window.location}#radialGradient-5)`}
+										cx="117"
+										cy="129.6"
+										r="55.2"
+									></circle>
+									<path
+										d="M217.3,39.7 L182.3,25 L127.6,2.1 C124.2,0.7 120.6,0 117,0 C113.4,0 109.8,0.7 106.4,2.1 L19.8,38.4 L16.8,39.7 C12,41.7 8.1,44.9 5.2,48.9 L117,96.6 L228.9,49 C226,44.9 222,41.7 217.3,39.7 Z"
+										id="h_top_1_"
+										fill={`url(${window.location}#linearGradient-6`}
+										opacity="0.76"
+										style={{ mixBlendMode: 'soft-light' }}
+									></path>
+									<path
+										d="M228.9,48.9 L117,96.6 L117,163.6 L117,260 C120.7,260 124.3,259.3 127.7,257.8 L139.9,252.6 L217.3,219.6 C222,217.6 226,214.4 228.8,210.4 C232.1,205.8 233.9,200.3 233.9,194.4 L233.9,64.9 C234.1,59.1 232.2,53.5 228.9,48.9 Z"
+										id="h_left_1_"
+										fill={`url(${window.location}#linearGradient-7`}
+										style={{ mixBlendMode: 'soft-light' }}
+									></path>
 								</g>
 							</g>
-						</svg>
-					</div>
-				</Link>
-				<div className="Navbar__link_container">
-					<NavLink className="NavBar__link" to="/map/discover">
-						Discover
-					</NavLink>
-					<NavLink className="NavBar__link" to="/map/overview">
-						My Assets
-					</NavLink>
-					<NavLink className="NavBar__link" to="/profile">
-						Profile
-					</NavLink>
-					{rightContainer}
+						</g>
+					</svg>
 				</div>
+			</Link>
+			<div className="Navbar__link_container">
+				<NavLink className="NavBar__link" to="/map/overview">
+					My Assets
+				</NavLink>
+				<NavLink className="NavBar__link" to="/map/discover">
+					Marketplace
+				</NavLink>
+				{rightContainer()}
 			</div>
-		);
-	}
-}
-NavBar.contextType = UserContext;
+		</div>
+	);
+};
 
-export default withUserContext(NavBar);
+export default withUserContext(withWeb3Context(NavBar));

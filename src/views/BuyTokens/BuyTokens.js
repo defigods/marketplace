@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
 
 /**
  * Buy tokens component
  */
 const BuyTokens = (context) => {
-	const { perEth, perUsd, setupComplete } = context.userProvider.state;
-	const { getPrices, buy, buyWithCard } = context.userProvider.actions;
+	const { perEth, perUsd, setupComplete } = context.web3Provider.state;
+	const { getPrices, buy, buyWithCard } = context.web3Provider.actions;
 	const [tokensToBuy, setTokensToBuy] = useState(0);
 	// Fiat variables
 	const [showCardForm, setShowCardForm] = useState(false);
@@ -119,9 +120,10 @@ const BuyTokens = (context) => {
 						setZip(e.target.value);
 					}}
 				/>
-				<button className="HexButton --blue pay-with-card-button" onClick={() => 
-					buyWithCard(tokensToBuy, cardNumber, cardExpiryMonth, cardExpiryYear, cvv, zip)
-				}>
+				<button
+					className="HexButton --blue pay-with-card-button"
+					onClick={() => buyWithCard(tokensToBuy, cardNumber, cardExpiryMonth, cardExpiryYear, cvv, zip)}
+				>
 					Buy {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens Paying{' '}
 					{tokensToBuy == 0 ? '' : '$' + window.web3.fromWei(tokensToBuy / perUsd)} USD
 				</button>
@@ -130,4 +132,4 @@ const BuyTokens = (context) => {
 	);
 };
 
-export default withUserContext(BuyTokens);
+export default withUserContext(withWeb3Context(BuyTokens));

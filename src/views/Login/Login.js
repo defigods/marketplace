@@ -1,20 +1,20 @@
 import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { UserContext, withUserContext } from '../../context/UserContext';
 import { useHistory } from 'react-router-dom';
+import { withWeb3Context, Web3Context } from '../../context/Web3Context';
 
 /**
  * Login page component
  */
 
 const Login = () => {
-	const context = useContext(UserContext);
+	const web3Context = useContext(Web3Context);
 	let history = useHistory();
 
 	useEffect(() => {
 		// Login via web3
-		context.actions.setupWeb3(() => {
+		web3Context.actions.setupWeb3(() => {
 			history.push('map/discover');
 		});
 	}, []);
@@ -37,4 +37,4 @@ const Login = () => {
 	);
 };
 
-export default withUserContext(Login);
+export default withWeb3Context(Login);

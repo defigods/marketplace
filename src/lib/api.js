@@ -104,22 +104,24 @@ export function auctionBidConfirm(landUuid = null, worth = 10) {
 	);
 }
 
-export function auctionPreStart(landUuid = null, worth = 10) {
+export function auctionPreStart(landUuid = null, worth = 10, txHash = null) {
 	return request(
 		{ url: '/auction/start/pre', method: 'POST' },
 		{
 			land_uuid: landUuid,
 			worth: worth,
+			tx_hash: txHash,
 		},
 		null,
 	);
 }
 
-export function auctionConfirmStart(landUuid = null) {
+export function auctionConfirmStart(landUuid = null, txHash = null) {
 	return request(
 		{ url: '/auction/start/confirm', method: 'POST' },
 		{
 			land_uuid: landUuid,
+			tx_hash: txHash,
 		},
 		null,
 	);
@@ -247,6 +249,11 @@ export function hideNotification(notificationUuid = null) {
 		},
 		null,
 	);
+}
+
+// Activities
+export function userActivities() {
+	return request({ url: '/user/activities', method: 'GET' }, {}, null);
 }
 
 // KYC - SUMSUB

@@ -3,6 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
+
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { auctionBidPre, auctionBidConfirm } from '../../lib/api';
@@ -15,14 +17,15 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const BidOverlay = (props) => {
+	const { waitTx, buy, approveOvrTokens } = props.web3Provider.actions;
+	const { ovr, ico, setupComplete } = props.web3Provider.state;
+
 	const [nextBid, setNextBid] = useState(10);
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
-	const { waitTx, buy, approveOvrTokens } = props.userProvider.actions;
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
-	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [bid, setBid] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for Metamask confirmation');
 	let priceInterval = null; // Checks for price changes every half a second
@@ -143,7 +146,7 @@ const BidOverlay = (props) => {
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
-					props.realodLandStatefromApi(props.land.key);
+					props.reloadLandStatefromApi(props.land.key);
 					setActiveStep(2);
 				} else {
 					// response.data.errors[0].message
@@ -471,15 +474,15 @@ const BidOverlay = (props) => {
 	);
 };
 
-
 BidOverlay.propTypes = {
-	realodLandStatefromApi: PropTypes.func,
+	reloadLandStatefromApi: PropTypes.func,
 	userProvider: PropTypes.object,
 	mapProvider: PropTypes.object,
+	web3Provider: PropTypes.object,
 	land: PropTypes.object,
 	className: PropTypes.string,
 	url: PropTypes.string,
 	currentBid: PropTypes.string,
 };
 
-export default withUserContext(withMapContext(BidOverlay));
+export default withUserContext(withWeb3Context(withMapContext(BidOverlay)));

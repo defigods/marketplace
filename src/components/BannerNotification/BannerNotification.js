@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { UserContext, withUserContext } from '../../context/UserContext';
 import { getToken, removeToken } from '../../lib/auth';
 
 /**
@@ -8,12 +7,12 @@ import { getToken, removeToken } from '../../lib/auth';
  */
 
 const BannerNotification = () => {
-	const context = useContext(UserContext);
-	const firstAfterSignup = getToken('firstAfterSignup');
+	const [firstAfterSignup, setFirstAfterSignup] = useState(getToken('firstAfterSignup'));
 
 	useEffect(() => {
 		if (firstAfterSignup) {
 			removeToken('firstAfterSignup');
+			setFirstAfterSignup(false);
 		}
 	}, []);
 
@@ -35,4 +34,4 @@ const BannerNotification = () => {
 	);
 };
 
-export default withUserContext(BannerNotification);
+export default BannerNotification;

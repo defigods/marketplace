@@ -5,6 +5,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
 
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
@@ -24,8 +25,8 @@ const SellOverlay = (props) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
-	const { ico, setupComplete } = props.userProvider.state;
-	const { approveErc721Token, putLandOnSale } = props.userProvider.actions;
+	const { ico, setupComplete } = props.web3Provider.state;
+	const { approveErc721Token, putLandOnSale } = props.web3Provider.actions;
 	const [boughtAt, setBoughtAt] = useState(props.currentBid);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	let sellLandInterval = null;
@@ -101,7 +102,7 @@ const SellOverlay = (props) => {
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
-					props.realodLandStatefromApi(props.land.key);
+					props.reloadLandStatefromApi(props.land.key);
 					setActiveStep(2);
 				} else {
 					// response.data.errors[0].message
@@ -320,4 +321,4 @@ const SellOverlay = (props) => {
 	);
 };
 
-export default withUserContext(withMapContext(SellOverlay));
+export default withUserContext(withWeb3Context(withMapContext(SellOverlay)));

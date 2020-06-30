@@ -21,7 +21,7 @@ export class OpenSellOrder extends Component {
 			.then((response) => {
 				if (response.data.result === true) {
 					successNotification('Action complete', 'Delete of sell order complete');
-					// this.props.realodLandStatefromApi(this.props.order.landUuid)
+					// this.props.reloadLandStatefromApi(this.props.order.landUuid)
 					this.handleClose();
 				} else {
 					dangerNotification('Unable to delete sell order', response.data.errors[0].message);
@@ -38,7 +38,7 @@ export class OpenSellOrder extends Component {
 			.then((response) => {
 				if (response.data.result === true) {
 					successNotification('Action complete', 'Now you own this land');
-					// this.props.realodLandStatefromApi(this.props.order.landUuid)
+					// this.props.reloadLandStatefromApi(this.props.order.landUuid)
 					this.handleClose();
 				} else {
 					dangerNotification('Unable to buy land', response.data.errors[0].message);

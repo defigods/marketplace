@@ -7,26 +7,8 @@
 }
 
 .MintOverlay{
-  background: linear-gradient(138deg, #0081DD, #022136);
+  background: #fff;
   background-size: 400% 400%;
-
-  -webkit-animation: AnimationName 22s ease infinite;
-  -moz-animation: AnimationName 22s ease infinite;
-  animation: AnimationName 22s ease infinite;
-
-  @-webkit-keyframes AnimationName {
-      0%{background-position:0% 88%}
-      50%{background-position:100% 13%}
-      100%{background-position:0% 88%}
-  }
-  @-moz-keyframes AnimationName {
-      0%{background-position:0% 88%}
-      50%{background-position:100% 13%}
-      100%{background-position:0% 88%}
-  }
-  @keyframes AnimationName {
-      0%{background-position:0% 88%}
-      50%{background-position:100% 13%}
-      100%{background-position:0% 88%}
-  }
+  box-shadow: -20px 10px 20px 0 rgba(30, 30, 30, 0.05);
+ 
 }

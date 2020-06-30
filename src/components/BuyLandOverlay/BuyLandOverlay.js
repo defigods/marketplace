@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { successNotification, warningNotification, dangerNotification } from '../../lib/notifications';
 
 const BuyLandOverlay = (props) => {
-	const { approveOvrTokens, buy, buyLand } = props.userProvider.actions;
+	const { approveOvrTokens, buy, buyLand } = props.web3Provider.actions;
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
-	const { ovr, ico, setupComplete } = props.userProvider.state;
+	const { ovr, ico, setupComplete } = props.web3Provider.state;
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
@@ -276,4 +277,5 @@ const BuyLandOverlay = (props) => {
 	);
 };
 
-export default withUserContext(withMapContext(BuyLandOverlay));
+
+export default withUserContext(withWeb3Context(withMapContext(BuyLandOverlay)));

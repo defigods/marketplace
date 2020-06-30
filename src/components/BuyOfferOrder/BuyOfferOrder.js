@@ -5,6 +5,8 @@ import HexButton from '../HexButton/HexButton';
 import Modal from '@material-ui/core/Modal';
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
+
 import { deleteBuyOffer, hitBuyOffer } from '../../lib/api';
 import { networkError, dangerNotification, successNotification, warningNotification } from '../../lib/notifications';
 import './style.scss';
@@ -27,7 +29,7 @@ export class BuyOfferOrder extends Component {
 		this.handleOpen = this.handleOpen.bind(this);
 		this.handleClose = this.handleClose.bind(this);
 		this.buttonRender = this.buttonRender.bind(this);
-		this.setupComplete = this.props.userProvider.state.setupComplete;
+		this.setupComplete = this.props.web3Provider.state.setupComplete;
 	}
 
 	setupListeners() {
@@ -39,12 +41,12 @@ export class BuyOfferOrder extends Component {
 	// To delete/cancel a buy offer if you created it
 	confirmDeleteBuyOffer = async (offerId) => {
 		try {
-			const tx = await this.props.userProvider.actions.cancelBuyOffer(offerId);
+			const tx = await this.props.web3Provider.actions.cancelBuyOffer(offerId);
 			this.setState({
 				metamaskMessage: 'Cancelling buy offer transaction...',
 				transactionInProcess: true,
 			});
-			await this.props.userProvider.actions.waitTx(tx);
+			await this.props.web3Provider.actions.waitTx(tx);
 		} catch (e) {
 			return dangerNotification('Error cancelling buy offer', e.message);
 		}
@@ -55,12 +57,12 @@ export class BuyOfferOrder extends Component {
 	// To decline a buy offer
 	declineBuyOffer = async (offerId) => {
 		try {
-			const tx = await this.props.userProvider.actions.declineBuyOffer(offerId);
+			const tx = await this.props.web3Provider.actions.declineBuyOffer(offerId);
 			this.setState({
 				metamaskMessage: 'Declining buy offer transaction...',
 				transactionInProcess: true,
 			});
-			await this.props.userProvider.actions.waitTx(tx);
+			await this.props.web3Provider.actions.waitTx(tx);
 		} catch (e) {
 			return dangerNotification('Error declining buy offer', e.message);
 		}
@@ -75,13 +77,13 @@ export class BuyOfferOrder extends Component {
 				metamaskMessage: 'Approving the OVRLand token...',
 				transactionInProcess: true,
 			});
-			await this.props.userProvider.actions.approveErc721Token(landId, true);
+			await this.props.web3Provider.actions.approveErc721Token(landId, true);
 
 			this.setState({
 				metamaskMessage: 'Accepting sell order...',
 			});
-			const newTx = await this.props.userProvider.actions.acceptBuyOffer(offerId, landId);
-			await this.props.userProvider.actions.waitTx(newTx);
+			const newTx = await this.props.web3Provider.actions.acceptBuyOffer(offerId, landId);
+			await this.props.web3Provider.actions.waitTx(newTx);
 		} catch (e) {
 			return dangerNotification('Error accepting buy offer', e.message);
 		}
@@ -254,4 +256,4 @@ export class BuyOfferOrder extends Component {
 	}
 }
 
-export default withUserContext(withMapContext(BuyOfferOrder));
+export default withUserContext(withWeb3Context(withMapContext(BuyOfferOrder)));

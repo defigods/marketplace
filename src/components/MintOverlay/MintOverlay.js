@@ -3,6 +3,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import TextField from '@material-ui/core/TextField';
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { auctionConfirmStart, auctionPreStart } from '../../lib/api';
@@ -14,11 +15,12 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 const MintOverlay = (props) => {
-	const { waitTx, buy, approveOvrTokens } = props.userProvider.actions;
+	const { waitTxWithCallback, buy, approveOvrTokens } = props.web3Provider.actions;
+	const { ovr, ico, setupComplete } = props.web3Provider.state;
+
 	const [bidValid, setBidValid] = useState(false);
 	const pathHexId = window.location.pathname.split('/')[3];
 	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
-	const { ovr, ico, setupComplete } = props.userProvider.state;
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
@@ -101,13 +103,13 @@ const MintOverlay = (props) => {
 					setActiveStep(0);
 					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
 				}
-				sendPreAuctionStart();
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
-				setMetamaskMessage('Waiting for MetaMask confirmation');
-				await waitTx(tx);
-				sendConfirmAuctionStart();
+				sendPreAuctionStart(tx);
+				setActiveStep(2);
+				waitTxWithCallback(tx, sendConfirmAuctionStart);
+				// sendConfirmAuctionStart();
 			} catch (e) {
 				setActiveStep((prevActiveStep) => prevActiveStep - 1);
 				return dangerNotification('Error processing the transactions', e.message);
@@ -123,9 +125,8 @@ const MintOverlay = (props) => {
 		setActiveStep(0);
 	}
 
-	function sendPreAuctionStart() {
-		console.log('Auction nextBid', nextBid)
-		auctionPreStart(props.land.key, nextBid)
+	function sendPreAuctionStart(txHash) {
+		auctionPreStart(props.land.key, nextBid, txHash)
 			.then((response) => {
 				console.log('response', response.data);
 			})
@@ -136,15 +137,14 @@ const MintOverlay = (props) => {
 			});
 	}
 
-	function sendConfirmAuctionStart() {
+	function sendConfirmAuctionStart(txHash) {
 		// Call API function
-		auctionConfirmStart(props.land.key)
+		auctionConfirmStart(props.land.key, txHash)
 			.then((response) => {
 				if (response.data.result === true) {
 					console.log('responseTrue', response.data);
-					props.realodLandStatefromApi(props.land.key);
+					props.reloadLandStatefromApi(props.land.key);
 					console.log('props.land.key', props);
-					setActiveStep(2);
 				} else {
 					// response.data.errors[0].message
 					console.log('responseFalse');
@@ -168,7 +168,7 @@ const MintOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Place a bid for the OVRLand</div>
+							<div className="Overlay__title">Start an auction for</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -272,18 +272,18 @@ const MintOverlay = (props) => {
 									</MenuItem>
 								</Menu>
 								{/* <HexButton
-									url="#"
-									text="Place Bid With Dollars"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={handleNext}
-								></HexButton> */}
+												url="#"
+												text="Place Bid With Dollars"
+												className={`--orange ${bidValid ? '' : '--disabled'}`}
+												onClick={handleNext}
+										></HexButton> */}
 								<HexButton
 									url="#"
 									text="Place bid"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									onClick={handleClick}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -315,7 +315,10 @@ const MintOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Minting the OVRLand</div>
+							<div className="Overlay__congrat_title">
+								<span>Congratulations</span>
+								<br></br>The auction is about to start
+							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -328,11 +331,8 @@ const MintOverlay = (props) => {
 									</div>
 								</div>
 							</div>
-							<div className="Overlay__message__container">
-								<span>Bid published</span>
-							</div>
-							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Close" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+							<div className="Overlay__close-button_container">
+								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -349,25 +349,26 @@ const MintOverlay = (props) => {
 			transitionName="overlay"
 			transitionAppear={true}
 			transitionAppearTimeout={500}
-			transitionEnter={false}
-			transitionLeave={false}
+			transitionEnter={true}
+			transitionLeave={true}
 			transitionLeaveTimeout={300}
 		>
+			<div className="RightOverlay__backpanel"> </div>
 			<div
 				key="mint-overlay-"
 				to={props.url}
-				className={`Overlay MintOverlay WhiteInputs ${
+				className={`RightOverlay MintOverlay NormalInputs ${
 					props.className ? props.className : ''
 				} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
 					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>
 						<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0.5">
+							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0">
 								<g
 									id="Biddign-Single-Auction"
 									transform="translate(-398.000000, -298.000000)"
-									fill="#FFFFFF"
+									fill="#c0c1c0"
 									fillRule="nonzero"
 								>
 									<path
@@ -378,26 +379,6 @@ const MintOverlay = (props) => {
 							</g>
 						</svg>
 					</div>
-					<div className="Overlay__hex_cont">
-						<div className="Icon Overlay__hex">
-							<svg width="152px" height="176px" viewBox="0 0 152 176" version="1.1" xmlns="http://www.w3.org/2000/svg">
-								<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0.2">
-									<g
-										id="Biddign-Single-Auction"
-										transform="translate(-439.000000, -349.000000)"
-										fill="#FFFFFF"
-										stroke="#FFFFFF"
-									>
-										<polygon
-											id="Polygon"
-											transform="translate(515.000000, 437.000000) rotate(-360.000000) translate(-515.000000, -437.000000) "
-											points="515 350 590.34421 393.5 590.34421 480.5 515 524 439.65579 480.5 439.65579 393.5"
-										></polygon>
-									</g>
-								</g>
-							</svg>
-						</div>
-					</div>
 					{getStepContent(activeStep)}
 				</div>
 			</div>
@@ -406,12 +387,13 @@ const MintOverlay = (props) => {
 };
 
 MintOverlay.propTypes = {
-	realodLandStatefromApi: PropTypes.func,
+	reloadLandStatefromApi: PropTypes.func,
 	userProvider: PropTypes.object,
 	mapProvider: PropTypes.object,
+	web3Provider: PropTypes.object,
 	land: PropTypes.object,
 	className: PropTypes.string,
 	url: PropTypes.string,
 };
 
-export default withUserContext(withMapContext(MintOverlay));
+export default withUserContext(withWeb3Context(withMapContext(MintOverlay)));

@@ -16,7 +16,11 @@ const apis = {
 	socket:
 		environment === 'PRODUCTION'
 			? 'ws://localhost:3000/cable'
-			: (environment === 'STAGING' ? 'wss://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable')
+			: (environment === 'STAGING' ? 'wss://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable'),
+	creditCardApi:
+		environment === 'PRODUCTION'
+			? 'http://credit-card.ovr.ai/buy'
+			: (environment === 'STAGING' ? 'http://staging-credit-card.ovr.ai/buy' : 'http://staging-credit-card.ovr.ai/buy')
 };
 
 const map = {
@@ -76,3 +80,14 @@ Array.prototype.readAllNotifications = function () {
 		item.status = 1;
 	});
 };
+
+export const promisify = (inner) =>
+	new Promise((resolve, reject) =>
+		inner((err, res) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(res);
+			}
+		}),
+	);

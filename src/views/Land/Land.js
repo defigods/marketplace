@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
+import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
 import TimeCounter from '../../components/TimeCounter/TimeCounter';
 import HexButton from '../../components/HexButton/HexButton';
@@ -44,9 +45,10 @@ export class Land extends Component {
 		this.mapActions.changeHexId(hex_id);
 		// Load data from API
 		this.loadLandStateFromApi(hex_id);
-		if (this.props.userProvider.state.setupComplete && this.props.userProvider.state.ico) this.setupListeners();
+		console.log('this.props AAAAA', this.props)
+		if (this.props.web3Provider.state.setupComplete && this.props.web3Provider.state.ico) this.setupListeners();
 		let setupInterval = setInterval(() => {
-			if (this.props.userProvider.state.setupComplete && this.props.userProvider.state.ico) {
+			if (this.props.web3Provider.state.setupComplete && this.props.web3Provider.state.ico) {
 				this.setupListeners();
 				clearInterval(setupInterval);
 			}
@@ -89,11 +91,11 @@ export class Land extends Component {
 				this.mapActions.changeLandData(state);
 				this.setState(state);
 
-				if (this.props.userProvider.state.ico) {
+				if (this.props.web3Provider.state.ico) {
 					this.updateMarketStatusFromSmartContract(hex_id);
 				} else {
 					const myInterval = setInterval(() => {
-						if (this.props.userProvider.state.ico) {
+						if (this.props.web3Provider.state.ico) {
 							this.updateMarketStatusFromSmartContract(hex_id);
 							clearInterval(myInterval);
 						}
@@ -124,7 +126,7 @@ export class Land extends Component {
 
 	async updateMarketStatusFromSmartContract(hex_id) {
 		// Set 0 for not started, 1 for started and 2 for ended
-		const ico = this.props.userProvider.state.ico;
+		const ico = this.props.web3Provider.state.ico;
 		const landId = parseInt(hex_id, 16);
 		const land = await ico.landsAsync(landId);
 		
@@ -169,7 +171,7 @@ export class Land extends Component {
 	}
 
 	async getBuyOffers() {
-		let offers = await this.props.userProvider.actions.getOffersToBuyLand(this.state.hexId);
+		let offers = await this.props.web3Provider.actions.getOffersToBuyLand(this.state.hexId);
 		this.setState({
 			openBuyOffers: offers,
 		});
@@ -178,7 +180,7 @@ export class Land extends Component {
 	async redeemLand(e) {
 		e.preventDefault();
 		this.setState({ isRedeemingLand: true });
-		await this.props.userProvider.actions.redeemSingleLand(this.state.hexId);
+		await this.props.web3Provider.actions.redeemSingleLand(this.state.hexId);
 		this.setState({ isRedeemingLand: false });
 	}
 
@@ -214,7 +216,7 @@ export class Land extends Component {
 		this.mapActions.changeActiveBuyOfferOverlay(true);
 	}
 
-	realodLandStatefromApi = (value) => {
+	reloadLandStatefromApi = (value) => {
 		// TODO Change with socket
 		let that = this;
 		setTimeout(function () {
@@ -370,9 +372,9 @@ export class Land extends Component {
 
 	// Sets the price displayed below the map
 	setContractPrice = (hex_id) => {
-		let ico = this.props.userProvider.state.ico;
+		let ico = this.props.web3Provider.state.ico;
 		const icoLoadInterval = setInterval(async () => {
-			ico = this.props.userProvider.state.ico;
+			ico = this.props.web3Provider.state.ico;
 			if (ico) {
 				clearInterval(icoLoadInterval);
 				const landId = parseInt(hex_id, 16);
@@ -483,6 +485,7 @@ export class Land extends Component {
 						isOwner={true}
 						userPerspective={this.state.userPerspective}
 						userProvider={this.props.userProvider}
+						web3Provide={this.props.web3Provider}
 					></BuyOfferOrder>
 				));
 				// Else show the offers for the seller to accept or decline them
@@ -494,6 +497,7 @@ export class Land extends Component {
 						isOwner={false}
 						userPerspective={this.state.userPerspective}
 						userProvider={this.props.userProvider}
+						web3Provide={this.props.web3Provider}
 					></BuyOfferOrder>
 				));
 			}
@@ -525,27 +529,27 @@ export class Land extends Component {
 				<BidOverlay
 					currentBid={this.state.value}
 					land={this.state}
-					realodLandStatefromApi={this.realodLandStatefromApi}
+					reloadLandStatefromApi={this.reloadLandStatefromApi}
 				></BidOverlay>
 				<MintOverlay
 					currentBid={this.state.value}
 					land={this.state}
-					realodLandStatefromApi={this.realodLandStatefromApi}
+					reloadLandStatefromApi={this.reloadLandStatefromApi}
 				></MintOverlay>
 				<SellOverlay
 					currentBid={this.state.value}
 					land={this.state}
-					realodLandStatefromApi={this.realodLandStatefromApi}
+					reloadLandStatefromApi={this.reloadLandStatefromApi}
 				></SellOverlay>
 				<BuyOfferOverlay
 					currentBid={this.state.value}
 					land={this.state}
-					realodLandStatefromApi={this.realodLandStatefromApi}
+					reloadLandStatefromApi={this.reloadLandStatefromApi}
 				></BuyOfferOverlay>
 				<BuyLandOverlay
 					currentBid={this.state.value}
 					land={this.state}
-					realodLandStatefromApi={this.realodLandStatefromApi}
+					reloadLandStatefromApi={this.reloadLandStatefromApi}
 				></BuyLandOverlay>
 
 				<div className="o-container">
@@ -571,4 +575,4 @@ export class Land extends Component {
 	}
 }
 
-export default withUserContext(withMapContext(Land));
+export default withWeb3Context(withUserContext(withMapContext(Land)));
