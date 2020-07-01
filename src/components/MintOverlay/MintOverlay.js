@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import TextField from '@material-ui/core/TextField';
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
@@ -10,9 +9,12 @@ import { auctionConfirmStart, auctionPreStart } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
-import Fade from '@material-ui/core/Fade';
-import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
 
 const MintOverlay = (props) => {
 	const { waitTxWithCallback, buy, approveOvrTokens } = props.web3Provider.actions;
@@ -25,10 +27,35 @@ const MintOverlay = (props) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	const [bid, setBid] = useState(0);
+	const [showOverlay, setShowOverlay] = useState(false);
+	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const open = Boolean(anchorEl);
+	const anchorRef = React.useRef(null);
+	const [open, setOpen] = React.useState(false);
 
+	function setDeactiveOverlay(e) {
+		e.preventDefault();
+		setOpen(false);
+		props.mapProvider.actions.changeActiveMintOverlay(false);
+		setActiveStep(0);
+	}
+
+	// Listener for fadein and fadeout animation of overlay
+	useEffect(() => {
+		if (props.mapProvider.state.activeMintOverlay) {
+			setShowOverlay(true);
+			setTimeout(() => {
+				setClassShowOverlay(true);
+			}, 50);
+		} else {
+			setClassShowOverlay(false);
+			setTimeout(() => {
+				setShowOverlay(false);
+			}, 500);
+		}
+	}, [props.mapProvider.state.activeMintOverlay]);
+
+	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setupListeners();
 	}, [setupComplete]);
@@ -49,14 +76,18 @@ const MintOverlay = (props) => {
 		setNextBid(nextPayment);
 	};
 
-	// Menu currencies
-	const handleClose = () => {
-		setAnchorEl(null);
+	// Toggle bidding menu of selection currencies
+	const handleClose = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+		setOpen(false);
 	};
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
+	const handleClick = () => {
+		setOpen(true);
 	};
 
+	// Update bid value in state
 	const updateNewBidValue = (myBid) => {
 		if (myBid >= nextBid && myBid >= 10) {
 			setBidValid(true);
@@ -64,10 +95,10 @@ const MintOverlay = (props) => {
 		} else {
 			setBidValid(false);
 		}
-
 		setBid(myBid);
 	};
 
+	// Helper used to check if the user is logged in
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
@@ -77,6 +108,44 @@ const MintOverlay = (props) => {
 		return true;
 	};
 
+	// Call centralized API functions
+	function sendPreAuctionStart(txHash) {
+		auctionPreStart(props.land.key, nextBid, txHash)
+			.then((response) => {
+				console.log('response', response.data);
+			})
+			.catch((error) => {
+				// Notify user if network error
+				console.log(error);
+				networkError();
+			});
+	}
+
+	function sendConfirmAuctionStart(txHash) {
+		auctionConfirmStart(props.land.key, txHash)
+			.then((response) => {
+				if (response.data.result === true) {
+					console.log('responseTrue', response.data);
+					props.reloadLandStatefromApi(props.land.key);
+					console.log('props.land.key', props);
+				} else {
+					// response.data.errors[0].message
+					console.log('responseFalse');
+					// if (response.data.errors){
+					//   dangerNotification("Unable to mint land", response.data.errors[0].message)
+					// }
+					dangerNotification('Unable to mint land', response.data.errors[0].message);
+					setActiveStep(0);
+				}
+			})
+			.catch((error) => {
+				// Notify user if network error
+				console.log(error);
+				networkError();
+			});
+	}
+
+	// Manages actions of overlay according to step number
 	const handleNext = async () => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
@@ -119,49 +188,7 @@ const MintOverlay = (props) => {
 		}
 	};
 
-	function setDeactiveOverlay(e) {
-		e.preventDefault();
-		props.mapProvider.actions.changeActiveMintOverlay(false);
-		setActiveStep(0);
-	}
-
-	function sendPreAuctionStart(txHash) {
-		auctionPreStart(props.land.key, nextBid, txHash)
-			.then((response) => {
-				console.log('response', response.data);
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
-	}
-
-	function sendConfirmAuctionStart(txHash) {
-		// Call API function
-		auctionConfirmStart(props.land.key, txHash)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.reloadLandStatefromApi(props.land.key);
-					console.log('props.land.key', props);
-				} else {
-					// response.data.errors[0].message
-					console.log('responseFalse');
-					// if (response.data.errors){
-					//   dangerNotification("Unable to mint land", response.data.errors[0].message)
-					// }
-					dangerNotification('Unable to mint land', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
-	}
-
+	// Show content of overlay according to step number
 	function getStepContent(step) {
 		switch (step) {
 			case 0:
@@ -197,90 +224,97 @@ const MintOverlay = (props) => {
 							</div>
 							<br />
 							<div className="Overlay__buttons_container">
-								<Menu
-									id="fade-menu"
-									anchorEl={anchorEl}
-									keepMounted
-									open={open}
-									onClose={handleClose}
-									TransitionComponent={Fade}
-								>
-									<MenuItem
-										onClick={() => {
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											handleNext();
-											handleClose();
-										}}
-										className="bid-fade-menu --cons-option"
-									>
-										Bid using OVR
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'eth');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using ETH
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											setMetamaskMessage('Getting OVR first...');
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'dai');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using DAI
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											setMetamaskMessage('Getting OVR first...');
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'usdt');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using Tether
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											setMetamaskMessage('Getting OVR first...');
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'usdc');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using USDC
-									</MenuItem>
-								</Menu>
-								{/* <HexButton
-												url="#"
-												text="Place Bid With Dollars"
-												className={`--orange ${bidValid ? '' : '--disabled'}`}
-												onClick={handleNext}
-										></HexButton> */}
+								<Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+									{({ TransitionProps, placement }) => (
+										<Grow
+											{...TransitionProps}
+											style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+										>
+											<Paper>
+												<ClickAwayListener onClickAway={handleClose}>
+													<MenuList autoFocusItem={open} id="fade-menu">
+														<MenuItem
+															onClick={(e) => {
+																handleClose(e);
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																handleNext();
+															}}
+															className="bid-fade-menu --cons-option"
+														>
+															Bid using OVR
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'eth');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using ETH
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'dai');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using DAI
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'usdt');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using Tether
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'usdc');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using USDC
+														</MenuItem>
+													</MenuList>
+												</ClickAwayListener>
+											</Paper>
+										</Grow>
+									)}
+								</Popper>
 								<HexButton
+									hexRef={anchorRef}
 									url="#"
 									text="Place bid"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									ariaControls={open ? 'fade-menu' : undefined}
+									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
 								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
@@ -342,17 +376,10 @@ const MintOverlay = (props) => {
 		}
 	}
 
-	if (!props.mapProvider.state.activeMintOverlay) return null;
+	if (!showOverlay) return null;
 
 	return (
-		<ReactCSSTransitionGroup
-			transitionName="overlay"
-			transitionAppear={true}
-			transitionAppearTimeout={500}
-			transitionEnter={true}
-			transitionLeave={true}
-			transitionLeaveTimeout={300}
-		>
+		<div className={`OverlayContainer ${classShowOverlay ? '--js-show' : ''}`}>
 			<div className="RightOverlay__backpanel"> </div>
 			<div
 				key="mint-overlay-"
@@ -382,7 +409,7 @@ const MintOverlay = (props) => {
 					{getStepContent(activeStep)}
 				</div>
 			</div>
-		</ReactCSSTransitionGroup>
+		</div>
 	);
 };
 
