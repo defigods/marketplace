@@ -29,6 +29,7 @@ export class UserProvider extends Component {
 			userProfile()
 				.then((response) => {
 					if (response.data.result === true) {
+						console.log('userState', response.data.user)
 						this.setState({ user: response.data.user });
 						this.liveSocket();
 					} else {

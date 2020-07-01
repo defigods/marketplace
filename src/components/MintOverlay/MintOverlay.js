@@ -35,9 +35,11 @@ const MintOverlay = (props) => {
 
 	function setDeactiveOverlay(e) {
 		e.preventDefault();
-		setOpen(false);
 		props.mapProvider.actions.changeActiveMintOverlay(false);
-		setActiveStep(0);
+		setTimeout(() => {
+			setOpen(false);
+			setActiveStep(0);
+		}, 500);
 	}
 
 	// Listener for fadein and fadeout animation of overlay
@@ -91,7 +93,6 @@ const MintOverlay = (props) => {
 	const updateNewBidValue = (myBid) => {
 		if (myBid >= nextBid && myBid >= 10) {
 			setBidValid(true);
-			setNextBid(myBid);
 		} else {
 			setBidValid(false);
 		}
@@ -110,7 +111,7 @@ const MintOverlay = (props) => {
 
 	// Call centralized API functions
 	function sendPreAuctionStart(txHash) {
-		auctionPreStart(props.land.key, nextBid, txHash)
+		auctionPreStart(props.land.key, bid, txHash)
 			.then((response) => {
 				console.log('response', response.data);
 			})

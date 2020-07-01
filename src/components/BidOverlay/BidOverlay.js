@@ -1,38 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
-
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import { auctionBidPre, auctionBidConfirm } from '../../lib/api';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
-
 import PropTypes from 'prop-types';
 
-import Fade from '@material-ui/core/Fade';
-import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
 
 const BidOverlay = (props) => {
-	const { waitTx, buy, approveOvrTokens } = props.web3Provider.actions;
+	const { waitTxWithCallback, buy, approveOvrTokens } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 
-	const [nextBid, setNextBid] = useState(10);
 	const [bidValid, setBidValid] = useState(false);
-	const [activeStep, setActiveStep] = useState(0);
-	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length == 15 ? pathHexId : props.mapProvider.state.hex_id);
+	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
+	const [nextBid, setNextBid] = useState(10);
+	const [activeStep, setActiveStep] = useState(0);
+	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	const [bid, setBid] = useState(0);
-	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for Metamask confirmation');
-	let priceInterval = null; // Checks for price changes every half a second
+	const [currentBid, setCurrentBid] = useState(props.currentBid);
+	const [showOverlay, setShowOverlay] = useState(false);
+	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const open = Boolean(anchorEl);
+	const anchorRef = React.useRef(null);
+	const [open, setOpen] = React.useState(false);
+	let priceInterval = null;
 
+	function setDeactiveOverlay(e) {
+		e.preventDefault();
+		props.mapProvider.actions.changeActiveBidOverlay(false);
+		// Bring the step at 0
+		setTimeout(function () {
+			setOpen(false);
+			setActiveStep(0);
+			setNextBid(10);
+		}, 500);
+	}
+
+	// Listener for fadein and fadeout animation of overlay
+	useEffect(() => {
+		if (props.mapProvider.state.activeBidOverlay) {
+			setShowOverlay(true);
+			setTimeout(() => {
+				setClassShowOverlay(true);
+			}, 50);
+		} else {
+			setClassShowOverlay(false);
+			setTimeout(() => {
+				setShowOverlay(false);
+			}, 500);
+		}
+	}, [props.mapProvider.state.activeBidOverlay]);
+
+	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setupListeners();
 	}, [setupComplete]);
@@ -64,6 +93,28 @@ const BidOverlay = (props) => {
 		setNextBid(currentBid * 2);
 	};
 
+	// Toggle bidding menu of selection currencies
+	const handleClose = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+		setOpen(false);
+	};
+	const handleClick = () => {
+		setOpen(true);
+	};
+
+	// Update bid value in state
+	const updateNewBidValue = (myBid) => {
+		if (myBid >= nextBid) {
+			setBidValid(true);
+		} else {
+			setBidValid(false);
+		}
+		setBid(myBid);
+	};
+
+	// Helper used to check if the user is logged in
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
@@ -73,13 +124,44 @@ const BidOverlay = (props) => {
 		return true;
 	};
 
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
+	// Call centralized API functions
+	function preBid() {
+		auctionBidPre(props.land.key, nextBid)
+			.then((response) => {
+				if (response.data.result === true) {
+					console.log('responseTrue', response.data);
+				} else {
+					console.log('responseFalse', response.data.errors[0].message);
+					dangerNotification('Unable to place requested bid', response.data.errors[0].message);
+					setActiveStep(0);
+				}
+			})
+			.catch(() => {
+				// Notify user if network error
+				networkError();
+			});
+	}
+	function confirmBid() {
+		auctionBidConfirm(props.land.key, nextBid)
+			.then((response) => {
+				if (response.data.result === true) {
+					console.log('responseTrue', response.data);
+					props.reloadLandStatefromApi(props.land.key);
+					setActiveStep(2);
+				} else {
+					// response.data.errors[0].message
+					console.log('responseFalse');
+					dangerNotification('Unable to place requested bid', response.data.errors[0].message);
+					setActiveStep(0);
+				}
+			})
+			.catch(() => {
+				// Notify user if network error
+				networkError();
+			});
+	}
 
+	// Manages actions of overlay according to step number
 	const handleNext = async () => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
@@ -100,93 +182,39 @@ const BidOverlay = (props) => {
 					setActiveStep(0);
 					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
 				}
-				preBid();
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
-				await waitTx(tx);
+				preBid(); // TODO add tx hash
 				setActiveStep(2);
+				waitTxWithCallback(tx, confirmBid);
 			} catch (e) {
 				return dangerNotification('Error processing the transaction', e.message);
 			}
-			confirmBid();
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		}
 	};
 
-	const updateNewBidValue = (myBid) => {
-		if (myBid >= nextBid) {
-			setBidValid(true);
-		} else {
-			setBidValid(false);
-		}
-		setBid(myBid);
-	};
-
-	function preBid() {
-		auctionBidPre(props.land.key, nextBid)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-				} else {
-					console.log('responseFalse', response.data.errors[0].message);
-					dangerNotification('Unable to place requested bid', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
-	}
-	function confirmBid() {
-		// Call API function
-		auctionBidConfirm(props.land.key, nextBid)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.reloadLandStatefromApi(props.land.key);
-					setActiveStep(2);
-				} else {
-					// response.data.errors[0].message
-					console.log('responseFalse');
-					dangerNotification('Unable to place requested bid', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
-	}
-
-	function setDeactiveOverlay(e) {
-		e.preventDefault();
-		props.mapProvider.actions.changeActiveBidOverlay(false);
-		// Bring the step at 0
-		setTimeout(function () {
-			setActiveStep(0);
-			setNextBid('');
-		}, 200);
-	}
-
+	// Show content of overlay according to step number
 	function getStepContent(step) {
 		switch (step) {
 			case 0:
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Place a bid for the OVRLand</div>
+							<div className="Overlay__title">Place a bid for</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__bid_container">
-								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Current bid</div>
-									<div className="Overlay__bid_cont">
-										<ValueCounter value={currentBid}></ValueCounter>
+							<div className="bids">
+								<div className="Overlay__bid_container">
+									<div className="Overlay__current_bid">
+										<div className="Overlay__bid_title">Current bid</div>
+										<div className="Overlay__bid_cont">
+											<ValueCounter value={currentBid}></ValueCounter>
+										</div>
 									</div>
 								</div>
 								<div className="Overlay__arrow">
@@ -220,108 +248,115 @@ const BidOverlay = (props) => {
 										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
-								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Your bid</div>
-									<div>
-										<TextField
-											type="number"
-											onChange={(e) => {
-												const eventBid = e.target.value;
-												if (eventBid > 0) updateNewBidValue(eventBid);
-											}}
-										/>
-									</div>
+							</div>
+							<div className="Overlay__your_bid">
+								<div className="Overlay__bid_title">Your bid</div>
+								<div>
+									<TextField
+										type="number"
+										onChange={(e) => {
+											const eventBid = e.target.value;
+											if (eventBid > 0) updateNewBidValue(eventBid);
+										}}
+									/>
 								</div>
 							</div>
+							<br />
 							<div className="Overlay__buttons_container">
-								<Menu
-									id="fade-menu"
-									anchorEl={anchorEl}
-									keepMounted
-									open={open}
-									onClose={handleClose}
-									TransitionComponent={Fade}
-								>
-									<MenuItem
-										onClick={() => {
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											handleNext();
-											handleClose();
-										}}
-										className="bid-fade-menu --cons-option"
-									>
-										Bid using OVR
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setMetamaskMessage('Getting OVR first...');
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'eth');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using ETH
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setMetamaskMessage('Getting OVR first...');
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'dai');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using DAI
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setMetamaskMessage('Getting OVR first...');
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'usdt');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using Tether
-									</MenuItem>
-									<MenuItem
-										onClick={async () => {
-											if (checkUserLoggedIn() === false) {
-												return false;
-											}
-											setMetamaskMessage('Getting OVR first...');
-											setActiveStep((prevActiveStep) => prevActiveStep + 1);
-											await buy(window.web3.toWei(bid), 'usdc');
-											handleNext();
-										}}
-										className="bid-fade-menu"
-									>
-										Bid using USDC
-									</MenuItem>
-								</Menu>
-								{/* <HexButton
-									url="#"
-									text="Place Bid With Dollars"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={handleNext}
-								></HexButton> */}
+								<Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+									{({ TransitionProps, placement }) => (
+										<Grow
+											{...TransitionProps}
+											style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+										>
+											<Paper>
+												<ClickAwayListener onClickAway={handleClose}>
+													<MenuList autoFocusItem={open} id="fade-menu">
+														<MenuItem
+															onClick={(e) => {
+																handleClose(e);
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																handleNext();
+															}}
+															className="bid-fade-menu --cons-option"
+														>
+															Bid using OVR
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'eth');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using ETH
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'dai');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using DAI
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'usdt');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using Tether
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(bid), 'usdc');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using USDC
+														</MenuItem>
+													</MenuList>
+												</ClickAwayListener>
+											</Paper>
+										</Grow>
+									)}
+								</Popper>
 								<HexButton
+									hexRef={anchorRef}
 									url="#"
 									text="Place bid"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
+									ariaControls={open ? 'fade-menu' : undefined}
+									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -370,7 +405,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Your bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+										<ValueCounter value={bid}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -384,24 +419,24 @@ const BidOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Bidding the OVRLand</div>
+							<div className="Overlay__congrat_title">
+								<span>Congratulations</span>
+								<br></br>Your bid request has been sent.
+							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Current bid</div>
+									<div className="Overlay__bid_title">Your bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={currentBid}></ValueCounter>
+										<ValueCounter value={bid}></ValueCounter>
 									</div>
 								</div>
 							</div>
-							<div className="Overlay__message__container">
-								<span>Transaction confirmed</span>
-							</div>
-							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Close" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+							<div className="Overlay__close-button_container">
+								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -411,32 +446,26 @@ const BidOverlay = (props) => {
 		}
 	}
 
-	if (!props.mapProvider.state.activeBidOverlay) return null;
+	if (!showOverlay) return null;
 
 	return (
-		<ReactCSSTransitionGroup
-			transitionName="overlay"
-			transitionAppear={true}
-			transitionAppearTimeout={500}
-			transitionEnter={false}
-			transitionLeave={false}
-			transitionLeaveTimeout={300}
-		>
+		<div className={`OverlayContainer ${classShowOverlay ? '--js-show' : ''}`}>
+			<div className="RightOverlay__backpanel"> </div>
 			<div
 				key="bid-overlay-"
 				to={props.url}
-				className={`Overlay BidOverlay WhiteInputs ${
+				className={`RightOverlay BidOverlay NormalInputs ${
 					props.className ? props.className : ''
-				} --activeStep-${activeStep}`}
+					} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
-					<div className={'Icon Overlay__close_button'} onClick={setDeactiveOverlay}>
+					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>
 						<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0.5">
+							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0">
 								<g
 									id="Biddign-Single-Auction"
 									transform="translate(-398.000000, -298.000000)"
-									fill="#FFFFFF"
+									fill="#c0c1c0"
 									fillRule="nonzero"
 								>
 									<path
@@ -447,30 +476,10 @@ const BidOverlay = (props) => {
 							</g>
 						</svg>
 					</div>
-					<div className="Overlay__hex_cont">
-						<div className={'Icon Overlay__hex'}>
-							<svg width="152px" height="176px" viewBox="0 0 152 176" version="1.1" xmlns="http://www.w3.org/2000/svg">
-								<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0.2">
-									<g
-										id="Biddign-Single-Auction"
-										transform="translate(-439.000000, -349.000000)"
-										fill="#FFFFFF"
-										stroke="#FFFFFF"
-									>
-										<polygon
-											id="Polygon"
-											transform="translate(515.000000, 437.000000) rotate(-360.000000) translate(-515.000000, -437.000000) "
-											points="515 350 590.34421 393.5 590.34421 480.5 515 524 439.65579 480.5 439.65579 393.5"
-										></polygon>
-									</g>
-								</g>
-							</svg>
-						</div>
-					</div>
 					{getStepContent(activeStep)}
 				</div>
 			</div>
-		</ReactCSSTransitionGroup>
+		</div>
 	);
 };
 
@@ -482,7 +491,6 @@ BidOverlay.propTypes = {
 	land: PropTypes.object,
 	className: PropTypes.string,
 	url: PropTypes.string,
-	currentBid: PropTypes.string,
 };
 
 export default withUserContext(withWeb3Context(withMapContext(BidOverlay)));
