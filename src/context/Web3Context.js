@@ -110,6 +110,7 @@ export class Web3Provider extends Component {
           return reject(err);
         }
         if (blockCounter <= 0) {
+          this.updateBalance();
           filter.stopWatching();
           filter = null;
           console.warn('!! Tx expired !!');
@@ -121,6 +122,7 @@ export class Web3Provider extends Component {
         // Found tx hash?
         if (block.transactions.indexOf(txHash) > -1) {
           // Tx is finished
+          this.updateBalance();
           console.log('Tx has completed')
           filter.stopWatching();
           filter = null;
@@ -156,7 +158,7 @@ export class Web3Provider extends Component {
 
     // Helpers
     await this.refreshWhenAccountsChanged();
-    await this.updateBalanceWhenChanged();
+    await this.updateBalance();
 
     await this.setupContracts();
     await this.getOvrsOwned();
@@ -168,7 +170,7 @@ export class Web3Provider extends Component {
     await ethereum.enable();
     window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
     await this.refreshWhenAccountsChanged();
-    await this.updateBalanceWhenChanged();
+    await this.updateBalance();
     await this.setupContracts();
     await this.getOvrsOwned();
   };
@@ -210,8 +212,8 @@ export class Web3Provider extends Component {
   };
 
   // Checks every second if the balance has changed and updates it
-  updateBalanceWhenChanged = async () => {
-    setInterval(() => this.getOvrsOwned(), 1e3);
+  updateBalance = async () => {
+    this.getOvrsOwned()
   };
 
   getOvrsOwned = async () => {

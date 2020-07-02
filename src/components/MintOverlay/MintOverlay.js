@@ -19,10 +19,10 @@ import MenuList from '@material-ui/core/MenuList';
 const MintOverlay = (props) => {
 	const { waitTxWithCallback, buy, approveOvrTokens } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
+	const { hexId } = props.land;
+	const { marketStatus } = props.land;
 
 	const [bidValid, setBidValid] = useState(false);
-	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
@@ -59,15 +59,8 @@ const MintOverlay = (props) => {
 
 	// Init helpers web3
 	useEffect(() => {
-		if (setupComplete) setupListeners();
-	}, [setupComplete]);
-
-	const setupListeners = () => {
-		document.addEventListener('land-selected', (event) => {
-			setHexId(event.detail.hex_id);
-			setNextBidSelectedLand(event.detail.hexId);
-		});
-	};
+		if (setupComplete) setNextBidSelectedLand();
+	}, [setupComplete, ico, ovr, hexId, marketStatus]);
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
@@ -233,7 +226,7 @@ const MintOverlay = (props) => {
 										>
 											<Paper>
 												<ClickAwayListener onClickAway={handleClose}>
-													<MenuList autoFocusItem={open} id="fade-menu">
+													<MenuList autoFocusItem={open} id="mint-fade-menu">
 														<MenuItem
 															onClick={(e) => {
 																handleClose(e);
@@ -314,7 +307,7 @@ const MintOverlay = (props) => {
 									url="#"
 									text="Place bid"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									ariaControls={open ? 'fade-menu' : undefined}
+									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
@@ -387,7 +380,7 @@ const MintOverlay = (props) => {
 				to={props.url}
 				className={`RightOverlay MintOverlay NormalInputs ${
 					props.className ? props.className : ''
-				} --activeStep-${activeStep}`}
+					} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
 					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>

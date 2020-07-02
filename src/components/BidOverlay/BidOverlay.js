@@ -19,10 +19,10 @@ import MenuList from '@material-ui/core/MenuList';
 const BidOverlay = (props) => {
 	const { waitTxWithCallback, buy, approveOvrTokens } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
+	const { hexId } = props.land;
+	const { marketStatus } = props.land;
 
 	const [bidValid, setBidValid] = useState(false);
-	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
@@ -33,7 +33,6 @@ const BidOverlay = (props) => {
 
 	const anchorRef = React.useRef(null);
 	const [open, setOpen] = React.useState(false);
-	let priceInterval = null;
 
 	function setDeactiveOverlay(e) {
 		e.preventDefault();
@@ -63,29 +62,13 @@ const BidOverlay = (props) => {
 
 	// Init helpers web3
 	useEffect(() => {
-		if (setupComplete) setupListeners();
-	}, [setupComplete]);
-
-	const setupListeners = () => {
-		setNextBidSelectedLand();
-		priceInterval = setInterval(() => {
-			setNextBidSelectedLand();
-		}, 5e2);
-		document.addEventListener('land-selected', (event) => {
-			setHexId(window.location.pathname.split('/')[3]);
-			clearInterval(priceInterval);
-			priceInterval = setInterval(() => {
-				setNextBidSelectedLand();
-			}, 5e2);
-			setNextBidSelectedLand();
-		});
-	};
+		if (setupComplete) setNextBidSelectedLand();
+	}, [setupComplete, ico, ovr, hexId, marketStatus]);
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
 			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
 		}
-		setHexId(window.location.pathname.split('/')[3]);
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
 		const currentBid = String(window.web3.fromWei(land[2]));
@@ -185,7 +168,7 @@ const BidOverlay = (props) => {
 				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				});
-				preBid(); // TODO add tx hash
+				preBid(); // TODO add tx hash in centralized call
 				setActiveStep(2);
 				waitTxWithCallback(tx, confirmBid);
 			} catch (e) {
@@ -271,7 +254,7 @@ const BidOverlay = (props) => {
 										>
 											<Paper>
 												<ClickAwayListener onClickAway={handleClose}>
-													<MenuList autoFocusItem={open} id="fade-menu">
+													<MenuList autoFocusItem={open} id="mint-fade-menu">
 														<MenuItem
 															onClick={(e) => {
 																handleClose(e);
@@ -352,7 +335,7 @@ const BidOverlay = (props) => {
 									url="#"
 									text="Place bid"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									ariaControls={open ? 'fade-menu' : undefined}
+									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>

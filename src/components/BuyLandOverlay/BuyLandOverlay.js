@@ -1,32 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { successNotification, warningNotification, dangerNotification } from '../../lib/notifications';
+import { warningNotification, dangerNotification } from '../../lib/notifications';
+
+import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
+
+// import { sellLand } from '../../lib/api';
+import PropTypes from 'prop-types';
 
 const BuyLandOverlay = (props) => {
 	const { approveOvrTokens, buy, buyLand } = props.web3Provider.actions;
-	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
-	const [nextBid, setNextBid] = useState(10);
+
+	const { hexId } = props.land;
+	const { marketStatus } = props.land;
+
+	const [buyAt, setBuyAt] = useState(props.currentBid);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [showOverlay, setShowOverlay] = useState(false);
+	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
+	const anchorRef = React.useRef(null);
+	const [open, setOpen] = React.useState(false);
+
+	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
-		if (setupComplete) setupListeners();
-	}, [setupComplete]);
+		if (props.mapProvider.state.activeBuyOverlay) {
+			setShowOverlay(true);
+			setTimeout(() => {
+				setClassShowOverlay(true);
+			}, 50);
+		} else {
+			setClassShowOverlay(false);
+			setTimeout(() => {
+				setShowOverlay(false);
+			}, 500);
+		}
+	}, [props.mapProvider.state.activeBuyOverlay]);
 
-	const setupListeners = () => {
-		setNextBidSelectedLand(hexId);
-		document.addEventListener('land-selected', (event) => {
-			setHexId(event.detail.hex_id);
-			setNextBidSelectedLand(event.detail.hex_id);
-		});
+	// Toggle bidding menu of selection currencies
+	const handleClose = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+		setOpen(false);
 	};
+	const handleClick = () => {
+		setOpen(true);
+	};
+
+	// Init helpers web3
+	useEffect(() => {
+		if (setupComplete) setNextBidSelectedLand();
+	}, [setupComplete, ico, hexId, marketStatus, props.mapProvider.state.activeBuyOverlay]);
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
@@ -35,19 +70,38 @@ const BuyLandOverlay = (props) => {
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
 		const price = String(window.web3.fromWei(land[7]));
-		setNextBid(price);
+		setBuyAt(price);
 	};
 
+	function setDeactiveOverlay(e) {
+		e.preventDefault();
+		props.mapProvider.actions.changeActiveBuyOverlay(false);
+		// Bring the step at 0
+		setTimeout(function () {
+			setActiveStep(0);
+			setBuyAt(10);
+		}, 200);
+	}
+
+	// Helper used to check if the user is logged in
+	const checkUserLoggedIn = () => {
+		if (!props.userProvider.state.isLoggedIn) {
+			setActiveStep(0);
+			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			return false;
+		}
+		return true;
+	};
+
+	// Manages actions of overlay according to step number
 	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
-			if (!props.userProvider.state.isLoggedIn) {
-				setActiveStep(0);
-				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			if (!checkUserLoggedIn()) {
+				return false;
 			}
-
 			try {
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-				if (!currentBalance.greaterThan(nextBid))
+				if (!currentBalance.greaterThan(buyAt))
 					return dangerNotification(
 						'Balance insufficient',
 						"You don't have enough tokens to buy that land get more and try again",
@@ -56,10 +110,8 @@ const BuyLandOverlay = (props) => {
 				await approveOvrTokens();
 				setMetamaskMessage('Waiting for land buying MetaMask confirmation');
 				await buyLand(hexId);
-				successNotification('Land purchased successfully!', "You completed the land purchase successfully and now it's yours the page will be updated automatically");
-				setTimeout(() => {
-					window.reload();
-				}, 2e3);
+				handleNext();
+				// TODO Centralized flux
 			} catch (e) {
 				console.log('Error', e);
 				return dangerNotification('Error processing the transactions', e.message);
@@ -69,15 +121,129 @@ const BuyLandOverlay = (props) => {
 		}
 	};
 
-	function setDeactiveOverlay(e) {
-		e.preventDefault();
-		props.mapProvider.actions.changeActiveMintOverlay(false);
-		setActiveStep(0);
-	}
-
+	// Show content of overlay according to step number
 	function getStepContent(step) {
 		switch (step) {
 			case 0:
+				return (
+					<div className="Overlay__body_cont">
+						<div className="Overlay__upper">
+							<div className="Overlay__title">Buy OVRLand</div>
+							<div className="Overlay__land_title">{props.land.name.sentence}</div>
+							<div className="Overlay__land_hex">{props.land.location}</div>
+						</div>
+						<div className="Overlay__lower">
+							<div className="bids">
+								<div className="Overlay__bid_container">
+									<div className="Overlay__minimum_bid">
+										<div className="Overlay__bid_title">Price</div>
+										<div className="Overlay__bid_cont">
+											<ValueCounter value={buyAt}></ValueCounter>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br></br>
+							<div className="Overlay__buttons_container">
+								<Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+									{({ TransitionProps, placement }) => (
+										<Grow
+											{...TransitionProps}
+											style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+										>
+											<Paper>
+												<ClickAwayListener onClickAway={handleClose}>
+													<MenuList autoFocusItem={open} id="mint-fade-menu">
+														<MenuItem
+															onClick={(e) => {
+																handleClose(e);
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																handleNext();
+															}}
+															className="bid-fade-menu --cons-option"
+														>
+															Bid using OVR
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(buyAt), 'eth');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using ETH
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(buyAt), 'dai');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using DAI
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(buyAt), 'usdt');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using Tether
+														</MenuItem>
+														<MenuItem
+															onClick={async (e) => {
+																handleClose(e);
+																setMetamaskMessage('Getting OVR first...');
+																if (checkUserLoggedIn() === false) {
+																	return false;
+																}
+																setActiveStep((prevActiveStep) => prevActiveStep + 1);
+																await buy(window.web3.toWei(buyAt), 'usdc');
+																handleNext();
+															}}
+															className="bid-fade-menu"
+														>
+															Bid using USDC
+														</MenuItem>
+													</MenuList>
+												</ClickAwayListener>
+											</Paper>
+										</Grow>
+									)}
+								</Popper>
+								<HexButton
+									hexRef={anchorRef}
+									url="#"
+									text="Confirm buy"
+									className="--orange"
+									ariaControls={open ? 'mint-fade-menu' : undefined}
+									ariaHaspopup="true"
+									onClick={handleClick}
+								></HexButton>
+								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+							</div>
+						</div>
+					</div>
+				);
+			case 1:
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
@@ -90,90 +256,7 @@ const BuyLandOverlay = (props) => {
 								<div className="Overlay__minimum_bid">
 									<div className="Overlay__bid_title">Price</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
-									</div>
-								</div>
-							</div>
-							<br />
-							<div className="Overlay__buttons_container">
-							<HexButton
-									url="#"
-									text="Buy With OVR"
-									className="--orange"
-									onClick={() => {
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Buy With ETH"
-									className="--orange"
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(nextBid), 'eth');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Buy With DAI"
-									className="--orange"
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(nextBid), 'dai');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Buy With Tether"
-									className="--orange"
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(nextBid), 'usdt');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Buy With USDC"
-									className="--orange"
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(nextBid), 'usdc');
-										handleNext();
-									}}
-								></HexButton>
-								{/* <HexButton
-									url="#"
-									text="Place Bid With Dollars"
-									className="--orange"
-									onClick={handleNext}
-								></HexButton> */}
-								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
-							</div>
-						</div>
-					</div>
-				);
-			case 1:
-				return (
-					<div className="Overlay__body_cont">
-						<div className="Overlay__upper">
-							<div className="Overlay__title">Buying OVRLand</div>
-							<div className="Overlay__land_title">{props.land.name.sentence}</div>
-							<div className="Overlay__land_hex">{props.land.location}</div>
-						</div>
-						<div className="Overlay__lower">
-							<div className="Overlay__bid_container">
-								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Price</div>
-									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+										<ValueCounter value={buyAt}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -187,7 +270,10 @@ const BuyLandOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Buying OVRLand</div>
+							<div className="Overlay__congrat_title">
+								<span>Congratulations</span>
+								<br></br>You requested the buy of
+							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -196,15 +282,12 @@ const BuyLandOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Price</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={nextBid}></ValueCounter>
+										<ValueCounter value={buyAt}></ValueCounter>
 									</div>
 								</div>
 							</div>
-							<div className="Overlay__message__container">
-								<span>Land purchased successfully</span>
-							</div>
-							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Close" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+							<div className="Overlay__close-button_container">
+								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -214,32 +297,26 @@ const BuyLandOverlay = (props) => {
 		}
 	}
 
-	if (!props.mapProvider.state.activeBuyOverlay) return null;
+	if (!showOverlay) return null;
 
 	return (
-		<ReactCSSTransitionGroup
-			transitionName="overlay"
-			transitionAppear={true}
-			transitionAppearTimeout={500}
-			transitionEnter={false}
-			transitionLeave={false}
-			transitionLeaveTimeout={300}
-		>
+		<div className={`OverlayContainer ${classShowOverlay ? '--js-show' : ''}`}>
+			<div className="RightOverlay__backpanel"> </div>
 			<div
-				key="buy-land-overlay-"
+				key="sell-overlay-"
 				to={props.url}
-				className={`Overlay MintOverlay WhiteInputs ${
+				className={`RightOverlay BuyLandOverlay NormalInputs ${
 					props.className ? props.className : ''
 				} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
-					<div className={`Icon Overlay__close_button`} onClick={setDeactiveOverlay}>
+					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>
 						<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fill-opacity="0.5">
+							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0">
 								<g
 									id="Biddign-Single-Auction"
 									transform="translate(-398.000000, -298.000000)"
-									fill="#FFFFFF"
+									fill="#c0c1c0"
 									fillRule="nonzero"
 								>
 									<path
@@ -250,32 +327,22 @@ const BuyLandOverlay = (props) => {
 							</g>
 						</svg>
 					</div>
-					<div className="Overlay__hex_cont">
-						<div className={`Icon Overlay__hex`}>
-							<svg width="152px" height="176px" viewBox="0 0 152 176" version="1.1" xmlns="http://www.w3.org/2000/svg">
-								<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fill-opacity="0.2">
-									<g
-										id="Biddign-Single-Auction"
-										transform="translate(-439.000000, -349.000000)"
-										fill="#FFFFFF"
-										stroke="#FFFFFF"
-									>
-										<polygon
-											id="Polygon"
-											transform="translate(515.000000, 437.000000) rotate(-360.000000) translate(-515.000000, -437.000000) "
-											points="515 350 590.34421 393.5 590.34421 480.5 515 524 439.65579 480.5 439.65579 393.5"
-										></polygon>
-									</g>
-								</g>
-							</svg>
-						</div>
-					</div>
 					{getStepContent(activeStep)}
 				</div>
 			</div>
-		</ReactCSSTransitionGroup>
+		</div>
 	);
 };
 
+BuyLandOverlay.propTypes = {
+	props: PropTypes.object,
+	reloadLandStatefromApi: PropTypes.func,
+	userProvider: PropTypes.object,
+	mapProvider: PropTypes.object,
+	web3Provider: PropTypes.object,
+	land: PropTypes.object,
+	className: PropTypes.string,
+	url: PropTypes.string,
+};
 
 export default withUserContext(withWeb3Context(withMapContext(BuyLandOverlay)));
