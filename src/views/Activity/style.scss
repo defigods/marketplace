@@ -1,0 +1,30 @@
+.activity {
+	padding-top: 5%;
+	min-height: 57vh;
+
+	.o-container{
+    width: 70%;
+  }
+	.p-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		.p-header-title {
+      font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+      font-size: 35px;
+		}
+  }
+  .sub-title{
+		font-size: 18px;
+		color: $ovr-grey;
+	}
+	.p-header-datetime{
+		color: $ovr-grey;
+	}
+}
+
+
+.activity-content{
+	margin-top: 40px;
+	margin-bottom: 60px;
+}

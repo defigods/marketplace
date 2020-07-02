@@ -11,7 +11,8 @@ import { signUpHybrid } from '../../lib/api';
 import { saveToken } from '../../lib/auth';
 import { dangerNotification } from '../../lib/notifications';
 
-import { UserContext, withUserContext } from '../../context/UserContext';
+import { Web3Context, withWeb3Context } from '../../context/Web3Context';
+
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -23,7 +24,7 @@ import Web3 from 'web3';
  */
 
 const Signup = () => {
-	const context = useContext(UserContext);
+	const context = useContext(Web3Context);
 	let history = useHistory();
 	const [activeStep, setActiveStep] = useState(0);
 	const [userEmail, setUserEmail] = useState('');
@@ -464,4 +465,4 @@ const Signup = () => {
 	return <div className="Signup">{getStepContent(activeStep)}</div>;
 };
 
-export default withUserContext(Signup);
+export default withWeb3Context(Signup);

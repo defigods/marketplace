@@ -213,7 +213,11 @@
             top: .325em;
             position: relative;
         }
-	}
+  }
+  .MuiButtonBase-root{
+    padding-left: 25px;
+    padding-right: 25px;
+  }
 	.Funds__container {
 		float: left;
 		line-height: 70px;

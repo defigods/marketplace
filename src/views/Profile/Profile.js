@@ -11,6 +11,7 @@ import { getSumsubData } from '../../lib/api';
 import Blockies from 'react-blockies';
 
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
+import { Web3Context } from '../../context/Web3Context';
 // import { networkError } from '../../lib/notifications';
 
 const ProfileContentLoginRequired = () => (
@@ -29,8 +30,9 @@ const ProfileContentLoginRequired = () => (
 	</div>
 );
 
-const ProfileLayout = (props) => {
+const ProfileLayout = () => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
+	const { state: userState } = useContext(UserContext);
 	return (
 		<div className="profile">
 			<div className="o-container">
@@ -42,7 +44,7 @@ const ProfileLayout = (props) => {
 					<div className="o-fourth">
 						{/* <HexImage className="profile-image" /> */}
 						<Blockies
-							seed={props.state.user.uuid || 'wewewe'}
+							seed={userState.user.uuid || 'wewewe'}
 							size={12}
 							scale={13}
 							color="#7521c8"
@@ -85,13 +87,14 @@ const renderBadge = (status) => {
 };
 
 const ProfileContent = () => {
-	const { state, actions } = useContext(UserContext);
+	const { state: userState } = useContext(UserContext);
+	const web3Context = useContext(Web3Context);
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
 	const [sumsubExternalUserId, setSumsubExternalUserId] = useState(0);
 	const [sumsubAccessToken, setSumsubAccessToken] = useState(0);
-	const { user } = state;
-	// console.log('ProfileContent->These are user and actions from UserContext', actions, user);
-
+	const { user } = userState;
+	// console.log('ProfileContent->These are user and web3Context from UserContext', web3Context, user);
+	console.log(web3Context)
 	useEffect(() => {
 		if (sumsubShowPanel == true && sumsubExternalUserId == 0 && user.uuid != undefined) {
 			getSumsubData()
@@ -109,7 +112,6 @@ const ProfileContent = () => {
 	}, [user.uuid, sumsubShowPanel]);
 
 	const toggleKycVerificationFrame = (e) => {
-		console.log('clicchino')
 		e.preventDefault();
 		setSumsubShowPanel(!sumsubShowPanel);
 	};
@@ -129,7 +131,7 @@ const ProfileContent = () => {
 					<div className="p-balance">
 						<div className="p-small-title">Balance</div>
 						<div className="p-balance-value">
-							<ValueCounter value={state.ovrsOwned} />
+							<ValueCounter value={web3Context.state.ovrsOwned} />
 							<div>
 								<HexButton url="/buy-tokens" className="--orange" text="BUY OVR"></HexButton>
 							</div>
@@ -171,7 +173,7 @@ const ProfileContent = () => {
 									url=""
 									className="Funds__buy HexButton --blue redeem-button"
 									text="Redeem lands"
-									onClick={actions.redeemLands}
+									onClick={web3Context.redeemLands}
 								></HexButton>
 							</div>
 						</div>

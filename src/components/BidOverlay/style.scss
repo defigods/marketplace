@@ -6,7 +6,7 @@
     z-index: 9;
     display: flex;
     align-items: center;
-    // transition: all 350ms ease-in-out;
+    transition: all 350ms ease-in-out;
     // opacity: 0;
     // pointer-events: none;
     // &.--active{
@@ -15,20 +15,90 @@
     // }
     .ValueCounter{
       margin-top: 10px;
-    }
-}
-
-.Overlay__cont{
+		}
+		.Overlay__cont{
     width: 600px;
     margin: 0 auto;
     color: #fff;
     height: 300px;
     display: flex;
+	}
 }
 
+
+.OverlayContainer{
+	.RightOverlay__backpanel{
+		opacity: 0;
+		transition: all 350ms ease-in-out;
+		transition-delay: 250ms;
+	}
+	.RightOverlay{
+	 transform: translateX(400px);
+	 transition: all 250ms ease-in-out;
+	}
+	&.--js-show{
+		.RightOverlay__backpanel{
+			opacity: 1;
+		}
+		.RightOverlay{
+		transform: translateX(0px);
+		}
+	}
+}
+.RightOverlay{
+	position: fixed;
+	width: auto;
+	min-width: 380px;
+	max-width: 380px;
+	height: calc(100% - 70px);
+	top: 70px;
+	z-index: 9;
+	display: flex;
+	align-items: center;
+	float: right;
+	right: 0px;
+	// transform: translateX(380px);
+	.Overlay__cont{
+		width: auto;
+		color: #000;
+		height: 300px;
+		display: flex;
+		margin: 0px 50px;
+		position: relative;
+	}
+	.Overlay__close_button{
+		top: -80px;
+	}
+}
+.RightOverlay__backpanel {
+			width: 100vw;
+			height: 100vh;
+			position: fixed;
+			left: 0px;
+			top: 0px;
+			background-color: rgba(0,0,0,0.2);
+			z-index: 8;
+}
+.BidOverlay{
+	background-color:#fff;
+}
 .Overlay__title{
     font-size: 24px;
     font-weight: 300;
+}
+
+.Overlay__congrat_title{
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid $ovr-light-grey;
+	line-height: 25px;
+	span{
+		font-size: 25px;
+		font-weight: bold;
+		background:linear-gradient(to right, $ovr-orange,$ovr-yellow);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
 }
 
 .Overlay__land_title{
@@ -47,37 +117,6 @@
 .Overlay__body_cont{
   float: left;
 }
-.Overlay__hex_cont{
-    max-width: 40%;
-    float: left;
-    padding: 50px 60px;
-    svg{
-    //   -webkit-animation: shrinking-cog .3s 1 ease forwards;
-    //   -moz-animation: shrinking-cog .3s 1 ease forwards;
-    //   -ms-animation: shrinking-cog .3s 1 ease forwards;
-    //   -o-animation: shrinking-cog .3s 1 ease forwards;
-    //   animation: shrinking-cog .3s 1 ease forwards;
-
-    }
-    .--activeStep-1 &{
-        svg{
-            -webkit-animation: spinning-cog 1550ms infinite ease;
-            -moz-animation: spinning-cog 1550ms infinite ease;
-            -ms-animation: spinning-cog 1550ms infinite ease;
-            -o-animation: spinning-cog 1550ms infinite ease;
-            animation: spinning-cog 1550ms infinite ease;
-        }
-    }
-    .--activeStep-2 &{
-        svg{
-            -webkit-animation: shrinking-cog 1550ms forwards ease;
-            -moz-animation: shrinking-cog 1550ms forwards ease;
-            -ms-animation: shrinking-cog 1550ms forwards ease;
-            -o-animation: shrinking-cog 1550ms forwards ease;
-            animation: shrinking-cog 1550ms forwards ease;
-        }
-    }
-}
 .Overlay__current_bid, .Overlay__minimum_bid{
     margin-top:20px;
     float: left;
@@ -93,8 +132,17 @@
     padding-right: 5px;
 
     .ValueCounter{
-        padding: 8px 15px;
+				padding: 8px 15px;
+				background: #ffffff;
+				border-radius: 5px;
+				box-shadow:  8px 8px 16px rgba(#d9d9d9, 0.3), 
+																-8px -8px 16px #ffffff;
     }
+}
+.Overlay__your_bid{
+	width: 100%;
+	clear: both;
+	margin-top: 20px;
 }
 .Overlay__close_button{
     position: absolute;
@@ -114,9 +162,12 @@
 }
 .Overlay__lower, .Overlay__buttons_container{
     display: inline-block;
-    position: relative;
+		position: relative;
+		width: 100%;
 }
+
 .Overlay__buttons_container{
+		width: 100%;
     .HexButton{
         margin-right: 25px;
     }
@@ -130,211 +181,20 @@
 .Overlay__input{
     margin-top: 20px;
 }
-.Overlay__bid_container{
-    display: inline-block;
+
+.Overlay__close-button_container{
+	margin-top: 25px;
+	padding-top: 25px;
+	border-top: 1px solid $ovr-light-grey;
 }
 
-.Overlay__title {
-	font-size: 24px;
-	font-weight: 300;
-}
-
-.Overlay__land_title {
-	margin-top: 15px;
-	font-size: 22px;
-	font-weight: 800;
-	display: block;
-	max-width: 100%;
-	overflow: hidden;
-}
-.Overlay__land_hex {
-	font-size: 18px;
-	font-weight: 300;
-	margin-top: 5px;
-}
-.Overlay__body_cont {
-	float: left;
-}
-.Overlay__hex_cont {
-	max-width: 40%;
-	float: left;
-	padding: 50px 60px;
-	svg {
-		//   -webkit-animation: shrinking-cog .3s 1 ease forwards;
-		//   -moz-animation: shrinking-cog .3s 1 ease forwards;
-		//   -ms-animation: shrinking-cog .3s 1 ease forwards;
-		//   -o-animation: shrinking-cog .3s 1 ease forwards;
-		//   animation: shrinking-cog .3s 1 ease forwards;
-	}
-	.--activeStep-1 & {
-		svg {
-			-webkit-animation: spinning-cog 1550ms infinite ease;
-			-moz-animation: spinning-cog 1550ms infinite ease;
-			-ms-animation: spinning-cog 1550ms infinite ease;
-			-o-animation: spinning-cog 1550ms infinite ease;
-			animation: spinning-cog 1550ms infinite ease;
-		}
-	}
-	.--activeStep-2 & {
-		svg {
-			-webkit-animation: shrinking-cog 1550ms forwards ease;
-			-moz-animation: shrinking-cog 1550ms forwards ease;
-			-ms-animation: shrinking-cog 1550ms forwards ease;
-			-o-animation: shrinking-cog 1550ms forwards ease;
-			animation: shrinking-cog 1550ms forwards ease;
-		}
-	}
-}
-.Overlay__current_bid,
-.Overlay__minimum_bid {
-	margin-top: 20px;
-	float: left;
-}
-.Overlay__bid_title {
-	font-size: 14px;
-}
-.Overlay__bid_cont {
-	background: #fff;
-	border-radius: 3px;
-	width: max-content;
-	padding-right: 5px;
-
-	.ValueCounter {
-		padding: 8px 15px;
-	}
-}
-.Overlay__close_button {
-	position: absolute;
-	transition: 350ms ease-in-out all;
-	z-index: 9;
-	cursor: pointer;
-	&:hover {
-		transform: scale(0.9);
-	}
-}
-.Overlay__arrow {
-	float: left;
-	margin-left: 20px;
-	margin-right: 20px;
-	position: relative;
-	top: 58px;
-}
-.Overlay__lower,
-.Overlay__buttons_container {
-	display: inline-block;
-	position: relative;
-}
-.Overlay__buttons_container {
-	margin-top: 40px;
-	.HexButton {
-		margin-right: 25px;
-	}
-}
-
-.Overlay__message__container {
-	margin-top: 40px;
-	animation: 1s blink infinite 1550ms;
-}
-
-.Overlay__input {
-	margin-top: 20px;
-}
 .Overlay__bid_container {
 	display: inline-block;
 }
 
-.overlay-appear {
-	opacity: 0.01;
-}
 
-.overlay-leave {
-	opacity: 1;
-	transform: scaleX(1) translateY(0);
-}
 
-.overlay-leave-active {
-	opacity: 01;
-	transform: scaleX(0) translateY(100px);
-	transition: all 300ms ease-in-out;
-}
 
-.overlay-appear.overlay-appear-active {
-	opacity: 1;
-	transition: opacity 350ms ease-in-out;
-}
-
-.BidOverlay {
-	background: linear-gradient(138deg, #1d0333, #805e9d);
-	background-size: 400% 400%;
-
-	-webkit-animation: AnimationName 22s ease infinite;
-	-moz-animation: AnimationName 22s ease infinite;
-	animation: AnimationName 22s ease infinite;
-
-	@-webkit-keyframes AnimationName {
-		0% {
-			background-position: 0% 88%;
-		}
-		50% {
-			background-position: 100% 13%;
-		}
-		100% {
-			background-position: 0% 88%;
-		}
-	}
-	@-moz-keyframes AnimationName {
-		0% {
-			background-position: 0% 88%;
-		}
-		50% {
-			background-position: 100% 13%;
-		}
-		100% {
-			background-position: 0% 88%;
-		}
-	}
-	@keyframes AnimationName {
-		0% {
-			background-position: 0% 88%;
-		}
-		50% {
-			background-position: 100% 13%;
-		}
-		100% {
-			background-position: 0% 88%;
-		}
-	}
-}
-
-@keyframes blink {
-	50% {
-		opacity: 0.5;
-	}
-}
-
-@keyframes spinning-cog {
-	0% {
-		transform: rotate(0deg);
-	}
-	20% {
-		transform: rotate(-45deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes shrinking-cog {
-	0% {
-		transform: scale(1) rotate(0deg);
-	}
-	20% {
-		transform: scale(1.2) rotate(-45deg);
-	}
-	100% {
-		transform: scale(0) rotate(360deg);
-	}
-}
 
 .WhiteInputs {
 	.MuiFormLabel-root {
@@ -349,6 +209,22 @@
 	}
 	.MuiInput-underline:after {
 		border-bottom: 2px solid #fff !important;
+	}
+}
+
+.NormalInputs {
+	.MuiFormLabel-root {
+		color: #000 !important;
+		font-weight: 200 !important;
+	}
+	.MuiInput-underline:before {
+		border-bottom: 1px solid #d9d9d9 !important;
+	}
+	.MuiInputBase-input {
+		color: #000 !important;
+	}
+	.MuiInput-underline:after {
+		border-bottom: 2px solid #ccc !important;
 	}
 }
 
