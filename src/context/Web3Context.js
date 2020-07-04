@@ -339,13 +339,13 @@ export class Web3Provider extends Component {
     return true;
   };
 
-  approveOvrTokens = async () => {
-    let currentBalance = await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-    let currentAllowance = await this.state.ovr.allowanceAsync(window.web3.eth.defaultAccount, icoAddress);
+  approveOvrTokens = async (toIcoParticipate, token) => {
+    let currentBalance = await token.balanceOfAsync(window.web3.eth.defaultAccount);
+    let currentAllowance = await token.allowanceAsync(window.web3.eth.defaultAccount, toIcoParticipate ? icoParticipateAddress : icoAddress);
     // Allow all the tokens
     if (currentBalance.greaterThan(currentAllowance)) {
       try {
-        const tx = await this.state.ovr.approveAsync(icoAddress, currentBalance, {
+        const tx = await token.approveAsync(toIcoParticipate ? icoParticipateAddress : icoAddress, currentBalance, {
           gasPrice: window.web3.toWei(30, 'gwei'),
         });
         await this.waitTx(tx);
@@ -605,12 +605,11 @@ export class Web3Provider extends Component {
 	// 4 -> OVR
 	participate = async (type, bid, landId) => {
 		let tx
-
 		try {
-			await this.getPrices()
+      await this.getPrices()
 		} catch (e) {
 			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
-		}
+    }
 		try {
 			// For ether we send the value instead of the bid
 			if (type === 0) {
@@ -619,7 +618,11 @@ export class Web3Provider extends Component {
 					value: value,
 					gasPrice: window.web3.toWei(30, 'gwei'),
 				})
-			}
+			} else {
+        tx = await this.state.icoParticipate.participateAsync(type, bid, landId, {
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				})
+      }
 			return tx
 		} catch (e) {
 			return warningNotification('Error buying', `There was an error participating in the auction ${e.message}`);
