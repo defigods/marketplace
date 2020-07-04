@@ -18,7 +18,7 @@ import MenuList from '@material-ui/core/MenuList';
 
 const BidOverlay = (props) => {
 	const { waitTx, waitTxWithCallback, participate, approveOvrTokens } = props.web3Provider.actions;
-	const { ovr, ico, setupComplete } = props.web3Provider.state;
+	const { ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -145,41 +145,6 @@ const BidOverlay = (props) => {
 			});
 	}
 
-	// Manages actions of overlay according to step number
-	const handleNext = async () => {
-		if (bid < nextBid)
-			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
-		if (activeStep + 1 === 1) {
-			if (!props.userProvider.state.isLoggedIn) {
-				setActiveStep(0);
-				return warningNotification('Invalid authentication', 'Please Log In to partecipate');
-			}
-			// Participate in the auction
-			const landId = parseInt(hexId, 16);
-			try {
-				setMetamaskMessage('Approving OVR tokens...');
-				await approveOvrTokens();
-				const weiBid = String(window.web3.toWei(bid));
-				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-				// Check if the user has enough balance to buy those tokens
-				if (currentBalance.lessThan(weiBid)) {
-					setActiveStep(0);
-					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
-				}
-				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
-					gasPrice: window.web3.toWei(30, 'gwei'),
-				});
-				preBid(); // TODO add tx hash in centralized call
-				setActiveStep(2);
-				waitTxWithCallback(tx, confirmBid);
-			} catch (e) {
-				return dangerNotification('Error processing the transaction', e.message);
-			}
-		} else {
-			setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		}
-	};
-
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
@@ -190,22 +155,31 @@ const BidOverlay = (props) => {
 		try {
 			switch (type) {
 				case 'ovr':
-					handleNext();
+					setMetamaskMessage('Approving OVR tokens...');
+					await approveOvrTokens(true, ovr);
+					setMetamaskMessage('Participating in the auction with OVR...');
+					tx = await participate(4, window.web3.toWei(bid), landId);
 					break;
 				case 'eth':
 					setMetamaskMessage('Participating in the auction with ETH...');
 					tx = await participate(0, window.web3.toWei(bid), landId);
 					break;
 				case 'usdt':
+					setMetamaskMessage('Approving Tether tokens...');
+					await approveOvrTokens(true, tether);
 					setMetamaskMessage('Participating in the auction with Tether...');
 					tx = await participate(2, window.web3.toWei(bid), landId);
 					break;
 				case 'usdc':
-					setMetamaskMessage('Participating in the auction with Tether...');
+					setMetamaskMessage('Approving USDC tokens...');
+					await approveOvrTokens(true, usdc);
+					setMetamaskMessage('Participating in the auction with USDC...');
 					tx = await participate(3, window.web3.toWei(bid), landId);
 					break;
 				case 'dai':
-					setMetamaskMessage('Participating in the auction with Tether...');
+					setMetamaskMessage('Approving DAI tokens...');
+					await approveOvrTokens(true, dai);
+					setMetamaskMessage('Participating in the auction with DAI...');
 					tx = await participate(1, window.web3.toWei(bid), landId);
 					break;
 			}
