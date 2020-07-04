@@ -18,7 +18,7 @@ import MenuList from '@material-ui/core/MenuList';
 
 const MintOverlay = (props) => {
 	const { waitTx, waitTxWithCallback, participate, approveOvrTokens } = props.web3Provider.actions;
-	const { ovr, ico, setupComplete } = props.web3Provider.state;
+	const { ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -139,49 +139,6 @@ const MintOverlay = (props) => {
 			});
 	}
 
-	// Manages actions of overlay according to step number
-	const handleNext = async () => {
-		if (bid < nextBid)
-			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
-		if (activeStep + 1 === 1) {
-			if (checkUserLoggedIn() === false) {
-				return false;
-			}
-			// Participate in the auction
-			const landId = parseInt(hexId, 16);
-			const isAvailableInThisEpoch = await ico.checkEpochAsync(landId);
-			if (!isAvailableInThisEpoch) {
-				return warningNotification('Epoch issue', 'The current land is not available in this epoch');
-			}
-
-			try {
-				setMetamaskMessage('Approving OVR tokens...');
-				await approveOvrTokens();
-				await ico.initialLandBidAsync();
-				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-				const weiBid = String(window.web3.toWei(bid));
-
-				// Check if the user has enough balance to buy those tokens
-				if (currentBalance.lessThan(weiBid)) {
-					setActiveStep(0);
-					return warningNotification('Not enough tokens', `You don't have enough to pay ${weiBid} OVR tokens`);
-				}
-				const tx = await ico.participateInAuctionAsync(weiBid, landId, {
-					gasPrice: window.web3.toWei(30, 'gwei'),
-				});
-				sendPreAuctionStart(tx);
-				setActiveStep(2);
-				waitTxWithCallback(tx, sendConfirmAuctionStart);
-				// sendConfirmAuctionStart();
-			} catch (e) {
-				setActiveStep((prevActiveStep) => prevActiveStep - 1);
-				return dangerNotification('Error processing the transactions', e.message);
-			}
-		} else {
-			setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		}
-	};
-
 	function setDeactiveOverlay(e) {
 		e.preventDefault();
 		props.mapProvider.actions.changeActiveMintOverlay(false);
@@ -237,22 +194,31 @@ const MintOverlay = (props) => {
 		try {
 			switch (type) {
 				case 'ovr':
-					handleNext();
+					setMetamaskMessage('Approving OVR tokens...');
+					await approveOvrTokens(true, ovr);
+					setMetamaskMessage('Participating in the auction with OVR...');
+					tx = await participate(4, window.web3.toWei(bid), landId);
 					break;
 				case 'eth':
 					setMetamaskMessage('Participating in the auction with ETH...');
 					tx = await participate(0, window.web3.toWei(bid), landId);
 					break;
 				case 'usdt':
+					setMetamaskMessage('Approving Tether tokens...');
+					await approveOvrTokens(true, tether);
 					setMetamaskMessage('Participating in the auction with Tether...');
 					tx = await participate(2, window.web3.toWei(bid), landId);
 					break;
 				case 'usdc':
-					setMetamaskMessage('Participating in the auction with Tether...');
+					setMetamaskMessage('Approving USDC tokens...');
+					await approveOvrTokens(true, usdc);
+					setMetamaskMessage('Participating in the auction with Usdc...');
 					tx = await participate(3, window.web3.toWei(bid), landId);
 					break;
 				case 'dai':
-					setMetamaskMessage('Participating in the auction with Tether...');
+					setMetamaskMessage('Approving DAI tokens...');
+					await approveOvrTokens(true, dai);
+					setMetamaskMessage('Participating in the auction with Dai...');
 					tx = await participate(1, window.web3.toWei(bid), landId);
 					break;
 			}
