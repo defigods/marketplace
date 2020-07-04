@@ -14,11 +14,10 @@ import {
   ovrAddress,
   icoAddress,
   ovr721Address,
+  icoParticipateAddress,
 } from '../lib/contracts';
-import { tokenBuyAbi, erc20Abi, icoAbi, ovr721Abi } from '../lib/abis';
+import { tokenBuyAbi, erc20Abi, icoAbi, ovr721Abi, icoParticipateAbi, } from '../lib/abis';
 import { UserContext } from './UserContext';
-
-
 export const Web3Context = createContext();
 
 export class Web3Provider extends Component {
@@ -183,6 +182,8 @@ export class Web3Provider extends Component {
     const _ovr = window.web3.eth.contract(erc20Abi).at(ovrAddress);
     const _ico = window.web3.eth.contract(icoAbi).at(icoAddress);
     const _ovr721 = window.web3.eth.contract(ovr721Abi).at(ovr721Address);
+    const _icoParticipate = window.web3.eth.contract(icoParticipateAbi).at(icoParticipateAddress);
+
     this.setState({
       dai: promisifyAll(_dai),
       tether: promisifyAll(_tether),
@@ -191,8 +192,9 @@ export class Web3Provider extends Component {
       ovr: promisifyAll(_ovr),
       ico: promisifyAll(_ico),
       ovr721: promisifyAll(_ovr721),
+      icoParticipate: promisifyAll(_icoParticipate),
       setupComplete: true,
-    });
+    }, this.updateBalanceInterval);
   };
 
   // Refreshes the page when the metamask account is changed
@@ -211,10 +213,14 @@ export class Web3Provider extends Component {
     });
   };
 
-  // Checks every second if the balance has changed and updates it
   updateBalance = async () => {
     this.getOvrsOwned()
   };
+
+  // Checks every half a second if the balance has changed and updates it
+  updateBalanceInterval = async () => {
+    setInterval(this.getOvrsOwned, 5e2)
+  }
 
   getOvrsOwned = async () => {
     if (this.state.ovr && this.state.setupComplete && window.web3.eth.defaultAccount) {
@@ -591,6 +597,35 @@ export class Web3Provider extends Component {
     }
   };
 
+  // Type is a number where
+	// 0 -> eth
+  // 1 -> Dai
+  // 2 -> Usdt
+	// 3 -> Usdc
+	// 4 -> OVR
+	participate = async (type, bid, landId) => {
+		let tx
+
+		try {
+			await this.getPrices()
+		} catch (e) {
+			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
+		}
+		try {
+			// For ether we send the value instead of the bid
+			if (type === 0) {
+				const value = bid / this.state.perEth;
+				tx = await this.state.icoParticipate.participateAsync(type, bid, landId, {
+					value: value,
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				})
+			}
+			return tx
+		} catch (e) {
+			return warningNotification('Error buying', `There was an error participating in the auction ${e.message}`);
+		}
+	};
+
   render() {
     return (
       <Web3Context.Provider
@@ -616,6 +651,7 @@ export class Web3Provider extends Component {
             buyWithCard: this.buyWithCard,
             buy: this.buy,
             getPrices: this.getPrices,
+            participate: this.participate,
           },
         }}
       >

@@ -17,7 +17,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
 const BidOverlay = (props) => {
-	const { waitTxWithCallback, buy, approveOvrTokens } = props.web3Provider.actions;
+	const { waitTx, waitTxWithCallback, participate, approveOvrTokens } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
@@ -83,6 +83,7 @@ const BidOverlay = (props) => {
 		}
 		setOpen(false);
 	};
+
 	const handleClick = () => {
 		setOpen(true);
 	};
@@ -179,7 +180,48 @@ const BidOverlay = (props) => {
 		}
 	};
 
-	// Show content of overlay according to step number
+	const participateInAuction = async (type) => {
+		if (bid < nextBid)
+			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
+		if (!checkUserLoggedIn()) return;
+		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		const landId = parseInt(hexId, 16);
+		let tx;
+		try {
+			switch (type) {
+				case 'ovr':
+					handleNext();
+					break;
+				case 'eth':
+					setMetamaskMessage('Participating in the auction with ETH...');
+					tx = await participate(0, window.web3.toWei(bid), landId);
+					break;
+				case 'usdt':
+					setMetamaskMessage('Participating in the auction with Tether...');
+					tx = await participate(2, window.web3.toWei(bid), landId);
+					break;
+				case 'usdc':
+					setMetamaskMessage('Participating in the auction with Tether...');
+					tx = await participate(3, window.web3.toWei(bid), landId);
+					break;
+				case 'dai':
+					setMetamaskMessage('Participating in the auction with Tether...');
+					tx = await participate(1, window.web3.toWei(bid), landId);
+					break;
+			}
+		} catch (e) {
+			return dangerNotification('Error processing the transaction', e.message);
+		}
+		preBid();
+		try {
+			await waitTx(tx);
+		} catch (e) {
+			return dangerNotification('Error confirming the transaction please try again');
+		}
+		setActiveStep(2);
+		confirmBid();
+	};
+
 	function getStepContent(step) {
 		switch (step) {
 			case 0:
@@ -256,69 +298,40 @@ const BidOverlay = (props) => {
 												<ClickAwayListener onClickAway={handleClose}>
 													<MenuList autoFocusItem={open} id="mint-fade-menu">
 														<MenuItem
-															onClick={(e) => {
-																handleClose(e);
-																setActiveStep((prevActiveStep) => prevActiveStep + 1);
-																handleNext();
+															onClick={() => {
+																participateInAuction('ovr');
 															}}
-															className="bid-fade-menu --cons-option"
+															className="bid-fade-menu"
 														>
 															Bid using OVR
 														</MenuItem>
 														<MenuItem
-															onClick={async (e) => {
-																handleClose(e);
-																if (checkUserLoggedIn() === false) {
-																	return false;
-																}
-																setActiveStep((prevActiveStep) => prevActiveStep + 1);
-																await buy(window.web3.toWei(bid), 'eth');
-																handleNext();
+															onClick={async () => {
+																participateInAuction('eth');
 															}}
 															className="bid-fade-menu"
 														>
 															Bid using ETH
 														</MenuItem>
 														<MenuItem
-															onClick={async (e) => {
-																handleClose(e);
-																setMetamaskMessage('Getting OVR first...');
-																if (checkUserLoggedIn() === false) {
-																	return false;
-																}
-																setActiveStep((prevActiveStep) => prevActiveStep + 1);
-																await buy(window.web3.toWei(bid), 'dai');
-																handleNext();
+															onClick={async () => {
+																participateInAuction('dai');
 															}}
 															className="bid-fade-menu"
 														>
 															Bid using DAI
 														</MenuItem>
 														<MenuItem
-															onClick={async (e) => {
-																handleClose(e);
-																setMetamaskMessage('Getting OVR first...');
-																if (checkUserLoggedIn() === false) {
-																	return false;
-																}
-																setActiveStep((prevActiveStep) => prevActiveStep + 1);
-																await buy(window.web3.toWei(bid), 'usdt');
-																handleNext();
+															onClick={async () => {
+																participateInAuction('usdt');
 															}}
 															className="bid-fade-menu"
 														>
 															Bid using Tether
 														</MenuItem>
 														<MenuItem
-															onClick={async (e) => {
-																handleClose(e);
-																setMetamaskMessage('Getting OVR first...');
-																if (checkUserLoggedIn() === false) {
-																	return false;
-																}
-																setActiveStep((prevActiveStep) => prevActiveStep + 1);
-																await buy(window.web3.toWei(bid), 'usdc');
-																handleNext();
+															onClick={async () => {
+																participateInAuction('usdc');
 															}}
 															className="bid-fade-menu"
 														>
@@ -330,6 +343,7 @@ const BidOverlay = (props) => {
 										</Grow>
 									)}
 								</Popper>
+
 								<HexButton
 									hexRef={anchorRef}
 									url="#"
@@ -439,7 +453,7 @@ const BidOverlay = (props) => {
 				to={props.url}
 				className={`RightOverlay BidOverlay NormalInputs ${
 					props.className ? props.className : ''
-					} --activeStep-${activeStep}`}
+				} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
 					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>
