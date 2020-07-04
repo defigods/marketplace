@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
+import { warningNotification } from '../../lib/notifications';
 
 const partnerName = 'ovr';
 const userId = 'EXAMPLE'; // TODO CHANGE THIS
@@ -11,7 +12,7 @@ const userId = 'EXAMPLE'; // TODO CHANGE THIS
  */
 const BuyTokens = (context) => {
 	const { perEth, perUsd, setupComplete } = context.web3Provider.state;
-	const { getPrices, buy, buyWithCard } = context.web3Provider.actions;
+	const { getPrices, buy } = context.web3Provider.actions;
 	const [tokensToBuy, setTokensToBuy] = useState(0);
 
 	useEffect(() => {
@@ -78,57 +79,6 @@ const BuyTokens = (context) => {
 				Note: when paying with stablecoins you will receive 2 metamask notifications, simply approve them both to
 				complete the payment.
 			</p>
-
-			<div className={showCardForm ? 'CardForm full-size' : 'hidden'}>
-				<h2 className="card-title">Card details</h2>
-				<input
-					type="number"
-					placeholder="Card number..."
-					className="card-number"
-					onChange={(e) => {
-						setCardNumber(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Month"
-					className="expiration-month"
-					onChange={(e) => {
-						setCardExpiryMonth(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Year"
-					className="expiration-year"
-					onChange={(e) => {
-						setCardExpiryYear(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Cvv"
-					className="cvv"
-					onChange={(e) => {
-						setCvv(e.target.value);
-					}}
-				/>
-				<input
-					type="number"
-					placeholder="Postal code zip..."
-					className="zip"
-					onChange={(e) => {
-						setZip(e.target.value);
-					}}
-				/>
-				<button
-					className="HexButton --blue pay-with-card-button"
-					onClick={() => buyWithCard(tokensToBuy, cardNumber, cardExpiryMonth, cardExpiryYear, cvv, zip)}
-				>
-					Buy {tokensToBuy == 0 ? '' : window.web3.fromWei(tokensToBuy)} Tokens Paying{' '}
-					{tokensToBuy == 0 ? '' : '$' + window.web3.fromWei(tokensToBuy / perUsd)} USD
-				</button>
-			</div>
 		</div>
 	);
 };

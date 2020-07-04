@@ -5,7 +5,6 @@ import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/a
 import config, { camelCaseKeys } from '../lib/config';
 let ActionCable = require('actioncable');
 
-
 export const UserContext = createContext();
 
 export class UserProvider extends Component {
@@ -65,7 +64,6 @@ export class UserProvider extends Component {
 		removeToken('userUuid');
 	};
 	
-
 	// Centralized Notifications
 
 	toggleShowNotificationCenter = () => {
@@ -143,6 +141,36 @@ export class UserProvider extends Component {
 		console.log('liveSockets Called')
 	};
 
+
+	// Type is a number where
+	// 0 -> eth
+    // 1 -> Dai
+    // 2 -> Usdt
+	// 3 -> Usdc
+	// 4 -> OVR
+	participate = async (type, bid, landId) => {
+		let tx
+
+		try {
+			await this.getPrices()
+		} catch (e) {
+			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
+		}
+		try {
+			// For ether we send the value instead of the bid
+			if (type === 0) {
+				const value = bid / this.state.perEth;
+				console.log('value', value, 'bid', bid, 'per eth', this.state.perEth, 'ico participate', this.state.icoParticipate.address)
+				tx = await this.state.icoParticipate.participateAsync(type, bid, landId, {
+					value: value,
+					gasPrice: window.web3.toWei(30, 'gwei'),
+				})
+			}
+			return tx
+		} catch (e) {
+			return warningNotification('Error buying', `There was an error participating in the auction ${e.message}`);
+		}
+	};
 
 	render() {
 		return (
