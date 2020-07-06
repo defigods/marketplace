@@ -3,8 +3,8 @@ import './style.scss';
 import { withUserContext } from '../../context/UserContext';
 import { dangerNotification, successNotification } from '../../lib/notifications';
 
-const INDACOIN_BUY_URL = 'http://localhost:8888/indacoin';
-// const INDACOIN_BUY_URL = 'http://staging-credit-card.ovr.ai/indacoin';
+// const INDACOIN_BUY_URL = 'http://localhost:8888/indacoin';
+const INDACOIN_BUY_URL = 'http://staging-credit-card.ovr.ai/indacoin';
 
 /**
  * Indacoin response component
