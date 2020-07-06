@@ -53,7 +53,7 @@ const NavBar = () => {
 	// END - Profile sub menu
 
 	React.useEffect(() => {
-		console.log("NOTIF userState", userState.user)
+		console.log('NOTIF userState', userState.user);
 	}, [userState]);
 
 	function toggleNotificationCenter(e) {
@@ -95,7 +95,9 @@ const NavBar = () => {
 								</svg>
 							</div>
 							<div className="Notifications__counter">
-								{userState.user.notifications && userState.user.notifications.unreadedCount ? userState.user.notifications.unreadedCount : 0}
+								{userState.user && userState.user.notifications && userState.user.notifications.unreadedCount
+									? userState.user.notifications.unreadedCount
+									: 0}
 							</div>
 						</Link>
 

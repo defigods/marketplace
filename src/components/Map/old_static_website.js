@@ -69,75 +69,14 @@ const fetchSVG = async function (url, el) {
 	}
 };
 
+// Caricare lista parole
 let final_list = [];
-
 var opt = new XMLHttpRequest();
 opt.addEventListener('load', reqListener);
-opt.open('GET', 'https://www.ovr.ai/wp-content/themes/Website-WP/download/prova.json');
+opt.open('GET', 'https://www.ovr.ai/wp-content/themes/Website-WP/download/prova.json'); // Magari caricare da locale
 opt.send();
-
 function reqListener() {
 	final_list = JSON.parse(this.responseText);
-
-	// hex_test = ['8cad56762d08dff',
-	//   '8c2cd6cf6419dff',
-	//   '8ce14268e3911ff',
-	//   '8c7876a52db6dff',
-	//   '8c008e073356bff',
-	//   '8cdf9a555d241ff',
-	//   '8ccca26082559ff',
-	//   '8c8a6c176a1a7ff',
-	//   '8c0e026152413ff',
-	//   '8cf06ea06cda9ff',
-	//   '8c9326b5cd589ff',
-	//   '8c000ac91832bff',
-	//   '8c1f05065c563ff',
-	//   '8c380e86c909dff',
-	//   '8c0588a8c91a1ff',
-	//   '8cf16b0025621ff',
-	//   '8c8b4c8aac53bff',
-	//   '8c35006027a45ff',
-	//   '8cab8e728b16bff',
-	//   '8c8ee8d152543ff',
-	//   '8c8d4939dd431ff',
-	//   '8c933101311cdff',
-	//   '8c47800333ae5ff',
-	//   '8c115a948bb31ff',
-	//   '8cc10238dd1a5ff',
-	//   '8c0753ab2d0e7ff',
-	//   '8c3c19b5939d1ff',
-	//   '8cf123688408dff',
-	//   '8c0d18daa12a7ff',
-	//   '8cece6c882311ff',
-	//   '8c11b69a271c1ff',
-	//   '8cf31922d6ce5ff',
-	//   '8c77a4ce83951ff',
-	//   '8c0fa1b1282e5ff',
-	//   '8ccd3404954c1ff',
-	//   '8c10a6603cb31ff',
-	//   '8c2e5a98c7b1dff',
-	//   '8c5c8bb16018dff',
-	//   '8ceced0c494c1ff',
-	//   '8c0b652135231ff',
-	//   '8c3da6253b2bbff',
-	//   '8c3318c036489ff',
-	//   '8c1b6927401c5ff',
-	//   '8cf29136d4463ff',
-	//   '8c78a60017a09ff',
-	//   '8cf11daa62949ff',
-	//   '8ce1ab61631cbff',
-	//   '8cee2bcadc341ff']
-
-	// for (let i = 0; i < hex_test.length; i++) {
-	//   let triplet = form_h3_to_words(hex_test[i])
-	//   let generated_hex = from_triplet_to_h3(triplet)
-	//   if (hex_test[i] === generated_hex) {
-	//     console.log('ok')
-	//   } else {
-	//     console.log('cazzo!')
-	//   }
-	//   console.log(hex_test[i], triplet, generated_hex)
-	// }
 }
 
 function add(x, y, base) {

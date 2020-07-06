@@ -17,7 +17,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
 const MintOverlay = (props) => {
-	const { waitTx, waitTxWithCallback, participate, approveOvrTokens } = props.web3Provider.actions;
+	const { waitTx, participate, approveOvrTokens } = props.web3Provider.actions;
 	const { ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
@@ -139,51 +139,6 @@ const MintOverlay = (props) => {
 			});
 	}
 
-	function setDeactiveOverlay(e) {
-		e.preventDefault();
-		props.mapProvider.actions.changeActiveMintOverlay(false);
-		setActiveStep(0);
-	}
-
-	function sendPreAuctionStart() {
-		console.log('Auction nextBid', nextBid);
-		auctionPreStart(props.land.key, nextBid)
-			.then((response) => {
-				console.log('response', response.data);
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
-	}
-
-	function sendConfirmAuctionStart() {
-		// Call API function
-		auctionConfirmStart(props.land.key)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.realodLandStatefromApi(props.land.key);
-					console.log('props.land.key', props);
-					setActiveStep(2);
-				} else {
-					// response.data.errors[0].message
-					console.log('responseFalse');
-					// if (response.data.errors){
-					//   dangerNotification("Unable to mint land", response.data.errors[0].message)
-					// }
-					dangerNotification('Unable to mint land', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
-	}
-
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
@@ -225,14 +180,14 @@ const MintOverlay = (props) => {
 		} catch (e) {
 			return dangerNotification('Error processing the transaction', e.message);
 		}
-		sendPreAuctionStart();
+		sendPreAuctionStart(tx);
 		try {
 			await waitTx(tx);
 		} catch (e) {
 			return dangerNotification('Error confirming the transaction please try again');
 		}
 		setActiveStep(2);
-		sendConfirmAuctionStart();
+		sendConfirmAuctionStart(txHash);
 	};
 
 	function getStepContent(step) {
