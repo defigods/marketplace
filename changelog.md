@@ -1,3 +1,9 @@
+### v0.1.21
+
+- Fixed centralized connection to start of an auction
+- Added a "View transaction status" that opens etherscan after bidding started
+
+
 ### v0.1.2
 
 - Refractored UserContext and separated web3 functionality in Web3Context

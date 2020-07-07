@@ -127,6 +127,16 @@ export function auctionConfirmStart(landUuid = null, txHash = null) {
 	);
 }
 
+export function auctionCheckClose(landUuid = null) {
+	return request(
+		{ url: '/infura/auction/close', method: 'POST' },
+		{
+			land_uuid: landUuid,
+		},
+		null,
+	);
+}
+
 // LANDS
 export function getLand(hex_id = null) {
 	return request(
@@ -274,6 +284,17 @@ export function sendConfirmAuctionStart(landId, txHash) {
 				console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
 				// setActiveStep(0);
 			}
+		})
+		.catch((error) => {
+			// Notify user if network error
+			console.log(error);
+		});
+}
+
+export function sendAuctionCheckClose(landId) {
+	auctionCheckClose(landId)
+		.then((response) => {
+			console.log(response);
 		})
 		.catch((error) => {
 			// Notify user if network error

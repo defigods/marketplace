@@ -13,7 +13,7 @@ import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
 import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 
-import { getLand } from '../../lib/api';
+import { getLand, sendAuctionCheckClose } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 
 import { Textfit } from 'react-textfit';
@@ -45,7 +45,7 @@ export class Land extends Component {
 		this.mapActions.changeHexId(hex_id);
 		// Load data from API
 		this.loadLandStateFromApi(hex_id);
-		console.log('this.props AAAAA', this.props)
+		// Reload data from web3
 		if (this.props.web3Provider.state.setupComplete && this.props.web3Provider.state.ico) this.setupListeners();
 		let setupInterval = setInterval(() => {
 			if (this.props.web3Provider.state.setupComplete && this.props.web3Provider.state.ico) {
@@ -180,6 +180,7 @@ export class Land extends Component {
 	async redeemLand(e) {
 		e.preventDefault();
 		this.setState({ isRedeemingLand: true });
+		sendAuctionCheckClose(this.state.hexId);
 		await this.props.web3Provider.actions.redeemSingleLand(this.state.hexId);
 		this.setState({ isRedeemingLand: false });
 	}
