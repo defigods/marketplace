@@ -12,15 +12,27 @@ const apis = {
 	hostname:
 		environment === 'PRODUCTION'
 			? 'http://localhost:3000/api/v1'
-			: (environment === 'STAGING' ? 'https://mws-staging.ovr.ai/api/v1' : 'http://localhost:3000/api/v1'),
+			: environment === 'STAGING'
+			? 'https://mws-staging.ovr.ai/api/v1'
+			: 'http://localhost:3000/api/v1', // DEVELOPMENT
 	socket:
 		environment === 'PRODUCTION'
 			? 'ws://localhost:3000/cable'
-			: (environment === 'STAGING' ? 'wss://47.254.135.104:8003/cable' : 'ws://localhost:3000/cable'),
+			: environment === 'STAGING'
+			? 'wss://47.254.135.104:8003/cable'
+			: 'ws://localhost:3000/cable', // DEVELOPMENT
 	creditCardApi:
 		environment === 'PRODUCTION'
 			? 'http://credit-card.ovr.ai/buy'
-			: (environment === 'STAGING' ? 'http://staging-credit-card.ovr.ai/buy' : 'http://staging-credit-card.ovr.ai/buy')
+			: environment === 'STAGING'
+			? 'http://staging-credit-card.ovr.ai/buy'
+			: 'http://staging-credit-card.ovr.ai/buy', // DEVELOPMENT
+	etherscan:
+		environment === 'PRODUCTION'
+			? 'https://etherscan.io/'
+			: environment === 'STAGING'
+			? 'https://ropsten.etherscan.io/'
+			: 'https://ropsten.etherscan.io/' // DEVELOPMENT
 };
 
 const map = {
@@ -32,10 +44,7 @@ const map = {
 };
 
 let config = {
-	web3network:
-	environment === 'PRODUCTION'
-		? "1"
-		: "3",
+	web3network: environment === 'PRODUCTION' ? '1' : '3',
 	apis: apis,
 	map: map,
 };

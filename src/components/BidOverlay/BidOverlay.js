@@ -17,7 +17,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
 const BidOverlay = (props) => {
-	const { waitTx, waitTxWithCallback, participate, approveOvrTokens } = props.web3Provider.actions;
+	const { waitTx, participate, approveOvrTokens } = props.web3Provider.actions;
 	const { ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;

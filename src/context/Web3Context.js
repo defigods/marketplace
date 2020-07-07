@@ -2,7 +2,7 @@ import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
 import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart } from '../lib/api';
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -38,29 +38,13 @@ export class Web3Provider extends Component {
       setupComplete: false,
       perEth: 0,
       perUsd: 0,
+      lastTransaction: "0x0"
     };
   }
 
   componentDidMount() {
     if (isLogged()) {
       this.lightSetupWeb3();
-
-      // userProfile()
-      //   .then((response) => {
-      //     if (response.data.result === true) {
-      //       this.setState({ user: response.data.user });
-      //       this.liveSocket();
-      //     } else {
-      //       dangerNotification('Session expired', 'Please login again');
-      //       this.context.actions.logoutUser();
-      //     }
-      //   })
-      //   .catch(() => {
-      //     // Notify user if network error
-      //     networkError();
-      //   });
-
-      // this.context.actions.loginUser(getToken('userToken'), getToken('userUuid'));
     }
   }
 
@@ -627,7 +611,18 @@ export class Web3Provider extends Component {
 		} catch (e) {
 			return warningNotification('Error buying', `There was an error participating in the auction ${e.message}`);
 		}
-	};
+  };
+  
+  participateMint = async (type, bid, landId) => {
+    let bidInWei = window.web3.toWei(bid)
+    let landIdBase16 = parseInt(landId, 16);
+    let tx = await this.participate(type, bidInWei, landIdBase16);
+    this.setState({lastTransaction: tx});
+    sendPreAuctionStart(landId, bid, tx);
+    this.waitTxWithCallback(tx, () => {
+      sendConfirmAuctionStart(landId, tx)
+    })
+  }
 
   render() {
     return (
@@ -655,6 +650,7 @@ export class Web3Provider extends Component {
             buy: this.buy,
             getPrices: this.getPrices,
             participate: this.participate,
+            participateMint: this.participateMint
           },
         }}
       >

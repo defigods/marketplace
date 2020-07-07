@@ -5,8 +5,8 @@ import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { auctionConfirmStart, auctionPreStart } from '../../lib/api';
-import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
+import config from '../../lib/config';
+import { warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
 import MenuItem from '@material-ui/core/MenuItem';
@@ -17,8 +17,8 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
 const MintOverlay = (props) => {
-	const { waitTx, participate, approveOvrTokens } = props.web3Provider.actions;
-	const { ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
+	const { participateMint, approveOvrTokens } = props.web3Provider.actions;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -103,91 +103,82 @@ const MintOverlay = (props) => {
 	};
 
 	// Call centralized API functions
-	function sendPreAuctionStart(txHash) {
-		auctionPreStart(props.land.key, bid, txHash)
-			.then((response) => {
-				console.log('response', response.data);
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
-	}
+	// function sendPreAuctionStart(txHash) {
+	// 	auctionPreStart(props.land.key, bid, txHash)
+	// 		.then((response) => {
+	// 			console.log('response', response.data);
+	// 		})
+	// 		.catch((error) => {
+	// 			// Notify user if network error
+	// 			console.log(error);
+	// 			networkError();
+	// 		});
+	// }
 
-	function sendConfirmAuctionStart(txHash) {
-		auctionConfirmStart(props.land.key, txHash)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.reloadLandStatefromApi(props.land.key);
-					console.log('props.land.key', props);
-				} else {
-					// response.data.errors[0].message
-					console.log('responseFalse');
-					// if (response.data.errors){
-					//   dangerNotification("Unable to mint land", response.data.errors[0].message)
-					// }
-					dangerNotification('Unable to mint land', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch((error) => {
-				// Notify user if network error
-				console.log(error);
-				networkError();
-			});
-	}
+	// function sendConfirmAuctionStart(txHash) {
+	// 	auctionConfirmStart(props.land.key, txHash)
+	// 		.then((response) => {
+	// 			if (response.data.result === true) {
+	// 				console.log('responseTrue', response.data);
+	// 				props.reloadLandStatefromApi(props.land.key);
+	// 				console.log('props.land.key', props);
+	// 			} else {
+	// 				// response.data.errors[0].message
+	// 				console.log('responseFalse');
+	// 				// if (response.data.errors){
+	// 				//   dangerNotification("Unable to mint land", response.data.errors[0].message)
+	// 				// }
+	// 				dangerNotification('Unable to mint land', response.data.errors[0].message);
+	// 				setActiveStep(0);
+	// 			}
+	// 		})
+	// 		.catch((error) => {
+	// 			// Notify user if network error
+	// 			console.log(error);
+	// 			networkError();
+	// 		});
+	// }
 
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
 		if (!checkUserLoggedIn()) return;
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		const landId = parseInt(hexId, 16);
-		let tx;
 		try {
 			switch (type) {
 				case 'ovr':
 					setMetamaskMessage('Approving OVR tokens...');
 					await approveOvrTokens(true, ovr);
 					setMetamaskMessage('Participating in the auction with OVR...');
-					tx = await participate(4, window.web3.toWei(bid), landId);
+					await participateMint(4, bid, hexId);
 					break;
 				case 'eth':
 					setMetamaskMessage('Participating in the auction with ETH...');
-					tx = await participate(0, window.web3.toWei(bid), landId);
+					await participateMint(0, bid, hexId);
 					break;
 				case 'usdt':
 					setMetamaskMessage('Approving Tether tokens...');
 					await approveOvrTokens(true, tether);
 					setMetamaskMessage('Participating in the auction with Tether...');
-					tx = await participate(2, window.web3.toWei(bid), landId);
+					await participateMint(2, bid, hexId);
 					break;
 				case 'usdc':
 					setMetamaskMessage('Approving USDC tokens...');
 					await approveOvrTokens(true, usdc);
 					setMetamaskMessage('Participating in the auction with Usdc...');
-					tx = await participate(3, window.web3.toWei(bid), landId);
+					await participateMint(3, bid, hexId);
 					break;
 				case 'dai':
 					setMetamaskMessage('Approving DAI tokens...');
 					await approveOvrTokens(true, dai);
 					setMetamaskMessage('Participating in the auction with Dai...');
-					tx = await participate(1, window.web3.toWei(bid), landId);
+					await participateMint(1, bid, hexId);
 					break;
 			}
 		} catch (e) {
 			return dangerNotification('Error processing the transaction', e.message);
 		}
-		sendPreAuctionStart(tx);
-		try {
-			await waitTx(tx);
-		} catch (e) {
-			return dangerNotification('Error confirming the transaction please try again');
-		}
 		setActiveStep(2);
-		sendConfirmAuctionStart(txHash);
 	};
 
 	function getStepContent(step) {
@@ -324,6 +315,11 @@ const MintOverlay = (props) => {
 							<div className="Overlay__congrat_title">
 								<span>Congratulations</span>
 								<br></br>The auction is about to start
+								<div className="Overlay__etherscan_link">
+									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
+										View transaction status
+									</a>
+								</div>
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>

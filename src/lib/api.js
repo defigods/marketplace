@@ -251,6 +251,36 @@ export function hideNotification(notificationUuid = null) {
 	);
 }
 
+// Centralized helpers
+
+export function sendPreAuctionStart(landId, bid, txHash) {
+	auctionPreStart(landId, bid, txHash)
+		.then((response) => {
+			console.log('response', response.data);
+		})
+		.catch((error) => {
+			// Notify user if network error
+			console.log(error);
+		});
+}
+
+export function sendConfirmAuctionStart(landId, txHash) {
+	auctionConfirmStart(landId, txHash)
+		.then((response) => {
+			if (response.data.result === true) {
+				console.log('sendConfirmAuctionStart - response true', response.data);
+			} else {
+				// console.log('responseFalse');
+				console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
+				// setActiveStep(0);
+			}
+		})
+		.catch((error) => {
+			// Notify user if network error
+			console.log(error);
+		});
+}
+
 // Activities
 export function userActivities() {
 	return request({ url: '/user/activities', method: 'GET' }, {}, null);
