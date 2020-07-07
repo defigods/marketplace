@@ -6,7 +6,7 @@ import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
 import config from '../../lib/config';
-import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
+import { warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
 import MenuItem from '@material-ui/core/MenuItem';
