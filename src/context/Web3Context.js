@@ -2,7 +2,7 @@ import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
 import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendAuctionBidConfirm, sendPreAuctionBid } from '../lib/api';
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -624,6 +624,17 @@ export class Web3Provider extends Component {
     })
   }
 
+  participateBid = async (type, bid, landId) => {
+    let bidInWei = window.web3.toWei(bid)
+    let landIdBase16 = parseInt(landId, 16);
+    let tx = await this.participate(type, bidInWei, landIdBase16);
+    this.setState({lastTransaction: tx});
+    sendPreAuctionBid(landId, bid);
+    this.waitTxWithCallback(tx, () => {
+      sendAuctionBidConfirm(landId, bid)
+    })
+  }
+
   render() {
     return (
       <Web3Context.Provider
@@ -650,7 +661,8 @@ export class Web3Provider extends Component {
             buy: this.buy,
             getPrices: this.getPrices,
             participate: this.participate,
-            participateMint: this.participateMint
+            participateMint: this.participateMint,
+            participateBid: this.participateBid
           },
         }}
       >

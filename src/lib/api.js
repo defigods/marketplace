@@ -291,6 +291,27 @@ export function sendConfirmAuctionStart(landId, txHash) {
 		});
 }
 
+export function sendPreAuctionBid(landId, nextBid) {
+	auctionBidPre(landId, nextBid)
+		.then((response) => {
+			// console.log(response)
+		})
+		.catch((error) => {
+			// Notify user if network error
+			console.log(error);
+		});
+}
+export function sendAuctionBidConfirm(landId, nextBid) {
+	auctionBidConfirm(landId, nextBid)
+		.then((response) => {
+			// console.log(response)
+		})
+		.catch((error) => {
+			// Notify user if network error
+			console.log(error);
+		});
+}
+
 export function sendAuctionCheckClose(landId) {
 	auctionCheckClose(landId)
 		.then((response) => {

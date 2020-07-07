@@ -122,7 +122,7 @@ const NavBar = () => {
 							className="Profile__link"
 							onClick={handleToggle}
 						>
-							<span>{userState.user.username}</span>
+							<span>{userState.user && userState.user.username}</span>
 							<div className="Profile__img-cont">
 								<div
 									id="Profile__img"

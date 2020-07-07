@@ -5,7 +5,7 @@ import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { auctionBidPre, auctionBidConfirm } from '../../lib/api';
+import config from '../../lib/config';
 import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
@@ -17,8 +17,8 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
 const BidOverlay = (props) => {
-	const { waitTx, participate, approveOvrTokens } = props.web3Provider.actions;
-	const { ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
+	const { participateBid, approveOvrTokens } = props.web3Provider.actions;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -108,92 +108,46 @@ const BidOverlay = (props) => {
 		return true;
 	};
 
-	// Call centralized API functions
-	function preBid() {
-		auctionBidPre(props.land.key, nextBid)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-				} else {
-					console.log('responseFalse', response.data.errors[0].message);
-					dangerNotification('Unable to place requested bid', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
-	}
-	function confirmBid() {
-		auctionBidConfirm(props.land.key, nextBid)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.reloadLandStatefromApi(props.land.key);
-					setActiveStep(2);
-				} else {
-					// response.data.errors[0].message
-					console.log('responseFalse');
-					dangerNotification('Unable to place requested bid', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
-	}
-
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
 		if (!checkUserLoggedIn()) return;
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		const landId = parseInt(hexId, 16);
-		let tx;
 		try {
 			switch (type) {
 				case 'ovr':
 					setMetamaskMessage('Approving OVR tokens...');
 					await approveOvrTokens(true, ovr);
 					setMetamaskMessage('Participating in the auction with OVR...');
-					tx = await participate(4, window.web3.toWei(bid), landId);
+					await participateBid(4, bid, hexId);
 					break;
 				case 'eth':
 					setMetamaskMessage('Participating in the auction with ETH...');
-					tx = await participate(0, window.web3.toWei(bid), landId);
+					await participateBid(0, bid, hexId);
 					break;
 				case 'usdt':
 					setMetamaskMessage('Approving Tether tokens...');
 					await approveOvrTokens(true, tether);
 					setMetamaskMessage('Participating in the auction with Tether...');
-					tx = await participate(2, window.web3.toWei(bid), landId);
+					await participateBid(2, bid, hexId);
 					break;
 				case 'usdc':
 					setMetamaskMessage('Approving USDC tokens...');
 					await approveOvrTokens(true, usdc);
 					setMetamaskMessage('Participating in the auction with USDC...');
-					tx = await participate(3, window.web3.toWei(bid), landId);
+					await participateBid(3, bid, hexId);
 					break;
 				case 'dai':
 					setMetamaskMessage('Approving DAI tokens...');
 					await approveOvrTokens(true, dai);
 					setMetamaskMessage('Participating in the auction with DAI...');
-					tx = await participate(1, window.web3.toWei(bid), landId);
+					await participateBid(1, bid, hexId);
 					break;
 			}
 		} catch (e) {
 			return dangerNotification('Error processing the transaction', e.message);
 		}
-		preBid();
-		try {
-			await waitTx(tx);
-		} catch (e) {
-			return dangerNotification('Error confirming the transaction please try again');
-		}
 		setActiveStep(2);
-		confirmBid();
 	};
 
 	function getStepContent(step) {
@@ -392,7 +346,12 @@ const BidOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>Congratulations</span>
-								<br></br>Your bid request has been sent.
+								<br></br>Your bid request has been sent
+								<div className="Overlay__etherscan_link">
+									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
+										View transaction status
+									</a>
+								</div>
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
