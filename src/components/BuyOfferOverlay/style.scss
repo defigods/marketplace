@@ -1,26 +1,5 @@
 .BuyOfferOverlay{
-  background: linear-gradient(138deg, #0081DD, #022136);
-  background-size: 400% 400%;
-
-  -webkit-animation: AnimationName 22s ease infinite;
-  -moz-animation: AnimationName 22s ease infinite;
-  animation: AnimationName 22s ease infinite;
-
-  @-webkit-keyframes AnimationName {
-      0%{background-position:0% 88%}
-      50%{background-position:100% 13%}
-      100%{background-position:0% 88%}
-  }
-  @-moz-keyframes AnimationName {
-      0%{background-position:0% 88%}
-      50%{background-position:100% 13%}
-      100%{background-position:0% 88%}
-  }
-  @keyframes AnimationName {
-      0%{background-position:0% 88%}
-      50%{background-position:100% 13%}
-      100%{background-position:0% 88%}
-  }
+  background: #fff;
   .Overlay__hex_cont{
     position: relative;
   }

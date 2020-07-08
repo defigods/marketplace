@@ -382,14 +382,6 @@ export class Web3Provider extends Component {
     });
   };
 
-  offerToBuyLand = async (hexId, price, expirationDate) => {
-    const landId = parseInt(hexId, 16);
-    const tx = await this.state.ico.offerToBuyLandAsync(landId, price, expirationDate, {
-      gasPrice: window.web3.toWei(30, 'gwei'),
-    });
-    await this.waitTx(tx);
-  };
-
   getOffersToBuyLand = async (hexId) => {
     const landId = parseInt(hexId, 16);
     const landOfferIds = await this.state.ico.getLandOffersAsync(landId);
@@ -635,6 +627,22 @@ export class Web3Provider extends Component {
     })
   }
 
+  participateBuyOffer = async (type, proposedValue, expirationDate, landId) => {
+    // TODO all the centralized part 
+    // TODO double check behavior with different contract
+    let bidInWei = window.web3.toWei(proposedValue)
+    let landIdBase16 = parseInt(landId, 16);
+    console.log('bidInWei', bidInWei)
+    console.log('landIdBase16', landIdBase16)
+    console.log('expirationDate', expirationDate)
+    const tx = await this.state.ico.offerToBuyLandAsync(landIdBase16, bidInWei, expirationDate, {
+      gasPrice: window.web3.toWei(30, 'gwei'),
+    });
+    await this.waitTx(tx);
+  }
+
+
+
   render() {
     return (
       <Web3Context.Provider
@@ -650,7 +658,6 @@ export class Web3Provider extends Component {
             approveErc721Token: this.approveErc721Token,
             approveOvrTokens: this.approveOvrTokens,
             buyLand: this.buyLand,
-            offerToBuyLand: this.offerToBuyLand,
             getOffersToBuyLand: this.getOffersToBuyLand,
             cancelBuyOffer: this.cancelBuyOffer,
             declineBuyOffer: this.declineBuyOffer,
@@ -662,7 +669,8 @@ export class Web3Provider extends Component {
             getPrices: this.getPrices,
             participate: this.participate,
             participateMint: this.participateMint,
-            participateBid: this.participateBid
+            participateBid: this.participateBid,
+            participateBuyOffer: this.participateBuyOffer
           },
         }}
       >

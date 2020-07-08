@@ -345,7 +345,6 @@ export class Land extends Component {
 				break;
 			case 5:
 				button = <></>;
-				console.log('this.state.userPerspective', this.state.userPerspective)
 				if (this.state.userPerspective != 0){
 					button = (
 						<div className="redeem-land-map-button">

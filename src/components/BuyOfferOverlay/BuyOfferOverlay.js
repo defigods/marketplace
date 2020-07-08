@@ -1,127 +1,162 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-// import DateFnsUtils from '@date-io/date-fns';
-import MomentUtils from '@date-io/moment';
-import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers';
-// import { makeStyles } from '@material-ui/core/styles';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
-
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
-
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
+import config from '../../lib/config';
+import { warningNotification, dangerNotification } from '../../lib/notifications';
+import PropTypes from 'prop-types';
 
-import { buyOffer } from '../../lib/api';
-import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
-// import Stepper from '@material-ui/core/Stepper';
-// import Step from '@material-ui/core/Step';
+import MomentUtils from '@date-io/moment';
+import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers';
+
+import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuList from '@material-ui/core/MenuList';
 
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 
 const BuyOfferOverlay = (props) => {
-	const [proposedValue, setProposedValue] = useState('');
-	const [bidInputError] = useState(false);
+	const { approveOvrTokens, participateBuyOffer } = props.web3Provider.actions;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
+	const { hexId } = props.land;
+	const { marketStatus } = props.land;
+
 	const [bidValid, setBidValid] = useState(false);
+	const [proposedValue, setProposedValue] = useState('');
 	const [activeStep, setActiveStep] = useState(0);
 	const [expirationDate, setExpirationDate] = useState(tomorrow);
-	const pathHexId = window.location.pathname.split('/')[3];
-	const [hexId, setHexId] = useState(pathHexId && pathHexId.length === 15 ? pathHexId : props.mapProvider.state.hex_id);
-	const { approveOvrTokens, buy, offerToBuyLand } = props.web3Provider.actions;
-	const { setupComplete } = props.web3Provider.state;
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	const [solidityExpirationDate, setSolidityExpirationDate] = useState(0);
+	const [showOverlay, setShowOverlay] = useState(false);
+	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
-	useEffect(() => {
-		if (setupComplete) setupListeners();
-	}, [setupComplete]);
-
-	const setupListeners = () => {
-		document.addEventListener('land-selected', (event) => {
-			setHexId(event.detail.hex_id);
-		});
-	};
-
-	const handleNext = async () => {
-		if (activeStep + 1 === 1) {
-			if (!props.userProvider.state.isLoggedIn) {
-				setActiveStep(0);
-				warningNotification('Invalid authentication', 'Please Log In to partecipate');
-			} else {
-				const now = Math.trunc(Date.now() / 1000);
-				const price = String(window.web3.toWei(proposedValue));
-
-				if (now >= solidityExpirationDate) {
-					warningNotification('Date error', 'The expiration date must be set in the future');
-					setActiveStep((prevActiveStep) => 0);
-					return;
-				}
-				try {
-					setMetamaskMessage('Approving OVR tokens for the Smart Contract...');
-					await approveOvrTokens();
-					setMetamaskMessage('Waiting for MetaMask confirmation');
-					await offerToBuyLand(hexId, price, solidityExpirationDate);
-				} catch (e) {
-					return dangerNotification('Error processing the transaction', e.message);
-				}
-
-				sendBuyOffer();
-			}
-		} else {
-			setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		}
-	};
-
-	useEffect(() => {
-		console.log('bidoverlayuseeffect');
-	}, []);
-
-	// const handleBack = () => {
-	//   setActiveStep(prevActiveStep => prevActiveStep - 1);
-	// };
-
-	const updateProposedValue = (e) => {
-		if (proposedValue === '') {
-			setBidValid(false);
-		} else {
-			setBidValid(true);
-		}
-		setProposedValue(e.target.value);
-	};
-
-	function sendBuyOffer() {
-		// Call API function
-		buyOffer(hexId, proposedValue, expirationDate)
-			.then((response) => {
-				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
-					props.reloadLandStatefromApi(props.land.key);
-					setActiveStep(2);
-				} else {
-					// response.data.errors[0].message
-					console.log('responseFalse');
-					dangerNotification('Unable to place sell request', response.data.errors[0].message);
-					setActiveStep(0);
-				}
-			})
-			.catch(() => {
-				// Notify user if network error
-				networkError();
-			});
-	}
+	const anchorRef = React.useRef(null);
+	const [open, setOpen] = React.useState(false);
 
 	function setDeactiveOverlay(e) {
 		e.preventDefault();
 		props.mapProvider.actions.changeActiveBuyOfferOverlay(false);
 		// Bring the step at 0
 		setTimeout(function () {
+			setOpen(false);
 			setActiveStep(0);
 			setProposedValue('');
-		}, 200);
+		}, 500);
 	}
+
+	// Listener for fadein and fadeout animation of overlay
+	useEffect(() => {
+		if (props.mapProvider.state.activeBuyOfferOverlay) {
+			setShowOverlay(true);
+			setTimeout(() => {
+				setClassShowOverlay(true);
+			}, 50);
+		} else {
+			setClassShowOverlay(false);
+			setTimeout(() => {
+				setShowOverlay(false);
+			}, 500);
+		}
+	}, [props.mapProvider.state.activeBuyOfferOverlay]);
+
+	// Init helpers web3
+	useEffect(() => {
+		if (setupComplete) setNextBidSelectedLand();
+	}, [setupComplete, ico, ovr, hexId, marketStatus]);
+
+	const setNextBidSelectedLand = async () => {
+		if (!setupComplete || !ico || !ovr) {
+			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+		}
+	};
+
+	// Toggle bidding menu of selection currencies
+	const handleClose = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+		setOpen(false);
+	};
+
+	const handleClick = () => {
+		setOpen(true);
+	};
+
+	// Update bid value in state
+	const updateProposedValue = (val) => {
+		if (val != '') {
+			setBidValid(true);
+		} else {
+			setBidValid(false);
+		}
+		setProposedValue(val);
+	};
+
+	// Helper used to check if the user is logged in
+	const checkUserLoggedIn = () => {
+		if (!props.userProvider.state.isLoggedIn) {
+			setActiveStep(0);
+			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			return false;
+		}
+		return true;
+	};
+
+	const participateInAuction = async (type) => {
+		if (!checkUserLoggedIn()) return;
+		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		try {
+			const now = Math.trunc(Date.now() / 1000);
+			if (now >= solidityExpirationDate) {
+				warningNotification('Date error', 'The expiration date must be set in the future');
+				setActiveStep(0);
+				return;
+			}
+			switch (type) {
+				case 'ovr':
+					setMetamaskMessage('Approving OVR tokens...');
+					await approveOvrTokens(true, ovr);
+					setMetamaskMessage('Placing Buy Offer with OVR...');
+					await participateBuyOffer(4, proposedValue, solidityExpirationDate, hexId);
+					break;
+				case 'eth':
+					setMetamaskMessage('Placing Buy Offer with ETH...');
+					await participateBuyOffer(0, proposedValue, solidityExpirationDate, hexId);
+					break;
+				case 'usdt':
+					setMetamaskMessage('Approving Tether tokens...');
+					await approveOvrTokens(true, tether);
+					setMetamaskMessage('Placing Buy Offer with Tether...');
+					await participateBuyOffer(2, proposedValue, solidityExpirationDate, hexId);
+					break;
+				case 'usdc':
+					setMetamaskMessage('Approving USDC tokens...');
+					await approveOvrTokens(true, usdc);
+					setMetamaskMessage('Placing Buy Offer with USDC...');
+					await participateBuyOffer(3, proposedValue, solidityExpirationDate, hexId);
+					break;
+				case 'dai':
+					setMetamaskMessage('Approving DAI tokens...');
+					await approveOvrTokens(true, dai);
+					setMetamaskMessage('Placing Buy Offer with DAI...');
+					await participateBuyOffer(1, proposedValue, solidityExpirationDate, hexId);
+					break;
+			}
+		} catch (e) {
+			setOpen(false);
+			setActiveStep(0);
+			return dangerNotification('Error processing the transaction', e.message);
+		}
+		setActiveStep(2);
+	};
 
 	function handleDateChange(e) {
 		setSolidityExpirationDate(Math.trunc(e / 1000));
@@ -134,107 +169,110 @@ const BuyOfferOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Set buy order for OVRLand</div>
+							<div className="Overlay__title">Place Buy Offer for</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__bid_container">
-								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Current Value</div>
-									<div className="Overlay__bid_cont">
-										<ValueCounter value={props.currentBid}></ValueCounter>
+							<div className="Overlay__lower__cont">
+								<div className="Overlay__bid_container">
+									<div className="Overlay__current_bid">
+										<div className="Overlay__bid_title">Current value</div>
+										<div className="Overlay__bid_cont">
+											<ValueCounter value={props.currentBid}></ValueCounter>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div className="Overlay__input">
-								<TextField
-									id="quantity"
-									label="Buy at"
-									type="number"
-									error={bidInputError !== false ? true : false}
-									helperText={bidInputError !== false ? bidInputError : ''}
-									value={proposedValue}
-									onFocus={updateProposedValue}
-									onChange={updateProposedValue}
-									onKeyUp={updateProposedValue}
-								/>
-								<MuiPickersUtilsProvider utils={MomentUtils}>
-									<DateTimePicker
-										variant="inline"
-										format="DD-MM-YYYY HH:mm"
-										margin="normal"
-										id="date-picker-inline"
-										label="Expires at"
-										value={expirationDate}
-										onChange={handleDateChange}
-										KeyboardButtonProps={{
-											'aria-label': 'change date',
+								<div className="Overlay__input">
+									<TextField
+										id="quantity"
+										label="Buy at"
+										type="number"
+										value={proposedValue}
+										onChange={(e) => {
+											const propVal = e.target.value;
+											if (propVal > 0) updateProposedValue(propVal);
 										}}
 									/>
-								</MuiPickersUtilsProvider>
+									<MuiPickersUtilsProvider utils={MomentUtils}>
+										<DateTimePicker
+											variant="inline"
+											format="DD-MM-YYYY HH:mm"
+											margin="normal"
+											id="date-picker-inline"
+											label="Expires at"
+											value={expirationDate}
+											onChange={handleDateChange}
+										/>
+									</MuiPickersUtilsProvider>
+								</div>
 							</div>
 							<div className="Overlay__buttons_container">
-							<HexButton
-									url="#"
-									text="Place Order With OVR"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={() => {
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										handleNext();
-									}}
-								></HexButton>
+								<Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+									{({ TransitionProps, placement }) => (
+										<Grow
+											{...TransitionProps}
+											style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+										>
+											<Paper>
+												<ClickAwayListener onClickAway={handleClose}>
+													<MenuList autoFocusItem={open} id="mint-fade-menu">
+														<MenuItem
+															onClick={() => {
+																participateInAuction('ovr');
+															}}
+															className="bid-fade-menu --cons-option"
+														>
+															Buy using OVR
+														</MenuItem>
+														<MenuItem
+															onClick={async () => {
+																participateInAuction('eth');
+															}}
+															className="bid-fade-menu"
+														>
+															Buy using ETH
+														</MenuItem>
+														<MenuItem
+															onClick={async () => {
+																participateInAuction('dai');
+															}}
+															className="bid-fade-menu"
+														>
+															Buy using DAI
+														</MenuItem>
+														<MenuItem
+															onClick={async () => {
+																participateInAuction('usdt');
+															}}
+															className="bid-fade-menu"
+														>
+															Buy using Tether
+														</MenuItem>
+														<MenuItem
+															onClick={async () => {
+																participateInAuction('usdc');
+															}}
+															className="bid-fade-menu"
+														>
+															Buy using USDC
+														</MenuItem>
+													</MenuList>
+												</ClickAwayListener>
+											</Paper>
+										</Grow>
+									)}
+								</Popper>
 								<HexButton
+									hexRef={anchorRef}
 									url="#"
-									text="Place Order With ETH"
+									text="Place buy"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(proposedValue), 'eth');
-										handleNext();
-									}}
+									ariaControls={open ? 'mint-fade-menu' : undefined}
+									ariaHaspopup="true"
+									onClick={handleClick}
 								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Order With DAI"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(proposedValue), 'dai');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Order With Tether"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(proposedValue), 'usdt');
-										handleNext();
-									}}
-								></HexButton>
-								<HexButton
-									url="#"
-									text="Place Order With USDC"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={async () => {
-										setMetamaskMessage('Getting OVR first...');
-										setActiveStep((prevActiveStep) => prevActiveStep + 1);
-										await buy(window.web3.toWei(proposedValue), 'usdc');
-										handleNext();
-									}}
-								></HexButton>
-								{/* <HexButton
-									url="#"
-									text="Place Bid With Dollars"
-									className={`--orange ${bidValid ? '' : '--disabled'}`}
-									onClick={handleNext}
-								></HexButton> */}
-								<HexButton url="#" text="Cancel" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -243,14 +281,14 @@ const BuyOfferOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Set Buy order for OVRLand</div>
+							<div className="Overlay__title">Place Buy Offer for</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Current Value</div>
+									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={props.currentBid}></ValueCounter>
 									</div>
@@ -264,7 +302,7 @@ const BuyOfferOverlay = (props) => {
 											version="1.1"
 											xmlns="http://www.w3.org/2000/svg"
 										>
-											<g id="Dashboards" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+											<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 												<g
 													id="Biddign-Single-Auction"
 													transform="translate(-792.000000, -469.000000)"
@@ -281,7 +319,7 @@ const BuyOfferOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Buy at</div>
+									<div className="Overlay__bid_title">Your offer</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={proposedValue}></ValueCounter>
 									</div>
@@ -297,24 +335,29 @@ const BuyOfferOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Open Buy offer for OVRLand</div>
+							<div className="Overlay__congrat_title">
+								<span>Congratulations</span>
+								<br></br>Your Buy Offer has been sent
+								<div className="Overlay__etherscan_link">
+									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
+										View transaction status
+									</a>
+								</div>
+							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Buy at</div>
+									<div className="Overlay__bid_title">Your offer</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={proposedValue}></ValueCounter>
 									</div>
 								</div>
 							</div>
-							<div className="Overlay__message__container">
-								<span>Buy offer placed</span>
-							</div>
-							<div className="Overlay__buttons_container">
-								<HexButton url="#" text="Close" className="--outline" onClick={setDeactiveOverlay}></HexButton>
+							<div className="Overlay__close-button_container">
+								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -324,33 +367,27 @@ const BuyOfferOverlay = (props) => {
 		}
 	}
 
-	if (!props.mapProvider.state.activeBuyOfferOverlay) return null;
+	if (!showOverlay) return null;
 
 	return (
-		<ReactCSSTransitionGroup
-			transitionName="overlay"
-			transitionAppear={true}
-			transitionAppearTimeout={500}
-			transitionEnter={false}
-			transitionLeave={false}
-			transitionLeaveTimeout={300}
-		>
+		<div className={`OverlayContainer ${classShowOverlay ? '--js-show' : ''}`}>
+			<div className="RightOverlay__backpanel"> </div>
 			<div
 				key="bid-overlay-"
 				to={props.url}
-				className={`Overlay BuyOfferOverlay WhiteInputs ${
+				className={`RightOverlay BuyOfferOverlay NormalInputs ${
 					props.className ? props.className : ''
 				} --activeStep-${activeStep}`}
 			>
 				<div className="Overlay__cont">
-					<div className={`Icon Overlay__close_button`} onClick={setDeactiveOverlay}>
+					<div className="Icon Overlay__close_button" onClick={setDeactiveOverlay}>
 						<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-							<g id="Dashboards" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.5">
+							<g id="Dashboards" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" fillOpacity="0">
 								<g
 									id="Biddign-Single-Auction"
 									transform="translate(-398.000000, -298.000000)"
-									fill="#FFFFFF"
-									fill-rule="nonzero"
+									fill="#c0c1c0"
+									fillRule="nonzero"
 								>
 									<path
 										d="M413,298 C404.715729,298 398,304.715729 398,313 C398,321.284271 404.715729,328 413,328 C421.284271,328 428,321.284271 428,313 C427.989405,304.720121 421.279879,298.010595 413,298 Z M417.369533,315.697384 C417.829203,316.159016 417.829203,316.90686 417.369533,317.368492 C416.90929,317.82955 416.163695,317.82955 415.703452,317.368492 L413,314.656882 L410.296548,317.368492 C409.836305,317.82955 409.09071,317.82955 408.630467,317.368492 C408.170797,316.90686 408.170797,316.159016 408.630467,315.697384 L411.333919,312.985774 L408.630467,310.274164 C408.197665,309.808287 408.210436,309.082301 408.659354,308.632029 C409.108271,308.181756 409.832073,308.168947 410.296548,308.603055 L413,311.314665 L415.703452,308.603055 C416.167927,308.168947 416.891729,308.181756 417.340646,308.632029 C417.789564,309.082301 417.802335,309.808287 417.369533,310.274164 L414.666081,312.985774 L417.369533,315.697384 Z"
@@ -360,31 +397,21 @@ const BuyOfferOverlay = (props) => {
 							</g>
 						</svg>
 					</div>
-					<div className="Overlay__hex_cont">
-						<div className={`Icon Overlay__hex`}>
-							<svg width="152px" height="176px" viewBox="0 0 152 176" version="1.1" xmlns="http://www.w3.org/2000/svg">
-								<g id="Dashboards" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.2">
-									<g
-										id="Biddign-Single-Auction"
-										transform="translate(-439.000000, -349.000000)"
-										fill="#FFFFFF"
-										stroke="#FFFFFF"
-									>
-										<polygon
-											id="Polygon"
-											transform="translate(515.000000, 437.000000) rotate(-360.000000) translate(-515.000000, -437.000000) "
-											points="515 350 590.34421 393.5 590.34421 480.5 515 524 439.65579 480.5 439.65579 393.5"
-										></polygon>
-									</g>
-								</g>
-							</svg>
-						</div>
-					</div>
 					{getStepContent(activeStep)}
 				</div>
 			</div>
-		</ReactCSSTransitionGroup>
+		</div>
 	);
+};
+
+BuyOfferOverlay.propTypes = {
+	reloadLandStatefromApi: PropTypes.func,
+	userProvider: PropTypes.object,
+	mapProvider: PropTypes.object,
+	web3Provider: PropTypes.object,
+	land: PropTypes.object,
+	className: PropTypes.string,
+	url: PropTypes.string,
 };
 
 export default withUserContext(withWeb3Context(withMapContext(BuyOfferOverlay)));
