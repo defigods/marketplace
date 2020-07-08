@@ -53,7 +53,7 @@ const NavBar = () => {
 	// END - Profile sub menu
 
 	React.useEffect(() => {
-		console.log('NOTIF userState', userState.user);
+		// console.log('NOTIF userState', userState.user);
 	}, [userState]);
 
 	function toggleNotificationCenter(e) {
@@ -119,6 +119,7 @@ const NavBar = () => {
 							ref={anchorRef}
 							aria-controls={open ? 'menu-list-grow' : undefined}
 							aria-haspopup="true"
+							to="#"
 							className="Profile__link"
 							onClick={handleToggle}
 						>
@@ -148,7 +149,7 @@ const NavBar = () => {
 								>
 									<Paper>
 										<ClickAwayListener onClickAway={handleClose}>
-											<MenuList autoFocusItem={open} id="menu-list-grow">
+											<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
 												<MenuItem
 													onClick={(e) => {
 														handleClose(e);

@@ -1,7 +1,8 @@
 ### v0.1.21
 
 - Fixed centralized connection to start of an auction
-- Added a "View transaction status" that opens etherscan after bidding started
+- Added a "View transaction status" that opens etherscan after bidding and in Activity page
+- Fixed bug about the show of Redeem land button on not owned land
 
 
 ### v0.1.2
@@ -17,7 +18,9 @@
 # State of art 
 
 - Starting auction          [Redesign✅] [NotificationCenter✅] [Activity✅] [CentralizedAPI✅] [InfuraTie✅] 
-- Bidding auction           [Redesign✅] [NotificationCenter✅] [Activity✅] [CentralizedAPI✅] [InfuraTie🚧] 
+- Bidding auction           [Redesign✅] [NotificationCenter✅] [Activity✅] [CentralizedAPI✅] [InfuraTie✅] 
+  - Outbidded User          [NotificationCenter✅] [Activity✅]
+  - Best bidder User        [NotificationCenter✅] [Activity✅]
 - Selling land              [Redesign✅] [NotificationCenter🚧] [Activity⛔] [CentralizedAPI⛔] [InfuraTie⛔]
 - Buying land               [Redesign✅] [NotificationCenter⛔] [Activity⛔] [CentralizedAPI⛔] [InfuraTie⛔]
 - Buying offer              [Redesign✅] [NotificationCenter⛔] [Activity⛔] [CentralizedAPI⛔] [InfuraTie⛔]

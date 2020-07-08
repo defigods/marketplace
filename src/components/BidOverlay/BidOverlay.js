@@ -145,6 +145,8 @@ const BidOverlay = (props) => {
 					break;
 			}
 		} catch (e) {
+			setOpen(false);
+			setActiveStep(0);
 			return dangerNotification('Error processing the transaction', e.message);
 		}
 		setActiveStep(2);
@@ -229,7 +231,7 @@ const BidOverlay = (props) => {
 															onClick={() => {
 																participateInAuction('ovr');
 															}}
-															className="bid-fade-menu"
+															className="bid-fade-menu --cons-option"
 														>
 															Bid using OVR
 														</MenuItem>
@@ -271,7 +273,6 @@ const BidOverlay = (props) => {
 										</Grow>
 									)}
 								</Popper>
-
 								<HexButton
 									hexRef={anchorRef}
 									url="#"

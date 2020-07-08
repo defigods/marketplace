@@ -187,14 +187,7 @@ export class Land extends Component {
 
 	setActiveBidOverlay(e) {
 		e.preventDefault();
-		if (!this.props.userProvider.state.isLoggedIn) {
-			// TODO remove comment
-			// warningNotification("Invalid authentication", "Please Log In to partecipate")
-			// this.props.history.push("/login")
-		} else {
-			// this.mapActions.changeActiveBidOverlay(true)
-		}
-		this.mapActions.changeActiveBidOverlay(true); // TODO COMMENT
+		this.mapActions.changeActiveBidOverlay(true); 
 	}
 
 	setActiveMintOverlay(e) {
@@ -351,17 +344,21 @@ export class Land extends Component {
 				);
 				break;
 			case 5:
-				button = (
-					<div className="redeem-land-map-button">
-						<HexButton
-							url="/"
-							text="Redeem Land"
-							className={this.state.isRedeemingLand ? '--purple --disabled' : '--purple'}
-							onClick={(e) => this.redeemLand(e)}
-						></HexButton>
-						{!this.state.isRedeemingLand ? null : <p className="Overlay__message__container">Redeeming land...</p>}
-					</div>
-				);
+				button = <></>;
+				console.log('this.state.userPerspective', this.state.userPerspective)
+				if (this.state.userPerspective != 0){
+					button = (
+						<div className="redeem-land-map-button">
+							<HexButton
+								url="/"
+								text="Redeem Land"
+								className={this.state.isRedeemingLand ? '--purple --disabled' : '--purple'}
+								onClick={(e) => this.redeemLand(e)}
+							></HexButton>
+							{!this.state.isRedeemingLand ? null : <p className="Overlay__message__container">Redeeming land...</p>}
+						</div>
+					);
+				}
 				break;
 			default:
 				button = <div>&nbsp;</div>;

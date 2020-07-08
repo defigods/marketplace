@@ -82,12 +82,13 @@ export function indexMyOpenAuctions(sort = null, page = 1) {
 	);
 }
 
-export function auctionBidPre(landUuid = null, worth = 10) {
+export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
 	return request(
 		{ url: '/auction/bid/pre', method: 'POST' },
 		{
 			land_uuid: landUuid,
 			worth: worth,
+			tx_hash: txHash,
 		},
 		null,
 	);
@@ -291,8 +292,8 @@ export function sendConfirmAuctionStart(landId, txHash) {
 		});
 }
 
-export function sendPreAuctionBid(landId, nextBid) {
-	auctionBidPre(landId, nextBid)
+export function sendPreAuctionBid(landId, nextBid, txHash) {
+	auctionBidPre(landId, nextBid, txHash)
 		.then((response) => {
 			// console.log(response)
 		})

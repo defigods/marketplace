@@ -629,7 +629,7 @@ export class Web3Provider extends Component {
     let landIdBase16 = parseInt(landId, 16);
     let tx = await this.participate(type, bidInWei, landIdBase16);
     this.setState({lastTransaction: tx});
-    sendPreAuctionBid(landId, bid);
+    sendPreAuctionBid(landId, bid, tx);
     this.waitTxWithCallback(tx, () => {
       sendAuctionBidConfirm(landId, bid)
     })

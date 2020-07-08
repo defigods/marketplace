@@ -49,6 +49,13 @@ export class UserProvider extends Component {
 		this.setState({ user: user });
 	}
 
+	setUserActivity = (activities) => {
+		this.setState({ user: {
+			...this.state.user,
+			activities: camelCaseKeys(activities)
+		} });
+	}
+
 	loginUser = (token, user) => {
 		this.setState({ isLoggedIn: true, token: token, user: user });
 		// Cookie management
@@ -181,6 +188,7 @@ export class UserProvider extends Component {
 						loginUser: this.loginUser,
 						logoutUser: this.logoutUser,
 						setUserState: this.setUserState,
+						setUserActivity: this.setUserActivity,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
 						notification: {

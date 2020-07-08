@@ -7,6 +7,7 @@ import Fade from '@material-ui/core/Fade';
 import { useHistory } from 'react-router-dom';
 import * as moment from 'moment';
 import { promisify } from '../../lib/config';
+import config from '../../lib/config';
 
 const ActivityTile = (props) => {
 	let history = useHistory();
@@ -31,6 +32,8 @@ const ActivityTile = (props) => {
 
 	const handleEtherscan = () => {
 		setAnchorEl(null);
+		let etherscanLink = config.apis.etherscan + '/tx/' + props.data.txHash;
+		window.open(etherscanLink, "_blank")
   };
 
 	const setAsReaded = () => {};
@@ -52,7 +55,7 @@ const ActivityTile = (props) => {
 			</IconButton>
 			<Menu id="fade-menu" anchorEl={anchorEl} keepMounted open={open} onClose={handleClose} TransitionComponent={Fade}>
 				<MenuItem onClick={handleGoTo}>Go to OVRLand</MenuItem>
-				<MenuItem onClick={handleEtherscan}>Check on Etherscan</MenuItem>
+				{props.data.txHash && <MenuItem onClick={handleEtherscan}>Check on Etherscan</MenuItem>}
 			</Menu>
 		</div>
 	);

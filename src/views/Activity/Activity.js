@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import * as moment from 'moment';
 
+import { userActivities } from '../../lib/api';
 import { UserContext } from '../../context/UserContext';
 import { Web3Context } from '../../context/Web3Context';
 import ActivityTile from '../../components/ActivityTile/ActivityTile';
@@ -41,9 +42,24 @@ const ActivityLayout = () => {
 
 const ActivityContent = () => {
 	const { state: userState } = useContext(UserContext);
+	const { actions: userActions } = useContext(UserContext);
 	const [activityList, setActivityList] = useState(false);
 	const web3Context = useContext(Web3Context);
 	const { user } = userState;
+
+	// Update activities when componenet is loaded
+	useEffect(() => {
+		userActivities().then((response) => {
+			userActions.setUserActivity(response.data.user);
+		});
+	}, []);
+
+	// Update activities when receive a notification
+	useEffect(() => {
+		userActivities().then((response) => {
+			userActions.setUserActivity(response.data.user);
+		});
+	}, [userState.user.notifications]);
 
 	useEffect(() => {
 		if (userState.user.activities && userState.user.activities.content) {
@@ -58,9 +74,7 @@ const ActivityContent = () => {
 					}}
 				></ActivityTile>
 			));
-			console.log('activities', activities);
 			if (activities.length === 0) {
-				console.log('vodo');
 				activities = (
 					<div className="profile">
 						<div className="o-container">

@@ -176,6 +176,8 @@ const MintOverlay = (props) => {
 					break;
 			}
 		} catch (e) {
+			setOpen(false);
+			setActiveStep(0);
 			return dangerNotification('Error processing the transaction', e.message);
 		}
 		setActiveStep(2);
