@@ -145,7 +145,6 @@ export class UserProvider extends Component {
 				},
 			);
 		}
-		console.log('liveSockets Called')
 	};
 
 

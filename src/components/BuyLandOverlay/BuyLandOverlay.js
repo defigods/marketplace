@@ -101,14 +101,15 @@ const BuyLandOverlay = (props) => {
 			}
 			try {
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
-				if (!currentBalance.greaterThan(buyAt))
+				if (!currentBalance.greaterThan(buyAt)) {
 					return dangerNotification(
 						'Balance insufficient',
 						"You don't have enough tokens to buy that land get more and try again",
 					);
-				setMetamaskMessage('Approving tokens...');
-				await approveOvrTokens();
-				setMetamaskMessage('Waiting for land buying MetaMask confirmation');
+				}
+				setMetamaskMessage('Approving OVR tokens...');
+				await approveOvrTokens(true, ovr);
+				setMetamaskMessage('Waiting for buy confirmation on MetaMask');
 				await buyLand(hexId);
 				handleNext();
 				// TODO Centralized flux

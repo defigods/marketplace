@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { withMapContext } from '../../context/MapContext';
 import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
@@ -15,92 +15,111 @@ import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 
 import { getLand, sendAuctionCheckClose } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
+import PropTypes from 'prop-types';
 
+import config from '../../lib/config';
 import { Textfit } from 'react-textfit';
+
+let ActionCable = require('actioncable');
+
 // import { ca } from 'date-fns/esm/locale';
 
-export class Land extends Component {
-	constructor(props) {
-		super(props);
-		const pathHexId = window.location.pathname.split('/')[3];
-		this.state = {
-			key: '8cbcc350c0ab5ff',
-			value: 10,
-			name: { sentence: 'director.connect.overflow', hex: '8cbcc350c0ab5ff' },
-			location: 'Venice, Italy',
-			marketStatus: 0,
-			userPerspective: 0,
-			auction: null,
-			openSellOrder: null,
-			openBuyOffers: [],
-			hexId: pathHexId && pathHexId.length === 15 ? pathHexId : this.props.mapProvider.state.hex_id,
-			isRedeemingLand: false,
-		};
-		this.mapActions = this.props.mapProvider.actions;
-	}
+const Land = (props) => {
+	const {
+		changeHexId,
+		changeLandData,
+		changeActiveBidOverlay,
+		changeActiveMintOverlay,
+		changeActiveSellOverlay,
+		changeActiveBuyOverlay,
+		changeActiveBuyOfferOverlay,
+	} = props.mapProvider.actions;
+	const { redeemSingleLand, getOffersToBuyLand } = props.web3Provider.actions;
+	const { ovr, ico, setupComplete } = props.web3Provider.state;
+	const { isLoggedIn } = props.userProvider.state;
 
-	componentDidMount() {
-		const hex_id = this.props.match.params.id;
-		// Focus map on hex_id
-		this.mapActions.changeHexId(hex_id);
-		// Load data from API
-		this.loadLandStateFromApi(hex_id);
-		// Reload data from web3
-		if (this.props.web3Provider.state.setupComplete && this.props.web3Provider.state.ico) this.setupListeners();
-		let setupInterval = setInterval(() => {
-			if (this.props.web3Provider.state.setupComplete && this.props.web3Provider.state.ico) {
-				this.setupListeners();
-				clearInterval(setupInterval);
-			}
-		}, 5e2);
-	}
+	const [hexId, setHexId] = useState(props.mapProvider.state);
+	const [value, setValue] = useState(10);
+	const [marketStatus, setMarketStatus] = useState(0);
+	const [userPerspective, setUserPerspective] = useState(0);
+	const [name, setName] = useState({ sentence: 'director.connect.overflow', hex: '8cbcc350c0ab5ff' });
+	const [location, setLocation] = useState('Venice, Italy');
+	const [auction, setAuction] = useState(null);
+	// const [openSellOrder, setOpenSellOrder] = useState(null);
+	const [openBuyOffers, setOpenBuyOffers] = useState([]);
+	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 
-	setupListeners() {
-		this.getBuyOffers();
-		this.setContractPrice(this.state.hexId);
-		// Update offers every half a second
-		setInterval(() => {
-			this.getBuyOffers();
-			this.updateMarketStatusFromSmartContract(this.state.hexId);
-			this.setContractPrice(this.state.hexId);
-		}, 5e2);
-		document.addEventListener('land-selected', (event) => {
-			this.setState({ hexId: event.detail.hex_id });
-			this.setContractPrice(event.detail.hex_id);
-			this.getBuyOffers();
-		});
-	}
+	// First load
+	useEffect(() => {
+		const hex_id = props.match.params.id;
+		changeHexId(hex_id); // Focus map on hex_id
+		loadLandStateFromApi(hex_id); // Load data from API
+	}, [undefined, props.match.params.id]);
 
-	loadLandStateFromApi(hex_id) {
-		// Call API function
+	// Sockets
+	useEffect(() => {
+		if (setupComplete && isLoggedIn && hexId === props.match.params.id) {
+			// // liveSocket(props.match.params.id);
+			// console.log('LIVESOCKET', hexId)
+			// if (isLoggedIn) {
+			// 	console.log('LIVESOCKET PASSED', hexId)
+			// 	var cable = ActionCable.createConsumer(config.apis.socket);
+			// 	cable.subscriptions.create(
+			// 		{ channel: 'LandsChannel', land_uuid: hexId },
+			// 		{
+			// 			received: (data) => {
+			// 				console.log('LIVESOCKET data incoming', hexId)
+			// 				console.log('LAND SOCKET data', data);
+			// 				loadLandStateFromApi(hexId);
+			// 				decentralizedSetup();
+			// 			},
+			// 		},
+			// 	);
+			// } else {
+			// 	console.log('LIVESOCKET UHOH')
+			// }
+		}
+	}, [setupComplete, isLoggedIn, hexId]);
+
+	// On change of decentralized setup, reload values
+	useEffect(() => {
+		if (setupComplete) decentralizedSetup();
+	}, [setupComplete, ico, ovr, hexId, marketStatus]);
+
+	const decentralizedSetup = async () => {
+		if (!setupComplete || !ico || !ovr) {
+			return false;
+		}
+		getBuyOffers();
+		updateMarketStatusFromSmartContract(hexId);
+		setContractPrice(hexId);
+	};
+
+	// Call API function
+	function loadLandStateFromApi(hex_id) {
 		getLand(hex_id)
 			.then((response) => {
 				let data = response.data;
 				console.log('landApiData', data);
-				const state = {
+
+				// Update state component
+				setHexId(data.uuid);
+				setName({ sentence: data.sentenceId, hex: data.uuid });
+				setLocation(data.address.full);
+				setUserPerspective(data.userPerspective);
+				setUserPerspective(data.userPerspective);
+				setAuction(data.auction);
+
+				// Update state for MapContext
+				let state = {
 					key: data.uuid,
 					name: { sentence: data.sentenceId, hex: data.uuid },
 					location: data.address.full,
-					// marketStatus: data.marketStatus,
 					userPerspective: data.userPerspective,
 					openSellOrder: data.openSellOrder,
-					// openBuyOffers: data.openBuyOffers,
 					auction: data.auction,
-					// value: data.value,
 				};
-				this.mapActions.changeLandData(state);
-				this.setState(state);
-
-				if (this.props.web3Provider.state.ico) {
-					this.updateMarketStatusFromSmartContract(hex_id);
-				} else {
-					const myInterval = setInterval(() => {
-						if (this.props.web3Provider.state.ico) {
-							this.updateMarketStatusFromSmartContract(hex_id);
-							clearInterval(myInterval);
-						}
-					}, 2e3);
-				}
+				changeLandData(state);
 			})
 			.catch((error) => {
 				// Notify user if network error
@@ -109,27 +128,34 @@ export class Land extends Component {
 			});
 	}
 
-	componentDidUpdate(prevProps) {
-		// If param change load data from API
-		if (this.props.location !== prevProps.location || this.props.value !== prevProps.value) {
-			const hex_id = this.props.match.params.id;
-			this.loadLandStateFromApi(hex_id);
-			this.mapActions.changeHexId(hex_id);
-		}
-	}
+	// Sockets
 
-	componentWillUnmount() {
-		this.mapActions.changeActiveBidOverlay(false);
-		this.mapActions.changeActiveMintOverlay(false);
-		this.mapActions.changeActiveSellOverlay(false);
-	}
+	const liveSocket = () => {
+		// console.log('LIVESOCKET')
+		// if (isLoggedIn) {
+		// 	console.log('LIVESOCKET PASSED')
+		// 	var cable = ActionCable.createConsumer(config.apis.socket);
 
-	async updateMarketStatusFromSmartContract(hex_id) {
+		// 	cable.subscriptions.create(
+		// 		{ channel: 'LandsChannel', land_uuid: hexId },
+		// 		{
+		// 			received: (data) => {
+		// 				console.log('LAND SOCKET data', data);
+		// 				loadLandStateFromApi(hexId);
+		// 				decentralizedSetup();
+		// 			},
+		// 		},
+		// 	);
+		// } else {
+		// 	console.log('LIVESOCKET UHOH')
+		// }
+	};
+
+	const updateMarketStatusFromSmartContract = async (hex_id) => {
 		// Set 0 for not started, 1 for started and 2 for ended
-		const ico = this.props.web3Provider.state.ico;
 		const landId = parseInt(hex_id, 16);
 		const land = await ico.landsAsync(landId);
-		
+
 		const lastPaymentTimestamp = parseInt(land[3]);
 		const landOwner = land[0];
 		const auctionLandDuration = parseInt(await ico.auctionLandDurationAsync());
@@ -140,94 +166,73 @@ export class Land extends Component {
 
 		// Checks if the land is on sale also to display the right buy button
 		if (isOnSale) {
-			return this.setState({
-				marketStatus: 4,
-			});
+			return setMarketStatus(4);
 		}
-
 		// If 24 hours have passed, consider it sold
 		// Checks if you're the owner or not to display the appropriate button
 		if (landContractState === 1 && now > lastPaymentTimestamp + auctionLandDuration) {
-			return this.setState({
-				marketStatus: 5, // Render redeem land button
-			});
+			return setMarketStatus(5); // Render redeem land button
 		}
 
 		if (landContractState === 2) {
 			if (landOwner === window.web3.eth.defaultAccount) {
-				return this.setState({
-					marketStatus: 3,
-				});
+				return setMarketStatus(3);
 			} else {
-				return this.setState({
-					marketStatus: 2,
-				});
+				return setMarketStatus(2);
 			}
 		} else {
-			this.setState({
-				marketStatus: landContractState,
-			});
+			setMarketStatus(landContractState);
 		}
-	}
-
-	async getBuyOffers() {
-		let offers = await this.props.web3Provider.actions.getOffersToBuyLand(this.state.hexId);
-		this.setState({
-			openBuyOffers: offers,
-		});
-	}
-
-	async redeemLand(e) {
-		e.preventDefault();
-		this.setState({ isRedeemingLand: true });
-		sendAuctionCheckClose(this.state.hexId);
-		await this.props.web3Provider.actions.redeemSingleLand(this.state.hexId);
-		this.setState({ isRedeemingLand: false });
-	}
-
-	setActiveBidOverlay(e) {
-		e.preventDefault();
-		this.mapActions.changeActiveBidOverlay(true); 
-	}
-
-	setActiveMintOverlay(e) {
-		e.preventDefault();
-		this.mapActions.changeActiveMintOverlay(true);
-	}
-
-	setActiveSellOverlay(e) {
-		e.preventDefault();
-		this.mapActions.changeActiveSellOverlay(true);
-	}
-
-	setActiveBuyOverlay(e) {
-		e.preventDefault();
-		this.mapActions.changeActiveBuyOverlay(true);
-	}
-
-	setActiveBuyOfferOverlay(e) {
-		e.preventDefault();
-		this.mapActions.changeActiveBuyOfferOverlay(true);
-	}
-
-	reloadLandStatefromApi = (value) => {
-		// TODO Change with socket
-		let that = this;
-		setTimeout(function () {
-			that.loadLandStateFromApi(value);
-		}, 1500);
 	};
+
+	const getBuyOffers = async () => {
+		let offers = await getOffersToBuyLand(hexId);
+		setOpenBuyOffers(offers);
+	};
+
+	const redeemLand = async (e) => {
+		e.preventDefault();
+		setIsRedeemingLand(true);
+		sendAuctionCheckClose(hexId);
+		await redeemSingleLand(hexId);
+		setIsRedeemingLand(false);
+	};
+
+	function setActiveBidOverlay(e) {
+		e.preventDefault();
+		changeActiveBidOverlay(true);
+	}
+
+	function setActiveMintOverlay(e) {
+		e.preventDefault();
+		changeActiveMintOverlay(true);
+	}
+
+	function setActiveSellOverlay(e) {
+		e.preventDefault();
+		changeActiveSellOverlay(true);
+	}
+
+	function setActiveBuyOverlay(e) {
+		e.preventDefault();
+		changeActiveBuyOverlay(true);
+	}
+
+	function setActiveBuyOfferOverlay(e) {
+		e.preventDefault();
+		changeActiveBuyOfferOverlay(true);
+	}
 
 	//
 	// Render elements
 	//
 
-	renderTimer() {
-		if (this.state.marketStatus === 1) {
+	function renderTimer() {
+		if (marketStatus === 1) {
 			return (
 				<>
 					<h3 className="o-small-title">Closes</h3>
-					<TimeCounter date_end={this.state.auction ? this.state.auction.closeAt : 24}></TimeCounter>
+					<TimeCounter date_end={auction ? auction.closeAt : 24}></TimeCounter>
 				</>
 			);
 		} else {
@@ -235,9 +240,9 @@ export class Land extends Component {
 		}
 	}
 
-	renderBadge() {
+	function renderBadge() {
 		let badge = <div>&nbsp;</div>;
-		switch (this.state.marketStatus) {
+		switch (marketStatus) {
 			case 1:
 				badge = (
 					<div>
@@ -258,7 +263,7 @@ export class Land extends Component {
 				badge = <div>&nbsp;</div>;
 		}
 
-		switch (this.state.userPerspective) {
+		switch (userPerspective) {
 			case 1:
 				badge = (
 					<div>
@@ -290,27 +295,22 @@ export class Land extends Component {
 		return badge;
 	}
 
-	renderOverlayButton() {
+	function renderOverlayButton() {
 		let button = <div>&nbsp;</div>;
-		switch (this.state.marketStatus) {
+		switch (marketStatus) {
 			case 0:
 				button = (
 					<HexButton
 						url="/"
 						text="Init Auction"
 						className="--blue"
-						onClick={(e) => this.setActiveMintOverlay(e)}
+						onClick={(e) => setActiveMintOverlay(e)}
 					></HexButton>
 				);
 				break;
 			case 1:
 				button = (
-					<HexButton
-						url="/"
-						text="Place bid"
-						className="--purple"
-						onClick={(e) => this.setActiveBidOverlay(e)}
-					></HexButton>
+					<HexButton url="/" text="Place bid" className="--purple" onClick={(e) => setActiveBidOverlay(e)}></HexButton>
 				);
 				break;
 			case 2:
@@ -319,42 +319,32 @@ export class Land extends Component {
 						url="/"
 						text="Buy offer"
 						className="--blue"
-						onClick={(e) => this.setActiveBuyOfferOverlay(e)}
+						onClick={(e) => setActiveBuyOfferOverlay(e)}
 					></HexButton>
 				);
 				break;
 			case 3:
 				button = (
-					<HexButton
-						url="/"
-						text="Sell Land"
-						className="--purple"
-						onClick={(e) => this.setActiveSellOverlay(e)}
-					></HexButton>
+					<HexButton url="/" text="Sell Land" className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
 				);
 				break;
 			case 4:
 				button = (
-					<HexButton
-						url="/"
-						text="Buy Now"
-						className="--purple"
-						onClick={(e) => this.setActiveBuyOverlay(e)}
-					></HexButton>
+					<HexButton url="/" text="Buy Now" className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
 				);
 				break;
 			case 5:
 				button = <></>;
-				if (this.state.userPerspective != 0){
+				if (userPerspective != 0) {
 					button = (
 						<div className="redeem-land-map-button">
 							<HexButton
 								url="/"
 								text="Redeem Land"
-								className={this.state.isRedeemingLand ? '--purple --disabled' : '--purple'}
-								onClick={(e) => this.redeemLand(e)}
+								className={isRedeemingLand ? '--purple --disabled' : '--purple'}
+								onClick={(e) => redeemLand(e)}
 							></HexButton>
-							{!this.state.isRedeemingLand ? null : <p className="Overlay__message__container">Redeeming land...</p>}
+							{!isRedeemingLand ? null : <p className="Overlay__message__container">Redeeming land...</p>}
 						</div>
 					);
 				}
@@ -368,47 +358,37 @@ export class Land extends Component {
 	}
 
 	// Sets the price displayed below the map
-	setContractPrice = (hex_id) => {
-		let ico = this.props.web3Provider.state.ico;
-		const icoLoadInterval = setInterval(async () => {
-			ico = this.props.web3Provider.state.ico;
-			if (ico) {
-				clearInterval(icoLoadInterval);
-				const landId = parseInt(hex_id, 16);
-				const land = await ico.landsAsync(landId);
-				let currentBid = String(window.web3.fromWei(land[2]));
-				if (currentBid == 0) {
-					currentBid = String(window.web3.fromWei(await ico.initialLandBidAsync()));
-				}
-
-				this.setState({
-					value: currentBid,
-				});
-			}
-		}, 1e2);
+	const setContractPrice = async (hex_id) => {
+		const landId = parseInt(hex_id, 16);
+		const land = await ico.landsAsync(landId);
+		let currentBid = String(window.web3.fromWei(land[2]));
+		if (currentBid == 0) {
+			currentBid = String(window.web3.fromWei(await ico.initialLandBidAsync()));
+		}
+		setValue(currentBid);
 	};
 
-	renderPrice() {
-		switch (this.state.marketStatus) {
+	function renderPrice() {
+		switch (marketStatus) {
 			case 2:
 				return (
 					<>
 						<h3 className="o-small-title">Closing price</h3>
-						<ValueCounter value={this.state.value}></ValueCounter>
+						<ValueCounter value={value}></ValueCounter>
 					</>
 				);
 			default:
 				return (
 					<>
 						<h3 className="o-small-title">Price</h3>
-						<ValueCounter value={this.state.value}></ValueCounter>
+						<ValueCounter value={value}></ValueCounter>
 					</>
 				);
 		}
 	}
 
-	renderBidHistory() {
-		if (this.state.auction === null || this.state.auction.bidHistory.length === 0) {
+	function renderBidHistory() {
+		if (auction === null || auction.bidHistory.length === 0) {
 			return (
 				<div className="o-container">
 					<div className="Title__container">
@@ -445,7 +425,7 @@ export class Land extends Component {
 								</tr>
 							</thead>
 							<tbody>
-								{this.state.auction.bidHistory.map((bid) => (
+								{auction.bidHistory.map((bid) => (
 									<tr key={bid.when} className="Table__line">
 										<td>
 											<ValueCounter value={bid.worth}></ValueCounter>{' '}
@@ -464,35 +444,35 @@ export class Land extends Component {
 		}
 	}
 
-	renderActiveOpenOrders() {
+	function renderActiveOpenOrders() {
 		let custom_return = <></>;
 		let openSell = <></>;
 		let openBuyOffers = <></>;
-		const displayBuyOffers = this.state.marketStatus === 2;
-		const displaySells = this.state.marketStatus === 3;
+		const displayBuyOffers = marketStatus === 2;
+		const displaySells = marketStatus === 3;
 
 		// If there are Buy Offers
-		if (this.state.openBuyOffers.length > 0) {
+		if (openBuyOffers.length > 0) {
 			// If the land is owned, is not yours and is not on sale show the buy offer option
 			if (displayBuyOffers) {
-				openBuyOffers = this.state.openBuyOffers.map((offer) => (
+				openBuyOffers = openBuyOffers.map((offer) => (
 					<BuyOfferOrder
 						key={offer.id}
 						offer={offer}
 						isOwner={true}
-						userPerspective={this.state.userPerspective}
+						userPerspective={userPerspective}
 						userProvider={this.props.userProvider}
 						web3Provide={this.props.web3Provider}
 					></BuyOfferOrder>
 				));
 				// Else show the offers for the seller to accept or decline them
 			} else if (displaySells) {
-				openSell = this.state.openBuyOffers.map((offer) => (
+				openSell = openBuyOffers.map((offer) => (
 					<BuyOfferOrder
 						key={offer.id}
 						offer={offer}
 						isOwner={false}
-						userPerspective={this.state.userPerspective}
+						userPerspective={userPerspective}
 						userProvider={this.props.userProvider}
 						web3Provide={this.props.web3Provider}
 					></BuyOfferOrder>
@@ -520,56 +500,59 @@ export class Land extends Component {
 		return custom_return;
 	}
 
-	render() {
-		return (
-			<div className="Land">
-				<BidOverlay
-					currentBid={this.state.value}
-					land={this.state}
-					reloadLandStatefromApi={this.reloadLandStatefromApi}
-				></BidOverlay>
-				<MintOverlay
-					currentBid={this.state.value}
-					land={this.state}
-					reloadLandStatefromApi={this.reloadLandStatefromApi}
-				></MintOverlay>
-				<SellOverlay
-					currentBid={this.state.value}
-					land={this.state}
-					reloadLandStatefromApi={this.reloadLandStatefromApi}
-				></SellOverlay>
-				<BuyOfferOverlay
-					currentBid={this.state.value}
-					land={this.state}
-					reloadLandStatefromApi={this.reloadLandStatefromApi}
-				></BuyOfferOverlay>
-				<BuyLandOverlay
-					currentBid={this.state.value}
-					land={this.state}
-					reloadLandStatefromApi={this.reloadLandStatefromApi}
-				></BuyLandOverlay>
+	return (
+		<div className="Land">
+			<BidOverlay
+				currentBid={value}
+				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+			></BidOverlay>
+			<MintOverlay
+				currentBid={value}
+				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+			></MintOverlay>
+			<SellOverlay
+				currentBid={value}
+				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+			></SellOverlay>
+			<BuyOfferOverlay
+				currentBid={value}
+				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+			></BuyOfferOverlay>
+			<BuyLandOverlay
+				currentBid={value}
+				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+			></BuyLandOverlay>
 
-				<div className="o-container">
-					<div className="Land__heading__1">
-						<h2>
-							<Textfit mode="single" max={25}>
-								{this.state.name.sentence}
-							</Textfit>
-						</h2>
-						<div className="Land__location">{this.state.location}</div>
-					</div>
-					<div className="Land__heading__2">
-						<div className="o-fourth">{this.renderPrice()}</div>
-						<div className="o-fourth">{this.renderTimer()}</div>
-						<div className="o-fourth">{this.renderBadge()}</div>
-						<div className="o-fourth">{this.renderOverlayButton()}</div>
-					</div>
+			<div className="o-container">
+				<div className="Land__heading__1">
+					<h2>
+						<Textfit mode="single" max={25}>
+							{name.sentence}
+						</Textfit>
+					</h2>
+					<div className="Land__location">{location}</div>
 				</div>
-				{this.renderActiveOpenOrders()}
-				<div className="Land__section">{this.renderBidHistory()}</div>
+				<div className="Land__heading__2">
+					<div className="o-fourth">{renderPrice()}</div>
+					<div className="o-fourth">{renderTimer()}</div>
+					<div className="o-fourth">{renderBadge()}</div>
+					<div className="o-fourth">{renderOverlayButton()}</div>
+				</div>
 			</div>
-		);
-	}
-}
+			{renderActiveOpenOrders()}
+			<div className="Land__section">{renderBidHistory()}</div>
+		</div>
+	);
+};
+
+Land.propTypes = {
+	reloadLandStatefromApi: PropTypes.func,
+	userProvider: PropTypes.object,
+	mapProvider: PropTypes.object,
+	web3Provider: PropTypes.object,
+	land: PropTypes.object,
+	className: PropTypes.string,
+	url: PropTypes.string,
+};
 
 export default withWeb3Context(withUserContext(withMapContext(Land)));

@@ -102,43 +102,6 @@ const MintOverlay = (props) => {
 		return true;
 	};
 
-	// Call centralized API functions
-	// function sendPreAuctionStart(txHash) {
-	// 	auctionPreStart(props.land.key, bid, txHash)
-	// 		.then((response) => {
-	// 			console.log('response', response.data);
-	// 		})
-	// 		.catch((error) => {
-	// 			// Notify user if network error
-	// 			console.log(error);
-	// 			networkError();
-	// 		});
-	// }
-
-	// function sendConfirmAuctionStart(txHash) {
-	// 	auctionConfirmStart(props.land.key, txHash)
-	// 		.then((response) => {
-	// 			if (response.data.result === true) {
-	// 				console.log('responseTrue', response.data);
-	// 				props.reloadLandStatefromApi(props.land.key);
-	// 				console.log('props.land.key', props);
-	// 			} else {
-	// 				// response.data.errors[0].message
-	// 				console.log('responseFalse');
-	// 				// if (response.data.errors){
-	// 				//   dangerNotification("Unable to mint land", response.data.errors[0].message)
-	// 				// }
-	// 				dangerNotification('Unable to mint land', response.data.errors[0].message);
-	// 				setActiveStep(0);
-	// 			}
-	// 		})
-	// 		.catch((error) => {
-	// 			// Notify user if network error
-	// 			console.log(error);
-	// 			networkError();
-	// 		});
-	// }
-
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
