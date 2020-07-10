@@ -49,6 +49,7 @@ const Land = (props) => {
 	const [openBuyOffers, setOpenBuyOffers] = useState([]);
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 
+
 	// First load
 	useEffect(() => {
 		const hex_id = props.match.params.id;
@@ -58,26 +59,29 @@ const Land = (props) => {
 
 	// Sockets
 	useEffect(() => {
+		console.log('eer');
 		if (setupComplete && isLoggedIn && hexId === props.match.params.id) {
-			// // liveSocket(props.match.params.id);
-			// console.log('LIVESOCKET', hexId)
-			// if (isLoggedIn) {
-			// 	console.log('LIVESOCKET PASSED', hexId)
-			// 	var cable = ActionCable.createConsumer(config.apis.socket);
-			// 	cable.subscriptions.create(
-			// 		{ channel: 'LandsChannel', land_uuid: hexId },
-			// 		{
-			// 			received: (data) => {
-			// 				console.log('LIVESOCKET data incoming', hexId)
-			// 				console.log('LAND SOCKET data', data);
-			// 				loadLandStateFromApi(hexId);
-			// 				decentralizedSetup();
-			// 			},
-			// 		},
-			// 	);
-			// } else {
-			// 	console.log('LIVESOCKET UHOH')
-			// }
+			// liveSocket(props.match.params.id);
+			console.log('LIVESOCKET', hexId);
+			if (isLoggedIn) {
+				console.log('LIVESOCKET PASSED', hexId);
+				if (window.landSocket) window.landSocket.unsubscribe(); // unsubscribe precedent land
+				var cable = ActionCable.createConsumer(config.apis.socket);
+				console.log('hexId', hexId)
+				window.landSocket = cable.subscriptions.create(
+					{ channel: 'LandsChannel', land_uuid: hexId },
+					{
+						received: (data) => {
+							console.log('LIVESOCKET data incoming', hexId);
+							console.log('LAND SOCKET data', data);
+							loadLandStateFromApi(hexId);
+							decentralizedSetup();
+						},
+					},
+				);
+			} else {
+				console.log('LIVESOCKET UHOH');
+			}
 		}
 	}, [setupComplete, isLoggedIn, hexId]);
 
