@@ -587,16 +587,23 @@ export class Web3Provider extends Component {
 			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
     }
 		try {
-			// For ether we send the value instead of the bid
+      // For ether we send the value instead of the bid
+      let gasPrice = await window.web3.toWei(30, 'gwei');
+      console.log('gasPrice', gasPrice)
+      console.log('type', type)
 			if (type === 0) {
-				const value = bid / this.state.perEth;
+        const value = bid / this.state.perEth;
+        console.log('bid', bid)
+        console.log('landId', landId)
 				tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
 					value: value,
-					gasPrice: window.web3.toWei(30, 'gwei'),
+          gasPrice: gasPrice,
 				})
 			} else {
+        console.log('bid', bid)
+        console.log('landId', landId)
         tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
-					gasPrice: window.web3.toWei(30, 'gwei'),
+          gasPrice: gasPrice,
 				})
       }
 			return tx

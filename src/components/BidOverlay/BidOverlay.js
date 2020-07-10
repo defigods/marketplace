@@ -41,7 +41,6 @@ const BidOverlay = (props) => {
 		setTimeout(function () {
 			setOpen(false);
 			setActiveStep(0);
-			setNextBid(10);
 		}, 500);
 	}
 
@@ -63,7 +62,7 @@ const BidOverlay = (props) => {
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
-	}, [setupComplete, ico, ovr, hexId, marketStatus]);
+	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
@@ -415,6 +414,7 @@ const BidOverlay = (props) => {
 };
 
 BidOverlay.propTypes = {
+	currentBid: PropTypes.string,
 	reloadLandStatefromApi: PropTypes.func,
 	userProvider: PropTypes.object,
 	mapProvider: PropTypes.object,

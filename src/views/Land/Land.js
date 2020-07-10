@@ -19,8 +19,7 @@ import PropTypes from 'prop-types';
 
 import config from '../../lib/config';
 import { Textfit } from 'react-textfit';
-
-let ActionCable = require('actioncable');
+import ActionCable from 'actioncable';
 
 // import { ca } from 'date-fns/esm/locale';
 
@@ -49,7 +48,6 @@ const Land = (props) => {
 	const [openBuyOffers, setOpenBuyOffers] = useState([]);
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 
-
 	// First load
 	useEffect(() => {
 		const hex_id = props.match.params.id;
@@ -67,7 +65,7 @@ const Land = (props) => {
 				console.log('LIVESOCKET PASSED', hexId);
 				if (window.landSocket) window.landSocket.unsubscribe(); // unsubscribe precedent land
 				var cable = ActionCable.createConsumer(config.apis.socket);
-				console.log('hexId', hexId)
+				console.log('hexId', hexId);
 				window.landSocket = cable.subscriptions.create(
 					{ channel: 'LandsChannel', land_uuid: hexId },
 					{
@@ -450,8 +448,8 @@ const Land = (props) => {
 
 	function renderActiveOpenOrders() {
 		let custom_return = <></>;
-		let openSell = <></>;
-		let openBuyOffers = <></>;
+		let renderOpenSell = <></>;
+		let renerOpenBuyOffers = <></>;
 		const displayBuyOffers = marketStatus === 2;
 		const displaySells = marketStatus === 3;
 
@@ -459,7 +457,7 @@ const Land = (props) => {
 		if (openBuyOffers.length > 0) {
 			// If the land is owned, is not yours and is not on sale show the buy offer option
 			if (displayBuyOffers) {
-				openBuyOffers = openBuyOffers.map((offer) => (
+				renerOpenBuyOffers = openBuyOffers.map((offer) => (
 					<BuyOfferOrder
 						key={offer.id}
 						offer={offer}
@@ -471,7 +469,7 @@ const Land = (props) => {
 				));
 				// Else show the offers for the seller to accept or decline them
 			} else if (displaySells) {
-				openSell = openBuyOffers.map((offer) => (
+				renderOpenSell = openBuyOffers.map((offer) => (
 					<BuyOfferOrder
 						key={offer.id}
 						offer={offer}
@@ -493,8 +491,8 @@ const Land = (props) => {
 							<h3 className="o-small-title">Open Orders</h3>
 						</div>
 						<div className="Body__container">
-							{openSell}
-							{openBuyOffers}
+							{renderOpenSell}
+							{renerOpenBuyOffers}
 						</div>
 					</div>
 				</div>
@@ -550,6 +548,7 @@ const Land = (props) => {
 };
 
 Land.propTypes = {
+	match: PropTypes.object,
 	reloadLandStatefromApi: PropTypes.func,
 	userProvider: PropTypes.object,
 	mapProvider: PropTypes.object,
