@@ -430,11 +430,12 @@ export class Web3Provider extends Component {
 	 */
   getPrices = () => {
     return new Promise(async resolve => {
-      const receivedPerEth = Number(await this.state.tokenBuy.tokensPerEthAsync());
-      const receivedPerUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
+      const ethPrice = Number(await this.state.tokenBuy.ethPriceAsync());
+      let receivedPerUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
+      receivedPerUsd /= 10; // .2 dollars
       this.setState({
-        perEth: receivedPerEth,
-        perUsd: receivedPerUsd,
+        perEth: ethPrice / receivedPerUsd,
+        perUsd: 1 / receivedPerUsd,
       }, resolve);
     })
   };
