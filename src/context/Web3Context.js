@@ -447,11 +447,15 @@ export class Web3Provider extends Component {
 	 */
   buy = async (tokensToBuy, type) => {
     if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
+    console.log('tokens to buy', tokensToBuy)
+    tokensToBuy = window.web3.toBigNumber(window.web3.toWei(String(tokensToBuy)))
+    console.log('tokens to buy', tokensToBuy)
+
     await this.getPrices()
     try {
       switch (type) {
         case 'eth':
-          const value = String(tokensToBuy / this.state.perEth);
+          const value = String(tokensToBuy.div(this.state.perEth).ceil());
           const tx = await this.state.tokenBuy.buyTokensWithEthAsync({
             value,
             gasPrice: window.web3.toWei(30, 'gwei'),

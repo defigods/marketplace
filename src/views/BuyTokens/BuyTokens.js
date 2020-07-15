@@ -57,7 +57,7 @@ const BuyTokens = (context) => {
 				className="BuyTokens__input full-size"
 				onChange={(e) => {
 					// Convert tokens to wei
-					setTokensToBuy(window.web3.toWei(String(e.target.value)));
+					setTokensToBuy(String(e.target.value));
 				}}
 			/>
 			<button className="HexButton --blue" onClick={() => buy(tokensToBuy, 'eth')}>
