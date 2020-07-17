@@ -20,11 +20,15 @@ const NavBar = () => {
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State } = useContext(Web3Context);
 
-	let ovrsOwned
+	let ovrsOwned;
 	if (web3State.ovrsOwned) {
-		ovrsOwned = web3State.ovrsOwned.split(".")
-		let decimals = ovrsOwned[1].substring(0, 2)
-		ovrsOwned = ovrsOwned[0] + "." + decimals
+		ovrsOwned = web3State.ovrsOwned.split('.');
+		if (ovrsOwned.length > 1) {
+			let decimals = ovrsOwned[1].substring(0, 2);
+			ovrsOwned = ovrsOwned[0] + '.' + decimals;
+		} else {
+			ovrsOwned = ovrsOwned[0];
+		}
 	}
 
 	// START - Profile sub menu
