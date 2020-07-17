@@ -20,6 +20,13 @@ const NavBar = () => {
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State } = useContext(Web3Context);
 
+	let ovrsOwned
+	if (web3State.ovrsOwned) {
+		ovrsOwned = web3State.ovrsOwned.split(".")
+		let decimals = ovrsOwned[1].substring(0, 2)
+		ovrsOwned = ovrsOwned[0] + "." + decimals
+	}
+
 	// START - Profile sub menu
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
@@ -103,7 +110,7 @@ const NavBar = () => {
 
 						<div className="Funds__container">
 							<Link to="/" className="Funds__link">
-								<ValueCounter value={web3State.ovrsOwned}></ValueCounter>
+								<ValueCounter value={ovrsOwned}></ValueCounter>
 							</Link>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
