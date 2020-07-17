@@ -434,8 +434,8 @@ export class Web3Provider extends Component {
       let receivedPerUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
       receivedPerUsd /= 10; // .2 dollars
       this.setState({
-        perEth: ethPrice / receivedPerUsd,
-        perUsd: 1 / receivedPerUsd,
+        perEth: ethPrice,
+        perUsd: receivedPerUsd,
       }, resolve);
     })
   };
@@ -594,19 +594,15 @@ export class Web3Provider extends Component {
 		try {
       // For ether we send the value instead of the bid
       let gasPrice = await window.web3.toWei(30, 'gwei');
-      console.log('gasPrice', gasPrice)
-      console.log('type', type)
 			if (type === 0) {
-        const value = bid / this.state.perEth;
-        console.log('bid', bid)
-        console.log('landId', landId)
+        const ovrsPerEth = this.state.perEth/this.state.perUsd;
+        const value = Math.ceil(bid / ovrsPerEth) + 1;
+
 				tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
 					value: value,
           gasPrice: gasPrice,
 				})
 			} else {
-        console.log('bid', bid)
-        console.log('landId', landId)
         tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
           gasPrice: gasPrice,
 				})

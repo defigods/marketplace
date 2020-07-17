@@ -114,15 +114,15 @@ const BidOverlay = (props) => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		try {
 			switch (type) {
-				case 'ovr':
-					setMetamaskMessage('Approving OVR tokens...');
-					await approveOvrTokens(true, ovr);
-					setMetamaskMessage('Participating in the auction with OVR...');
-					await participateBid(4, bid, hexId);
-					break;
 				case 'eth':
 					setMetamaskMessage('Participating in the auction with ETH...');
 					await participateBid(0, bid, hexId);
+					break;
+				case 'dai':
+					setMetamaskMessage('Approving DAI tokens...');
+					await approveOvrTokens(true, dai);
+					setMetamaskMessage('Participating in the auction with DAI...');
+					await participateBid(1, bid, hexId);
 					break;
 				case 'usdt':
 					setMetamaskMessage('Approving Tether tokens...');
@@ -136,11 +136,11 @@ const BidOverlay = (props) => {
 					setMetamaskMessage('Participating in the auction with USDC...');
 					await participateBid(3, bid, hexId);
 					break;
-				case 'dai':
-					setMetamaskMessage('Approving DAI tokens...');
-					await approveOvrTokens(true, dai);
-					setMetamaskMessage('Participating in the auction with DAI...');
-					await participateBid(1, bid, hexId);
+				case 'ovr':
+					setMetamaskMessage('Approving OVR tokens...');
+					await approveOvrTokens(true, ovr);
+					setMetamaskMessage('Participating in the auction with OVR...');
+					await participateBid(4, bid, hexId);
 					break;
 			}
 		} catch (e) {
