@@ -455,7 +455,8 @@ export class Web3Provider extends Component {
     try {
       switch (type) {
         case 'eth':
-          const value = String(tokensToBuy.div(this.state.perEth).ceil());
+          const ovrsPerEth = this.state.perEth/this.state.perUsd;
+          const value = String(tokensToBuy.div(ovrsPerEth).ceil());
           const tx = await this.state.tokenBuy.buyTokensWithEthAsync({
             value,
             gasPrice: window.web3.toWei(30, 'gwei'),
