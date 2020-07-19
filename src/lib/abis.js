@@ -416,7 +416,13 @@ const tokenBuyAbi = [
   },
   {
     "constant": false,
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenstoBuy",
+        "type": "uint256"
+      }
+    ],
     "name": "buyTokensWithEth",
     "outputs": [],
     "payable": true,

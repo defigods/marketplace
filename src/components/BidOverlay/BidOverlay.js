@@ -167,7 +167,7 @@ const BidOverlay = (props) => {
 									<div className="Overlay__current_bid">
 										<div className="Overlay__bid_title">Current bid</div>
 										<div className="Overlay__bid_cont">
-											<ValueCounter value={Number(currentBid).toFixed(2)}></ValueCounter>
+											<ValueCounter value={currentBid}></ValueCounter>
 										</div>
 									</div>
 								</div>
@@ -299,7 +299,7 @@ const BidOverlay = (props) => {
 								<div className="Overlay__current_bid">
 									<div className="Overlay__bid_title">Current bid</div>
 									<div className="Overlay__bid_cont">
-										<ValueCounter value={Number(currentBid).toFixed(2)}></ValueCounter>
+										<ValueCounter value={currentBid}></ValueCounter>
 									</div>
 								</div>
 								<div className="Overlay__arrow">
