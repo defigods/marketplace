@@ -19,7 +19,7 @@ const apis = {
 		environment === 'PRODUCTION'
 			? 'ws://localhost:3000/cable'
 			: environment === 'STAGING'
-			? 'wss://localhost:3000/cable'
+			? 'ws://localhost:3000/cable'
 			: 'ws://localhost:3000/cable', // DEVELOPMENT
 	creditCardApi:
 		environment === 'PRODUCTION'
