@@ -17,7 +17,7 @@ export function checkToken(tokenName = 'token') {
 }
 
 export function saveUser(cookieName = 'user', cookieValue) {
-	Cookies.set(cookieName, cookieValue);
+	Cookies.set(cookieName, cookieValue, { domain: 'ovr.ai' });
 }
 
 export function getUser(cookieName = 'userToken') {
