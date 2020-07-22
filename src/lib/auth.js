@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 export function saveToken(tokenName = 'token', tokenValue) {
-	Cookies.set(tokenName, tokenValue);
+	Cookies.set(tokenName, tokenValue, { domain: 'ovr.ai' });
 }
 
 export function getToken(tokenName = 'token') {
