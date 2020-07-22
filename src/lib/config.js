@@ -20,7 +20,7 @@ const apis = {
 			? 'ws://localhost:3000/cable'
 			: environment === 'STAGING'
 			? 'ws://localhost:3000/cable'
-			: 'wss://mws-staging.ovr.ai/cable', // DEVELOPMENT
+			: 'ws://localhost:3000/cable', // DEVELOPMENT
 	creditCardApi:
 		environment === 'PRODUCTION'
 			? 'http://credit-card.ovr.ai/buy'
