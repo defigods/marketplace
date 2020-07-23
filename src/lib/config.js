@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
 // If you have connection error set as STAGING
-const environment = 'DEVELOPMENT';
+const environment = 'STAGING';
 
 const apis = {
 	hostname:

@@ -1,9 +1,12 @@
 ### v0.1.21
 
 - Fixed centralized connection to start of an auction
-- Added a "View transaction status" that opens etherscan after bidding and in Activity page
+- Added a "View transaction status" link that opens etherscan on a new tab after bidding and in Activity page
 - Fixed bug about the show of Redeem land button on not owned land
-
+- Fixed decentralized bugs on bidding and decimals
+- Moved the infura backend service in a standalone Node webservice
+- Migrated the centralized db to postgres, fixed all problems related ( Land UUID and Sockets )
+- Minor fixes in bidding interface  
 
 ### v0.1.2
 
