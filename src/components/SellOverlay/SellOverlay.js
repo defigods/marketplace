@@ -140,7 +140,7 @@ const SellOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="bids">
+							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__minimum_bid">
 										<div className="Overlay__bid_title">Bought at</div>

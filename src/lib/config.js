@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
 // If you have connection error set as STAGING
-const environment = 'STAGING';
+const environment = 'DEVELOPMENT';
 
 const apis = {
 	hostname:
@@ -32,7 +32,13 @@ const apis = {
 			? 'https://etherscan.io/'
 			: environment === 'STAGING'
 			? 'https://ropsten.etherscan.io/'
-			: 'https://ropsten.etherscan.io/' // DEVELOPMENT
+			: 'https://ropsten.etherscan.io/', // DEVELOPMENT
+	cookieDomain:
+	environment === 'PRODUCTION'
+		? 'ovr.ai'
+		: environment === 'STAGING'
+		? 'ovr.ai'
+		: 'localhost', // DEVELOPMENT
 };
 
 const map = {

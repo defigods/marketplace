@@ -25,6 +25,15 @@
 	}
 }
 
+// #mint-fade-menu{
+// 	li{
+// 		font-weight: 800;
+// 		text-transform: uppercase;
+// 		font-size: 11px!important;
+// 		letter-spacing: 1px;
+// 	}
+// }
+
 
 .OverlayContainer{
 	.RightOverlay__backpanel{
@@ -92,6 +101,9 @@
 }
 .BidOverlay{
 	background-color:#fff;
+	&.RightOverlay .Overlay__cont{
+		top: -50px;
+	}
 }
 .Overlay__title{
     font-size: 24px;
@@ -181,7 +193,7 @@
 		width: 100%;
     .HexButton{
         margin-right: 25px;
-    }
+		}
 }
 
 .Overlay__message__container{
@@ -204,7 +216,31 @@
 }
 
 
+.Overlay__bids_container {
+	float: left;
+	margin-bottom: 20px;
+	.Overlay__bid_container{
+		float: left;
+		display: inline-block;
+	}
+	.Overlay__arrow{
+		    display: inline-block;
+	}
+	.my-bid {
+		margin-left: 20px;
+	}
+}
+.Overlay__lower__cont{
+	display: inline-block;
+	margin-bottom: 15px;
+}
 
+.MintOverlay{
+  background: #fff;
+  background-size: 400% 400%;
+  box-shadow: -20px 10px 20px 0 rgba(30, 30, 30, 0.05);
+ 
+}
 
 
 .WhiteInputs {

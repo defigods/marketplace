@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie';
+import config from './config';
 
 export function saveToken(tokenName = 'token', tokenValue) {
-	Cookies.set(tokenName, tokenValue, { domain: 'ovr.ai' });
+	Cookies.set(tokenName, tokenValue, { domain: config.apis.cookieDomain });
 }
 
 export function getToken(tokenName = 'token') {
@@ -17,7 +18,7 @@ export function checkToken(tokenName = 'token') {
 }
 
 export function saveUser(cookieName = 'user', cookieValue) {
-	Cookies.set(cookieName, cookieValue, { domain: 'ovr.ai' });
+	Cookies.set(cookieName, cookieValue, { domain: config.apis.cookieDomain });
 }
 
 export function getUser(cookieName = 'userToken') {
