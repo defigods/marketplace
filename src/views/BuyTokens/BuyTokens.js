@@ -39,7 +39,7 @@ const BuyTokens = (context) => {
 			</p>
 			<ul className="full-size">
 				<li>
-					1 ETH gives you: <b>{perEth} OVR</b>
+					1 ETH gives you: <b>{perEth / perUsd} OVR</b>
 				</li>
 				<li>
 					1 Tether gives you: <b>{perUsd} OVR</b>
