@@ -86,7 +86,7 @@ export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
 	return request(
 		{ url: '/auction/bid/pre', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 			worth: worth,
 			tx_hash: txHash,
 		},
@@ -98,7 +98,7 @@ export function auctionBidConfirm(landUuid = null, worth = 10) {
 	return request(
 		{ url: '/auction/bid/confirm', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 			worth: worth,
 		},
 		null,
@@ -109,7 +109,7 @@ export function auctionPreStart(landUuid = null, worth = 10, txHash = null) {
 	return request(
 		{ url: '/auction/start/pre', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 			worth: worth,
 			tx_hash: txHash,
 		},
@@ -121,7 +121,7 @@ export function auctionConfirmStart(landUuid = null, txHash = null) {
 	return request(
 		{ url: '/auction/start/confirm', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 			tx_hash: txHash,
 		},
 		null,
@@ -132,7 +132,7 @@ export function auctionCheckClose(landUuid = null) {
 	return request(
 		{ url: '/infura/auction/close', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 		},
 		null,
 	);
@@ -176,7 +176,7 @@ export function sellLand(landUuid = null, worth = null) {
 	return request(
 		{ url: '/order/sell', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 			worth: worth,
 		},
 		null,
@@ -187,7 +187,7 @@ export function deleteSellLand(landUuid = null) {
 	return request(
 		{ url: '/order/delete/sell', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 		},
 		null,
 	);
@@ -198,7 +198,7 @@ export function buyLand(landUuid = null) {
 	return request(
 		{ url: '/order/buy', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 		},
 		null,
 	);
@@ -209,7 +209,7 @@ export function buyOffer(landUuid = null, worth = null, expirationDate = null) {
 	return request(
 		{ url: '/order/buy_offer', method: 'POST' },
 		{
-			land_uuid: landUuid,
+			hex_id: landUuid,
 			worth: worth,
 			expiration_date: expirationDate,
 		},

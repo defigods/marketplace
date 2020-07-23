@@ -67,7 +67,7 @@ const Land = (props) => {
 				var cable = ActionCable.createConsumer(config.apis.socket);
 				console.log('hexId', hexId);
 				window.landSocket = cable.subscriptions.create(
-					{ channel: 'LandsChannel', land_uuid: hexId },
+					{ channel: 'LandsChannel', hex_id: hexId },
 					{
 						received: (data) => {
 							console.log('LIVESOCKET data incoming', hexId);
@@ -105,8 +105,8 @@ const Land = (props) => {
 				console.log('landApiData', data);
 
 				// Update state component
-				setHexId(data.uuid);
-				setName({ sentence: data.sentenceId, hex: data.uuid });
+				setHexId(data.hexId);
+				setName({ sentence: data.sentenceId, hex: data.hexId });
 				setLocation(data.address.full);
 				setUserPerspective(data.userPerspective);
 				setUserPerspective(data.userPerspective);
@@ -114,8 +114,8 @@ const Land = (props) => {
 
 				// Update state for MapContext
 				let state = {
-					key: data.uuid,
-					name: { sentence: data.sentenceId, hex: data.uuid },
+					key: data.hexId,
+					name: { sentence: data.sentenceId, hex: data.hexId },
 					location: data.address.full,
 					userPerspective: data.userPerspective,
 					openSellOrder: data.openSellOrder,

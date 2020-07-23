@@ -25,7 +25,7 @@ const Notification = (props) => {
 	};
 	const handleGoTo = () => {
 		setAnchorEl(null);
-		history.push('/map/land/' + props.data.landUuid);
+		history.push('/map/land/' + props.data.hexId);
 		props.actions.toggleNotificationCenter();
 	};
 
