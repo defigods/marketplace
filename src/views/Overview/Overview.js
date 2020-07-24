@@ -37,10 +37,10 @@ const Overview = () => {
 						setListAuctions(
 							response.data.auctions.map((obj) => (
 								<AuctionCard
-									key={obj.land.uuid}
+									key={obj.land.hexId}
 									value={obj.land.auction.currentWorth}
 									background_image={`url(${obj.land.mapTileUrl}`}
-									name={{ sentence: obj.land.sentenceId, hex: obj.land.uuid }}
+									name={{ sentence: obj.land.sentenceId, hex: obj.land.hexId }}
 									location={obj.land.address.full}
 									market_status={obj.land.marketStatus}
 									user_perspective={obj.land.userPerspective}
@@ -83,11 +83,11 @@ const Overview = () => {
 						setListLands(
 							response.data.lands.map((obj) => (
 								<LandCard
-									key={obj.uuid}
+									key={obj.hexId}
 									url="/"
 									value={obj.currentWorth}
 									background_image={`url(${obj.mapTileUrl}`}
-									name={{ sentence: obj.sentenceId, hex: obj.uuid }}
+									name={{ sentence: obj.sentenceId, hex: obj.hexId }}
 									location={obj.address.full}
 									icon={{ url: './assets/icons/icon_deal.png', isSvg: false }}
 									date_end={obj.auction.closeAt}
