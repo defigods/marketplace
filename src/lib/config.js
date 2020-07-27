@@ -23,16 +23,16 @@ const apis = {
 			: 'ws://localhost:3000/cable', // DEVELOPMENT
 	creditCardApi:
 		environment === 'PRODUCTION'
-			? 'https://credit-card.ovr.ai/buy'
+			? 'https://web3-helper.ovr.ai/buy'
 			: environment === 'STAGING'
-			? 'http://staging-credit-card.ovr.ai/indacoin'
-			: 'https://staging-credit-card.ovr.ai/buy', // DEVELOPMENT
+			? 'https://web3-helper-staging.ovr.ai/buy'
+			: 'https://web3-helper-staging.ovr.ai/buy', // DEVELOPMENT
 	indacoinBuyUrl:
 	environment === 'PRODUCTION'
-			? 'https://credit-card.ovr.ai/indacoin'
+			? 'https://web3-helper.ovr.ai/indacoin'
 		: environment === 'STAGING'
-		? 'https://staging-credit-card.ovr.ai/indacoin'
-		: 'https://staging-credit-card.ovr.ai/indacoin', // DEVELOPMENT
+		? 'https://web3-helper-staging.ovr.ai/indacoin'
+		: 'https://web3-helper-staging.ovr.ai/indacoin', // DEVELOPMENT
 	etherscan:
 		environment === 'PRODUCTION'
 			? 'https://etherscan.io/'
