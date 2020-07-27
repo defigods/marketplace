@@ -2,6 +2,10 @@
 	display: none;
 }
 
+.v-buy-tokens{
+	margin-bottom: 80px;
+}
+
 .BuyTokens__container {
 	display: grid;
 	justify-content: center;
@@ -67,4 +71,135 @@
 			grid-column: 3 / 5;
 		}
 	}
+}
+
+.c-currency-selector_cont{
+	width: 100%;
+	margin-bottom: 20px;
+	display: flex;
+
+}
+.c-currency-selector{
+	line-height: 22px;
+	display: block;
+	font-weight: 400;
+	font-size: 20px;
+	padding: 8px 15px;
+	background: #ffffff;
+	width: fit-content;
+	margin-right: 12px;
+	border-radius: 5px;
+	float: left;
+	box-shadow: 8px 8px 16px rgba(217, 217, 217, 0.3), -8px -8px 16px #ffffff;
+	position: relative;
+	transition: 250ms all ease-in-out;
+	cursor: pointer;
+	&::before {
+		top: 0px;
+		left: 0px;
+		position: absolute;
+		content: '';
+		background: white;
+		z-index: -9;
+		width: 100%;
+		height: 100%;
+		border-radius: 5px;
+	}
+	&:hover{
+		box-shadow: 0px 0px 0px rgba(217, 217, 217, 0);
+		transform: scale(0.96);
+	}
+	&.--selected{
+		box-shadow: 0px 0px 0px rgba(217, 217, 217, 0)!important;
+		pointer-events: none;
+		background: rgba(255,255,255,0.95);
+		z-index: 2;
+		&::after {
+			position: absolute;
+			top: -2px; bottom: -2px;
+			left: -2px; right: -2px;
+			background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
+			content: '';
+			z-index: -10;
+			border-radius: 7px;
+		}
+	}
+}
+
+.c-active-currency__cont {
+    margin-top: 40px;
+}
+.c-active-currency__swap{
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 13px;
+	margin-right: 13px;
+	svg{
+		width: 25px;
+		opacity: 0.7;
+	}
+}
+
+.c-currency-input{
+	.MuiOutlinedInput-input{
+		padding: 15px 0px;
+	}
+	*{
+		&:focus {
+			color: #000!important;
+		}
+	}
+}
+
+.c-active-currency__rate{
+	margin-top: 10px;
+	font-size: 14px;
+	display: inline-block;
+}
+.c-active-currency__buttons{
+	margin-top: 25px;
+	.HexButton{
+		margin-right: 20px;
+	}
+}
+
+
+.o-centered-box{
+		background: #fff;
+		border-radius: 5px;
+		margin: 0 auto;
+		width: 450px;
+		padding: 45px;
+		.Logo{
+				max-width: 100px;
+				height: auto;
+				margin-bottom: 20px;
+		}
+		h1, h2{
+				margin-top: 0px;
+				color: $ovr_purple;
+		}
+		.HexButton{
+				margin-top: 25px;
+		}
+		box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.05);
+		border-radius: 25px;
+		margin-top: 20px;
+		text-align: center;
+		.CancelIcon{
+			height: 80px;
+			width: 80px;
+			margin-bottom: 20px;
+			fill: #DC6A5B;
+			border: #DC6A5B;
+		}
+		.MuiCircularProgress-root{
+			width: 60px!important;
+			height: 60px!important;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			svg{
+					color: rebeccapurple;
+			}
+		}
 }

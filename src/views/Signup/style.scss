@@ -4,6 +4,16 @@
   background-image: linear-gradient(90deg, #5e509d 0%, #724a93 100%);
   min-height: calc( 100vh - 300px );
   padding-bottom: 50px;
+  .MuiCircularProgress-root{
+    width: 25px!important;
+    height: 25px!important;
+    top: 8px;
+    position: relative;
+    left: 15px;
+    svg{
+      color: rebeccapurple;
+    }
+  }
   .o-box{
     background: #fff;
     border-radius: 5px;
@@ -108,16 +118,7 @@
 .Signup__email_textfield{
   width: 80%;
 }
-.MuiCircularProgress-root{
-  width: 25px!important;
-  height: 25px!important;
-  top: 8px;
-  position: relative;
-  left: 15px;
-  svg{
-    color: rebeccapurple;
-  }
-}
+
 .Signup__userpass_textfield{
   width: 60%;
 }
@@ -131,3 +132,4 @@
   stroke: #00C8A1;
   margin-bottom: 20px;
 }
+

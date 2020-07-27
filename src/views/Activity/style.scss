@@ -1,5 +1,5 @@
 .activity {
-	padding-top: 5%;
+	padding-top: 4%;
 	min-height: 57vh;
 
 	.o-container{
@@ -23,8 +23,20 @@
 	}
 }
 
+.sub-title--black{
+	font-size: 18px;
+	h3{
+		margin-top: 40px;
+	}
+}
 
 .activity-content{
 	margin-top: 40px;
 	margin-bottom: 60px;
 }
+
+.c-active-currency__rate{
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+
