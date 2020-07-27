@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { withUserContext } from '../../context/UserContext';
-import { dangerNotification, successNotification } from '../../lib/notifications';
 import * as moment from 'moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -8,17 +7,15 @@ import HexButton from '../../components/HexButton/HexButton';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-// const INDACOIN_BUY_URL = 'http://localhost:8888/indacoin';
-const INDACOIN_BUY_URL = 'http://staging-credit-card.ovr.ai/indacoin';
+import config from '../../lib/config';
 
 /**
  * Indacoin response component
  */
-const IndacoinResponse = (context) => {
+const IndacoinResponse = () => {
 	const [respStatus, setRespStatus] = useState(0);
 	const [errorTraceback, setErrorTraceback] = useState(0);
-	const [transactionId, setTransactionid] = useState(window.location.search.split('transaction_id=')[1]);
+	const [transactionId] = useState(window.location.search.split('transaction_id=')[1]);
 
 	let history = useHistory();
 
@@ -32,7 +29,7 @@ const IndacoinResponse = (context) => {
 
 	const getIndacoinPayment = async () => {
 		try {
-			const req = await fetch(INDACOIN_BUY_URL, {
+			const req = await fetch(config.apis.indacoinBuyUrl, {
 				method: 'post',
 				headers: {
 					'content-type': 'application/json',
@@ -43,10 +40,6 @@ const IndacoinResponse = (context) => {
 			});
 			const res = await req.json();
 			if (res.ok) {
-				successNotification(
-					'Tokens sent successfully',
-					"Your tokens have been transfered successfully you'll see your updated balance in a few minutes",
-				);
 				setRespStatus(1);
 			} else {
 				setRespStatus(2);

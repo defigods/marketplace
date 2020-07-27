@@ -23,10 +23,16 @@ const apis = {
 			: 'ws://localhost:3000/cable', // DEVELOPMENT
 	creditCardApi:
 		environment === 'PRODUCTION'
-			? 'http://credit-card.ovr.ai/buy'
+			? 'https://credit-card.ovr.ai/buy'
 			: environment === 'STAGING'
-			? 'http://staging-credit-card.ovr.ai/buy'
-			: 'http://staging-credit-card.ovr.ai/buy', // DEVELOPMENT
+			? 'http://staging-credit-card.ovr.ai/indacoin'
+			: 'https://staging-credit-card.ovr.ai/buy', // DEVELOPMENT
+	indacoinBuyUrl:
+	environment === 'PRODUCTION'
+			? 'https://credit-card.ovr.ai/indacoin'
+		: environment === 'STAGING'
+		? 'https://staging-credit-card.ovr.ai/indacoin'
+		: 'https://staging-credit-card.ovr.ai/indacoin', // DEVELOPMENT
 	etherscan:
 		environment === 'PRODUCTION'
 			? 'https://etherscan.io/'
@@ -40,6 +46,7 @@ const apis = {
 		? 'ovr.ai'
 		: 'localhost', // DEVELOPMENT
 };
+
 
 const map = {
 	lat: 46.0922495,
