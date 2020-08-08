@@ -37,7 +37,7 @@ const BuyTokens = (context) => {
 	const selectCurrency = (currencyIndex) => {
 		if (currencyIndex == 1) {
 			setUsdToSpend(1);
-			setTokensToBuy(perEth);
+			setTokensToBuy(perEth * 10);
 		} else {
 			setUsdToSpend(10);
 			setTokensToBuy(100);
@@ -62,7 +62,7 @@ const BuyTokens = (context) => {
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
-									setTokensToBuy((e.target.value * perUsd * 100).toFixed(0));
+									setTokensToBuy((e.target.value * perUsd).toFixed(0));
 								}}
 								variant="outlined"
 							/>
@@ -85,7 +85,7 @@ const BuyTokens = (context) => {
 									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
 								}}
 								onChange={(e) => {
-									setUsdToSpend((e.target.value / perUsd / 100).toFixed(2));
+									setUsdToSpend((e.target.value / perUsd).toFixed(2));
 									setTokensToBuy(e.target.value);
 								}}
 								variant="outlined"
@@ -121,7 +121,7 @@ const BuyTokens = (context) => {
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
-									setTokensToBuy((e.target.value * perEth).toFixed(0));
+									setTokensToBuy((e.target.value * perEth * 10).toFixed(0));
 								}}
 								variant="outlined"
 							/>
@@ -150,7 +150,7 @@ const BuyTokens = (context) => {
 								variant="outlined"
 							/>
 						</div>
-						<div className="c-active-currency__rate"> Exchange rate: 1 ETH = {perEth} OVR</div>
+						<div className="c-active-currency__rate"> Exchange rate: 1 ETH = {perEth * 10} OVR</div>
 						<div className="c-active-currency__buttons">
 							<HexButton
 								url="#"
@@ -185,7 +185,7 @@ const BuyTokens = (context) => {
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
-									setTokensToBuy((e.target.value * perUsd * 100).toFixed(0));
+									setTokensToBuy((e.target.value * perUsd).toFixed(0));
 								}}
 								variant="outlined"
 							/>
@@ -208,7 +208,7 @@ const BuyTokens = (context) => {
 									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
 								}}
 								onChange={(e) => {
-									setUsdToSpend((e.target.value / perUsd / 100).toFixed(2));
+									setUsdToSpend((e.target.value / perUsd).toFixed(2));
 									setTokensToBuy(e.target.value);
 								}}
 								variant="outlined"
@@ -249,7 +249,7 @@ const BuyTokens = (context) => {
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
-									setTokensToBuy((e.target.value * perUsd * 100).toFixed(0));
+									setTokensToBuy((e.target.value * perUsd).toFixed(0));
 								}}
 								variant="outlined"
 							/>
@@ -272,7 +272,7 @@ const BuyTokens = (context) => {
 									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
 								}}
 								onChange={(e) => {
-									setUsdToSpend((e.target.value / perUsd / 100).toFixed(2));
+									setUsdToSpend((e.target.value / perUsd).toFixed(2));
 									setTokensToBuy(e.target.value);
 								}}
 								variant="outlined"
@@ -313,7 +313,7 @@ const BuyTokens = (context) => {
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
-									setTokensToBuy((e.target.value * perUsd * 100).toFixed(0));
+									setTokensToBuy((e.target.value * perUsd).toFixed(0));
 								}}
 								variant="outlined"
 							/>
@@ -336,7 +336,7 @@ const BuyTokens = (context) => {
 									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
 								}}
 								onChange={(e) => {
-									setUsdToSpend((e.target.value / perUsd / 100).toFixed(2));
+									setUsdToSpend((e.target.value / perUsd).toFixed(2));
 									setTokensToBuy(e.target.value);
 								}}
 								variant="outlined"

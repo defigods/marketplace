@@ -430,12 +430,11 @@ export class Web3Provider extends Component {
 	 */
   getPrices = () => {
     return new Promise(async resolve => {
-      const ethPrice = Number(await this.state.tokenBuy.ethPriceAsync());
-      let receivedPerUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
-      receivedPerUsd /= 10; // .2 dollars
+      const perEth = Number(await this.state.tokenBuy.ethPriceAsync());
+      let perUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
       this.setState({
-        perEth: ethPrice,
-        perUsd: receivedPerUsd,
+        perEth,
+        perUsd,
       }, resolve);
     })
   };
@@ -453,8 +452,8 @@ export class Web3Provider extends Component {
     try {
       switch (type) {
         case 'eth':
-          const ovrsPerEth = this.state.perEth/this.state.perUsd;
-          const value = String(tokensToBuy.div(ovrsPerEth).ceil());
+          const ovrsPerEth = this.state.perEth * this.state.perUsd;
+          const value = String(Math.ceil(tokensToBuy.div(ovrsPerEth)));
           const tx = await this.state.tokenBuy.buyTokensWithEthAsync(tokensToBuy, {
             value,
             gasPrice: window.web3.toWei(30, 'gwei'),
@@ -590,21 +589,22 @@ export class Web3Provider extends Component {
 		} catch (e) {
 			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
     }
+    bid = window.web3.toBigNumber(String(bid))
+
 		try {
       // For ether we send the value instead of the bid
-      let gasPrice = await window.web3.toWei(30, 'gwei');
+      let gasPrice = window.web3.toWei('30', 'gwei');
 			if (type === 0) {
-        const ovrsPerEth = this.state.perEth/this.state.perUsd;
-        const value = Math.ceil(bid / ovrsPerEth) + 1;
-
+        const ovrsPerEth = this.state.perEth * this.state.perUsd;
+        const value = String(Math.ceil(bid.div(ovrsPerEth)));
 				tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
 					value: value,
           gasPrice: gasPrice,
-				})
+        })
 			} else {
         tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
           gasPrice: gasPrice,
-				})
+        })
       }
 			return tx
 		} catch (e) {
