@@ -453,7 +453,7 @@ export class Web3Provider extends Component {
       switch (type) {
         case 'eth':
           const ovrsPerEth = this.state.perEth * this.state.perUsd;
-          const value = String(Math.ceil(tokensToBuy.div(ovrsPerEth)) + 100);
+          const value = String(Math.ceil(tokensToBuy.div(ovrsPerEth)) + 1e6);
           const tx = await this.state.tokenBuy.buyTokensWithEthAsync(tokensToBuy, {
             value,
             gasPrice: window.web3.toWei(30, 'gwei'),
@@ -596,7 +596,7 @@ export class Web3Provider extends Component {
       let gasPrice = window.web3.toWei('30', 'gwei');
 			if (type === 0) {
         const ovrsPerEth = this.state.perEth * (this.state.perUsd / 2);
-        const value = String(Math.ceil(bid.div(ovrsPerEth)) + 100);
+        const value = String(Math.ceil(bid.div(ovrsPerEth)) + 1e6);
 				tx = this.state.icoParticipate.participateAsync(type, bid, landId, {
 					value: value,
           gasPrice: gasPrice,
