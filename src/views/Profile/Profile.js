@@ -143,7 +143,7 @@ const ProfileContent = () => {
 					<div className="p-section-content">
 						<h4 className="p-content-title">Status</h4>
 						<div className="p-balance-value">
-							{renderBadge(user.kycReviewStatus)}
+							{renderBadge(user.kycReviewAnswer)}
 							<div>
 								<HexButton
 									url=""
