@@ -65,20 +65,11 @@ const renderBadge = (status) => {
 		case -1:
 			badge = <div className="c-status-badge  --open">Not started</div>;
 			break;
-		case 0:
-			badge = <div className="c-status-badge  --open">Started</div>;
-			break;
 		case 1:
-			badge = <div className="c-status-badge  --open">Pending</div>;
-			break;
-		case 2:
-			badge = <div className="c-status-badge  --open">Queued</div>;
-			break;
-		case 3:
 			badge = <div className="c-status-badge  --open">Completed</div>;
 			break;
-		case 4:
-			badge = <div className="c-status-badge  --open">On Hold</div>;
+		case 0:
+			badge = <div className="c-status-badge  --open">Failed</div>;
 			break;
 		default:
 			badge = <div>&nbsp;</div>;
@@ -94,7 +85,7 @@ const ProfileContent = () => {
 	const [sumsubAccessToken, setSumsubAccessToken] = useState(0);
 	const { user } = userState;
 	// console.log('ProfileContent->These are user and web3Context from UserContext', web3Context, user);
-	console.log(web3Context)
+	console.log(web3Context);
 	useEffect(() => {
 		if (sumsubShowPanel == true && sumsubExternalUserId == 0 && user.uuid != undefined) {
 			getSumsubData()
