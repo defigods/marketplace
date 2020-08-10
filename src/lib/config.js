@@ -6,39 +6,39 @@ import _ from 'lodash';
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
 // If you have connection error set as STAGING
-const environment = 'DEVELOPMENT';
+const environment = 'STAGING';
 
 const apis = {
 	hostname:
 		environment === 'PRODUCTION'
 			? 'http://localhost:3000/api/v1'
 			: environment === 'STAGING'
-				? 'https://mws-staging.ovr.ai/api/v1'
-				: 'http://localhost:3000/api/v1', // DEVELOPMENT
+			? 'https://mws-staging.ovr.ai/api/v1'
+			: 'http://localhost:3000/api/v1', // DEVELOPMENT
 	socket:
 		environment === 'PRODUCTION'
 			? 'ws://localhost:3000/cable'
 			: environment === 'STAGING'
-				? 'wss://mws-staging.ovr.ai/cable'
-				: 'ws://localhost:3000/cable', // DEVELOPMENT
+			? 'wss://mws-staging.ovr.ai/cable'
+			: 'ws://localhost:3000/cable', // DEVELOPMENT
 	creditCardApi:
 		environment === 'PRODUCTION'
 			? 'https://web3-helper.ovr.ai/buy'
 			: environment === 'STAGING'
-				? 'https://web3-helper-staging.ovr.ai/buy'
-				: 'https://web3-helper-staging.ovr.ai/buy', // DEVELOPMENT
+			? 'https://web3-helper-staging.ovr.ai/buy'
+			: 'https://web3-helper-staging.ovr.ai/buy', // DEVELOPMENT
 	indacoinBuyUrl:
 		environment === 'PRODUCTION'
 			? 'https://web3-helper.ovr.ai/indacoin'
 			: environment === 'STAGING'
-				? 'https://web3-helper-staging.ovr.ai/indacoin'
-				: 'https://web3-helper-staging.ovr.ai/indacoin', // DEVELOPMENT
+			? 'https://web3-helper-staging.ovr.ai/indacoin'
+			: 'https://web3-helper-staging.ovr.ai/indacoin', // DEVELOPMENT
 	etherscan:
 		environment === 'PRODUCTION'
 			? 'https://etherscan.io/'
 			: environment === 'STAGING'
-				? 'https://ropsten.etherscan.io/'
-				: 'https://ropsten.etherscan.io/', // DEVELOPMENT
+			? 'https://ropsten.etherscan.io/'
+			: 'https://ropsten.etherscan.io/', // DEVELOPMENT
 	cookieDomain: environment === 'PRODUCTION' ? 'ovr.ai' : environment === 'STAGING' ? 'ovr.ai' : 'localhost', // DEVELOPMENT
 };
 
