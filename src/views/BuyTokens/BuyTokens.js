@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
-import { warningNotification } from '../../lib/notifications';
+import { warningNotification, dangerNotification } from '../../lib/notifications';
 import * as moment from 'moment';
 import { Link } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 
 import HexButton from '../../components/HexButton/HexButton';
+import config from '../../lib/config';
 
 const partnerName = 'ovr';
 
@@ -28,6 +29,7 @@ const BuyTokens = (context) => {
 	}, [setupComplete]);
 
 	const buyWithIndacoin = () => {
+		if (config.environment == 'PRODUCTION' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.'); }
 		if (tokensToBuy <= 0)
 			return warningNotification("Amount can't be empty", 'You must specify an amount of OVR tokens to buy');
 		const url = `https://indacoin.com/gw/payment_form?partner=${partnerName}&cur_from=USD&cur_to=INTT&amount=${usdToSpend}&address=${window.web3.eth.accounts[0]}&user_id=${user.uuid}`;
@@ -380,21 +382,11 @@ const BuyTokens = (context) => {
 						will give you the best experience. <Link to="#">Read more</Link>.
 						<br />
 					</p>
+					<p>
+						To buy OVR token it is required that you pass our KYC. Go to your <Link to="/profile">profile</Link> and start the Identity Verification process.
+						<br />
+					</p>
 				</div>
-				{/* <ul>
-					<li>
-						1 ETH gives you: <b>{perEth / perUsd} OVR</b>
-					</li>
-					<li>
-						1 Tether gives you: <b>{perUsd} OVR</b>
-					</li>
-					<li>
-						1 USDC gives you: <b>{perUsd} OVR</b>
-					</li>
-					<li>
-						1 DAI gives you: <b>{perUsd} OVR</b>
-					</li>
-				</ul> */}
 				<div className="sub-title--black">
 					<h3>Purchase with:</h3>
 				</div>

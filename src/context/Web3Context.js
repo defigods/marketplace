@@ -445,6 +445,8 @@ export class Web3Provider extends Component {
 	 * @param {String} type The type of payment chosen
 	 */
   buy = async (tokensToBuy, type) => {
+    let user = this.context.state.user;
+    if (config.environment == 'PRODUCTION' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.');}
     if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
     tokensToBuy = window.web3.toBigNumber(window.web3.toWei(String(tokensToBuy)))
 
@@ -481,52 +483,6 @@ export class Web3Provider extends Component {
         'There was an error processing your transaction refresh this page and try again',
       );
     }
-  };
-
-  buyWithCard = async (tokensToBuy, cardNum, month, year, cvv, zip) => {
-    await this.getPrices()
-    // tokensToBuy
-    let response;
-    const dataToSend = {
-      amount: String(window.web3.fromWei((tokensToBuy / this.state.perUsd) * 100)), // Must be in cents so 1 dollar is 100
-      addressReceiver: window.web3.eth.defaultAccount,
-      card: {
-        cardNum,
-        cardExpiry: {
-          month,
-          year,
-        },
-        cvv,
-      },
-      billingDetails: { zip },
-    };
-
-    try {
-      const request = await fetch(config.apis.creditCardApi, {
-        method: 'post',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
-      response = await request.json();
-    } catch (e) {
-      return dangerNotification(
-        'Error processing the payment',
-        'There was an error making the credit card purchase refresh the page and try again later',
-      );
-    }
-
-    if (!response) {
-      return dangerNotification('Error', 'No response received from the payment server');
-    } else if (!response.ok) {
-      return dangerNotification('Error buying', response.msg);
-    }
-
-    successNotification(
-      'Purchase successful',
-      'The purchase was completed successfully. It may take between 1 and 3 minutes to see your new tokens.',
-    );
   };
 
   buyWithToken = async (tokensToBuy, token, type) => {
@@ -671,7 +627,6 @@ export class Web3Provider extends Component {
             acceptBuyOffer: this.acceptBuyOffer,
             redeemSingleLand: this.redeemSingleLand,
             buyWithToken: this.buyWithToken,
-            buyWithCard: this.buyWithCard,
             buy: this.buy,
             getPrices: this.getPrices,
             participate: this.participate,

@@ -113,7 +113,7 @@ const NavBar = () => {
 						</Link>
 
 						<div className="Funds__container">
-							<Link to="/" className="Funds__link">
+							<Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
 							</Link>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {

@@ -29,7 +29,7 @@ const IndacoinResponse = () => {
 
 	const getIndacoinPayment = async () => {
 		try {
-			const req = await fetch(config.apis.indacoinBuyUrl, {
+			const req = await fetch(config.apis.indacoinHelperApi, {
 				method: 'post',
 				headers: {
 					'content-type': 'application/json',

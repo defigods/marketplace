@@ -1,3 +1,11 @@
+### v0.1.22
+
+- Fixed conversion fares
+- Fixed indacoin webservice helper
+- Changed Sumsub integration to new WebSDK
+- Added control of KYC before buying OVR Token ( PRODUCTION only )
+
+
 ### v0.1.21
 
 - Fixed centralized connection to start of an auction
