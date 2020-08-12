@@ -1,4 +1,5 @@
 import React, { createContext, Component } from 'react';
+import * as h3 from 'h3-js';
 
 export const MapContext = createContext();
 
@@ -32,7 +33,10 @@ export class MapProvider extends Component {
 	}
 
 	changeHexId(hex_id) {
-		this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true });
+		// TODO change it as it could accept 3words names
+		if (h3.h3IsValid(hex_id)) {
+			this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true });
+		}
 	}
 	changeLandData(landData) {
 		this.setState({ landData });

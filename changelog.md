@@ -4,6 +4,7 @@
 - Fixed indacoin webservice helper
 - Changed Sumsub integration to new WebSDK
 - Added control of KYC before buying OVR Token ( PRODUCTION only )
+- Fixed 3 word bugs, enhanced word list, and activated browse of land via 3 words name in URL
 
 
 ### v0.1.21

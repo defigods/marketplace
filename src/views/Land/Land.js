@@ -47,6 +47,7 @@ const Land = (props) => {
 	// const [openSellOrder, setOpenSellOrder] = useState(null);
 	const [openBuyOffers, setOpenBuyOffers] = useState([]);
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
+	const [isNotValidH3, setIsNotValidH3] = useState(false);
 
 	// First load
 	useEffect(() => {
@@ -57,28 +58,27 @@ const Land = (props) => {
 
 	// Sockets
 	useEffect(() => {
-		console.log('eer');
 		if (setupComplete && isLoggedIn && hexId === props.match.params.id) {
 			// liveSocket(props.match.params.id);
-			console.log('LIVESOCKET', hexId);
+			// console.log('LIVESOCKET', hexId);
 			if (isLoggedIn) {
-				console.log('LIVESOCKET PASSED', hexId);
+				// console.log('LIVESOCKET PASSED', hexId);
 				if (window.landSocket) window.landSocket.unsubscribe(); // unsubscribe precedent land
 				var cable = ActionCable.createConsumer(config.apis.socket);
-				console.log('hexId', hexId);
+				// console.log('hexId', hexId);
 				window.landSocket = cable.subscriptions.create(
 					{ channel: 'LandsChannel', hex_id: hexId },
 					{
 						received: (data) => {
-							console.log('LIVESOCKET data incoming', hexId);
-							console.log('LAND SOCKET data', data);
+							// console.log('LIVESOCKET data incoming', hexId);
+							// console.log('LAND SOCKET data', data);
 							loadLandStateFromApi(hexId);
 							decentralizedSetup();
 						},
 					},
 				);
 			} else {
-				console.log('LIVESOCKET UHOH');
+				// console.log('LIVESOCKET UHOH');
 			}
 		}
 	}, [setupComplete, isLoggedIn, hexId]);
@@ -102,26 +102,31 @@ const Land = (props) => {
 		getLand(hex_id)
 			.then((response) => {
 				let data = response.data;
-				console.log('landApiData', data);
+				console.log('data', data);
+				if (data.error && data.error == 'h3_not_valid') {
+					setIsNotValidH3(true);
+				} else {
+					setIsNotValidH3(false);
+					changeHexId(data.hexId);
+					// Update state component
+					setHexId(data.hexId);
+					setName({ sentence: data.sentenceId, hex: data.hexId });
+					setLocation(data.address.full);
+					setUserPerspective(data.userPerspective);
+					setUserPerspective(data.userPerspective);
+					setAuction(data.auction);
 
-				// Update state component
-				setHexId(data.hexId);
-				setName({ sentence: data.sentenceId, hex: data.hexId });
-				setLocation(data.address.full);
-				setUserPerspective(data.userPerspective);
-				setUserPerspective(data.userPerspective);
-				setAuction(data.auction);
-
-				// Update state for MapContext
-				let state = {
-					key: data.hexId,
-					name: { sentence: data.sentenceId, hex: data.hexId },
-					location: data.address.full,
-					userPerspective: data.userPerspective,
-					openSellOrder: data.openSellOrder,
-					auction: data.auction,
-				};
-				changeLandData(state);
+					// Update state for MapContext
+					let state = {
+						key: data.hexId,
+						name: { sentence: data.sentenceId, hex: data.hexId },
+						location: data.address.full,
+						userPerspective: data.userPerspective,
+						openSellOrder: data.openSellOrder,
+						auction: data.auction,
+					};
+					changeLandData(state);
+				}
 			})
 			.catch((error) => {
 				// Notify user if network error
@@ -129,29 +134,6 @@ const Land = (props) => {
 				networkError();
 			});
 	}
-
-	// Sockets
-
-	const liveSocket = () => {
-		// console.log('LIVESOCKET')
-		// if (isLoggedIn) {
-		// 	console.log('LIVESOCKET PASSED')
-		// 	var cable = ActionCable.createConsumer(config.apis.socket);
-
-		// 	cable.subscriptions.create(
-		// 		{ channel: 'LandsChannel', land_uuid: hexId },
-		// 		{
-		// 			received: (data) => {
-		// 				console.log('LAND SOCKET data', data);
-		// 				loadLandStateFromApi(hexId);
-		// 				decentralizedSetup();
-		// 			},
-		// 		},
-		// 	);
-		// } else {
-		// 	console.log('LIVESOCKET UHOH')
-		// }
-	};
 
 	const updateMarketStatusFromSmartContract = async (hex_id) => {
 		// Set 0 for not started, 1 for started and 2 for ended
@@ -502,49 +484,73 @@ const Land = (props) => {
 		return custom_return;
 	}
 
-	return (
-		<div className="Land">
-			<BidOverlay
-				currentBid={value}
-				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
-			></BidOverlay>
-			<MintOverlay
-				currentBid={value}
-				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
-			></MintOverlay>
-			<SellOverlay
-				currentBid={value}
-				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
-			></SellOverlay>
-			<BuyOfferOverlay
-				currentBid={value}
-				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
-			></BuyOfferOverlay>
-			<BuyLandOverlay
-				currentBid={value}
-				land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
-			></BuyLandOverlay>
+	function renderLand() {
+		let custom_return;
+		if (isNotValidH3 == false) {
+			custom_return = (
+				<div className="Land">
+					<BidOverlay
+						currentBid={value}
+						land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+					></BidOverlay>
+					<MintOverlay
+						currentBid={value}
+						land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+					></MintOverlay>
+					<SellOverlay
+						currentBid={value}
+						land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+					></SellOverlay>
+					<BuyOfferOverlay
+						currentBid={value}
+						land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+					></BuyOfferOverlay>
+					<BuyLandOverlay
+						currentBid={value}
+						land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+					></BuyLandOverlay>
 
-			<div className="o-container">
-				<div className="Land__heading__1">
-					<h2>
-						<Textfit mode="single" max={25}>
-							{name.sentence}
-						</Textfit>
-					</h2>
-					<div className="Land__location">{location}</div>
+					<div className="o-container">
+						<div className="Land__heading__1">
+							<h2>
+								<Textfit mode="single" max={25}>
+									{name.sentence}
+								</Textfit>
+							</h2>
+							<div className="Land__location">{location}</div>
+						</div>
+						<div className="Land__heading__2">
+							<div className="o-fourth">{renderPrice()}</div>
+							<div className="o-fourth">{renderTimer()}</div>
+							<div className="o-fourth">{renderBadge()}</div>
+							<div className="o-fourth">{renderOverlayButton()}</div>
+						</div>
+					</div>
+					{renderActiveOpenOrders()}
+					<div className="Land__section">{renderBidHistory()}</div>
 				</div>
-				<div className="Land__heading__2">
-					<div className="o-fourth">{renderPrice()}</div>
-					<div className="o-fourth">{renderTimer()}</div>
-					<div className="o-fourth">{renderBadge()}</div>
-					<div className="o-fourth">{renderOverlayButton()}</div>
+			);
+		} else {
+			custom_return = (
+				<div className="Land">
+					<div className="o-container">
+						<div className="c-dialog --centered --not-found">
+							<h1>404</h1>
+							<div className="c-dialog-main-title">
+								Land not found
+							</div>
+							<div className="c-dialog-sub-title">
+								The requested land name was not found. <br></br>Click anywhere in the map or go to "Marketplace" and start from there.
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-			{renderActiveOpenOrders()}
-			<div className="Land__section">{renderBidHistory()}</div>
-		</div>
-	);
+			);
+		}
+		return custom_return;
+	}
+
+	return renderLand();
 };
 
 Land.propTypes = {
