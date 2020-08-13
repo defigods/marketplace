@@ -104,6 +104,9 @@
 	&.RightOverlay .Overlay__cont{
 		top: -50px;
 	}
+	.Overlay__expense_projection{
+		margin-bottom: 15px;
+	}
 }
 .Overlay__title{
     font-size: 24px;
@@ -121,6 +124,26 @@
 		background:linear-gradient(to right, $ovr-orange,$ovr-yellow);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
+	}
+}
+
+.Overlay__expense_projection{
+	width: 100%;
+	font-size: 12px;
+	margin-top: 20px;
+	display: inline-block;
+	.Help{
+		width: 12px;
+		height: 12px;
+		line-height: 12px;
+		display: inline;
+		margin-left: 5px;
+		top: 2px;
+		position: relative;
+		color: #ccc;
+		&:hover{
+			color: $ovr-grey;
+		}
 	}
 }
 

@@ -16,9 +16,11 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
+import Help from '@material-ui/icons/Help';
+
 const MintOverlay = (props) => {
 	const { participateMint, approveOvrTokens } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -27,6 +29,8 @@ const MintOverlay = (props) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
 	const [bid, setBid] = useState(0);
+	const [bidProjection, setBidProjection] = useState(0);
+	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('OVR');
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
@@ -90,6 +94,8 @@ const MintOverlay = (props) => {
 			setBidValid(false);
 		}
 		setBid(myBid);
+		setBidProjectionCurrency('OVR');
+		setBidProjection(myBid);
 	};
 
 	// Helper used to check if the user is logged in
@@ -100,6 +106,34 @@ const MintOverlay = (props) => {
 			return false;
 		}
 		return true;
+	};
+
+	// Change the bid projection on hover
+	const updateBidProjectionCurrency = (type) => {
+		switch (type) {
+			case 'ovr':
+				setBidProjection(bid);
+				setBidProjectionCurrency('OVR');
+				break;
+			case 'eth':
+				console.log('perEth', perEth);
+				console.log('perUsd * perEth', perUsd * perEth);
+				setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
+				setBidProjectionCurrency('ETH');
+				break;
+			case 'usdt':
+				setBidProjection((bid / 10) * 2);
+				setBidProjectionCurrency('USDT');
+				break;
+			case 'usdc':
+				setBidProjection((bid / 10) * 2);
+				setBidProjectionCurrency('USDC');
+				break;
+			case 'dai':
+				setBidProjection((bid / 10) * 2);
+				setBidProjectionCurrency('DAI');
+				break;
+		}
 	};
 
 	const participateInAuction = async (type) => {
@@ -139,7 +173,7 @@ const MintOverlay = (props) => {
 					break;
 			}
 		} catch (e) {
-			console.log('e', e)
+			console.log('e', e);
 			setOpen(false);
 			setActiveStep(0);
 			return dangerNotification('Error processing the transaction', e.message);
@@ -179,6 +213,16 @@ const MintOverlay = (props) => {
 										/>
 									</div>
 								</div>
+								<div className="Overlay__expense_projection">
+									{bid >= 10 &&
+										props.userProvider.state.isLoggedIn &&
+										'Bid using ' + bidProjection + ' ' + bidProjectionCurrency}
+									{bid >= 10 && props.userProvider.state.isLoggedIn && (
+										<a href={'https://www.ovr.ai'} rel="noopener noreferrer" target={'_blank'}>
+											<Help className="Help" />
+										</a>
+									)}
+								</div>
 							</div>
 							<br />
 							<div className="Overlay__buttons_container">
@@ -192,6 +236,7 @@ const MintOverlay = (props) => {
 												<ClickAwayListener onClickAway={handleClose}>
 													<MenuList autoFocusItem={open} id="mint-fade-menu">
 														<MenuItem
+															onMouseEnter={() => updateBidProjectionCurrency('ovr')}
 															onClick={() => {
 																participateInAuction('ovr');
 															}}
@@ -200,6 +245,7 @@ const MintOverlay = (props) => {
 															Bid using OVR
 														</MenuItem>
 														<MenuItem
+															onMouseEnter={() => updateBidProjectionCurrency('eth')}
 															onClick={async () => {
 																participateInAuction('eth');
 															}}
@@ -208,6 +254,7 @@ const MintOverlay = (props) => {
 															Bid using ETH
 														</MenuItem>
 														<MenuItem
+															onMouseEnter={() => updateBidProjectionCurrency('dai')}
 															onClick={async () => {
 																participateInAuction('dai');
 															}}
@@ -216,6 +263,7 @@ const MintOverlay = (props) => {
 															Bid using DAI
 														</MenuItem>
 														<MenuItem
+															onMouseEnter={() => updateBidProjectionCurrency('usdt')}
 															onClick={async () => {
 																participateInAuction('usdt');
 															}}
@@ -224,6 +272,7 @@ const MintOverlay = (props) => {
 															Bid using Tether
 														</MenuItem>
 														<MenuItem
+															onMouseEnter={() => updateBidProjectionCurrency('usdc')}
 															onClick={async () => {
 																participateInAuction('usdc');
 															}}
