@@ -107,7 +107,7 @@ const BidOverlay = (props) => {
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
-			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			warningNotification('Invalid authentication', 'Please Log In to participate');
 			return false;
 		}
 		return true;
