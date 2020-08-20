@@ -91,7 +91,6 @@ const SellOverlay = (props) => {
 					return dangerNotification('Error processing the transactions', e.message);
 				}
 				sendSell();
-				handleNext();
 			}
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
