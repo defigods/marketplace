@@ -448,7 +448,7 @@ export class Web3Provider extends Component {
 	 */
   buy = async (tokensToBuy, type) => {
     let user = this.context.state.user;
-    if (config.environment == 'STAGING' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.');}
+    if (config.environment != 'DEVELOPMENT' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.');}
     if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
     tokensToBuy = window.web3.toBigNumber(window.web3.toWei(String(tokensToBuy)))
 
