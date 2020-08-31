@@ -9,12 +9,7 @@ import config from '../../lib/config';
 import { warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
-import MenuItem from '@material-ui/core/MenuItem';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
+import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
 
 const BidOverlay = (props) => {
@@ -30,7 +25,8 @@ const BidOverlay = (props) => {
 	const [bid, setBid] = useState(0);
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const [bidProjection, setBidProjection] = useState(0);
-	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('OVR');
+	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
+
 
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
@@ -45,6 +41,9 @@ const BidOverlay = (props) => {
 		setTimeout(function () {
 			setOpen(false);
 			setActiveStep(0);
+			setBid(0);
+			setBidProjectionCurrency('ovr');
+			setBidValid(false);
 		}, 500);
 	}
 
@@ -62,6 +61,10 @@ const BidOverlay = (props) => {
 			}, 500);
 		}
 	}, [props.mapProvider.state.activeBidOverlay]);
+
+	useEffect(() => {
+		updateBidProjectionCurrency(bidProjectionCurrency);
+	}, [bid]);
 
 	// Init helpers web3
 	useEffect(() => {
@@ -99,8 +102,6 @@ const BidOverlay = (props) => {
 			setBidValid(false);
 		}
 		setBid(myBid);
-		setBidProjectionCurrency('OVR');
-		setBidProjection(myBid);
 	};
 
 	// Helper used to check if the user is logged in
@@ -113,30 +114,28 @@ const BidOverlay = (props) => {
 		return true;
 	};
 
-	// Change the bid projection on hover
+	// Change the bid projection on selection
 	const updateBidProjectionCurrency = (type) => {
 		switch (type) {
 			case 'ovr':
 				setBidProjection(bid);
-				setBidProjectionCurrency('OVR');
+				setBidProjectionCurrency('ovr');
 				break;
 			case 'eth':
-				console.log('perEth', perEth);
-				console.log('perUsd * perEth', perUsd * perEth);
 				setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
-				setBidProjectionCurrency('ETH');
+				setBidProjectionCurrency('eth');
 				break;
 			case 'usdt':
 				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('USDT');
+				setBidProjectionCurrency('usdt');
 				break;
 			case 'usdc':
 				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('USDC');
+				setBidProjectionCurrency('usdc');
 				break;
 			case 'dai':
 				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('DAI');
+				setBidProjectionCurrency('dai');
 				break;
 		}
 	};
@@ -196,6 +195,40 @@ const BidOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
+							<div className="Overlay__currency_cont">
+								<div className="c-currency-selector_cont">
+									<div
+										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
+										onClick={() => updateBidProjectionCurrency('ovr')}
+									>
+										OVR
+									</div>
+									<div
+										className={`c-currency-selector ${bidProjectionCurrency == 'eth' ? '--selected' : ' '}`}
+										onClick={() => updateBidProjectionCurrency('eth')}
+									>
+										ETH
+									</div>
+									<div
+										className={`c-currency-selector ${bidProjectionCurrency == 'dai' ? '--selected' : ' '}`}
+										onClick={() => updateBidProjectionCurrency('dai')}
+									>
+										DAI
+									</div>
+									<div
+										className={`c-currency-selector ${bidProjectionCurrency == 'usdt' ? '--selected' : ' '}`}
+										onClick={() => updateBidProjectionCurrency('usdt')}
+									>
+										USDT
+									</div>
+									<div
+										className={`c-currency-selector ${bidProjectionCurrency == 'usdc' ? '--selected' : ' '}`}
+										onClick={() => updateBidProjectionCurrency('usdc')}
+									>
+										USDC
+									</div>
+								</div>
+							</div>
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__current_bid">
@@ -254,81 +287,31 @@ const BidOverlay = (props) => {
 									props.userProvider.state.isLoggedIn &&
 									'Bid using ' + bidProjection + ' ' + bidProjectionCurrency}
 								{bid >= 10 && props.userProvider.state.isLoggedIn && (
-									<a href={'https://www.ovr.ai'} rel="noopener noreferrer" target={'_blank'}>
-										<Help className="Help" />
-									</a>
+									<Tooltip
+										title={
+											<React.Fragment>
+												{'Using directly OVR will grant you the double purchase power.'}
+												<br></br>
+												{'Click to buy OVR.'}
+											</React.Fragment>
+										}
+										aria-label="info"
+										placement="bottom"
+									>
+										<a href={'https://www.ovr.ai'} rel="noopener noreferrer" target={'_blank'}>
+											<Help className="Help" />
+										</a>
+									</Tooltip>
 								)}
 							</div>
-							<br />
 							<div className="Overlay__buttons_container">
-								<Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-									{({ TransitionProps, placement }) => (
-										<Grow
-											{...TransitionProps}
-											style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-										>
-											<Paper>
-												<ClickAwayListener onClickAway={handleClose}>
-													<MenuList autoFocusItem={open} id="mint-fade-menu">
-														<MenuItem
-															onMouseEnter={() => updateBidProjectionCurrency('ovr')}
-															onClick={() => {
-																participateInAuction('ovr');
-															}}
-															className="bid-fade-menu --cons-option"
-														>
-															Bid using OVR
-														</MenuItem>
-														<MenuItem
-															onMouseEnter={() => updateBidProjectionCurrency('eth')}
-															onClick={async () => {
-																participateInAuction('eth');
-															}}
-															className="bid-fade-menu"
-														>
-															Bid using ETH
-														</MenuItem>
-														<MenuItem
-															onMouseEnter={() => updateBidProjectionCurrency('dai')}
-															onClick={async () => {
-																participateInAuction('dai');
-															}}
-															className="bid-fade-menu"
-														>
-															Bid using DAI
-														</MenuItem>
-														<MenuItem
-															onMouseEnter={() => updateBidProjectionCurrency('usdt')}
-															onClick={async () => {
-																participateInAuction('usdt');
-															}}
-															className="bid-fade-menu"
-														>
-															Bid using Tether
-														</MenuItem>
-														<MenuItem
-															onMouseEnter={() => updateBidProjectionCurrency('usdc')}
-															onClick={async () => {
-																participateInAuction('usdc');
-															}}
-															className="bid-fade-menu"
-														>
-															Bid using USDC
-														</MenuItem>
-													</MenuList>
-												</ClickAwayListener>
-											</Paper>
-										</Grow>
-									)}
-								</Popper>
 								<HexButton
-									hexRef={anchorRef}
 									url="#"
 									text="Place bid"
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
-									onClick={handleClick}
+									onClick={() => participateInAuction(bidProjectionCurrency)}
 								></HexButton>
 								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>

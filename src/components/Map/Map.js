@@ -245,9 +245,15 @@ class Map extends Component {
 			let el = document.createElement('div');
 			el.className = `Map__ping_container ${statusClassName}`;
 			el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
-			new mapboxgl.Marker(el)
-				.setLngLat([auction.land.address.geocenter[1], auction.land.address.geocenter[0]])
-				.addTo(this.map);
+			if (
+				auction.land.address &&
+				!isNaN(auction.land.address.geocenter[1]) &&
+				!isNaN(auction.land.address.geocenter[0])
+			) {
+				new mapboxgl.Marker(el)
+					.setLngLat([auction.land.address.geocenter[1], auction.land.address.geocenter[0]])
+					.addTo(this.map);
+			}
 		}
 	}
 

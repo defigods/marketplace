@@ -20,7 +20,7 @@
     width: 600px;
     margin: 0 auto;
     color: #fff;
-    height: 300px;
+    // height: 300px;
     display: flex;
 	}
 }
@@ -71,7 +71,6 @@
 	.Overlay__cont{
 		width: auto;
 		color: #000;
-		height: 300px;
 		display: flex;
 		margin: 0px 50px;
 		position: relative;
@@ -79,6 +78,17 @@
 	.Overlay__close_button{
 		top: -80px;
 	}
+	.c-currency-selector{
+		line-height: 11px;
+		font-weight: 400;
+		font-size: 12px;
+		padding: 6px 10px;
+		margin-right: 12px;
+		border-radius: 5px;
+	}
+}
+.Overlay__currency_cont{
+	margin-top: 20px;
 }
 .RightOverlay__backpanel {
 			width: 100vw;
@@ -103,6 +113,7 @@
 	background-color:#fff;
 	&.RightOverlay .Overlay__cont{
 		top: -50px;
+		max-height: 350px;
 	}
 	.Overlay__expense_projection{
 		margin-bottom: 15px;
@@ -164,9 +175,7 @@
   float: left;
 }
 .Overlay__current_bid, .Overlay__minimum_bid{
-    margin-top:20px;
-    float: left;
-
+  float: left;
 }
 .Overlay__bid_title{
     font-size: 14px;
@@ -212,6 +221,10 @@
 		width: 100%;
 }
 
+.Overlay__lower{
+	margin-top: 20px;
+}
+
 .Overlay__buttons_container{
 		width: 100%;
     .HexButton{
@@ -242,6 +255,7 @@
 .Overlay__bids_container {
 	float: left;
 	margin-bottom: 20px;
+	margin-top: 10px;
 	.Overlay__bid_container{
 		float: left;
 		display: inline-block;
@@ -253,6 +267,7 @@
 		margin-left: 20px;
 	}
 }
+
 .Overlay__lower__cont{
 	display: inline-block;
 	margin-bottom: 15px;
