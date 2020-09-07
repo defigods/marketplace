@@ -11,7 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import HexButton from '../../components/HexButton/HexButton';
 import config from '../../lib/config';
 
-const partnerName = 'ovr_production';
+const partnerName = 'ovrproduction';
 
 /**
  * Buy tokens component
