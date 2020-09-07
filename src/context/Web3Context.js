@@ -275,7 +275,7 @@ export class Web3Provider extends Component {
       if (landState !== 2 && land[0] === window.web3.eth.defaultAccount && timePassedInSeconds >= auctionTime) {
         try {
           await this.state.ico.redeemWonLandAsync(activeLandsIds[i], {
-            gasPrice: window.web3.toWei(30, 'gwei'),
+            gasPrice: window.web3.toWei(300, 'gwei'),
           });
           landsRedeemed++;
         } catch (e) {
@@ -297,7 +297,7 @@ export class Web3Provider extends Component {
     const landId = parseInt(hexId, 16);
     try {
       const tx = await this.state.ico.redeemWonLandAsync(landId, {
-        gasPrice: window.web3.toWei(30, 'gwei'),
+        gasPrice: window.web3.toWei(300, 'gwei'),
       });
       await this.waitTx(tx);
     } catch (e) {
@@ -315,7 +315,7 @@ export class Web3Provider extends Component {
     if (existingApproval === icoAddress) return true;
     try {
       const tx = await this.state.ovr721.approveAsync(icoAddress, landId, {
-        gasPrice: window.web3.toWei(30, 'gwei'),
+        gasPrice: window.web3.toWei(300, 'gwei'),
       });
       await this.waitTx(tx);
     } catch (e) {
@@ -332,7 +332,7 @@ export class Web3Provider extends Component {
     if (currentBalance.greaterThan(currentAllowance)) {
       try {
         const tx = await token.approveAsync(toIcoParticipate ? icoParticipateAddress : icoAddress, currentBalance, {
-          gasPrice: window.web3.toWei(30, 'gwei'),
+          gasPrice: window.web3.toWei(300, 'gwei'),
         });
         await this.waitTx(tx);
       } catch (e) {
@@ -349,7 +349,7 @@ export class Web3Provider extends Component {
   buyLand = async (hexId) => {
     const landId = parseInt(hexId, 16);
     const tx = await this.state.ico.buyLandAsync(landId, {
-      gasPrice: window.web3.toWei(30, 'gwei'),
+      gasPrice: window.web3.toWei(300, 'gwei'),
     });
     await this.waitTx(tx);
   };
@@ -360,7 +360,7 @@ export class Web3Provider extends Component {
     const landId = parseInt(hexId, 16);
     try {
       const tx = await this.state.ico.putLandOnSaleAsync(landId, price, onSale, {
-        gasPrice: window.web3.toWei(30, 'gwei'),
+        gasPrice: window.web3.toWei(300, 'gwei'),
       });
       await this.waitTx(tx);
     } catch (e) {
@@ -411,19 +411,19 @@ export class Web3Provider extends Component {
 
   cancelBuyOffer = async (offerId) => {
     return this.state.ico.cancelBuyOfferAsync(offerId, {
-      gasPrice: window.web3.toWei(30, 'gwei'),
+      gasPrice: window.web3.toWei(300, 'gwei'),
     });
   };
 
   declineBuyOffer = async (offerId) => {
     return this.state.ico.respondToBuyOfferAsync(offerId, false, {
-      gasPrice: window.web3.toWei(30, 'gwei'),
+      gasPrice: window.web3.toWei(300, 'gwei'),
     });
   };
 
   acceptBuyOffer = async (offerId) => {
     return this.state.ico.respondToBuyOfferAsync(offerId, true, {
-      gasPrice: window.web3.toWei(30, 'gwei'),
+      gasPrice: window.web3.toWei(300, 'gwei'),
     });
   };
 
@@ -460,7 +460,7 @@ export class Web3Provider extends Component {
           const value = String(Math.ceil(tokensToBuy.div(ovrsPerEth)) + 1e6);
           const tx = await this.state.tokenBuy.buyTokensWithEthAsync(tokensToBuy, {
             value,
-            gasPrice: window.web3.toWei(30, 'gwei'),
+            gasPrice: window.web3.toWei(300, 'gwei'),
           });
           await this.waitTx(tx);
           break;
@@ -511,17 +511,17 @@ export class Web3Provider extends Component {
       switch (type) {
         case 'dai':
           tx = await this.state.tokenBuy.buyTokensWithDaiAsync(tokensToBuy, {
-            gasPrice: window.web3.toWei(30, 'gwei'),
+            gasPrice: window.web3.toWei(300, 'gwei'),
           });
           break;
         case 'usdt':
           tx = await this.state.tokenBuy.buyTokensWithUsdtAsync(tokensToBuy, {
-            gasPrice: window.web3.toWei(30, 'gwei'),
+            gasPrice: window.web3.toWei(300, 'gwei'),
           });
           break;
         case 'usdc':
           tx = await this.state.tokenBuy.buyTokensWithUsdcAsync(tokensToBuy, {
-            gasPrice: window.web3.toWei(30, 'gwei'),
+            gasPrice: window.web3.toWei(300, 'gwei'),
           });
           break;
         default:
@@ -601,7 +601,7 @@ export class Web3Provider extends Component {
     console.log('landIdBase16', landIdBase16)
     console.log('expirationDate', expirationDate)
     const tx = await this.state.ico.offerToBuyLandAsync(landIdBase16, bidInWei, expirationDate, {
-      gasPrice: window.web3.toWei(30, 'gwei'),
+      gasPrice: window.web3.toWei(300, 'gwei'),
     });
     await this.waitTx(tx);
   }

@@ -65,7 +65,7 @@ const Signup = () => {
 	};
 
 	const emailRegexAndNext = async () => {
-		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)){
+		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)) {
 			handleNext();
 		} else {
 			setUserEmailInputError('The inserted email address is not a valid email address');
@@ -281,7 +281,7 @@ const Signup = () => {
 								OVR merges physical and virtual world through Augmented Reality, creating a new dimension.
 							</div>
 							<div className="Signup__section">
-								<HexButton url="#" text="Get started" className={`--purple`} onClick={handleNext}></HexButton>
+								<HexButton url="#" text="Get started" className={'--purple'} onClick={handleNext}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -292,39 +292,48 @@ const Signup = () => {
 						<div className="o-box">
 							<h1>First things first</h1>
 							<div className="Signup__section --left">
-								{isWeb3Active ?
+								{isWeb3Active ? (
 									<div className="o-list">
 										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Install Web3 provider
-									</div> : 
+									</div>
+								) : (
 									<div className="o-list">
 										<CancelIcon className="CancelIcon" /> Install Web3 provider
 									</div>
-								}
-								{isWeb3Account ?
+								)}
+								{isWeb3Account ? (
 									<div className="o-list">
 										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Log in to Web3 provider
-									</div> : 
+									</div>
+								) : (
 									<div className="o-list">
 										<CancelIcon className="CancelIcon" /> Log in to Web3 provider
 									</div>
-								}
-								{web3NetworkVersion ?
+								)}
+								{web3NetworkVersion ? (
 									<div className="o-list">
-										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Connect to {config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
-									</div> : 
-									<div className="o-list">
-										<CancelIcon className="CancelIcon" /> Connect to {config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
+										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Connect to{' '}
+										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
 									</div>
-								}
+								) : (
+									<div className="o-list">
+										<CancelIcon className="CancelIcon" /> Connect to{' '}
+										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
+									</div>
+								)}
 							</div>
-							{isWeb3Active && web3NetworkVersion && isWeb3Account ? 
+							{isWeb3Active && web3NetworkVersion && isWeb3Account ? (
 								<>
 									<div className="Signup__section Signup__msg --positive">Hurray! Click below to continue.</div>
 									<div className="Signup__section">
 										<HexButton url="#" text="Continue" className={'--purple'} onClick={handleNext}></HexButton>
 									</div>
-								</> : <>
-									<div className="Signup__section Signup__msg --negative">Please install MetaMask and configure it on the correct network. Than reload this page.</div>
+								</>
+							) : (
+								<>
+									<div className="Signup__section Signup__msg --negative">
+										Please install MetaMask and configure it on the correct network. Than reload this page.
+									</div>
 									<div className="Signup__section">
 										<HexButton
 											url="https://metamask.io"
@@ -334,7 +343,8 @@ const Signup = () => {
 										></HexButton>
 									</div>
 								</>
-							};
+							)}
+							;
 						</div>
 					</div>
 				);
@@ -429,7 +439,8 @@ const Signup = () => {
 								<CheckCircleIcon className="CheckCircleIcon" />
 							</div>
 							<div className="Signup__section">
-								You've succesfully registered your account. From now on you can log in with Metamask by signing a secret code with one click.
+								You've succesfully registered your account. From now on you can log in with Metamask by signing a secret
+								code with one click.
 							</div>
 							{/* <div className="Signup__section Signup__pass_cont">
 								<TextField

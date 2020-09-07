@@ -126,21 +126,32 @@ export class UserProvider extends Component {
 				{ channel: 'UsersChannel', user_uuid: this.state.user.uuid },
 				{
 					received: (data) => {
-						const { notification } = data;
-						const { balance } = data;
-						const { unreaded_count } = data;
-						// Update state on new notification
-						this.setState({
-							user: {
-								...this.state.user,
-								balance: balance,
-								notifications: {
-									...this.state.user.notifications,
-									unreadedCount: unreaded_count,
-									content: [camelCaseKeys(notification), ...this.state.user.notifications.content],
+						if (data['only_kyc'] && data['only_kyc'] == true) {
+							const { kyc_review_answer } = data;
+							// Update KYC Status
+							this.setState({
+								user: {
+									...this.state.user,
+									kycReviewAnswer: kyc_review_answer
 								},
-							},
-						});
+							});
+						} else {
+							const { notification } = data;
+							const { balance } = data;
+							const { unreaded_count } = data;
+							// Update state on new notification
+							this.setState({
+								user: {
+									...this.state.user,
+									balance: balance,
+									notifications: {
+										...this.state.user.notifications,
+										unreadedCount: unreaded_count,
+										content: [camelCaseKeys(notification), ...this.state.user.notifications.content],
+									},
+								},
+							});
+						}
 					},
 				},
 			);
@@ -169,7 +180,7 @@ export class UserProvider extends Component {
 				console.log('value', value, 'bid', bid, 'per eth', this.state.perEth, 'ico participate', this.state.icoParticipate.address)
 				tx = await this.state.icoParticipate.participateAsync(type, bid, landId, {
 					value: value,
-					gasPrice: window.web3.toWei(30, 'gwei'),
+					gasPrice: window.web3.toWei(300, 'gwei'),
 				})
 			}
 			return tx

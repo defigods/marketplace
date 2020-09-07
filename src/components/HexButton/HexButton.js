@@ -19,6 +19,7 @@ const HexButton = ({ className, onClick, url, text, target, ariaControls, ariaHa
 				aria-haspopup={ariaHaspopup}
 				className={`HexButton ${className}`}
 				onClick={onClick}
+				autoFocus
 			>
 				{text}
 			</Link>

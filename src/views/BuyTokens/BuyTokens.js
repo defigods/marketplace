@@ -11,7 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import HexButton from '../../components/HexButton/HexButton';
 import config from '../../lib/config';
 
-const partnerName = 'ovr';
+const partnerName = 'ovr_production';
 
 /**
  * Buy tokens component
@@ -32,7 +32,7 @@ const BuyTokens = (context) => {
 		if (config.environment != 'DEVELOPMENT' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.'); }
 		if (tokensToBuy <= 0)
 			return warningNotification("Amount can't be empty", 'You must specify an amount of OVR tokens to buy');
-		const url = `https://indacoin.com/gw/payment_form?partner=${partnerName}&cur_from=USD&cur_to=INTT&amount=${usdToSpend}&address=${window.web3.eth.accounts[0]}&user_id=${user.uuid}`;
+		const url = `https://indacoin.com/gw/payment_form?partner=${partnerName}&cur_from=USD&cur_to=OVR&amount=${usdToSpend}&address=${window.web3.eth.accounts[0]}&user_id=${user.uuid}`;
 		window.location = url;
 	};
 

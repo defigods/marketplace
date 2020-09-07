@@ -29,7 +29,7 @@ export function signIn(publicAddress, singedNonce) {
 	);
 }
 
-export function getUserNonce(publicAddress){
+export function getUserNonce(publicAddress) {
 	return request({ url: '/user/nonce', method: 'GET' }, { public_address: publicAddress }, null);
 }
 
@@ -332,6 +332,10 @@ export function userActivities() {
 // KYC - SUMSUB
 export function getSumsubData() {
 	return request({ url: '/user/sumsub/access_token', method: 'GET' }, {}, null);
+}
+
+export function setSumsubVerificationToStarted() {
+	return request({ url: '/user/sumsub/set_verification/started', method: 'GET' }, {}, null);
 }
 
 // GENERAL REQUEST

@@ -8,7 +8,7 @@ import config from '../../lib/config';
 // import CheckBox from '../../components/CheckBox/CheckBox';
 // import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
 // import IdensicComp from '../../components/IdensicComp/IdensicComp';
-import { getSumsubData } from '../../lib/api';
+import { getSumsubData, setSumsubVerificationToStarted } from '../../lib/api';
 import Blockies from 'react-blockies';
 
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
@@ -68,6 +68,9 @@ const renderBadge = (status) => {
 	switch (status) {
 		case -1:
 			badge = <div className="c-status-badge  --open">Not started</div>;
+			break;
+		case -10:
+			badge = <div className="c-status-badge  --open">Started</div>;
 			break;
 		case 1:
 			badge = <div className="c-status-badge  --open">Completed</div>;
@@ -130,6 +133,11 @@ const ProfileContent = () => {
 					// Notify user if network error
 					console.log(error);
 				});
+			if (user.kycReviewAnswer == -1) {
+				setSumsubVerificationToStarted()
+					.then(() => {})
+					.catch(() => {});
+			}
 		}
 	}, [user.uuid, sumsubShowPanel]);
 
@@ -170,7 +178,7 @@ const ProfileContent = () => {
 								<HexButton
 									url=""
 									className="--blue"
-									text="START VERIFICATION"
+									text={user.kycReviewAnswer == -1 ? 'START VERIFICATION' : 'CHECK VERIFICATION'}
 									onClick={toggleKycVerificationFrame}
 								></HexButton>
 							</div>
