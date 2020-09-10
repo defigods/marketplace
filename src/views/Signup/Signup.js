@@ -135,6 +135,10 @@ const Signup = () => {
 				token = facebookToken;
 				provider = 'facebook';
 			}
+			console.log('token', token)
+			console.log('provider', provider)
+			console.log('username', username)
+			console.log('publicAdress', publicAddress)
 			signUpHybridSocial(token, provider, username, publicAddress).then((response) => {
 				setIsSignupLoading(false);
 				if (response.data.result === true) {
@@ -146,7 +150,7 @@ const Signup = () => {
 					if (error_code == 'public_address') {
 						dangerNotification(error_message, 'Try to login instead');
 						setActiveStep(0);
-					} else if (error_code == 'token') {
+					} else if (error_code == 'token' || error_code == 'oauth') {
 						setActiveStep(1);
 						setUserEmailValid(false);
 						setUserEmailInputError(error_message);
@@ -476,7 +480,7 @@ const Signup = () => {
 				return (
 					<div className="o-container">
 						<div className="o-box --left">
-							<h1>Your Username</h1>
+							<h1>Set Username</h1>
 							<div className="Signup__section">
 								<TextField
 									id="quantity"

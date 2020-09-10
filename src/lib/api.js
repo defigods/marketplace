@@ -64,7 +64,7 @@ export function signUpHybrid(email, userName, publicAddress) {
 export function signUpHybridSocial(token, provider, userName, publicAddress) {
 	return request(
 		{ url: '/user/registration/social', method: 'POST' },
-		{ oaut: token, oauth_provider: provider, username: userName, public_address: publicAddress },
+		{ oauth: token, oauth_provider: provider, username: userName, public_address: publicAddress },
 		null,
 	);
 }
