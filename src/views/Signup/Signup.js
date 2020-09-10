@@ -168,7 +168,6 @@ const Signup = () => {
 
 	const responseGoogle = (response) => {
 		console.log('google', response);
-
 		if (response.tokenId) {
 			setGoogleToken(response.tokenId);
 			handleNext();
@@ -177,9 +176,10 @@ const Signup = () => {
 
 	const responseFacebook = (response) => {
 		console.log('facebook', response);
-
-		setFacebookToken(response.accessToken);
-		handleNext();
+		if (response.accessToken) {
+			setFacebookToken(response.accessToken);
+			handleNext();
+		}
 	};
 
 	function getStepContent(step) {
