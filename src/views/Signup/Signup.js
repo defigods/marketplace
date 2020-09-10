@@ -142,11 +142,12 @@ const Signup = () => {
 				} else {
 					let error_code = response.data.errors[0].code;
 					let error_message = response.data.errors[0].message;
+					console.log('response.data', response.data);
 					if (error_code == 'public_address') {
 						dangerNotification(error_message, 'Try to login instead');
 						setActiveStep(0);
-					} else if (error_code == 'email') {
-						setActiveStep(2);
+					} else if (error_code == 'token') {
+						setActiveStep(1);
 						setUserEmailValid(false);
 						setUserEmailInputError(error_message);
 					} else if (error_code == 'username') {
