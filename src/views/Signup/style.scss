@@ -133,3 +133,58 @@
   margin-bottom: 20px;
 }
 
+.kep-login-facebook{
+  display: inline-block;
+  border: none;
+  border-radius: 20px;
+  background: #4267B2;
+  color: #fff;
+  white-space: nowrap;
+  min-height: 38px;
+  font-size: 14px;
+  padding: 0px 15px;
+  margin-left: 20px;
+  line-height: 38px;
+  &:hover,
+  &:active {
+    background-color: #3c5a98;
+  }
+  .fa{
+    margin-right: 15px;
+    padding-top:6px;
+    padding-bottom:5px;
+    font-size: 17px;
+  }
+  
+}
+.Social__section button{
+  font-size: 14px;
+  padding: 0px 15px!important;
+  border-radius: 20px!important;
+  float: left;
+
+  div{
+    padding: 0px!important;
+  }
+  span{
+    padding: 9px 10px 9px 0px;
+  }
+}
+
+.Social__subtitle{
+  margin-bottom: 30px;
+  margin-top: 15px;
+}
+
+.Social__or{
+  margin-top: 20px;
+  margin-bottom: 0px;
+  clear: both;
+  width: 100%;
+  display: inline-block;
+}
+
+.Social__buttons{
+  display: inline-block;
+
+}

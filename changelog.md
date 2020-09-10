@@ -1,3 +1,9 @@
+### v0.1.23
+- When user starts the Sumsub process of KYC it is set on status STARTED
+- All Sumsub status change are now live reloaded in the interface
+- Change the interface of currency selection during bidding and minting
+- Now the backend is connected to the Postgres DB, same of OVR's mobile app
+
 ### v0.1.22
 
 - Fixed conversion fares
@@ -7,7 +13,7 @@
 - Fixed 3 word bugs, enhanced word list, and activated browse of land via 3 words name in URL
 - If I was watching a single land page before login, after login I'll be redirect to that same land
 - There is now a projection of the expense of a bid in all the aviable currencies - logged user only
-- There is a silent fetch and save in our db of KYC's userdata when they passed the verification from SUMSUB
+- There is a silent fetch and save in our db of KYC's userdata when they passed the verification from Sumsub
 
 ### v0.1.21
 

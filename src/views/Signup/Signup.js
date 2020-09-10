@@ -7,7 +7,7 @@ import CheckCircleSharpIcon from '@material-ui/icons/CheckCircleSharp';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import config from '../../lib/config';
-import { signUpHybrid } from '../../lib/api';
+import { signUpHybrid, signUpHybridSocial } from '../../lib/api';
 import { saveToken } from '../../lib/auth';
 import { dangerNotification } from '../../lib/notifications';
 
@@ -18,6 +18,8 @@ import { Link } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Web3 from 'web3';
+import { GoogleLogin } from 'react-google-login';
+import FacebookLoginWithButton from '../../facebook/facebook-with-button';
 
 /**
  * Signup page component
@@ -32,6 +34,9 @@ const Signup = () => {
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
+
+	const [facebookToken, setFacebookToken] = useState(false);
+	const [googleToken, setGoogleToken] = useState(false);
 
 	const [username, setUsername] = useState('');
 	const [usernameValid, setUsernameValid] = useState(false);
@@ -97,27 +102,61 @@ const Signup = () => {
 		setIsSignupLoading(true);
 		// window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
-		signUpHybrid(userEmail, username, publicAddress).then((response) => {
-			setIsSignupLoading(false);
-			if (response.data.result === true) {
-				handleNext();
-			} else {
-				let error_code = response.data.errors[0].code;
-				let error_message = response.data.errors[0].message;
-				if (error_code == 'public_address') {
-					dangerNotification(error_message, 'Try to login instead');
-					setActiveStep(0);
-				} else if (error_code == 'email') {
-					setActiveStep(2);
-					setUserEmailValid(false);
-					setUserEmailInputError(error_message);
-				} else if (error_code == 'username') {
-					setActiveStep(3);
-					setUsernameValid(false);
-					setUsernameInputError(error_message);
+		if (googleToken == false && facebookToken == false) {
+			signUpHybrid(userEmail, username, publicAddress).then((response) => {
+				setIsSignupLoading(false);
+				if (response.data.result === true) {
+					handleNext();
+				} else {
+					let error_code = response.data.errors[0].code;
+					let error_message = response.data.errors[0].message;
+					if (error_code == 'public_address') {
+						dangerNotification(error_message, 'Try to login instead');
+						setActiveStep(0);
+					} else if (error_code == 'email') {
+						setActiveStep(2);
+						setUserEmailValid(false);
+						setUserEmailInputError(error_message);
+					} else if (error_code == 'username') {
+						setActiveStep(3);
+						setUsernameValid(false);
+						setUsernameInputError(error_message);
+					}
 				}
+			});
+		} else {
+			let token;
+			let provider;
+			if (googleToken) {
+				token = googleToken;
+				provider = 'google';
 			}
-		});
+			if (facebookToken) {
+				token = facebookToken;
+				provider = 'facebook';
+			}
+			signUpHybridSocial(token, provider, username, publicAddress).then((response) => {
+				setIsSignupLoading(false);
+				if (response.data.result === true) {
+					handleNext();
+				} else {
+					let error_code = response.data.errors[0].code;
+					let error_message = response.data.errors[0].message;
+					if (error_code == 'public_address') {
+						dangerNotification(error_message, 'Try to login instead');
+						setActiveStep(0);
+					} else if (error_code == 'email') {
+						setActiveStep(2);
+						setUserEmailValid(false);
+						setUserEmailInputError(error_message);
+					} else if (error_code == 'username') {
+						setActiveStep(3);
+						setUsernameValid(false);
+						setUsernameInputError(error_message);
+					}
+				}
+			});
+		}
 	};
 
 	const handleLogin = () => {
@@ -125,6 +164,22 @@ const Signup = () => {
 			saveToken('firstAfterSignup', true);
 			history.push('map/discover');
 		});
+	};
+
+	const responseGoogle = (response) => {
+		console.log('google', response);
+
+		if (response.tokenId) {
+			setGoogleToken(response.tokenId);
+			handleNext();
+		}
+	};
+
+	const responseFacebook = (response) => {
+		console.log('facebook', response);
+
+		setFacebookToken(response.accessToken);
+		handleNext();
 	};
 
 	function getStepContent(step) {
@@ -136,6 +191,26 @@ const Signup = () => {
 			web3NetworkVersion = window.ethereum.networkVersion === config.web3network;
 		}
 		switch (step) {
+			case -1:
+				return (
+					<div className="o-container">
+						<div className="o-box">
+							<h1>Connect with</h1>
+							<div className="Social__section">
+								<GoogleLogin
+									clientId="842312482762-n12g86otvipvmrbgscnur48m9aq8kf9l.apps.googleusercontent.com"
+									className="google-button"
+									buttonText="Google Account"
+									onSuccess={responseGoogle}
+									onFailure={responseGoogle}
+									cookiePolicy={'single_host_origin'}
+								/>
+								<br></br>
+								<FacebookLoginWithButton appId="278283846412876" callback={responseFacebook} icon="fa-facebook" />
+							</div>
+						</div>
+					</div>
+				);
 			case 0:
 				return (
 					<div className="o-container">
@@ -351,8 +426,22 @@ const Signup = () => {
 			case 2:
 				return (
 					<div className="o-container">
-						<div className="o-box --left">
-							<h1>Signup</h1>
+						<div className="o-box ">
+							<h1>Create an account</h1>
+							<div className="Social__section Social__subtitle">
+								Sign up with your social media account or email address
+							</div>
+							<div className="Social__section Social__buttons">
+								<GoogleLogin
+									clientId="842312482762-n12g86otvipvmrbgscnur48m9aq8kf9l.apps.googleusercontent.com"
+									buttonText="Google"
+									onSuccess={responseGoogle}
+									onFailure={responseGoogle}
+									cookiePolicy={'single_host_origin'}
+								/>
+								<FacebookLoginWithButton appId="278283846412876" callback={responseFacebook} icon="fa-facebook" />
+							</div>
+							<div className="Social__section Social__or">or</div>
 							<div className="Signup__section">
 								<TextField
 									id="quantity"
@@ -386,7 +475,7 @@ const Signup = () => {
 				return (
 					<div className="o-container">
 						<div className="o-box --left">
-							<h1>Signup</h1>
+							<h1>Your Username</h1>
 							<div className="Signup__section">
 								<TextField
 									id="quantity"
