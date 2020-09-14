@@ -1,0 +1,18 @@
+
+.Lands{
+    .o-land-list{
+        margin-top: 20px;
+        overflow: visible;
+    }
+    .o-land-list__cont{
+        display: flow-root;
+    }
+}
+.--minimal .LandCard__body__footer{
+    margin-top: 10px;
+}
+
+.Lands .Land__heading__2 .HexButton {
+    margin-top: 50px;
+    float: right;
+}

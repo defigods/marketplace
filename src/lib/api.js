@@ -157,6 +157,16 @@ export function getLand(hex_id = null) {
 	);
 }
 
+export function getLands(hex_ids = null) {
+	return request(
+		{ url: '/lands/list', method: 'GET' },
+		{
+			hex_ids: hex_ids,
+		},
+		null,
+	);
+}
+
 export function indexLands(sort = null, page = 1) {
 	return request(
 		{ url: '/lands', method: 'GET' },

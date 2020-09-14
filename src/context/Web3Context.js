@@ -528,7 +528,9 @@ export class Web3Provider extends Component {
           warningNotification('Error', 'The currency selected is not correct');
           break;
       }
-      await this.waitTx(tx);
+      await this.waitTxWithCallback(tx, () => {
+        successNotification('Your OVR are on their way!', 'You can check transaction status in MetaMask');
+      });
     } catch (e) {
       return warningNotification('Error buying', `There was an error buying your OVR tokens`);
     }

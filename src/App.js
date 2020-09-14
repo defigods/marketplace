@@ -6,6 +6,7 @@ import 'react-notifications-component/dist/theme.css';
 import Discover from './views/Discover/Discover';
 import Overview from './views/Overview/Overview';
 import Land from './views/Land/Land';
+import Lands from './views/Lands/Lands';
 import Profile from './views/Profile/Profile';
 import Activity from './views/Activity/Activity';
 import Login from './views/Login/Login';
@@ -53,6 +54,7 @@ function App() {
 																	</Route>
 																	<Route path="/map/discover" component={Discover}></Route>
 																	<Route path="/map/overview" component={Overview}></Route>
+																	<Route path="/map/lands" component={Lands}></Route>
 																	<Route path="/map/land/:id" component={Land}></Route>
 																	<Route path="/profile" component={Profile}></Route>
 																	<Route path="/activity" component={Activity}></Route>

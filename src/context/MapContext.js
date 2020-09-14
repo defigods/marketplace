@@ -1,5 +1,6 @@
 import React, { createContext, Component } from 'react';
 import * as h3 from 'h3-js';
+import _ from 'lodash';
 
 export const MapContext = createContext();
 
@@ -17,12 +18,17 @@ export class MapProvider extends Component {
 			activeSellOverlay: false,
 			activeBuyOfferOverlay: false,
 			activeBuyOverlay: false,
+			onMultipleLandSelection: false,
+			multipleLandSelectionList: [],
 			auctionList: [],
 			landData: {},
 		};
 
 		this.changeHexId = this.changeHexId.bind(this);
 		this.disableSingleView = this.disableSingleView.bind(this);
+		this.enableMultipleLandSelection = this.enableMultipleLandSelection.bind(this);
+		this.disableMultipleLandSelection = this.disableMultipleLandSelection.bind(this);
+		this.changeMultipleLandSelectionList = this.changeMultipleLandSelectionList.bind(this);
 		this.changeAuctionList = this.changeAuctionList.bind(this);
 		this.changeActiveBidOverlay = this.changeActiveBidOverlay.bind(this);
 		this.changeActiveMintOverlay = this.changeActiveMintOverlay.bind(this);
@@ -38,14 +44,23 @@ export class MapProvider extends Component {
 			this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true });
 		}
 	}
-	changeLandData(landData) {
-		this.setState({ landData });
+	enableMultipleLandSelection() {
+		this.setState({ onMultipleLandSelection: true });
+	}
+	disableMultipleLandSelection() {
+		this.setState({ onMultipleLandSelection: false });
 	}
 	disableSingleView() {
 		this.setState({ onSingleView: false });
 	}
+	changeLandData(landData) {
+		this.setState({ landData });
+	}
 	changeAuctionList(list) {
 		this.setState({ auctionList: list });
+	}
+	changeMultipleLandSelectionList(list) {
+		this.setState({ multipleLandSelectionList: 	_.uniq(list) });
 	}
 	changeActiveBidOverlay(activeVal) {
 		this.setState({ activeBidOverlay: activeVal });
@@ -78,6 +93,9 @@ export class MapProvider extends Component {
 						changeActiveBuyOfferOverlay: this.changeActiveBuyOfferOverlay,
 						changeLandData: this.changeLandData,
 						changeActiveBuyOverlay: this.changeActiveBuyOverlay,
+						enableMultipleLandSelection: this.enableMultipleLandSelection,
+						disableMultipleLandSelection: this.disableMultipleLandSelection,
+						changeMultipleLandSelectionList: this.changeMultipleLandSelectionList,
 					},
 					overviewList: this.overviewList,
 				}}
