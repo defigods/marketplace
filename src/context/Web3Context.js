@@ -52,7 +52,7 @@ export class Web3Provider extends Component {
     return new Promise((resolve, reject) => {
       let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
       // Wait for tx to be finished
-      console.log('watching txHash', txHash);
+      // console.log('watching txHash', txHash);
       let filter = window.web3.eth.filter('latest').watch(async (err, blockHash) => {
         if (err) {
           filter.stopWatching();
@@ -71,7 +71,7 @@ export class Web3Provider extends Component {
         // Found tx hash?
         if (block.transactions.indexOf(txHash) > -1) {
           // Tx is finished
-          console.log('Tx has completed')
+          // console.log('Tx has completed')
           filter.stopWatching();
           filter = null;
           return resolve();
@@ -85,7 +85,7 @@ export class Web3Provider extends Component {
     return new Promise((resolve, reject) => {
       let blockCounter = 60; // If it's not confirmed after 30 blocks, move on
       // Wait for tx to be finished
-      console.log('watching txHash', txHash);
+      // console.log('watching txHash', txHash);
       let filter = window.web3.eth.filter('latest').watch(async (err, blockHash) => {
         if (err) {
           filter.stopWatching();
@@ -106,7 +106,7 @@ export class Web3Provider extends Component {
         if (block.transactions.indexOf(txHash) > -1) {
           // Tx is finished
           this.updateBalance();
-          console.log('Tx has completed')
+          // console.log('Tx has completed')
           filter.stopWatching();
           filter = null;
           callBackSuccess();
@@ -119,7 +119,7 @@ export class Web3Provider extends Component {
 
   // Note: the web3 version is always 0.20.7 because of metamask
   setupWeb3 = async (callback) => {
-    console.log('render setupweb3');
+    // console.log('render setupweb3');
     const ethereum = window.ethereum;
     if (typeof ethereum !== 'undefined') {
       try {
@@ -185,11 +185,11 @@ export class Web3Provider extends Component {
 
   // Refreshes the page when the metamask account is changed
   refreshWhenAccountsChanged = () => {
-    console.log('init refresh');
+    // console.log('init refresh');
     window.ethereum.on('accountsChanged', (accounts) => {
-      console.log('this.context.state.isLoggedIn', this.context.state.isLoggedIn);
+      // console.log('this.context.state.isLoggedIn', this.context.state.isLoggedIn);
       if (this.context.state.isLoggedIn) {
-        console.log('isLoggedin');
+        // console.log('isLoggedin');
         this.context.actions.logoutUser();
         this.setupWeb3();
       } else {
@@ -479,7 +479,7 @@ export class Web3Provider extends Component {
       }
       this.getOvrsOwned();
     } catch (e) {
-      console.log('Error', e);
+      // console.log('Error', e);
       warningNotification(
         'Error buying tokens',
         'There was an error processing your transaction refresh this page and try again',
@@ -599,9 +599,9 @@ export class Web3Provider extends Component {
     // TODO double check behavior with different contract
     let bidInWei = window.web3.toWei(proposedValue)
     let landIdBase16 = parseInt(landId, 16);
-    console.log('bidInWei', bidInWei)
-    console.log('landIdBase16', landIdBase16)
-    console.log('expirationDate', expirationDate)
+    // console.log('bidInWei', bidInWei)
+    // console.log('landIdBase16', landIdBase16)
+    // console.log('expirationDate', expirationDate)
     const tx = await this.state.ico.offerToBuyLandAsync(landIdBase16, bidInWei, expirationDate, {
       gasPrice: window.web3.toWei(300, 'gwei'),
     });

@@ -27,7 +27,6 @@ const BidOverlay = (props) => {
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
 
-
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
@@ -446,7 +445,7 @@ const BidOverlay = (props) => {
 };
 
 BidOverlay.propTypes = {
-	currentBid: PropTypes.string || PropTypes.number,
+	currentBid: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	reloadLandStatefromApi: PropTypes.func,
 	userProvider: PropTypes.object,
 	mapProvider: PropTypes.object,

@@ -118,12 +118,12 @@ const ProfileContent = () => {
 	// console.log('ProfileContent->These are user and web3Context from UserContext', web3Context, user);
 	useEffect(() => {
 		if (sumsubShowPanel == true && user.uuid != undefined) {
-			console.log('eccolo 2');
+			// console.log('eccolo 2');
 			getSumsubData()
 				.then((response) => {
-					console.log(response);
+					// console.log(response);
 					if (response.data.result === true) {
-						console.log(user.email);
+						// console.log(user.email);
 						launchWebSdk(config.apis.sumsubApi, 'basic-kyc', response.data.content.token, user.email, null);
 						// 	externalUserId={sumsubExternalUserId}
 						// 	accessToken={sumsubAccessToken}
@@ -131,7 +131,7 @@ const ProfileContent = () => {
 				})
 				.catch((error) => {
 					// Notify user if network error
-					console.log(error);
+					// console.log(error);
 				});
 			if (user.kycReviewAnswer == -1) {
 				setSumsubVerificationToStarted()

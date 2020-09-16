@@ -285,11 +285,11 @@ export function hideNotification(notificationUuid = null) {
 export function sendPreAuctionStart(landId, bid, txHash) {
 	auctionPreStart(landId, bid, txHash)
 		.then((response) => {
-			console.log('response', response.data);
+			// console.log('response', response.data);
 		})
 		.catch((error) => {
 			// Notify user if network error
-			console.log(error);
+			// console.log(error);
 		});
 }
 
@@ -297,48 +297,48 @@ export function sendConfirmAuctionStart(landId, txHash) {
 	auctionConfirmStart(landId, txHash)
 		.then((response) => {
 			if (response.data.result === true) {
-				console.log('sendConfirmAuctionStart - response true', response.data);
+				// console.log('sendConfirmAuctionStart - response true', response.data);
 			} else {
-				// console.log('responseFalse');
-				console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
+			  // console.log('responseFalse');
+				// console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
 				// setActiveStep(0);
 			}
 		})
 		.catch((error) => {
 			// Notify user if network error
-			console.log(error);
+			// console.log(error);
 		});
 }
 
 export function sendPreAuctionBid(landId, nextBid, txHash) {
 	auctionBidPre(landId, nextBid, txHash)
 		.then((response) => {
-			// console.log(response)
+		  // console.log(response)
 		})
 		.catch((error) => {
 			// Notify user if network error
-			console.log(error);
+			// console.log(error);
 		});
 }
 export function sendAuctionBidConfirm(landId, nextBid) {
 	auctionBidConfirm(landId, nextBid)
 		.then((response) => {
-			// console.log(response)
+		  // console.log(response)
 		})
 		.catch((error) => {
 			// Notify user if network error
-			console.log(error);
+			// console.log(error);
 		});
 }
 
 export function sendAuctionCheckClose(landId) {
 	auctionCheckClose(landId)
 		.then((response) => {
-			console.log(response);
+			// console.log(response);
 		})
 		.catch((error) => {
 			// Notify user if network error
-			console.log(error);
+			// console.log(error);
 		});
 }
 
@@ -384,7 +384,7 @@ export function request(endpoint, params, req_config = { headers: { 'Content-Typ
 			})
 			.catch((err) => {
 				reject(err);
-				console.log(err);
+				// console.log(err);
 			});
 	});
 }

@@ -43,7 +43,6 @@ const Map = (props) => {
 			style: 'mapbox://styles/mapbox/light-v9',
 		});
 		waitMapStyle();
-		console.log('map INIT');
 		// geocoder setup
 		var geocoder = new MapboxGeocoder({
 			accessToken: mapboxgl.accessToken,
@@ -372,14 +371,10 @@ const Map = (props) => {
 	);
 };
 
-Map.contextType = MapContext;
-
 Map.propTypes = {
 	location: PropTypes.object,
 	mapProvider: PropTypes.object,
-	props: {
-		history: PropTypes.object,
-	},
+	props: PropTypes.object,
 };
 
 export default withMapContext(Map);

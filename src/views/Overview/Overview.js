@@ -175,7 +175,7 @@ const Overview = () => {
 			// 	});
 			// });
 
-			console.log('window.web3.eth', window.web3.eth)
+			// console.log('window.web3.eth', window.web3.eth)
 
 			// console.log('currentBlock',currentBlock)
 			// var n = txCount

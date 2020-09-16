@@ -7,7 +7,6 @@ import { Textfit } from 'react-textfit';
 
 const LandCard = (props) => {
 	let card;
-	console.log('props land card', props)
 	if (props.is_minimal) {
 		card = (
 			<div className="LandCard --minimal">

@@ -18,7 +18,7 @@ const Login = () => {
 		// Login via web3
 		web3Context.actions.setupWeb3(() => {
 			history.push('map/discover');
-			console.log('login here eheh');
+			// console.log('login here eheh');
 			if (mapContext.state.onSingleView) {
 				history.push('/map/land/' + mapContext.state.hex_id);
 			}

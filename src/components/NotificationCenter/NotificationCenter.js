@@ -11,7 +11,6 @@ const NotificationCenterContent = () => {
 	const wrapperRef = useRef(null);
 
 	useEffect(() => {
-		console.log('useEffect on Notification Center', state.user.notifications);
 	}, [state.user.notifications]);
 
 	const renderNotifications = () => {

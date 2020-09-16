@@ -26,7 +26,7 @@ const Discover = () => {
 			.then((response) => {
 				// Load Auctions in MapContext
 				actions.changeAuctionList(response.data.auctions);
-				console.log(response.data.auctions);
+				// console.log(response.data.auctions);
 
 				if (response.data.auctions.length > 0) {
 					// Load user data in context store
@@ -65,7 +65,7 @@ const Discover = () => {
 	}
 
 	function loadLandsByPage(page) {
-		console.log('load land');
+		// console.log('load land');
 		// Call API function
 		indexLands(null, page)
 			.then((response) => {
@@ -96,7 +96,7 @@ const Discover = () => {
 				}
 			})
 			.catch((error) => {
-				console.log(error);
+				// console.log(error);
 				// Notify user if network error
 				networkError();
 			});

@@ -102,12 +102,12 @@ const SellOverlay = (props) => {
 		sellLand(props.land.key, sellWorth)
 			.then((response) => {
 				if (response.data.result === true) {
-					console.log('responseTrue', response.data);
+					// console.log('responseTrue', response.data);
 					props.reloadLandStatefromApi(props.land.key);
 					setActiveStep(2);
 				} else {
 					// response.data.errors[0].message
-					console.log('responseFalse');
+					// console.log('responseFalse');
 					dangerNotification('Unable to place sell request', response.data.errors[0].message);
 				}
 			})

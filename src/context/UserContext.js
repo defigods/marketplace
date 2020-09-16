@@ -28,7 +28,7 @@ export class UserProvider extends Component {
 			userProfile()
 				.then((response) => {
 					if (response.data.result === true) {
-						console.log('userState', response.data.user)
+						// console.log('userState', response.data.user)
 						this.setState({ user: response.data.user });
 						this.liveSocket();
 					} else {
@@ -177,7 +177,7 @@ export class UserProvider extends Component {
 			// For ether we send the value instead of the bid
 			if (type === 0) {
 				const value = bid / this.state.perEth;
-				console.log('value', value, 'bid', bid, 'per eth', this.state.perEth, 'ico participate', this.state.icoParticipate.address)
+				// console.log('value', value, 'bid', bid, 'per eth', this.state.perEth, 'ico participate', this.state.icoParticipate.address)
 				tx = await this.state.icoParticipate.participateAsync(type, bid, landId, {
 					value: value,
 					gasPrice: window.web3.toWei(300, 'gwei'),

@@ -102,7 +102,7 @@ const Land = (props) => {
 		getLand(hex_id)
 			.then((response) => {
 				let data = response.data;
-				console.log('data', data);
+				// console.log('data', data);
 				if (data.error && data.error == 'h3_not_valid') {
 					setIsNotValidH3(true);
 				} else {

@@ -50,7 +50,7 @@ const Signup = () => {
 				try {
 					await ethereum.enable();
 				} catch (e) {
-					console.log(e);
+					// console.log(e);
 				}
 				window.web3 = new Web3(ethereum);
 			} else if (typeof window.web3 !== 'undefined') {
@@ -135,10 +135,10 @@ const Signup = () => {
 				token = facebookToken;
 				provider = 'facebook';
 			}
-			console.log('token', token)
-			console.log('provider', provider)
-			console.log('username', username)
-			console.log('publicAdress', publicAddress)
+			// console.log('token', token)
+			// console.log('provider', provider)
+			// console.log('username', username)
+			// console.log('publicAdress', publicAddress)
 			signUpHybridSocial(token, provider, username, publicAddress).then((response) => {
 				setIsSignupLoading(false);
 				if (response.data.result === true) {
@@ -146,7 +146,7 @@ const Signup = () => {
 				} else {
 					let error_code = response.data.errors[0].code;
 					let error_message = response.data.errors[0].message;
-					console.log('response.data', response.data);
+					// console.log('response.data', response.data);
 					if (error_code == 'public_address') {
 						dangerNotification(error_message, 'Try to login instead');
 						setActiveStep(0);
@@ -172,7 +172,7 @@ const Signup = () => {
 	};
 
 	const responseGoogle = (response) => {
-		console.log('google', response);
+		// console.log('google', response);
 		if (response.tokenId) {
 			setGoogleToken(response.tokenId);
 			handleNext();
@@ -180,7 +180,7 @@ const Signup = () => {
 	};
 
 	const responseFacebook = (response) => {
-		console.log('facebook', response);
+		// console.log('facebook', response);
 		if (response.accessToken) {
 			setFacebookToken(response.accessToken);
 			handleNext();
