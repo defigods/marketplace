@@ -109,6 +109,29 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 	snsWebSdkInstance.launch('#sumsub-websdk-container');
 };
 
+const countdownTimer = () => {
+	const difference = +new Date("2020-10-15") - +new Date();
+	let custom_return = '';
+
+	if (difference > 0) {
+		const parts = {
+			days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+			hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+			minutes: Math.floor((difference / 1000 / 60) % 60),
+			seconds: Math.floor((difference / 1000) % 60),
+		};
+		custom_return =
+			'OVR Token Sale will start in ' +
+			parts.days +
+			' days ' +
+			parts.hours +
+			' hours ' +
+			parts.minutes +
+			' mins ' +
+			parts.seconds + ' seconds.';
+	}
+	return custom_return;
+};
 const ProfileContent = () => {
 	const { state: userState } = useContext(UserContext);
 	const web3Context = useContext(Web3Context);
@@ -163,13 +186,20 @@ const ProfileContent = () => {
 						<div className="p-balance-value">
 							<ValueCounter value={web3Context.state.ovrsOwned} />
 							<div>
-								<HexButton url="/buy-tokens" className="--orange" text="BUY OVR"></HexButton>
+								<HexButton url="/buy-tokens" className="--orange --disabled" text="BUY OVR"></HexButton>
+								{/* history.push('/profile');
+								// TODO: KYC -  */}
 							</div>
 						</div>
 					</div>
 				</div>
 				<div key="KYC" className="p-section --m-t">
 					<h3 className="p-section-title">Identity verification</h3>
+					<div className="p-tiny-message">
+						{countdownTimer()} <br></br>
+					Every account will need to verify it's identity in order to buy OVR. <br></br>
+						<br></br>
+					</div>
 					<div className="p-section-content">
 						<h4 className="p-content-title">Status</h4>
 						<div className="p-balance-value">
@@ -188,6 +218,10 @@ const ProfileContent = () => {
 						{user.kycClientComment != null && user.kycReviewAnswer != 1 && user.kycClientComment}
 					</div>
 					<div id="sumsub-websdk-container"></div>
+				</div>
+				<div className="p-tiny-message">
+					{/* Every account will need to verify it's identity in order to buy OVR. <br></br>
+					Start your verification now. */}
 				</div>
 				{/* <div key="redeem-land" className="p-section --m-t">
 					<h3 className="p-section-title">Redeem lands</h3>

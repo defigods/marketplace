@@ -45,23 +45,24 @@ function App() {
 																<NavBar></NavBar>
 																<BannerNotification></BannerNotification>
 																<div className="o-container">
-																	<Route path="/map/" component={Map}></Route>
+																	{/* <Route path="/map/" component={Map}></Route>  TODO: KYC - Remove comment */}
 																</div>
 																<Switch>
 																	{/* <Route path="/" exact component={Home}></Route> */}
 																	<Route exact path="/">
-																		<Redirect to="/map/discover" />
+																		<Redirect to="/signup" />
+																		{/* TODO: KYC - Redirect to Redirect to="/map/discover" */}
 																	</Route>
-																	<Route path="/map/discover" component={Discover}></Route>
+																	{/* <Route path="/map/discover" component={Discover}></Route>
 																	<Route path="/map/overview" component={Overview}></Route>
 																	<Route path="/map/lands" component={Lands}></Route>
-																	<Route path="/map/land/:id" component={Land}></Route>
+																	<Route path="/map/land/:id" component={Land}></Route>  TODO: KYC - Remove comment */}
 																	<Route path="/profile" component={Profile}></Route>
-																	<Route path="/activity" component={Activity}></Route>
+																	{/* <Route path="/activity" component={Activity}></Route>  TODO: KYC - Remove comment */}
 																	<Route path="/login" component={Login}></Route>
 																	<Route path="/signup" component={Signup}></Route>
-																	<Route path="/buy-tokens" component={BuyTokens}></Route>
-																	<Route path="/indacoin-response" component={IndacoinResponse}></Route>
+																	{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
+																	<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}
 																</Switch>
 																<Footer></Footer>
 															</div>

@@ -167,7 +167,8 @@ const Signup = () => {
 	const handleLogin = () => {
 		context.actions.setupWeb3(() => {
 			saveToken('firstAfterSignup', true);
-			history.push('map/discover');
+			history.push('/profile');
+			// TODO: KYC - history.push('map/discover');
 		});
 	};
 
@@ -462,7 +463,8 @@ const Signup = () => {
 								/>
 							</div>
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain. <Link to="#">Read more</Link>.
+								Account info are stored privately off the blockchain.
+								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">
 								<HexButton
@@ -510,7 +512,8 @@ const Signup = () => {
 								/>
 							</div> */}
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain. <Link to="#">Read more</Link>.
+								Account info are stored privately off the blockchain. 
+								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">
 								<HexButton
@@ -551,7 +554,8 @@ const Signup = () => {
 								/>
 							</div> */}
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain. <Link to="#">Read more</Link>.
+								Account info are stored privately off the blockchain.
+								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">
 								<HexButton url="#" text="Log me in" className="--purple" onClick={handleLogin}></HexButton>

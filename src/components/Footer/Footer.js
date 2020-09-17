@@ -160,26 +160,43 @@ class Footer extends Component {
 				<div className="o-fourth">
 					<div className="Footer__container">
 						<div className="Footer__title">Legal</div>
-						<Link to="/" className="Footer__link">
-							Terms of Service
-						</Link>
-						<Link to="/" className="Footer__link">
-							Privacy
-						</Link>
+						<a
+							href={'https://www.ovr.ai/privacy-policy/'}
+							rel="noopener noreferrer"
+							target={'_blank'}
+							className="Footer__link"
+						>
+							Privacy policy
+						</a>
 					</div>
 				</div>
 				<div className="o-fourth">
 					<div className="Footer__container">
 						<div className="Footer__title">Community</div>
-						<Link to="/" className="Footer__link">
+						<a
+							href={'https://t.me/OVRtheReality'}
+							rel="noopener noreferrer"
+							target={'_blank'}
+							className="Footer__link"
+						>
 							Telegram
-						</Link>
-						<Link to="/" className="Footer__link">
+						</a>
+						<a
+							href={'https://medium.com/ovrthereality/'}
+							rel="noopener noreferrer"
+							target={'_blank'}
+							className="Footer__link"
+						>
 							Medium
-						</Link>
-						<Link to="/" className="Footer__link">
+						</a>
+						<a
+							href={'https://www.facebook.com/OVRtheReality'}
+							rel="noopener noreferrer"
+							target={'_blank'}
+							className="Footer__link"
+						>
 							Facebook
-						</Link>
+						</a>
 					</div>
 				</div>
 			</div>

@@ -78,7 +78,7 @@ const NavBar = () => {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
-						<Link
+						{/* <Link
 							to="/"
 							id="js-open-notification-link"
 							className="Notifications__link"
@@ -110,12 +110,13 @@ const NavBar = () => {
 									? userState.user.notifications.unreadedCount
 									: 0}
 							</div>
-						</Link>
+						</Link>  // TODO: KYC - Remove comment */}
 
 						<div className="Funds__container">
-							<Link to="/buy-tokens" className="Funds__link">
+							{/* <Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
-							</Link>
+							</Link> // TODO: KYC - Remove comment */}
+							<ValueCounter value={ovrsOwned}></ValueCounter>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
 							}}>
@@ -169,14 +170,14 @@ const NavBar = () => {
 												>
 													Profile
 												</MenuItem>
-												<MenuItem
+												{/* <MenuItem
 													onClick={(e) => {
 														handleClose(e);
 														handleGoTo('/activity');
 													}}
 												>
 													Activity
-												</MenuItem>
+												</MenuItem>   // TODO: KYC - Remove comment*/}
 												<MenuItem
 													onClick={(e) => {
 														handleClose(e);
@@ -222,8 +223,8 @@ const NavBar = () => {
 						xmlns="http://www.w3.org/2000/svg"
 						xmlnsXlink="http://www.w3.org/1999/xlink"
 					>
-						<title>Group</title>
-						<desc>Created with Sketch.</desc>
+						<title>OVR</title>
+						<desc>OVR Logo</desc>
 						<defs>
 							<linearGradient x1="25.3511512%" y1="49.9738242%" x2="107.245785%" y2="49.9738242%" id="linearGradient-1">
 								<stop stopColor="#6B32C1" offset="0%"></stop>
@@ -328,12 +329,12 @@ const NavBar = () => {
 				</div>
 			</Link>
 			<div className="Navbar__link_container">
-				<NavLink className="NavBar__link" to="/map/overview">
+				{/* <NavLink className="NavBar__link" to="/map/overview">
 					My Assets
 				</NavLink>
 				<NavLink className="NavBar__link" to="/map/discover">
 					Marketplace
-				</NavLink>
+				</NavLink> // TODO: KYC - Remove comment */ }
 				{rightContainer()}
 			</div>
 		</div>

@@ -5,14 +5,14 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'DEVELOPMENT';
+const environment = 'PRODUCTION';
 
 let apis;
 
 if (environment === 'PRODUCTION') {
 	apis = {
-		hostname: 'http://localhost:3000/api/v1',
-		socket: 'wss://localhost:3000/cable',
+		hostname: 'http://mws.ovr.ai/api/v1',
+		socket: 'wss://mws.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper.ovr.ai/indacoin',
 		etherscan: 'https://etherscan.io/',
 		cookieDomain: 'ovr.ai',

@@ -17,7 +17,9 @@ const Login = () => {
 	useEffect(() => {
 		// Login via web3
 		web3Context.actions.setupWeb3(() => {
-			history.push('map/discover');
+			history.push('/profile');
+			// TODO: KYC - history.push('map/discover');
+
 			// console.log('login here eheh');
 			if (mapContext.state.onSingleView) {
 				history.push('/map/land/' + mapContext.state.hex_id);
@@ -38,7 +40,7 @@ const Login = () => {
 					We use MetaMask to authenticate Users. Please sign the nonce which will be used for this session.
 				</div>
 				<div className="Login__footer">
-					If you have any question about your account visit <Link to="/FAQs">FAQs</Link> or contact{' '}
+					If you have any question about your account contact us at {' '}
 					<Link to="mailto:info@ovr.ai">info@ovr.ai</Link>
 				</div>
 			</div>
