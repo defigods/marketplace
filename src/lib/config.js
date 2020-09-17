@@ -11,7 +11,7 @@ let apis;
 
 if (environment === 'PRODUCTION') {
 	apis = {
-		hostname: 'http://mws.ovr.ai/api/v1',
+		hostname: 'https://mws.ovr.ai/api/v1',
 		socket: 'wss://mws.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper.ovr.ai/indacoin',
 		etherscan: 'https://etherscan.io/',
