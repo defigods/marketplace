@@ -424,10 +424,6 @@ const Signup = () => {
 								<br></br>
 								{typeof window.web3}
 								<br></br>
-								{window.web3.eth.accounts}
-								<br></br>
-								{window.ethereum.networkVersion}
-								<br></br>
 							</div>
 							{isWeb3Active && web3NetworkVersion && isWeb3Account ? (
 								<>
