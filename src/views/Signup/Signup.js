@@ -201,6 +201,7 @@ const Signup = () => {
 		let web3NetworkVersion = false;
 		if (isWeb3Active) {
 			isWeb3Account = window.web3.eth.accounts.length > 0;
+			console.log('typeof window.web3.version.network;', typeof window.web3.version.network);
 			web3NetworkVersion = window.web3.version.network === config.web3network;
 		}
 		switch (step) {
@@ -413,6 +414,9 @@ const Signup = () => {
 										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
 									</div>
 								)}
+							</div>
+							<div className="ignore-this">
+								For debug only, ignore this: {window.web3.version.network}, {typeof window.web3.version.network}
 							</div>
 							{/* <div className="ignore-this">
 								For debug only, ignore this:
