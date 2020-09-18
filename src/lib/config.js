@@ -47,7 +47,7 @@ const map = {
 };
 
 let config = {
-	web3network: environment === 'PRODUCTION' ? '1' : '3',
+	web3network: environment === 'PRODUCTION' ? 1 : 3,
 	environment: environment,
 	apis: apis,
 	map: map,
