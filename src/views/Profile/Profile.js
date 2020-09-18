@@ -110,7 +110,7 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 };
 
 const countdownTimer = () => {
-	const difference = +new Date("2020-10-15") - +new Date();
+	const difference = +new Date("2020-11-15") - +new Date();
 	let custom_return = '';
 
 	if (difference > 0) {
@@ -197,7 +197,10 @@ const ProfileContent = () => {
 					<h3 className="p-section-title">Identity verification</h3>
 					<div className="p-tiny-message">
 						{countdownTimer()} <br></br>
-					Every account will need to verify it's identity in order to buy OVR. <br></br>
+						{user.kycReviewAnswer == 1
+							? `You are whitelisted and ready to buy OVR at the beginning of the public sale.`
+							: `To be whitelisted and able to buy OVR at the beginning of the public sale verify your identity.`}
+						<br></br>
 						<br></br>
 					</div>
 					<div className="p-section-content">

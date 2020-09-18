@@ -12,6 +12,7 @@ import { saveToken } from '../../lib/auth';
 import { dangerNotification } from '../../lib/notifications';
 
 import { Web3Context, withWeb3Context } from '../../context/Web3Context';
+import { UserContext, withUserContext } from '../../context/UserContext';
 
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -27,6 +28,8 @@ import FacebookLoginWithButton from '../../facebook/facebook-with-button';
 
 const Signup = () => {
 	const context = useContext(Web3Context);
+	const userContext = useContext(UserContext);
+
 	let history = useHistory();
 	const [activeStep, setActiveStep] = useState(0);
 	const [userEmail, setUserEmail] = useState('');
@@ -43,6 +46,10 @@ const Signup = () => {
 	const [usernameInputError, setUsernameInputError] = useState(false);
 
 	useEffect(() => {
+		// If user is logged in
+		if (userContext.state.isLoggedIn) {
+			history.push('/profile');
+		}
 		// Load Web3
 		const ethereum = window.ethereum;
 		async function startEth() {
@@ -359,7 +366,11 @@ const Signup = () => {
 							</svg>
 							<h2>Join OVR, the decentralized infrastructure for the spatial web.</h2>
 							<div className="Signup__section">
-								OVR merges physical and virtual world through Augmented Reality, creating a new dimension.
+								OVR merges physical and virtual world through Augmented Reality, creating a new dimension. <br></br>{' '}
+								<div className="p-tiny-message">
+									We are starting the public sale the 16th of November. To access the whitelist you can register and
+									pass the identity verification in your profile.
+								</div>
 							</div>
 							<div className="Signup__section">
 								<HexButton url="#" text="Get started" className={'--purple'} onClick={handleNext}></HexButton>
@@ -402,6 +413,21 @@ const Signup = () => {
 										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
 									</div>
 								)}
+							</div>
+							<div className="ignore-this">
+								For debug only, ignore this:
+								{isWeb3Active.toString()}
+								<br></br>
+								{web3NetworkVersion.toString()}
+								<br></br>
+								{isWeb3Account.toString()}
+								<br></br>
+								{typeof window.web3}
+								<br></br>
+								{window.web3.eth.accounts}
+								<br></br>
+								{window.ethereum.networkVersion}
+								<br></br>
 							</div>
 							{isWeb3Active && web3NetworkVersion && isWeb3Account ? (
 								<>
@@ -512,7 +538,7 @@ const Signup = () => {
 								/>
 							</div> */}
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain. 
+								Account info are stored privately off the blockchain.
 								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">

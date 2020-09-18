@@ -72,6 +72,18 @@ const NavBar = () => {
 		userActions.toggleShowNotificationCenter(true);
 	}
 
+	function centerContainer() {
+		let cont = <div></div>;
+		if (userState.isLoggedIn === true && userState.user !== null) {
+			cont = (
+				<NavLink className="NavBar__link" to="/profile">
+					Profile
+				</NavLink>
+			);
+		}
+		return cont;
+	}
+
 	function rightContainer() {
 		let rightContainer = <div></div>;
 		if (userState.isLoggedIn === true && userState.user !== null) {
@@ -334,7 +346,8 @@ const NavBar = () => {
 				</NavLink>
 				<NavLink className="NavBar__link" to="/map/discover">
 					Marketplace
-				</NavLink> // TODO: KYC - Remove comment */ }
+				</NavLink> // TODO: KYC - Remove comment */}
+				{centerContainer()}
 				{rightContainer()}
 			</div>
 		</div>

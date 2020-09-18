@@ -50,7 +50,11 @@ function App() {
 																<Switch>
 																	{/* <Route path="/" exact component={Home}></Route> */}
 																	<Route exact path="/">
-																		<Redirect to="/signup" />
+																		{userValue.state.isLoggedIn ? (
+																			<Redirect to="/profile" />
+																		) : (
+																			<Redirect to="/signup" />
+																		)}
 																		{/* TODO: KYC - Redirect to Redirect to="/map/discover" */}
 																	</Route>
 																	{/* <Route path="/map/discover" component={Discover}></Route>

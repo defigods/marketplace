@@ -1,0 +1,42 @@
+@media screen and ( max-width: 420px ){
+  .Signup .o-box{
+    max-width: 450px;
+    padding: 25px;
+  }
+  .Footer{
+    width: calc( 100% - 20px);
+    .o-fourth{
+      @include column(1/2, $cycle: 2);
+      &:nth-child(2){
+        margin-top:5px;
+      }
+      &:nth-child(3), &:nth-child(4){
+        margin-top: 20px;
+      }
+    }
+  }
+  .Social_buttons{
+    display: flex;
+    justify-content: center;
+  }
+  .Signup .Signup__msg{
+    padding: 0px;
+  }
+  .p-body .o-fourth{
+    display: none;
+  }
+  .profile .profile-content, .profile .p-body{
+    width: 100%;
+  }
+  .p-wallet-address{
+    font-size: 12px;
+  }
+  .profile .p-section .p-section-content{
+    width: 100%;
+  }
+
+}
+
+.ignore-this{
+  font-size: 8px;
+}
