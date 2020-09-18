@@ -201,7 +201,7 @@ const Signup = () => {
 		let web3NetworkVersion = false;
 		if (isWeb3Active) {
 			isWeb3Account = window.web3.eth.accounts.length > 0;
-			web3NetworkVersion = window.ethereum.networkVersion === config.web3network;
+			web3NetworkVersion = window.web3.version.network === config.web3network;
 		}
 		switch (step) {
 			case -1:
@@ -414,7 +414,7 @@ const Signup = () => {
 									</div>
 								)}
 							</div>
-							<div className="ignore-this">
+							{/* <div className="ignore-this">
 								For debug only, ignore this:
 								{isWeb3Active.toString()}
 								<br></br>
@@ -428,7 +428,7 @@ const Signup = () => {
 								<br></br>
 								{window.web3 ? window.ethereum.networkVersion : ''}
 								<br></br>
-							</div>
+							</div> */}
 							{isWeb3Active && web3NetworkVersion && isWeb3Account ? (
 								<>
 									<div className="Signup__section Signup__msg --positive">Hurray! Click below to continue.</div>
