@@ -62,8 +62,8 @@ const Signup = () => {
 				window.web3 = new Web3(ethereum);
 			} else if (typeof window.web3 !== 'undefined') {
 				window.web3 = new Web3(window.web3.currentProvider);
+				window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 			}
-			window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		}
 		startEth();
 	}, []);
@@ -201,8 +201,7 @@ const Signup = () => {
 		let web3NetworkVersion = false;
 		if (isWeb3Active) {
 			isWeb3Account = window.web3.eth.accounts.length > 0;
-			console.log('typeof window.web3.version.network;', typeof window.web3.version.network);
-			web3NetworkVersion = window.web3.version.network === config.web3network;
+			web3NetworkVersion = parseInt(window.ethereum.chainId, 16) === config.web3network;
 		}
 		switch (step) {
 			case -1:
@@ -414,9 +413,6 @@ const Signup = () => {
 										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
 									</div>
 								)}
-							</div>
-							<div className="ignore-this">
-								For debug only, ignore this: {window.web3.version.network}, {typeof window.web3.version.network}
 							</div>
 							{/* <div className="ignore-this">
 								For debug only, ignore this:
