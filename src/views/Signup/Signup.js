@@ -414,6 +414,9 @@ const Signup = () => {
 									</div>
 								)}
 							</div>
+							<div className="ignore-this">
+								window.ethereum.chainId {window.ethereum.chainId},{typeof window.ethereum.chainId}
+							</div>
 							{/* <div className="ignore-this">
 								For debug only, ignore this:
 								{isWeb3Active.toString()}
