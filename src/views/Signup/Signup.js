@@ -45,10 +45,6 @@ const Signup = () => {
 	const [usernameValid, setUsernameValid] = useState(false);
 	const [usernameInputError, setUsernameInputError] = useState(false);
 
-	const [isWeb3Active, setIsWeb3Active] = useState(false);
-	const [isWeb3Account, setIsWeb3Account] = useState(false);
-	const [isWeb3NetworkVersion, setIsWeb3NetworkVersion] = useState(false);
-
 	useEffect(() => {
 		// If user is logged in
 		if (userContext.state.isLoggedIn) {
@@ -64,30 +60,13 @@ const Signup = () => {
 					// console.log(e);
 				}
 				window.web3 = new Web3(ethereum);
-				window.chainId = await window.web3.eth.getChainId();
-				window.web3.eth.defaultAccount = window.web3.eth.currentProvider.selectedAddress;
 			} else if (typeof window.web3 !== 'undefined') {
 				window.web3 = new Web3(window.web3.currentProvider);
-				window.chainId = await window.web3.eth.getChainId();
-				window.web3.eth.defaultAccount = window.web3.eth.currentProvider.selectedAddress;
+				window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 			}
 		}
 		startEth();
 	}, []);
-
-	useEffect(() => {
-		setIsWeb3Active(typeof window.web3 !== 'undefined');
-
-		if (isWeb3Active) {
-			if (window.web3.eth.defaultAccount !== '' && window.web3.eth.defaultAccount !== null) {
-				setIsWeb3Account(true);
-			}
-			setIsWeb3NetworkVersion(window.chainId === config.web3network);
-		} else {
-			setIsWeb3Account(false);
-			setIsWeb3NetworkVersion(false);
-		}
-	}, [undefined, window.chainId]);
 
 	const handleNext = async () => {
 		if (activeStep + 1 === 1) {
@@ -128,7 +107,7 @@ const Signup = () => {
 
 	const handleSubscribe = () => {
 		setIsSignupLoading(true);
-		// window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
 		if (googleToken == false && facebookToken == false) {
 			signUpHybrid(userEmail, username, publicAddress).then((response) => {
@@ -217,6 +196,13 @@ const Signup = () => {
 	};
 
 	function getStepContent(step) {
+		let isWeb3Active = typeof window.web3 !== 'undefined';
+		let isWeb3Account = false;
+		let web3NetworkVersion = false;
+		if (isWeb3Active) {
+			isWeb3Account = window.web3.eth.accounts.length > 0;
+			web3NetworkVersion = parseInt(window.ethereum.chainId, 16) === config.web3network;
+		}
 		switch (step) {
 			case -1:
 				return (
@@ -416,7 +402,7 @@ const Signup = () => {
 										<CancelIcon className="CancelIcon" /> Log in to Web3 provider
 									</div>
 								)}
-								{isWeb3NetworkVersion ? (
+								{web3NetworkVersion ? (
 									<div className="o-list">
 										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Connect to{' '}
 										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
@@ -428,12 +414,11 @@ const Signup = () => {
 									</div>
 								)}
 							</div>
-							<div className="ignore-this">window.ethereum.chainId {window.chainId}</div>
 							{/* <div className="ignore-this">
 								For debug only, ignore this:
 								{isWeb3Active.toString()}
 								<br></br>
-								{isWeb3NetworkVersion.toString()}
+								{web3NetworkVersion.toString()}
 								<br></br>
 								{isWeb3Account.toString()}
 								<br></br>
@@ -444,7 +429,7 @@ const Signup = () => {
 								{window.web3 ? window.ethereum.networkVersion : ''}
 								<br></br>
 							</div> */}
-							{isWeb3Active && isWeb3NetworkVersion && isWeb3Account ? (
+							{isWeb3Active && web3NetworkVersion && isWeb3Account ? (
 								<>
 									<div className="Signup__section Signup__msg --positive">Hurray! Click below to continue.</div>
 									<div className="Signup__section">

@@ -133,7 +133,7 @@ export class Web3Provider extends Component {
     } else {
       return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
     }
-    window.web3.eth.defaultAccount = window.web3.eth.currentProvider.selectedAddress;
+    window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 
     // Sign nonce for centralized login
     let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
@@ -151,7 +151,7 @@ export class Web3Provider extends Component {
   lightSetupWeb3 = async () => {
     const ethereum = window.ethereum;
     await ethereum.enable();
-    window.web3.eth.defaultAccount = window.web3.eth.currentProvider.selectedAddress;
+    window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
     await this.refreshWhenAccountsChanged();
     await this.updateBalance();
     await this.setupContracts();
@@ -159,17 +159,14 @@ export class Web3Provider extends Component {
   };
 
   setupContracts = async () => {
-    const _dai = new window.web3.eth.Contract(erc20Abi, daiAddress);
-    const _tether = new window.web3.eth.Contract(erc20Abi, tetherAddress);
-    const _usdc = new window.web3.eth.Contract(erc20Abi, usdcAddress);
-    const _tokenBuy = new window.web3.eth.Contract(tokenBuyAbi, tokenBuyAddress);
-    const _ovr = new window.web3.eth.Contract(erc20Abi, ovrAddress);
-    const _ico = new window.web3.eth.Contract(icoAbi, icoAddress);
-    const _ovr721 = new window.web3.eth.Contract(ovr721Abi, ovr721Address);
-    const _icoParticipate = new window.web3.eth.Contract(icoParticipateAbi, icoParticipateAddress);
-
-    console.log(_tokenBuy);
-    console.log(promisifyAll(_tokenBuy))
+    const _dai = window.web3.eth.contract(erc20Abi).at(daiAddress);
+    const _tether = window.web3.eth.contract(erc20Abi).at(tetherAddress);
+    const _usdc = window.web3.eth.contract(erc20Abi).at(usdcAddress);
+    const _tokenBuy = window.web3.eth.contract(tokenBuyAbi).at(tokenBuyAddress);
+    const _ovr = window.web3.eth.contract(erc20Abi).at(ovrAddress);
+    const _ico = window.web3.eth.contract(icoAbi).at(icoAddress);
+    const _ovr721 = window.web3.eth.contract(ovr721Abi).at(ovr721Address);
+    const _icoParticipate = window.web3.eth.contract(icoParticipateAbi).at(icoParticipateAddress);
 
     this.setState({
       dai: promisifyAll(_dai),
@@ -214,8 +211,8 @@ export class Web3Provider extends Component {
   getOvrsOwned = async () => {
     if (this.state.ovr && this.state.setupComplete && window.web3.eth.defaultAccount) {
       const ovrsOwned = String(
-				window.web3.fromWei(await this.state.ovr.methods.balanceOf(window.web3.eth.defaultAccount).call()),
-			);
+        window.web3.fromWei(await this.state.ovr.balanceOfAsync(window.web3.eth.defaultAccount)),
+      );
       this.setState({ ovrsOwned });
     }
   };
@@ -237,11 +234,15 @@ export class Web3Provider extends Component {
 
   handleUserSignMessage = (publicAddress, nonce, callback) => {
     return new Promise((resolve, reject) =>
-			window.web3.eth.sign(`I am signing my one-time nonce: ${nonce}`,publicAddress, (err, signature) => {
-				if (err) return reject(err);
-				this.handleAuthenticate(publicAddress, signature, callback);
-			}),
-		);
+      window.web3.personal.sign(
+        window.web3.fromUtf8(`I am signing my one-time nonce: ${nonce}`),
+        publicAddress,
+        (err, signature) => {
+          if (err) return reject(err);
+          this.handleAuthenticate(publicAddress, signature, callback);
+        },
+      ),
+    );
   };
 
   handleAuthenticate = (publicAddress, signature, callback) => {
@@ -431,9 +432,8 @@ export class Web3Provider extends Component {
 	 */
   getPrices = () => {
     return new Promise(async resolve => {
-      let perEth = this.state.tokenBuy.methods.ethPrice().call().then(console.log);
-      let perUsd = this.state.tokenBuy.methods.tokensPerUsd().call().then(console.log); 
-      console.log('per eth', perEth)
+      const perEth = Number(await this.state.tokenBuy.ethPriceAsync());
+      let perUsd = Number(await this.state.tokenBuy.tokensPerUsdAsync());
       this.setState({
         perEth,
         perUsd,
