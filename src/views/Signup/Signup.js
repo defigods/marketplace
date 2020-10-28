@@ -188,7 +188,7 @@ const Signup = () => {
 	};
 
 	const responseFacebook = (response) => {
-		// console.log('facebook', response);
+		console.log('facebook', response);
 		if (response.accessToken) {
 			setFacebookToken(response.accessToken);
 			handleNext();
