@@ -110,7 +110,7 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 };
 
 const countdownTimer = () => {
-	const difference = +new Date("2020-11-15") - +new Date();
+	const difference = +new Date("2020-11-30") - +new Date();
 	let custom_return = '';
 
 	if (difference > 0) {
