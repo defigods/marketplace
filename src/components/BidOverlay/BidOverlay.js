@@ -11,8 +11,11 @@ import PropTypes from 'prop-types';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
+import { useTranslation } from 'react-i18next'
+
 
 const BidOverlay = (props) => {
+	const { t, i18n } = useTranslation()
 	const { participateBid, approveOvrTokens } = props.web3Provider.actions;
 	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
@@ -72,7 +75,7 @@ const BidOverlay = (props) => {
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
-			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
 		}
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
@@ -107,7 +110,7 @@ const BidOverlay = (props) => {
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
-			warningNotification('Invalid authentication', 'Please Log In to participate');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
 		return true;
@@ -141,7 +144,7 @@ const BidOverlay = (props) => {
 
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
-			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
+			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		if (!checkUserLoggedIn()) return;
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		try {
@@ -178,7 +181,7 @@ const BidOverlay = (props) => {
 		} catch (e) {
 			setOpen(false);
 			setActiveStep(0);
-			return dangerNotification('Error processing the transaction', e.message);
+			return dangerNotification(t('Danger.error.processing.title'), e.message);
 		}
 		setActiveStep(2);
 	};
@@ -189,7 +192,7 @@ const BidOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Place a bid for</div>
+							<div className="Overlay__title">{t('BidOverlay.place.bid')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -200,38 +203,38 @@ const BidOverlay = (props) => {
 										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('ovr')}
 									>
-										OVR
+										{t('Currency.ovr.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'eth' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('eth')}
 									>
-										ETH
+										{t('Currency.eth.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'dai' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('dai')}
 									>
-										DAI
+										{t('Currency.dai.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'usdt' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('usdt')}
 									>
-										USDT
+										{t('Currency.usdt.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'usdc' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('usdc')}
 									>
-										USDC
+										{t('Currency.usdc.label')}
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__current_bid">
-										<div className="Overlay__bid_title">Current bid</div>
+										<div className="Overlay__bid_title">{t('BidOverlay.current.bid')}</div>
 										<div className="Overlay__bid_cont">
 											<ValueCounter value={currentBid}></ValueCounter>
 										</div>
@@ -263,14 +266,14 @@ const BidOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Minimum bid</div>
+									<div className="Overlay__bid_title">{t('BidOverlay.min.bid')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={nextBid}></ValueCounter>
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__your_bid">
-								<div className="Overlay__bid_title">Your bid</div>
+								<div className="Overlay__bid_title">{t('BidOverlay.your.bid')}</div>
 								<div>
 									<TextField
 										type="number"
@@ -289,9 +292,9 @@ const BidOverlay = (props) => {
 									<Tooltip
 										title={
 											<React.Fragment>
-												{'Using directly OVR will grant you the double purchase power.'}
+												{t('BidOverlay.use.direct')}
 												<br></br>
-												{'Click to buy OVR.'}
+												{t('BidOverlay.click.to.buy')}
 											</React.Fragment>
 										}
 										aria-label="info"
@@ -306,13 +309,13 @@ const BidOverlay = (props) => {
 							<div className="Overlay__buttons_container">
 								<HexButton
 									url="#"
-									text="Place bid"
+									text={t('BidOverlay.place.bid.label')}
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
 									onClick={() => participateInAuction(bidProjectionCurrency)}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -321,14 +324,14 @@ const BidOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Bidding the OVRLand</div>
+							<div className="Overlay__title">{t('BidOverlay.bidding.land')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Current bid</div>
+									<div className="Overlay__bid_title">{t('BidOverlay.current.bid')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={currentBid}></ValueCounter>
 									</div>
@@ -359,7 +362,7 @@ const BidOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Your bid</div>
+									<div className="Overlay__bid_title">{t('BidOverlay.your.bid')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={bid}></ValueCounter>
 									</div>
@@ -376,11 +379,11 @@ const BidOverlay = (props) => {
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
-								<span>Congratulations</span>
-								<br></br>Your bid request has been sent
+								<span>{t('Generic.congrats.label')}</span>
+								<br></br>BidOverlay.request.sent
 								<div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
-										View transaction status
+										{t('BidOverlay.view.status')}
 									</a>
 								</div>
 							</div>
@@ -397,7 +400,7 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>

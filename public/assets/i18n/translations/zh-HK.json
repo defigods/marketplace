@@ -100,7 +100,7 @@
 
 	"IndacoinResponse.trans.token" : "Transferring OVR Tokens",
 	"IndacoinResponse.no.leave" : "Please don't leave this page.",
-	"IndacoinResponse.congrats.label" : "Congratulations",
+	"Generic.congrats.label" : "Congratulations",
 	"IndacoinResponse.success.bought" : "You've succesfully bought some OVR.<1></1>Now you can go to the marketplace and partecipate.",
 	"IndacoinResponse.to.mrktplace" : "Go to Marketplace",
 	"IndacoinResponse.something.wrong" : "Something went wrong",
@@ -123,7 +123,7 @@
 	"BuyTokens.ovr.label" : "OVR",
 	"BuyTokens.exchange.rate.usd" : "Exchange rate: 1 USD = {{perUsd}} OVR",
 	"BuyTokens.buy.ovr" : "Buy OVR",
-	"BuyTokens.cancel.label": "Cancel",
+	"Generic.cancel.label": "Cancel",
 	"BuyTokens.eth.label" : "ETH",
 	"BuyTokens.exchange.rate.eth" : "Exchange rate: 1 ETH = {{perEth}} OVR",
 	"BuyTokens.dai.label" : "DAI",

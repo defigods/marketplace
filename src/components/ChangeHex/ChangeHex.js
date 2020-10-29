@@ -1,7 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { withMapContext } from '../../context/MapContext';
+import { useTranslation } from 'react-i18next'
 
 const ChangeHex = (props) => {
+	const { t, i18n } = useTranslation()
+
 	const [hex, setHex] = useState('');
 
 	const updateHex = (e) => {
@@ -16,7 +19,7 @@ const ChangeHex = (props) => {
 	return (
 		<form onSubmit={changeHex}>
 			<input type="text" name="hex" value={hex} onChange={updateHex} />
-			<button>Submit</button>
+			<button>{t('Generic.submit.label')}</button>
 		</form>
 	);
 };

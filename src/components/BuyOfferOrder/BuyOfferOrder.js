@@ -10,6 +10,7 @@ import { withWeb3Context } from '../../context/Web3Context';
 import { deleteBuyOffer, hitBuyOffer } from '../../lib/api';
 import { networkError, dangerNotification, successNotification, warningNotification } from '../../lib/notifications';
 import './style.scss';
+import { Trans, useTranslation } from 'react-i18next'
 
 export class BuyOfferOrder extends Component {
 	constructor(props) {
@@ -40,6 +41,7 @@ export class BuyOfferOrder extends Component {
 
 	// To delete/cancel a buy offer if you created it
 	confirmDeleteBuyOffer = async (offerId) => {
+		const { t, i18n } = useTranslation()
 		try {
 			const tx = await this.props.web3Provider.actions.cancelBuyOffer(offerId);
 			this.setState({
@@ -56,6 +58,7 @@ export class BuyOfferOrder extends Component {
 
 	// To decline a buy offer
 	declineBuyOffer = async (offerId) => {
+		const { t, i18n } = useTranslation()
 		try {
 			const tx = await this.props.web3Provider.actions.declineBuyOffer(offerId);
 			this.setState({
@@ -72,6 +75,7 @@ export class BuyOfferOrder extends Component {
 
 	// To accept a buy offer and sell your land
 	confirmSell = async (offerId, landId) => {
+		const { t, i18n } = useTranslation()
 		try {
 			this.setState({
 				metamaskMessage: 'Approving the OVRLand token...',
@@ -92,18 +96,20 @@ export class BuyOfferOrder extends Component {
 	};
 
 	handleOpen() {
+		const { t, i18n } = useTranslation()
 		if (this.props.userProvider.state.isLoggedIn) {
 			this.setState({ openModal: true });
 		} else {
-			warningNotification('Invalid authentication', 'Please Log In to buy land');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc.buy'));
 		}
 	}
 
 	openDeclineModal = () => {
+		const { t, i18n } = useTranslation()
 		if (this.props.userProvider.state.isLoggedIn) {
 			this.setState({ openDeclineBuyModal: true });
 		} else {
-			warningNotification('Invalid authentication', 'Please Log In to buy land');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc.buy'));
 		}
 	};
 
@@ -121,16 +127,17 @@ export class BuyOfferOrder extends Component {
 	}
 
 	buttonRender() {
+		const { t, i18n } = useTranslation()
 		let customRender;
 		if (!this.props.isOwner) {
 			customRender = (
 				<>
 					<div className="section">
 						<button type="button" className="orderTileButton" onClick={this.handleOpen}>
-							Accept Offer
+							{t('BuyOfferOrder.accept.offer')}
 						</button>{' '}
 						<button type="button" className="orderTileButton" onClick={this.openDeclineModal}>
-							Decline Offer
+							{t('BuyOfferOrder.decline.offer')}
 						</button>
 					</div>
 					<div className="section"></div>
@@ -141,13 +148,15 @@ export class BuyOfferOrder extends Component {
 						onClose={this.handleClose}
 					>
 						<div className="BuyOfferModal">
-							<h2>Sell confirmation</h2>
+							<h2>{t('BuyOfferOrder.sell.confirmation')}</h2>
 							<p>
-								Do you confirm the sell of this <b>OVRLand</b>?
+								<Trans i18nKey="BuyOfferOrder.sell.conf.ask">
+									Do you confirm the sell of this <b>OVRLand</b>?
+								</Trans>
 							</p>
 							<div className="Overlay__bid_container">
 								<div className="OrderModal__bid">
-									<div className="Overlay__bid_title">Sell at</div>
+									<div className="Overlay__bid_title">{t('BuyOfferOrder.sell.at')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={this.props.offer.price}></ValueCounter>
 									</div>
@@ -157,11 +166,11 @@ export class BuyOfferOrder extends Component {
 							<div className="Modal__buttons_container">
 								<HexButton
 									url="#"
-									text="Confirm"
+									text={t('Generic.confirm.label')}
 									className={this.state.transactionInProcess ? '--purple --disabled' : '--purple'}
 									onClick={() => this.confirmSell(this.props.offer.id, this.props.offer.landId)}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
 						</div>
 					</Modal>
@@ -173,13 +182,16 @@ export class BuyOfferOrder extends Component {
 						onClose={this.handleClose}
 					>
 						<div className="BuyOfferModal">
-							<h2>Decline buy offer confirmation</h2>
+							<h2>{t('BuyOfferOrder.decline.confirm')}</h2>
 							<p>
-								Do you confirm to decline this buy offer for this <b>OVRLand</b>?
+								<Trans i18nKey="BuyOfferOrder.decline.conf.ask">
+									Do you confirm to decline this buy offer for this <b>OVRLand</b>?
+								</Trans>
+								
 							</p>
 							<div className="Overlay__bid_container">
 								<div className="OrderModal__bid">
-									<div className="Overlay__bid_title">Sell at</div>
+									<div className="Overlay__bid_title">{t('BuyOfferOrder.sell.at')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={this.props.offer.price}></ValueCounter>
 									</div>
@@ -189,11 +201,11 @@ export class BuyOfferOrder extends Component {
 							<div className="Modal__buttons_container">
 								<HexButton
 									url="#"
-									text="Confirm"
+									text={t('Generic.confirm.label')}
 									className={this.state.transactionInProcess ? '--purple --disabled' : '--purple'}
 									onClick={() => this.declineBuyOffer(this.props.offer.id)}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
 						</div>
 					</Modal>
@@ -215,19 +227,22 @@ export class BuyOfferOrder extends Component {
 						onClose={this.handleClose}
 					>
 						<div className="BuyOfferModal">
-							<h2>Delete confirmation</h2>
+							<h2>{t('BuyOfferOrder.delete.confirmation')}</h2>
 							<p>
-								Do you confirm the delete of this <b>Buy offer</b>?
+								<Trans i18nKey="BuyOfferOrder.delete.ask">
+									Do you confirm the delete of this <b>Buy offer</b>?
+								</Trans>
+								
 							</p>
 							<p className="blinking-message">{this.state.metamaskMessage}</p>
 							<div className="Modal__buttons_container">
 								<HexButton
 									url="#"
-									text="Confirm"
+									text={t('Generic.confirm.label')}
 									className={this.state.transactionInProcess ? '--purple --disabled' : '--purple'}
 									onClick={() => this.confirmDeleteBuyOffer(this.props.offer.id)}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
 						</div>
 					</Modal>
@@ -238,16 +253,17 @@ export class BuyOfferOrder extends Component {
 	}
 
 	render() {
+		const { t, i18n } = useTranslation();
 		return (
 			<div className="BuyOfferTile">
 				<div className="section">
 					<ValueCounter value={this.props.offer.price}></ValueCounter>
 				</div>
 				<div className="section">
-					<b>Buy Offer Order</b>
+					<b>{t('BuyOfferOrder.offer.order')}</b>
 				</div>
 				<div className="section">
-					<span className="c-small-tile-text">Expires</span>{' '}
+					<span className="c-small-tile-text">{t('BuyOfferOrder.expires.label')}</span>{' '}
 					<TimeCounter date_end={new Date(this.props.offer.expirationDate * 1000)}></TimeCounter>
 				</div>
 				{this.buttonRender()}

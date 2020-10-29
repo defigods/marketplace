@@ -3,6 +3,8 @@ import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/a
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
 import config, { camelCaseKeys } from '../lib/config';
+import { useTranslation } from 'react-i18next'
+
 let ActionCable = require('actioncable');
 
 export const UserContext = createContext();
@@ -167,11 +169,13 @@ export class UserProvider extends Component {
 	// 4 -> OVR
 	participate = async (type, bid, landId) => {
 		let tx
+		const { t, i18n } = useTranslation()
+
 
 		try {
 			await this.getPrices()
 		} catch (e) {
-			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
+			return warningNotification(t('Warning.get.prices.title'), t('Warning.get.prices.desc')+ ` ${e.message}`)
 		}
 		try {
 			// For ether we send the value instead of the bid
@@ -185,7 +189,7 @@ export class UserProvider extends Component {
 			}
 			return tx
 		} catch (e) {
-			return warningNotification('Error buying', `There was an error participating in the auction ${e.message}`);
+			return warningNotification(t('Warning.buy.error.title'), t('Warning.buy.error.desc')+ ` ${e.message}`);
 		}
 	};
 

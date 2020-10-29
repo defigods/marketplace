@@ -6,10 +6,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MoreIcon from '@material-ui/icons/MoreHoriz';
 import Fade from '@material-ui/core/Fade';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'
+
 
 import { readNotification, hideNotification } from '../../lib/api';
 
 const Notification = (props) => {
+	const { t, i18n } = useTranslation()
+
 	let history = useHistory();
 
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -73,8 +77,8 @@ const Notification = (props) => {
 						onClose={handleClose}
 						TransitionComponent={Fade}
 					>
-						<MenuItem onClick={handleGoTo}>Go to OVRLand</MenuItem>
-						<MenuItem onClick={handleHide}>Hide</MenuItem>
+						<MenuItem onClick={handleGoTo}>{t('Notification.go.to.land')}</MenuItem>
+						<MenuItem onClick={handleHide}>{t('Notification.hide.label')}</MenuItem>
 					</Menu>
 				</div>
 			);

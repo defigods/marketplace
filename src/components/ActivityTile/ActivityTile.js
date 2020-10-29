@@ -8,8 +8,10 @@ import { useHistory } from 'react-router-dom';
 import * as moment from 'moment';
 import { promisify } from '../../lib/config';
 import config from '../../lib/config';
+import { useTranslation } from 'react-i18next'
 
 const ActivityTile = (props) => {
+	const { t, i18n } = useTranslation()
 	let history = useHistory();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [pending, setPending] = React.useState(props.data.status === 0);
@@ -54,8 +56,8 @@ const ActivityTile = (props) => {
 				<MoreIcon />
 			</IconButton>
 			<Menu id="fade-menu" anchorEl={anchorEl} keepMounted open={open} onClose={handleClose} TransitionComponent={Fade}>
-				<MenuItem onClick={handleGoTo}>Go to OVRLand</MenuItem>
-				{props.data.txHash && <MenuItem onClick={handleEtherscan}>Check on Etherscan</MenuItem>}
+				<MenuItem onClick={handleGoTo}>{t('ActivityTile.goto.land')}</MenuItem>
+				{props.data.txHash && <MenuItem onClick={handleEtherscan}>{t('ActivityTile.check.ether')}</MenuItem>}
 			</Menu>
 		</div>
 	);

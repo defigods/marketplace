@@ -15,7 +15,7 @@ import ValueCounter from '../../components/ValueCounter/ValueCounter';
 import { Web3Context } from '../../context/Web3Context';
 
 import snsWebSdk from '@sumsub/websdk';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 // import { networkError } from '../../lib/notifications';

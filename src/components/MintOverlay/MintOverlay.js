@@ -12,8 +12,12 @@ import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import Help from '@material-ui/icons/Help';
+import { useTranslation } from 'react-i18next'
+
 
 const MintOverlay = (props) => {
+	const { t, i18n } = useTranslation()
+
 	const { participateMint, approveOvrTokens } = props.web3Provider.actions;
 	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
@@ -70,7 +74,7 @@ const MintOverlay = (props) => {
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
-			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
 		}
 		const initialBid = String(await ico.initialLandBidAsync());
 		let nextPayment = window.web3.fromWei(initialBid);
@@ -102,7 +106,7 @@ const MintOverlay = (props) => {
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
-			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
 		return true;
@@ -136,7 +140,7 @@ const MintOverlay = (props) => {
 
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
-			return warningNotification('Invalid bid', 'Your bid must be equal or larger than the minimum bid');
+			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		if (!checkUserLoggedIn()) return;
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		try {
@@ -173,7 +177,7 @@ const MintOverlay = (props) => {
 		} catch (e) {
 			setOpen(false);
 			setActiveStep(0);
-			return dangerNotification('Error processing the transaction', e.message);
+			return dangerNotification(t('Danger.error.processing.title'), e.message);
 		}
 		setActiveStep(2);
 	};
@@ -184,7 +188,7 @@ const MintOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Start an auction for</div>
+							<div className="Overlay__title">{t('MintOverlay.start.auction')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -195,45 +199,45 @@ const MintOverlay = (props) => {
 										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('ovr')}
 									>
-										OVR
+										{t('Currency.ovr.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'eth' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('eth')}
 									>
-										ETH
+										{t('Currency.eth.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'dai' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('dai')}
 									>
-										DAI
+										{t('Currency.dai.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'usdt' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('usdt')}
 									>
-										USDT
+										{t('Currency.usdt.label')}
 									</div>
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'usdc' ? '--selected' : ' '}`}
 										onClick={() => updateBidProjectionCurrency('usdc')}
 									>
-										USDC
+										{t('Currency.usdc.label')}
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__minimum_bid">
-										<div className="Overlay__bid_title">Min bid</div>
+										<div className="Overlay__bid_title">{t('MintOverlay.min.bid')}</div>
 										<div className="Overlay__bid_cont">
 											<ValueCounter value={10}></ValueCounter>
 										</div>
 									</div>
 								</div>
 								<div className="Overlay__minimum_bid my-bid">
-									<div className="Overlay__bid_title">Your bid</div>
+									<div className="Overlay__bid_title">{t('MintOverlay.your.bid')}</div>
 									<div>
 										<TextField
 											type="number"
@@ -252,9 +256,9 @@ const MintOverlay = (props) => {
 										<Tooltip
 											title={
 												<React.Fragment>
-													{'Using directly OVR will grant you the double purchase power.'}
+													{t('MintOverlay.use.direct')}
 													<br></br>
-													{'Click to buy OVR.'}
+													{t('MintOverlay.click.to.buy')}
 												</React.Fragment>
 											}
 											aria-label="info"
@@ -270,13 +274,13 @@ const MintOverlay = (props) => {
 							<div className="Overlay__buttons_container">
 								<HexButton
 									url="#"
-									text="Place bid"
+									text={t('MintOverlay.place.bid')}
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
 									onClick={() => participateInAuction(bidProjectionCurrency)}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -285,14 +289,14 @@ const MintOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Bidding the OVRLand</div>
+							<div className="Overlay__title">{t('MintOverlay.bidding.land')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Your bid</div>
+									<div className="Overlay__bid_title">{t('MintOverlay.your.bid')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={bid}></ValueCounter>
 									</div>
@@ -309,11 +313,11 @@ const MintOverlay = (props) => {
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
-								<span>Congratulations</span>
-								<br></br>The auction is about to start
+								<span>{t('Generic.congrats.label')}</span>
+								<br></br>{t('MintOverlay.about.to.start')}
 								<div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
-										View transaction status
+										{t('MintOverlay.view.status')}
 									</a>
 								</div>
 							</div>
@@ -330,7 +334,7 @@ const MintOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>

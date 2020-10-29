@@ -18,12 +18,14 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
+import { useTranslation } from 'react-i18next'
 
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 
 const BuyOfferOverlay = (props) => {
+	const { t, i18n } = useTranslation()
 	const { approveOvrTokens, participateBuyOffer } = props.web3Provider.actions;
 	const { lastTransaction, ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
@@ -74,7 +76,7 @@ const BuyOfferOverlay = (props) => {
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
-			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
 		}
 	};
 
@@ -104,7 +106,7 @@ const BuyOfferOverlay = (props) => {
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
-			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
 		return true;
@@ -116,7 +118,7 @@ const BuyOfferOverlay = (props) => {
 		try {
 			const now = Math.trunc(Date.now() / 1000);
 			if (now >= solidityExpirationDate) {
-				warningNotification('Date error', 'The expiration date must be set in the future');
+				warningNotification(t('Warining.date.error'), t('Warning.future.notify'));
 				setActiveStep(0);
 				return;
 			}
@@ -153,7 +155,7 @@ const BuyOfferOverlay = (props) => {
 		} catch (e) {
 			setOpen(false);
 			setActiveStep(0);
-			return dangerNotification('Error processing the transaction', e.message);
+			return dangerNotification(t('Danger.error.processing.title'), e.message);
 		}
 		setActiveStep(2);
 	};
@@ -169,7 +171,7 @@ const BuyOfferOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Place Buy Offer for</div>
+							<div className="Overlay__title">{t('BuyOfferOverlay.place.offer')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -177,7 +179,7 @@ const BuyOfferOverlay = (props) => {
 							<div className="Overlay__lower__cont">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__current_bid">
-										<div className="Overlay__bid_title">Current value</div>
+										<div className="Overlay__bid_title">{t('BuyOfferOverlay.current.value')}</div>
 										<div className="Overlay__bid_cont">
 											<ValueCounter value={props.currentBid}></ValueCounter>
 										</div>
@@ -186,7 +188,7 @@ const BuyOfferOverlay = (props) => {
 								<div className="Overlay__input">
 									<TextField
 										id="quantity"
-										label="Buy at"
+										label={t('BuyOfferOverlay.buy.at.label')}
 										type="number"
 										value={proposedValue}
 										onChange={(e) => {
@@ -200,7 +202,7 @@ const BuyOfferOverlay = (props) => {
 											format="DD-MM-YYYY HH:mm"
 											margin="normal"
 											id="date-picker-inline"
-											label="Expires at"
+											label={t('BuyOfferOverlay.expires.at.label')}
 											value={expirationDate}
 											onChange={handleDateChange}
 										/>
@@ -223,7 +225,7 @@ const BuyOfferOverlay = (props) => {
 															}}
 															className="bid-fade-menu --cons-option"
 														>
-															Buy using OVR
+															{t('BuyOfferOverlay.buy.using.ovr')}
 														</MenuItem>
 														<MenuItem
 															onClick={async () => {
@@ -231,7 +233,7 @@ const BuyOfferOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Buy using ETH
+															{t('BuyOfferOverlay.buy.using.eth')}
 														</MenuItem>
 														<MenuItem
 															onClick={async () => {
@@ -239,7 +241,7 @@ const BuyOfferOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Buy using DAI
+															{t('BuyOfferOverlay.buy.using.dai')}
 														</MenuItem>
 														<MenuItem
 															onClick={async () => {
@@ -247,7 +249,7 @@ const BuyOfferOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Buy using Tether
+															{t('BuyOfferOverlay.buy.using.usdt')}
 														</MenuItem>
 														<MenuItem
 															onClick={async () => {
@@ -255,7 +257,7 @@ const BuyOfferOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Buy using USDC
+															{t('BuyOfferOverlay.buy.using.usdc')}
 														</MenuItem>
 													</MenuList>
 												</ClickAwayListener>
@@ -266,13 +268,13 @@ const BuyOfferOverlay = (props) => {
 								<HexButton
 									hexRef={anchorRef}
 									url="#"
-									text="Place buy"
+									text={t('BuyOfferOverlay.place.buy')}
 									className={`--orange ${bidValid ? '' : '--disabled'}`}
 									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -281,14 +283,14 @@ const BuyOfferOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Place Buy Offer for</div>
+							<div className="Overlay__title">{t('BuyOfferOverlay.place.offer')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Current bid</div>
+									<div className="Overlay__bid_title">{t('BuyOfferOverlay.current.bid')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={props.currentBid}></ValueCounter>
 									</div>
@@ -319,7 +321,7 @@ const BuyOfferOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Your offer</div>
+									<div className="Overlay__bid_title">{t('BuyOfferOverlay.your.offer')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={proposedValue}></ValueCounter>
 									</div>
@@ -336,11 +338,11 @@ const BuyOfferOverlay = (props) => {
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
-								<span>Congratulations</span>
-								<br></br>Your Buy Offer has been sent
+								<span>{t('Generic.congrats.label')}</span>
+								<br></br>{t('BuyOfferOverlay.offer.sent')}
 								<div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
-										View transaction status
+										{t('BuyOfferOverlay.view.status')}
 									</a>
 								</div>
 							</div>
@@ -350,7 +352,7 @@ const BuyOfferOverlay = (props) => {
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Your offer</div>
+									<div className="Overlay__bid_title">{t('BuyOfferOverlay.your.offer')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={proposedValue}></ValueCounter>
 									</div>

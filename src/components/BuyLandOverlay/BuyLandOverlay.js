@@ -15,8 +15,11 @@ import MenuList from '@material-ui/core/MenuList';
 
 // import { sellLand } from '../../lib/api';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next'
+
 
 const BuyLandOverlay = (props) => {
+	const { t, i18n } = useTranslation()
 	const { approveOvrTokens, buy, buyLand } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 
@@ -65,7 +68,7 @@ const BuyLandOverlay = (props) => {
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
-			return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
 		}
 		const landId = parseInt(hexId, 16);
 		const land = await ico.landsAsync(landId);
@@ -87,7 +90,7 @@ const BuyLandOverlay = (props) => {
 	const checkUserLoggedIn = () => {
 		if (!props.userProvider.state.isLoggedIn) {
 			setActiveStep(0);
-			warningNotification('Invalid authentication', 'Please Log In to partecipate');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
 		return true;
@@ -129,7 +132,7 @@ const BuyLandOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Buy OVRLand</div>
+							<div className="Overlay__title">{t('BuyLandOverlay.buy.land')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
@@ -137,7 +140,7 @@ const BuyLandOverlay = (props) => {
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__minimum_bid">
-										<div className="Overlay__bid_title">Price</div>
+										<div className="Overlay__bid_title">{t('BuyLandOverlay.price.label')}</div>
 										<div className="Overlay__bid_cont">
 											<ValueCounter value={buyAt}></ValueCounter>
 										</div>
@@ -163,7 +166,7 @@ const BuyLandOverlay = (props) => {
 															}}
 															className="bid-fade-menu --cons-option"
 														>
-															Bid using OVR
+															{t('BuyLandOverlay.bid.ovr')}
 														</MenuItem>
 														<MenuItem
 															onClick={async (e) => {
@@ -177,7 +180,7 @@ const BuyLandOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Bid using ETH
+															{t('BuyLandOverlay.bid.eth')}
 														</MenuItem>
 														<MenuItem
 															onClick={async (e) => {
@@ -192,7 +195,7 @@ const BuyLandOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Bid using DAI
+															{t('BuyLandOverlay.bid.dai')}
 														</MenuItem>
 														<MenuItem
 															onClick={async (e) => {
@@ -207,7 +210,7 @@ const BuyLandOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Bid using Tether
+															{t('BuyLandOverlay.bid.usdt')}
 														</MenuItem>
 														<MenuItem
 															onClick={async (e) => {
@@ -222,7 +225,7 @@ const BuyLandOverlay = (props) => {
 															}}
 															className="bid-fade-menu"
 														>
-															Bid using USDC
+															{t('BuyLandOverlay.bid.usdc')}
 														</MenuItem>
 													</MenuList>
 												</ClickAwayListener>
@@ -233,13 +236,13 @@ const BuyLandOverlay = (props) => {
 								<HexButton
 									hexRef={anchorRef}
 									url="#"
-									text="Confirm buy"
+									text={t('BuyLandOverlay.confirm.buy')}
 									className="--orange"
 									ariaControls={open ? 'mint-fade-menu' : undefined}
 									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
-								<HexButton url="#" text="Cancel" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -248,14 +251,14 @@ const BuyLandOverlay = (props) => {
 				return (
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
-							<div className="Overlay__title">Buy OVRLand</div>
+							<div className="Overlay__title">{t('BuyLandOverlay.buy.land')}</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__minimum_bid">
-									<div className="Overlay__bid_title">Price</div>
+									<div className="Overlay__bid_title">{t('BuyLandOverlay.price.label')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={buyAt}></ValueCounter>
 									</div>
@@ -272,8 +275,8 @@ const BuyLandOverlay = (props) => {
 					<div className="Overlay__body_cont">
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
-								<span>Congratulations</span>
-								<br></br>You requested the buy of
+								<span>{t('Generic.congrats.label')}</span>
+								<br></br>{t('BuyLandOverlay.requested.buy')}
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
@@ -281,14 +284,14 @@ const BuyLandOverlay = (props) => {
 						<div className="Overlay__lower">
 							<div className="Overlay__bid_container">
 								<div className="Overlay__current_bid">
-									<div className="Overlay__bid_title">Price</div>
+									<div className="Overlay__bid_title">{t('BuyLandOverlay.price.label')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={buyAt}></ValueCounter>
 									</div>
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text="Close" className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
 							</div>
 						</div>
 					</div>

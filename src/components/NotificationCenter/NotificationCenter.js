@@ -5,8 +5,11 @@ import Notification from '../Notification/Notification';
 
 import { UserContext, withUserContext } from '../../context/UserContext';
 import { readAllNotifications } from '../../lib/api';
+import { Trans, useTranslation } from 'react-i18next'
+
 
 const NotificationCenterContent = () => {
+	const { t, i18n } = useTranslation()
 	const { state, actions } = useContext(UserContext);
 	const wrapperRef = useRef(null);
 
@@ -35,7 +38,9 @@ const NotificationCenterContent = () => {
 			return (
 				<div className="c-dialog --centered">
 					<div className="c-dialog-sub-title">
-						There is currently <br></br>no notifications to display.
+						<Trans i18nKey="NotificationCenter.no.notifications">
+							There is currently <br></br>no notifications to display.
+						</Trans>
 					</div>
 				</div>
 			);
@@ -85,7 +90,7 @@ const NotificationCenterContent = () => {
 			<div className="NotificationCenter__body">{renderNotifications()}</div>
 			<div className="NotificationCenter__footer">
 				<Link to={'#'} onClick={setAllAsReaded}>
-					Mark all as read
+					{t('NotificationCenter.mark.all')}
 				</Link>
 			</div>
 		</div>
@@ -100,7 +105,7 @@ const NotificationCenter = () => {
 		return null;
 	}
 
-	return <NotificationCenterContent />;
+	return <NotificationCenterContent/>;
 };
 
 export default withUserContext(NotificationCenter);

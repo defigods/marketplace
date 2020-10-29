@@ -18,6 +18,8 @@ import {
 } from '../lib/contracts';
 import { tokenBuyAbi, erc20Abi, icoAbi, ovr721Abi, icoParticipateAbi, } from '../lib/abis';
 import { UserContext } from './UserContext';
+import { useTranslation } from 'react-i18next'
+
 export const Web3Context = createContext();
 
 export class Web3Provider extends Component {
@@ -119,19 +121,20 @@ export class Web3Provider extends Component {
 
   // Note: the web3 version is always 0.20.7 because of metamask
   setupWeb3 = async (callback) => {
+	const { t, i18n } = useTranslation();
     // console.log('render setupweb3');
     const ethereum = window.ethereum;
     if (typeof ethereum !== 'undefined') {
       try {
         await ethereum.enable();
       } catch (e) {
-        return warningNotification('Metamask permission error', 'You must accept the connection request to continue');
+        return warningNotification(t('Warning.metamask.permission.title'), t('Warning.metamask.permission.desc'));
       }
       window.web3 = new Web3(ethereum);
     } else if (typeof window.web3 !== 'undefined') {
       window.web3 = new Web3(window.web3.currentProvider);
     } else {
-      return warningNotification('Metamask not detected', 'You must login to metamask to use this application');
+      return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
     }
     window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 
@@ -262,6 +265,8 @@ export class Web3Provider extends Component {
   // Web3 Lands
 
   redeemLands = async () => {
+	const { t, i18n } = useTranslation()
+
     const activeLandsIds = await this.state.ico.getActiveLandsAsync();
     let landsRedeemed = 0;
     for (let i = 0; i < activeLandsIds.length; i++) {
@@ -294,7 +299,9 @@ export class Web3Provider extends Component {
   };
 
   redeemSingleLand = async (hexId) => {
-    const landId = parseInt(hexId, 16);
+	const landId = parseInt(hexId, 16);
+	const { t, i18n } = useTranslation()
+	
     try {
       const tx = await this.state.ico.redeemWonLandAsync(landId, {
         gasPrice: window.web3.toWei(300, 'gwei'),
@@ -307,7 +314,9 @@ export class Web3Provider extends Component {
 
   // Returns true for a successful approval or false otherwise
   approveErc721Token = async (hexId, isLandId) => {
-    let landId = parseInt(hexId, 16);
+	let landId = parseInt(hexId, 16);
+	const { t, i18n } = useTranslation()
+	
     if (isLandId) {
       landId = hexId;
     }
@@ -326,6 +335,7 @@ export class Web3Provider extends Component {
   };
 
   approveOvrTokens = async (toIcoParticipate, token) => {
+	const { t, i18n } = useTranslation()
     let currentBalance = await token.balanceOfAsync(window.web3.eth.defaultAccount);
     let currentAllowance = await token.allowanceAsync(window.web3.eth.defaultAccount, toIcoParticipate ? icoParticipateAddress : icoAddress);
     // Allow all the tokens
@@ -336,8 +346,7 @@ export class Web3Provider extends Component {
         });
         await this.waitTx(tx);
       } catch (e) {
-        dangerNotification(
-          'Approval error',
+        dangerNotification('Approval error',
           'There was an error processing the approval of your tokens try again in a few minutes',
         );
         return false;
@@ -357,7 +366,9 @@ export class Web3Provider extends Component {
   // To put a land on sale or remove it. Will approve the ERC721 first.
   // The price can be 0 to give it away for free
   putLandOnSale = async (hexId, price, onSale) => {
-    const landId = parseInt(hexId, 16);
+	const landId = parseInt(hexId, 16);
+	const { t, i18n } = useTranslation()
+	
     try {
       const tx = await this.state.ico.putLandOnSaleAsync(landId, price, onSale, {
         gasPrice: window.web3.toWei(300, 'gwei'),
@@ -447,9 +458,11 @@ export class Web3Provider extends Component {
 	 * @param {String} type The type of payment chosen
 	 */
   buy = async (tokensToBuy, type) => {
+	const { t, i18n } = useTranslation()
+
     let user = this.context.state.user;
     if (config.environment != 'DEVELOPMENT' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.');}
-    if (tokensToBuy <= 0) return warningNotification('Setup error', 'You must input more than 0 OVR tokens to buy');
+    if (tokensToBuy <= 0) return warningNotification(t('Warning.setup.error.title'), t('Warning.setup.error.desc'));
     tokensToBuy = window.web3.toBigNumber(window.web3.toWei(String(tokensToBuy)))
 
     await this.getPrices()
@@ -474,20 +487,21 @@ export class Web3Provider extends Component {
           await this.buyWithToken(tokensToBuy, this.state.dai, 'dai');
           break;
         default:
-          warningNotification('Error', 'The currency selected is not correct');
+          warningNotification(t('Warning.currency.error.title'), t('Warning.currency.error.desc'));
           break;
       }
       this.getOvrsOwned();
     } catch (e) {
       // console.log('Error', e);
       warningNotification(
-        'Error buying tokens',
-        'There was an error processing your transaction refresh this page and try again',
+        t('Warning.buying.error.title'), t('Warning.buying.error.desc')
       );
     }
   };
 
   buyWithToken = async (tokensToBuy, token, type) => {
+	const { t, i18n } = useTranslation()
+
     let currentBalance = await token.balanceOfAsync(window.web3.eth.defaultAccount);
     let currentAllowance = await token.allowanceAsync(window.web3.eth.defaultAccount, tokenBuyAddress);
     // Allow all the tokens
@@ -496,7 +510,7 @@ export class Web3Provider extends Component {
         const response = await token.approveAsync(tokenBuyAddress, currentBalance);
         await this.waitTx(response);
       } catch (e) {
-        return warningNotification('Error approving tokens', 'There was an error approving the tokens');
+        return warningNotification(t('Warning.approving.error.title'), t('Warning.approving.error.desc'));
       }
     }
     // Check if the user has enough balance to buy those tokens
@@ -525,14 +539,14 @@ export class Web3Provider extends Component {
           });
           break;
         default:
-          warningNotification('Error', 'The currency selected is not correct');
+          warningNotification(t('Warning.currency.error.title'), t('Warning.currency.error.desc'));
           break;
       }
       await this.waitTxWithCallback(tx, () => {
         successNotification('Your OVR are on their way!', 'You can check transaction status in MetaMask');
       });
     } catch (e) {
-      return warningNotification('Error buying', `There was an error buying your OVR tokens`);
+      return warningNotification(t('Warning.buy.error.title'), t('Warning.buy.error.desc.token'));
     }
   };
 
@@ -544,10 +558,12 @@ export class Web3Provider extends Component {
 	// 4 -> OVR
 	participate = async (type, bid, landId) => {
 		let tx
+		const { t, i18n } = useTranslation()
+
 		try {
       await this.getPrices()
 		} catch (e) {
-			return warningNotification('Error getting prices', `Could not get the prices for each token and eth ${e.message}`)
+			return warningNotification(t('Warning.get.prices.title'), t('Warning.get.prices.desc')+` ${e.message}`)
     }
     bid = window.web3.toBigNumber(String(bid))
 
@@ -568,7 +584,7 @@ export class Web3Provider extends Component {
       }
 			return tx
 		} catch (e) {
-			return warningNotification('Error buying', `There was an error participating in the auction ${e.message}`);
+			return warningNotification(t('Warning.buy.error.title'), t('Warning.buy.error.desc')+ ` ${e.message}`);
 		}
   };
   

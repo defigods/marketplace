@@ -74,7 +74,7 @@ const IndacoinResponse = () => {
 			return (
 				<div>
 					<div className="o-centered-box">
-						<h2>{t('IndacoinResponse.congrats.label')}</h2>
+						<h2>{t('Generic.congrats.label')}</h2>
 						<div className="Signup__section">
 							<CheckCircleIcon className="CheckCircleIcon" />
 						</div>

@@ -26,6 +26,11 @@ import { MapProvider, MapContext } from './context/MapContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { Web3Provider, Web3Context } from './context/Web3Context';
 
+//TODO
+import i18next from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+
 function App() {
 	return (
 		<Suspense fallback="loading">

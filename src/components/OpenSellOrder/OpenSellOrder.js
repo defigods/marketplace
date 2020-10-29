@@ -4,10 +4,13 @@ import TimeCounter from '../../components/TimeCounter/TimeCounter';
 import HexButton from '../../components/HexButton/HexButton';
 import Modal from '@material-ui/core/Modal';
 
+import { Trans, useTranslation } from 'react-i18next'
+
 import { deleteSellLand, buyLand } from '../../lib/api';
 import { networkError, dangerNotification, successNotification, warningNotification } from '../../lib/notifications';
 
 export class OpenSellOrder extends Component {
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -16,6 +19,7 @@ export class OpenSellOrder extends Component {
 	}
 
 	confirmDeleteSell = () => {
+		const { t, i18n } = useTranslation()
 		deleteSellLand(this.props.order.landUuid) // Call API function
 			.then((response) => {
 				if (response.data.result === true) {
@@ -33,6 +37,7 @@ export class OpenSellOrder extends Component {
 	};
 
 	confirmBuy = () => {
+		const { t, i18n } = useTranslation()
 		buyLand(this.props.order.landUuid) // Call API function
 			.then((response) => {
 				if (response.data.result === true) {
@@ -50,10 +55,11 @@ export class OpenSellOrder extends Component {
 	};
 
 	handleOpen = () => {
+		const { t, i18n } = useTranslation()
 		if (this.props.userProvider.state.isLoggedIn) {
 			this.setState({ openModal: true });
 		} else {
-			warningNotification('Invalid authentication', 'Please Log In to buy land');
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc.buy'));
 		}
 	};
 
@@ -64,13 +70,14 @@ export class OpenSellOrder extends Component {
 	componentDidMount() {}
 
 	buttonRender = () => {
+		const { t, i18n } = useTranslation()
 		let customRender;
 		if (this.props.userPerspective === 1) {
 			customRender = (
 				<>
 					<div className="section">
 						<button type="button" className="orderTileButton" onClick={this.handleOpen}>
-							Delete
+							{t('Generic.delete.label')}
 						</button>
 					</div>
 					<div className="section"></div>
@@ -81,13 +88,15 @@ export class OpenSellOrder extends Component {
 						onClose={this.handleClose}
 					>
 						<div className="SellOrderModal">
-							<h2>Delete confirmation</h2>
+							<h2>{t('OpenSellOrder.delete.confirm')}</h2>
 							<p>
-								Do you confirm the delete of this <b>Open Sell Order</b>?
+								<Trans i18nKey="OpenSellOrder.delete.ask">
+									Do you confirm the delete of this <b>Open Sell Order</b>?
+								</Trans>
 							</p>
 							<div className="Modal__buttons_container">
-								<HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmDeleteSell}></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+								<HexButton url="#" text={t('OpenSellOrder.confirm.label')} className={`--purple`} onClick={this.confirmDeleteSell}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
 						</div>
 					</Modal>
@@ -98,7 +107,7 @@ export class OpenSellOrder extends Component {
 				<>
 					<div className="section">
 						<button type="button" className="orderTileButton" onClick={this.handleOpen}>
-							Buy now
+							{t('OpenSellOrder.buy.now')}
 						</button>
 					</div>
 					<div className="section"></div>
@@ -109,21 +118,23 @@ export class OpenSellOrder extends Component {
 						onClose={this.handleClose}
 					>
 						<div className="SellOrderModal">
-							<h2>Buy confirmation</h2>
+							<h2>{t('OpenSellOrder.buy.confirm')}</h2>
 							<p>
-								Do you confirm the buy of this <b>OVRLand</b>?
+								<Trans i18nKey="OpenSellOrder.buy.ask">
+									Do you confirm the buy of this <b>OVRLand</b>?
+								</Trans>
 							</p>
 							<div className="Overlay__bid_container">
 								<div className="OrderModal__bid">
-									<div className="Overlay__bid_title">Buy for</div>
+									<div className="Overlay__bid_title">{t('OpenSellOrder.buy.for')}</div>
 									<div className="Overlay__bid_cont">
 										<ValueCounter value={this.props.order.worth}></ValueCounter>
 									</div>
 								</div>
 							</div>
 							<div className="Modal__buttons_container">
-								<HexButton url="#" text="Confirm" className={`--purple`} onClick={this.confirmBuy}></HexButton>
-								<HexButton url="#" text="Cancel" className="--outline" onClick={this.handleClose}></HexButton>
+								<HexButton url="#" text={t('OpenSellOrder.confirm.label')} className={`--purple`} onClick={this.confirmBuy}></HexButton>
+								<HexButton url="#" text={t('Generic.cancel.label')} className="--outline" onClick={this.handleClose}></HexButton>
 							</div>
 						</div>
 					</Modal>
@@ -134,16 +145,17 @@ export class OpenSellOrder extends Component {
 	};
 
 	render() {
+		const { t, i18n } = useTranslation()
 		return (
 			<div className="SellOrderTile">
 				<div className="section">
 					<ValueCounter value={this.props.order.worth}></ValueCounter>
 				</div>
 				<div className="section">
-					<b>Open Sell Order</b>
+					<b>{t('OpenSellOrder.open.order')}</b>
 				</div>
 				<div className="section">
-					<span className="c-small-tile-text">Placed</span>{' '}
+					<span className="c-small-tile-text">{t('OpenSellOrder.placed.label')}</span>{' '}
 					<TimeCounter date_end={this.props.order.createdAt}></TimeCounter>
 				</div>
 				{this.buttonRender()}

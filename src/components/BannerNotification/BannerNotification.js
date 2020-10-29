@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
 import { getToken, removeToken } from '../../lib/auth';
+import { Trans, useTranslation } from 'react-i18next'
+
 
 /**
  * BannerNotification component
  */
 
 const BannerNotification = () => {
+	const { t, i18n } = useTranslation()
 	const [firstAfterSignup, setFirstAfterSignup] = useState(getToken('firstAfterSignup'));
 
 	useEffect(() => {
@@ -22,9 +25,9 @@ const BannerNotification = () => {
 				<div className="BannerNotification">
 					<div className="o-container">
 						<div className="--positive">
-							<div className="BannerNotification__title">Welome to OVR 🥳</div>
+							<div className="BannerNotification__title">{t('BannerNotification.welcome')}{' '}🥳</div>
 							<div className="BannerNotification__content">
-								You can now own your land, customized it, top up your OVR wallet
+								{t('BannerNotification.intro')}
 							</div>
 						</div>
 					</div>

@@ -35,7 +35,7 @@ const BuyTokens = (context) => {
 	const buyWithIndacoin = () => {
 		if (config.environment != 'DEVELOPMENT' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.'); }
 		if (tokensToBuy <= 0)
-			return warningNotification("Amount can't be empty", 'You must specify an amount of OVR tokens to buy');
+			return warningNotification(t('Warning.amount.empty.title'), t('Warning.amount.empty.desc'));
 		const url = `https://indacoin.com/gw/payment_form?partner=${partnerName}&cur_from=USD&cur_to=USD&amount=${usdToSpend}&address=${window.web3.eth.accounts[0]}&user_id=${user.uuid}`;
 		window.location = url;
 	};
@@ -64,7 +64,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.usd.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.usd.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -88,7 +88,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -108,7 +108,7 @@ const BuyTokens = (context) => {
 							<HexButton url="#" text={t('BuyTokens.buy.ovr')} className="--orange" onClick={buyWithIndacoin}></HexButton>
 							<HexButton
 								url="#"
-								text={t('BuyTokens.cancel.label')}
+								text={t('Generic.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -129,7 +129,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.eth.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.eth.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -153,7 +153,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perEth).toFixed(2));
@@ -176,7 +176,7 @@ const BuyTokens = (context) => {
 							></HexButton>
 							<HexButton
 								url="#"
-								text={t('BuyTokens.cancel.label')}
+								text={t('Generic.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -197,7 +197,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.dai.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.dai.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -221,7 +221,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -244,7 +244,7 @@ const BuyTokens = (context) => {
 							></HexButton>
 							<HexButton
 								url="#"
-								text={t('BuyTokens.cancel.label')}
+								text={t('Generic.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -265,7 +265,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.usdt.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.usdt.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -289,7 +289,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -312,7 +312,7 @@ const BuyTokens = (context) => {
 							></HexButton>
 							<HexButton
 								url="#"
-								text={t('BuyTokens.cancel.label')}
+								text={t('Generic.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -333,7 +333,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.usdc.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.usdc.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -357,7 +357,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('Currency.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -380,7 +380,7 @@ const BuyTokens = (context) => {
 							></HexButton>
 							<HexButton
 								url="#"
-								text={t('BuyTokens.cancel.label')}
+								text={t('Generic.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -428,25 +428,25 @@ const BuyTokens = (context) => {
 						className={`c-currency-selector ${activeCurrency == 1 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(1)}
 					>
-						{t('BuyTokens.eth.label')}
+						{t('Currency.eth.label')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 2 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(2)}
 					>
-						{t('BuyTokens.dai.label')}
+						{t('Currency.dai.label')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 3 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(3)}
 					>
-						{t('BuyTokens.usdt.label')}
+						{t('Currency.usdt.label')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 4 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(4)}
 					>
-						{t('BuyTokens.usdc.label')}
+						{t('Currency.usdc.label')}
 					</div>
 				</div>
 			</div>
