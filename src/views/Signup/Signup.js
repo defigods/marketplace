@@ -158,7 +158,7 @@ const Signup = () => {
 						dangerNotification(error_message, 'Try to login instead');
 						setActiveStep(0);
 					} else if (error_code == 'token' || error_code == 'oauth') {
-						setActiveStep(1);
+						setActiveStep(2);
 						setUserEmailValid(false);
 						setUserEmailInputError(error_message);
 					} else if (error_code == 'username') {
