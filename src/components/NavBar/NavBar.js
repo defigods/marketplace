@@ -17,8 +17,10 @@ import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
 
 import LanguageSelector from '../LanguageSelector/LanguageSelector'
+import { useTranslation } from 'react-i18next'
 
 const NavBar = () => {
+	const { t, i18n } = useTranslation();
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State } = useContext(Web3Context);
 
@@ -183,7 +185,7 @@ const NavBar = () => {
 														handleGoTo('/profile');
 													}}
 												>
-													Profile
+													{t('Navbar.profile.label')}
 												</MenuItem>
 												{/* <MenuItem
 													onClick={(e) => {
@@ -199,7 +201,7 @@ const NavBar = () => {
 														userActions.logoutUser();
 													}}
 												>
-													Logout
+													{t('Navbar.Logout.label')}
 												</MenuItem>
 											</MenuList>
 										</ClickAwayListener>
@@ -217,10 +219,10 @@ const NavBar = () => {
 				<LanguageSelector />
 				<div className="AuthLogin__link">
 					<NavLink className="NavBar__link General__link" to="/login">
-						Login
+					{t('Navbar.Login.label')}
 					</NavLink>
 					<NavLink className="NavBar__link General__link" to="/signup">
-						Signup
+					{t('Navbar.Signup.label')}
 					</NavLink>
 				</div>
 				</div>
@@ -241,8 +243,8 @@ const NavBar = () => {
 						xmlns="http://www.w3.org/2000/svg"
 						xmlnsXlink="http://www.w3.org/1999/xlink"
 					>
-						<title>OVR</title>
-						<desc>OVR Logo</desc>
+						<title>{t('Navbar.ovr')}</title>
+						<desc>{t('Navbar.ovr.logo')}</desc>
 						<defs>
 							<linearGradient x1="25.3511512%" y1="49.9738242%" x2="107.245785%" y2="49.9738242%" id="linearGradient-1">
 								<stop stopColor="#6B32C1" offset="0%"></stop>

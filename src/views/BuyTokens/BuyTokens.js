@@ -10,6 +10,8 @@ import TextField from '@material-ui/core/TextField';
 
 import HexButton from '../../components/HexButton/HexButton';
 import config from '../../lib/config';
+import { Trans, useTranslation } from 'react-i18next'
+
 
 const partnerName = 'ovrproduction';
 
@@ -17,6 +19,8 @@ const partnerName = 'ovrproduction';
  * Buy tokens component
  */
 const BuyTokens = (context) => {
+	const { t, i18n } = useTranslation();
+
 	const { perEth, perUsd, setupComplete } = context.web3Provider.state;
 	const { getPrices, buy } = context.web3Provider.actions;
 	const { user } = context.userProvider.state;
@@ -60,7 +64,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">USD</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.usd.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -84,7 +88,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -93,12 +97,18 @@ const BuyTokens = (context) => {
 								variant="outlined"
 							/>
 						</div>
-						<div className="c-active-currency__rate"> Exchange rate: 1 USD = {perUsd} OVR</div>
+						<div className="c-active-currency__rate">
+							
+							<Trans i18nKey="BuyTokens.exchange.rate.usd" perUsd={perUsd}>
+								Exchange rate: 1 USD = {{perUsd}} OVR
+							</Trans>
+						</div>
+
 						<div className="c-active-currency__buttons">
-							<HexButton url="#" text="Buy OVR" className="--orange" onClick={buyWithIndacoin}></HexButton>
+							<HexButton url="#" text={t('BuyTokens.buy.ovr')} className="--orange" onClick={buyWithIndacoin}></HexButton>
 							<HexButton
 								url="#"
-								text="Cancel"
+								text={t('BuyTokens.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -119,7 +129,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">ETH</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.eth.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -143,7 +153,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perEth).toFixed(2));
@@ -152,17 +162,21 @@ const BuyTokens = (context) => {
 								variant="outlined"
 							/>
 						</div>
-						<div className="c-active-currency__rate"> Exchange rate: 1 ETH = {perEth * 10} OVR</div>
+						<div className="c-active-currency__rate"> 
+							<Trans i18nKey="BuyTokens.exchange.rate.eth" perEth={perEth*10}>
+								Exchange rate: 1 ETH = {{perEth}} OVR
+							</Trans>
+						</div>
 						<div className="c-active-currency__buttons">
 							<HexButton
 								url="#"
-								text="Buy OVR"
+								text={t('BuyTokens.buy.ovr')}
 								className="--orange"
 								onClick={() => buy(tokensToBuy, 'eth')}
 							></HexButton>
 							<HexButton
 								url="#"
-								text="Cancel"
+								text={t('BuyTokens.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -183,7 +197,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">DAI</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.dai.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -207,7 +221,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -216,17 +230,21 @@ const BuyTokens = (context) => {
 								variant="outlined"
 							/>
 						</div>
-						<div className="c-active-currency__rate"> Exchange rate: 1 DAI = {perUsd} OVR</div>
+						<div className="c-active-currency__rate"> 
+						<Trans i18nKey="BuyTokens.exchange.rate.dai" perUsd={perUsd}>
+							Exchange rate: 1 DAI = {{perUsd}} OVR
+						</Trans>
+						</div>
 						<div className="c-active-currency__buttons">
 							<HexButton
 								url="#"
-								text="Buy OVR"
+								text={t('BuyTokens.buy.ovr')}
 								className="--orange"
 								onClick={() => buy(tokensToBuy, 'dai')}
 							></HexButton>
 							<HexButton
 								url="#"
-								text="Cancel"
+								text={t('BuyTokens.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -247,7 +265,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">USDT</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.usdt.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -271,7 +289,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -280,17 +298,21 @@ const BuyTokens = (context) => {
 								variant="outlined"
 							/>
 						</div>
-						<div className="c-active-currency__rate"> Exchange rate: 1 USDT = {perUsd} OVR</div>
+						<div className="c-active-currency__rate"> 
+							<Trans i18nKey="BuyTokens.exchange.rate.usdt" perUsd={perUsd}>
+								Exchange rate: 1 USDT = {{perUsd}} OVR
+							</Trans>
+						</div>
 						<div className="c-active-currency__buttons">
 							<HexButton
 								url="#"
-								text="Buy OVR"
+								text={t('BuyTokens.buy.ovr')}
 								className="--orange"
 								onClick={() => buy(tokensToBuy, 'usdt')}
 							></HexButton>
 							<HexButton
 								url="#"
-								text="Cancel"
+								text={t('BuyTokens.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -311,7 +333,7 @@ const BuyTokens = (context) => {
 								type="number"
 								value={usdToSpend}
 								InputProps={{
-									startAdornment: <InputAdornment position="start">USDC</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.usdc.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend(e.target.value);
@@ -335,7 +357,7 @@ const BuyTokens = (context) => {
 								value={tokensToBuy}
 								type="number"
 								InputProps={{
-									startAdornment: <InputAdornment position="start">OVR</InputAdornment>,
+									startAdornment: <InputAdornment position="start">{t('BuyTokens.ovr.label')}</InputAdornment>,
 								}}
 								onChange={(e) => {
 									setUsdToSpend((e.target.value / perUsd).toFixed(2));
@@ -344,17 +366,21 @@ const BuyTokens = (context) => {
 								variant="outlined"
 							/>
 						</div>
-						<div className="c-active-currency__rate"> Exchange rate: 1 USDC = {perUsd} OVR</div>
+						<div className="c-active-currency__rate"> 
+							<Trans i18nKey="BuyTokens.exchange.rate.usdc" perUsd={perUsd}>
+								Exchange rate: 1 USDC = {{perUsd}} OVR
+							</Trans>
+						</div>
 						<div className="c-active-currency__buttons">
 							<HexButton
 								url="#"
-								text="Buy OVR"
+								text={t('BuyTokens.buy.ovr')}
 								className="--orange"
 								onClick={() => buy(tokensToBuy, 'usdc')}
 							></HexButton>
 							<HexButton
 								url="#"
-								text="Cancel"
+								text={t('BuyTokens.cancel.label')}
 								className="--orange-light"
 								onClick={() => {
 									setUsdToSpend(0);
@@ -373,53 +399,54 @@ const BuyTokens = (context) => {
 		<div className="activity v-buy-tokens">
 			<div className="o-container">
 				<div className="p-header">
-					<h2 className="p-header-title">Buy OVR tokens</h2>
+					<h2 className="p-header-title">{t('BuyTokens.buy.tokens')}</h2>
 					<span className="p-header-datetime">{moment().format('HH:mm, dddd, MMM D, YYYY')}</span>
 				</div>
 				<div className="sub-title--black">
 					<p>
-						While you can partecipate in the OVR auctions directly with other tokens, but using directly the OVR Token
-						will give you the best experience. <Link to="#">Read more</Link>.
+						{t('BuyTokens.use.ovr.insted')} {' '}<Link to="#">{t('BuyTokens.read.more')}</Link>.
 						<br />
 					</p>
 					<p>
-						To buy OVR token it is required that you pass our KYC. Go to your <Link to="/profile">profile</Link> and start the Identity Verification process.
+						<Trans i18nKey="BuyTokens.kyc.required">
+							To buy OVR token it is required that you pass our KYC. Go to your <Link to="/profile">profile</Link> and start the Identity Verification process.
+						</Trans>
 						<br />
 					</p>
 				</div>
 				<div className="sub-title--black">
-					<h3>Purchase with:</h3>
+					<h3>{t('BuyTokens.purchase.with')}</h3>
 				</div>
 				<div className="c-currency-selector_cont">
 					<div
 						className={`c-currency-selector ${activeCurrency == 0 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(0)}
 					>
-						Credit Card
+						{t('BuyTokens.credit.card')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 1 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(1)}
 					>
-						ETH
+						{t('BuyTokens.eth.label')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 2 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(2)}
 					>
-						DAI
+						{t('BuyTokens.dai.label')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 3 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(3)}
 					>
-						USDT
+						{t('BuyTokens.usdt.label')}
 					</div>
 					<div
 						className={`c-currency-selector ${activeCurrency == 4 ? '--selected' : ' '}`}
 						onClick={() => selectCurrency(4)}
 					>
-						USDC
+						{t('BuyTokens.usdc.label')}
 					</div>
 				</div>
 			</div>

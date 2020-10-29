@@ -20,10 +20,14 @@ import PropTypes from 'prop-types';
 import config from '../../lib/config';
 import { Textfit } from 'react-textfit';
 import ActionCable from 'actioncable';
+import { Trans, useTranslation } from 'react-i18next'
+
 
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
+	const { t, i18n } = useTranslation();
+
 	const {
 		changeHexId,
 		changeLandData,
@@ -215,7 +219,7 @@ const Land = (props) => {
 		if (marketStatus === 1) {
 			return (
 				<>
-					<h3 className="o-small-title">Closes</h3>
+					<h3 className="o-small-title">{t('Land.closes.label')}</h3>
 					<TimeCounter date_end={auction ? auction.closeAt : 24}></TimeCounter>
 				</>
 			);
@@ -230,16 +234,16 @@ const Land = (props) => {
 			case 1:
 				badge = (
 					<div>
-						<h3 className="o-small-title">Status</h3>
-						<div className="c-status-badge  --open">OPEN</div>
+						<h3 className="o-small-title">{t('Land.status.label')}</h3>
+						<div className="c-status-badge  --open">{t('Land.open.label')}</div>
 					</div>
 				);
 				break;
 			case 2:
 				badge = (
 					<div>
-						<h3 className="o-small-title">Status</h3>
-						<div className="c-status-badge  --owned">OWNED</div>
+						<h3 className="o-small-title">{t('Land.status.label')}</h3>
+						<div className="c-status-badge  --owned">{t('Land.owned.label')}</div>
 					</div>
 				);
 				break;
@@ -251,24 +255,24 @@ const Land = (props) => {
 			case 1:
 				badge = (
 					<div>
-						<h3 className="o-small-title">Status</h3>
-						<div className="c-status-badge --bestbid">OWNER</div>
+						<h3 className="o-small-title">{t('Land.status.label')}</h3>
+						<div className="c-status-badge --bestbid">{t('Land.owner.label')}</div>
 					</div>
 				);
 				break;
 			case 2:
 				badge = (
 					<div>
-						<h3 className="o-small-title">Status</h3>
-						<div className="c-status-badge  --bestbid">BEST BID</div>
+						<h3 className="o-small-title">{t('Land.status.label')}</h3>
+						<div className="c-status-badge  --bestbid">{t('Land.best.bid')}</div>
 					</div>
 				);
 				break;
 			case 3:
 				badge = (
 					<div>
-						<h3 className="o-small-title">Status</h3>
-						<div className="c-status-badge  --outbidded">OUTBIDDED</div>
+						<h3 className="o-small-title">{t('Land.status.label')}</h3>
+						<div className="c-status-badge  --outbidded">{t('Land.outbidded.label')}</div>
 					</div>
 				);
 				break;
@@ -286,7 +290,7 @@ const Land = (props) => {
 				button = (
 					<HexButton
 						url="/"
-						text="Init Auction"
+						text={t('Land.init.auction')}
 						className="--blue"
 						onClick={(e) => setActiveMintOverlay(e)}
 					></HexButton>
@@ -294,14 +298,14 @@ const Land = (props) => {
 				break;
 			case 1:
 				button = (
-					<HexButton url="/" text="Place bid" className="--purple" onClick={(e) => setActiveBidOverlay(e)}></HexButton>
+					<HexButton url="/" text={t('Land.place.bid')} className="--purple" onClick={(e) => setActiveBidOverlay(e)}></HexButton>
 				);
 				break;
 			case 2:
 				button = (
 					<HexButton
 						url="/"
-						text="Buy offer"
+						text={t('Land.buy.offer')}
 						className="--blue"
 						onClick={(e) => setActiveBuyOfferOverlay(e)}
 					></HexButton>
@@ -309,12 +313,12 @@ const Land = (props) => {
 				break;
 			case 3:
 				button = (
-					<HexButton url="/" text="Sell Land" className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+					<HexButton url="/" text={t('Land.sell.land')} className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
 				);
 				break;
 			case 4:
 				button = (
-					<HexButton url="/" text="Buy Now" className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
+					<HexButton url="/" text={t('Land.buy.now')} className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
 				);
 				break;
 			case 5:
@@ -324,11 +328,11 @@ const Land = (props) => {
 						<div className="redeem-land-map-button">
 							<HexButton
 								url="/"
-								text="Redeem Land"
+								text={t('Land.redeem.land')}
 								className={isRedeemingLand ? '--purple --disabled' : '--purple'}
 								onClick={(e) => redeemLand(e)}
 							></HexButton>
-							{!isRedeemingLand ? null : <p className="Overlay__message__container">Redeeming land...</p>}
+							{!isRedeemingLand ? null : <p className="Overlay__message__container">{t('Land.redeeming.land')}</p>}
 						</div>
 					);
 				}
@@ -357,14 +361,14 @@ const Land = (props) => {
 			case 2:
 				return (
 					<>
-						<h3 className="o-small-title">Closing price</h3>
+						<h3 className="o-small-title">{t('Land.closing.price')}</h3>
 						<ValueCounter value={value}></ValueCounter>
 					</>
 				);
 			default:
 				return (
 					<>
-						<h3 className="o-small-title">Price</h3>
+						<h3 className="o-small-title">{t('Land.price.label')}</h3>
 						<ValueCounter value={value}></ValueCounter>
 					</>
 				);
@@ -377,17 +381,19 @@ const Land = (props) => {
 				<div className="o-container">
 					<div className="Title__container">
 						{' '}
-						<h3 className="o-small-title">History</h3>
+						<h3 className="o-small-title">{t('Land.history.label')}</h3>
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							Be the one to start an auction{' '}
+						{t('Land.be.the.one')}{' '}
 							<span role="img" aria-label="fire-emoji">
 								🔥
 							</span>
 						</div>
 						<div className="c-dialog-sub-title">
-							The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own it.
+							<Trans i18nKey="Land.no.active.auction">
+								The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own it.
+							</Trans>
 						</div>
 					</div>
 				</div>
@@ -397,15 +403,15 @@ const Land = (props) => {
 				<div className="o-container">
 					<div className="Title__container">
 						{' '}
-						<h3 className="o-small-title">Bid History</h3>
+						<h3 className="o-small-title">{t('Land.bid.history')}</h3>
 					</div>
 					<div className="Table__container">
 						<table className="Table">
 							<thead>
 								<tr>
-									<th>Price</th>
-									<th>When</th>
-									<th>From</th>
+									<th>{t('Land.price.label')}</th>
+									<th>{t('Land.when.label')}</th>
+									<th>{t('Land.from.label')}</th>
 								</tr>
 							</thead>
 							<tbody>

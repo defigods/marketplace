@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { withWeb3Context, Web3Context } from '../../context/Web3Context';
 import { MapContext } from '../../context/MapContext';
+import { useTranslation } from 'react-i18next'
 
 /**
  * Login page component
  */
 
 const Login = () => {
+	const { t, i18n } = useTranslation();
 	const web3Context = useContext(Web3Context);
 	const mapContext = useContext(MapContext);
 	let history = useHistory();
@@ -35,12 +37,12 @@ const Login = () => {
 	return (
 		<div className="Login">
 			<div className="o-container">
-				<h2>Welcome back to OVR</h2>
+				<h2>{t('Login.welcome.back')}</h2>
 				<div className="Login__sub-title">
-					We use MetaMask to authenticate Users. Please sign the nonce which will be used for this session.
+					{t('Login.use.metamask')}
 				</div>
 				<div className="Login__footer">
-					If you have any question about your account contact us at {' '}
+					{t('Login.contact.us')} {' '}
 					<Link to="mailto:info@ovr.ai">info@ovr.ai</Link>
 				</div>
 			</div>

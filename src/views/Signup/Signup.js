@@ -85,7 +85,7 @@ const Signup = () => {
 		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)) {
 			handleNext();
 		} else {
-			setUserEmailInputError('The inserted email address is not a valid email address');
+			setUserEmailInputError(t('Signup.email.not.valid'));
 			setUserEmailValid(false);
 		}
 	};
@@ -123,7 +123,7 @@ const Signup = () => {
 					let error_code = response.data.errors[0].code;
 					let error_message = response.data.errors[0].message;
 					if (error_code == 'public_address') {
-						dangerNotification(error_message, 'Try to login instead');
+						dangerNotification(error_message, t('Signup.try.login'));
 						setActiveStep(0);
 					} else if (error_code == 'email') {
 						setActiveStep(2);
@@ -160,7 +160,7 @@ const Signup = () => {
 					let error_message = response.data.errors[0].message;
 					// console.log('response.data', response.data);
 					if (error_code == 'public_address') {
-						dangerNotification(error_message, 'Try to login instead');
+						dangerNotification(error_message, t('Signup.try.login'));
 						setActiveStep(0);
 					} else if (error_code == 'token' || error_code == 'oauth') {
 						setActiveStep(2);
@@ -213,7 +213,7 @@ const Signup = () => {
 				return (
 					<div className="o-container">
 						<div className="o-box">
-							<h1>Connect with</h1>
+							<h1>{t('Signup.connect.with')}</h1>
 							<div className="Social__section">
 								<GoogleLogin
 									clientId="842312482762-n12g86otvipvmrbgscnur48m9aq8kf9l.apps.googleusercontent.com"
@@ -242,8 +242,8 @@ const Signup = () => {
 								xmlns="http://www.w3.org/2000/svg"
 								xmlnsXlink="http://www.w3.org/1999/xlink"
 							>
-								<title>Group</title>
-								<desc>Created with Sketch.</desc>
+								<title>{t('Signup.group.label')}</title>
+								<desc>{t('Signup.sketch.desc')}</desc>
 								<defs>
 									<linearGradient
 										x1="25.3511512%"
@@ -369,16 +369,15 @@ const Signup = () => {
 									</g>
 								</g>
 							</svg>
-							<h2>Join OVR, the decentralized infrastructure for the spatial web.</h2>
+							<h2>{t('Signup.join.ovr')}</h2>
 							<div className="Signup__section">
-								OVR merges physical and virtual world through Augmented Reality, creating a new dimension. <br></br>{' '}
+								{t('Signup.ovr.intro')}
 								<div className="p-tiny-message">
-									We are starting the public sale the 16th of November. To access the whitelist you can register and
-									pass the identity verification in your profile.
+									{t('Signup.access.info')}
 								</div>
 							</div>
 							<div className="Signup__section">
-								<HexButton url="#" text="Get started" className={'--purple'} onClick={handleNext}></HexButton>
+								<HexButton url="#" text={t('Signup.get.started')} className={'--purple'} onClick={handleNext}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -388,35 +387,35 @@ const Signup = () => {
 					
 					<div className="o-container">
 						<div className="o-box">
-							<h1>{t('hello.label')}</h1>
+							<h1>{t('Signup.first.things')}</h1>
 							<div className="Signup__section --left">
 								{isWeb3Active ? (
 									<div className="o-list">
-										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Install Web3 provider
+										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> {t('Signup.web3.install')}
 									</div>
 								) : (
 									<div className="o-list">
-										<CancelIcon className="CancelIcon" /> Install Web3 provider
+										<CancelIcon className="CancelIcon" /> {t('Signup.web3.install')}
 									</div>
 								)}
 								{isWeb3Account ? (
 									<div className="o-list">
-										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Log in to Web3 provider
+										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> {t('Signup.web3.login')}
 									</div>
 								) : (
 									<div className="o-list">
-										<CancelIcon className="CancelIcon" /> Log in to Web3 provider
+										<CancelIcon className="CancelIcon" /> {t('Signup.web3.login')}
 									</div>
 								)}
 								{web3NetworkVersion ? (
 									<div className="o-list">
-										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> Connect to{' '}
-										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
+										<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> {t('Signup.connect.to')}{' '}
+										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} {t('Signup.network')}
 									</div>
 								) : (
 									<div className="o-list">
-										<CancelIcon className="CancelIcon" /> Connect to{' '}
-										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} network
+										<CancelIcon className="CancelIcon" /> {t('Signup.connect.to')}{' '}
+										{config.web3network === '3' ? 'Ropsten' : 'Mainnet'} {t('Signup.network')}
 									</div>
 								)}
 							</div>
@@ -437,15 +436,15 @@ const Signup = () => {
 							</div> */}
 							{isWeb3Active && web3NetworkVersion && isWeb3Account ? (
 								<>
-									<div className="Signup__section Signup__msg --positive">Hurray! Click below to continue.</div>
+									<div className="Signup__section Signup__msg --positive">{t('Signup.web3.present')}</div>
 									<div className="Signup__section">
-										<HexButton url="#" text="Continue" className={'--purple'} onClick={handleNext}></HexButton>
+										<HexButton url="#" text={t('Signup.continue')} className={'--purple'} onClick={handleNext}></HexButton>
 									</div>
 								</>
 							) : (
 								<>
 									<div className="Signup__section Signup__msg --negative">
-										Please install MetaMask and configure it on the correct network. Than reload this page.
+										{t('Signup.web3.not.present')}
 									</div>
 									<div className="Signup__section">
 										<HexButton
@@ -464,9 +463,9 @@ const Signup = () => {
 				return (
 					<div className="o-container">
 						<div className="o-box ">
-							<h1>Create an account</h1>
+							<h1>{t('Signup.create.account')}</h1>
 							<div className="Social__section Social__subtitle">
-								Sign up with your social media account or email address
+								{t('Signup.use.social')}
 							</div>
 							<div className="Social__section Social__buttons">
 								<GoogleLogin
@@ -494,7 +493,7 @@ const Signup = () => {
 								/>
 							</div>
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain.
+								{t('Signup.info.stored')}
 								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">
@@ -513,7 +512,7 @@ const Signup = () => {
 				return (
 					<div className="o-container">
 						<div className="o-box --left">
-							<h1>Set Username</h1>
+							<h1>{t('Signup.set.username')}</h1>
 							<div className="Signup__section">
 								<TextField
 									id="quantity"
@@ -543,7 +542,7 @@ const Signup = () => {
 								/>
 							</div> */}
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain.
+								{t('Signup.info.stored')}
 								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">
@@ -562,13 +561,12 @@ const Signup = () => {
 				return (
 					<div className="o-container">
 						<div className="o-box">
-							<h1>Signup completed</h1>
+							<h1>{t('Signup.completed')}</h1>
 							<div className="Signup__section">
 								<CheckCircleIcon className="CheckCircleIcon" />
 							</div>
 							<div className="Signup__section">
-								You've succesfully registered your account. From now on you can log in with Metamask by signing a secret
-								code with one click.
+								{t('Signup.success')}
 							</div>
 							{/* <div className="Signup__section Signup__pass_cont">
 								<TextField
@@ -585,7 +583,7 @@ const Signup = () => {
 								/>
 							</div> */}
 							<div className="Signup__section --small">
-								Account info are stored privately off the blockchain.
+								{t('Signup.info.stored')}
 								{/* <Link to="#">Read more</Link>. */}
 							</div>
 							<div className="Signup__section">

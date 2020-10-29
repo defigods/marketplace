@@ -15,33 +15,37 @@ import ValueCounter from '../../components/ValueCounter/ValueCounter';
 import { Web3Context } from '../../context/Web3Context';
 
 import snsWebSdk from '@sumsub/websdk';
+import { useTranslation } from 'react-i18next'
+
 
 // import { networkError } from '../../lib/notifications';
 
-const ProfileContentLoginRequired = () => (
+
+
+const ProfileContentLoginRequired = (t) => (
 	<div className="profile">
 		<div className="o-container">
 			<div className="c-dialog --centered">
 				<div className="c-dialog-main-title">
-					You have to log in to visit Your profile
+					{t('Profile.login.required')}
 					<span role="img" aria-label="Cool dude">
 						😎
 					</span>
 				</div>
-				<div className="c-dialog-sub-title">Check your profile. Login now.</div>
+				<div className="c-dialog-sub-title">{t('Profile.check.profile')}</div>
 			</div>
 		</div>
 	</div>
 );
 
-const ProfileLayout = () => {
+const ProfileLayout = (t) => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 	const { state: userState } = useContext(UserContext);
 	return (
 		<div className="profile">
 			<div className="o-container">
 				<div className="p-header">
-					<h2 className="p-header-title">My Profile</h2>
+					<h2 className="p-header-title">{t('Profile.my.profile')}</h2>
 					<span className="p-header-datetime">{currentDatetimeStamp}</span>
 				</div>
 				<div className="p-body">
@@ -56,27 +60,27 @@ const ProfileLayout = () => {
 							spotColor="#F9B426"
 						/>
 					</div>
-					<ProfileContent />
+					<ProfileContent t={t} />
 				</div>
 			</div>
 		</div>
 	);
 };
 
-const renderBadge = (status) => {
+const renderBadge = (status, t) => {
 	let badge = <div>&nbsp;</div>;
 	switch (status) {
 		case -1:
-			badge = <div className="c-status-badge  --open">Not started</div>;
+			badge = <div className="c-status-badge  --open">{t('Profile.not.started')}</div>;
 			break;
 		case -10:
-			badge = <div className="c-status-badge  --open">Started</div>;
+			badge = <div className="c-status-badge  --open">{t('Profile.started')}</div>;
 			break;
 		case 1:
-			badge = <div className="c-status-badge  --open">Completed</div>;
+			badge = <div className="c-status-badge  --open">{t('Profile.completed')}</div>;
 			break;
 		case 0:
-			badge = <div className="c-status-badge  --open">Failed</div>;
+			badge = <div className="c-status-badge  --open">{t('Profile.failed')}</div>;
 			break;
 		default:
 			badge = <div>&nbsp;</div>;
@@ -109,7 +113,7 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 	snsWebSdkInstance.launch('#sumsub-websdk-container');
 };
 
-const countdownTimer = () => {
+const countdownTimer = (t) => {
 	const difference = +new Date("2020-11-30") - +new Date();
 	let custom_return = '';
 
@@ -120,19 +124,20 @@ const countdownTimer = () => {
 			minutes: Math.floor((difference / 1000 / 60) % 60),
 			seconds: Math.floor((difference / 1000) % 60),
 		};
+		
 		custom_return =
-			'OVR Token Sale will start in ' +
+		t('Profile.ovr.sale.start')+' ' +
 			parts.days +
-			' days ' +
+			' '+t('Profile.days')+' ' +
 			parts.hours +
-			' hours ' +
+			' '+t('Profile.hours')+' ' +
 			parts.minutes +
-			' mins ' +
-			parts.seconds + ' seconds.';
+			' '+t('Profile.mins')+' ' +
+			parts.seconds + ' '+t('Profile.secs')+'.';
 	}
 	return custom_return;
 };
-const ProfileContent = () => {
+const ProfileContent = (t) => {
 	const { state: userState } = useContext(UserContext);
 	const web3Context = useContext(Web3Context);
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
@@ -172,9 +177,9 @@ const ProfileContent = () => {
 	return (
 		<div className="profile-content">
 			<div key="wallet" className="p-section">
-				<h3 className="p-section-title">Wallet informations</h3>
+				<h3 className="p-section-title">{t('Profile.wallet.info')}</h3>
 				<div className="p-section-content">
-					<h4 className="p-content-title">Wallet address</h4>
+					<h4 className="p-content-title">{t('Profile.wallet.addr')}</h4>
 					<div className="p-wallet-address">
 						{window.web3 &&
 							window.web3.eth &&
@@ -182,11 +187,11 @@ const ProfileContent = () => {
 							window.web3.eth.defaultAccount.toLowerCase()}
 					</div>
 					<div className="p-balance">
-						<div className="p-small-title">Balance</div>
+						<div className="p-small-title">{t('Profile.balance')}</div>
 						<div className="p-balance-value">
 							<ValueCounter value={web3Context.state.ovrsOwned} />
 							<div>
-								<HexButton url="/buy-tokens" className="--orange --disabled" text="BUY OVR"></HexButton>
+								<HexButton url="/buy-tokens" className="--orange --disabled" text={t('Profile.buy.ovr')}></HexButton>
 								{/* history.push('/profile');
 								// TODO: KYC -  */}
 							</div>
@@ -194,24 +199,24 @@ const ProfileContent = () => {
 					</div>
 				</div>
 				<div key="KYC" className="p-section --m-t">
-					<h3 className="p-section-title">Identity verification</h3>
+					<h3 className="p-section-title">{t('Profile.identify.verification')}</h3>
 					<div className="p-tiny-message">
-						{countdownTimer()} <br></br>
+						{countdownTimer(t)} <br></br>
 						{user.kycReviewAnswer == 1
-							? `You are whitelisted and ready to buy OVR at the beginning of the public sale.`
-							: `To be whitelisted and able to buy OVR at the beginning of the public sale verify your identity.`}
+							? t('Profile.whitelisted.ok')
+							: t('Profile.whitelisted.no.ok')}
 						<br></br>
 						<br></br>
 					</div>
 					<div className="p-section-content">
-						<h4 className="p-content-title">Status</h4>
+						<h4 className="p-content-title">{t('Profile.status.label')}</h4>
 						<div className="p-balance-value">
-							{renderBadge(user.kycReviewAnswer)}
+							{renderBadge(user.kycReviewAnswer, t)}
 							<div>
 								<HexButton
 									url=""
 									className="--blue"
-									text={user.kycReviewAnswer == -1 ? 'START VERIFICATION' : 'CHECK VERIFICATION'}
+									text={user.kycReviewAnswer == -1 ? t('Profile.start.verification') : t('Profile.check.verification')}
 									onClick={toggleKycVerificationFrame}
 								></HexButton>
 							</div>
@@ -281,13 +286,14 @@ const ProfileContent = () => {
 };
 
 const Profile = () => {
+	const { t, i18n } = useTranslation();
 	const { state } = useContext(UserContext);
 	const { isLoggedIn: userAuthenticated } = state;
 
 	if (!userAuthenticated) {
-		return <ProfileContentLoginRequired />;
+		return <ProfileContentLoginRequired t={t}/>;
 	}
-	return <ProfileLayout state={state} />;
+	return <ProfileLayout state={state} t={t}/>;
 };
 
 export default Profile;

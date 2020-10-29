@@ -11,12 +11,15 @@ import HexButton from '../../components/HexButton/HexButton';
 import { getLands } from '../../lib/api';
 import PropTypes from 'prop-types';
 import LandCard from '../../components/LandCard/LandCard';
+import { useTranslation } from 'react-i18next'
+
 
 // import config from '../../lib/config';
 
 // import { ca } from 'date-fns/esm/locale';
 
 const Lands = (props) => {
+	const { t, i18n } = useTranslation();
 	const { enableMultipleLandSelection, disableMultipleLandSelection } = props.mapProvider.actions;
 	const { multipleLandSelectionList } = props.mapProvider.state;
 	const [listLands, setListLands] = useState('');
@@ -62,18 +65,18 @@ const Lands = (props) => {
 				<div className="Lands">
 					<div className="o-container">
 						<div className="Land__heading__1">
-							<h2>Selected Lands</h2>
-							<div className="Land__location">Click again on a selected land to remove</div>
+							<h2>{t('Lands.selected.lands')}</h2>
+							<div className="Land__location">{t('Lands.click.to.remove')}</div>
 						</div>
 						<div className="Land__heading__2">
 							<div className="o-fourth">&nbsp;</div>
 							<div className="o-fourth">
-								<h3 className="o-small-title">Selected</h3>
+								<h3 className="o-small-title">{t('Lands.selected.label')}</h3>
 								<div>{multipleLandSelectionList.length}/15</div>
 							</div>
 							<div className="o-fourth">&nbsp;</div>
 							<div className="o-fourth">
-								<HexButton url="/" text="Bid selection" className="--blue" onClick={(e) => console.log(e)}></HexButton>
+								<HexButton url="/" text={t('Lands.bid.selection')} className="--blue" onClick={(e) => console.log(e)}></HexButton>
 							</div>
 						</div>
 					</div>
@@ -88,10 +91,10 @@ const Lands = (props) => {
 					<div className="o-container">
 						<div className="c-dialog --centered --not-found">
 							<div className="c-dialog-main-title">
-								<h2>Select lands</h2>
+								<h2>{t('Lands.selected.lands')}</h2>
 							</div>
 							<div className="c-dialog-sub-title">
-								Click anywhere on the map to focus on a land, click again to add in your bidding list
+								{t('Lands.focus.land')}
 							</div>
 						</div>
 					</div>

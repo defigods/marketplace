@@ -5,24 +5,26 @@ import { userActivities } from '../../lib/api';
 import { UserContext } from '../../context/UserContext';
 import { Web3Context } from '../../context/Web3Context';
 import ActivityTile from '../../components/ActivityTile/ActivityTile';
+import { useTranslation } from 'react-i18next'
 
-const ActivityContentLoginRequired = () => (
+
+const ActivityContentLoginRequired = (t) => (
 	<div className="profile">
 		<div className="o-container">
 			<div className="c-dialog --centered">
 				<div className="c-dialog-main-title">
-					You have to log in to visit Your Activity
+					{t('Activity.login.required')}
 					<span role="img" aria-label="Cool dude">
 						😎
 					</span>
 				</div>
-				<div className="c-dialog-sub-title">Check your profile. Login now.</div>
+				<div className="c-dialog-sub-title">{t('Activity.login.now')}</div>
 			</div>
 		</div>
 	</div>
 );
 
-const ActivityLayout = () => {
+const ActivityLayout = (t) => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 	return (
 		<div className="activity">
@@ -32,15 +34,15 @@ const ActivityLayout = () => {
 					<span className="p-header-datetime">{currentDatetimeStamp}</span>
 				</div>
 				<div className="sub-title">
-					Here's a list of your transactions. You can view the details on Etherscan to keep track of what's happening!
+					{t('Activity.list.transactions')}
 				</div>
 			</div>
-			<ActivityContent></ActivityContent>
+			<ActivityContent t={t}></ActivityContent>
 		</div>
 	);
 };
 
-const ActivityContent = () => {
+const ActivityContent = (t) => {
 	const { state: userState } = useContext(UserContext);
 	const { actions: userActions } = useContext(UserContext);
 	const [activityList, setActivityList] = useState(false);
@@ -80,7 +82,7 @@ const ActivityContent = () => {
 						<div className="o-container">
 							<div className="c-dialog --centered">
 								<div className="c-dialog-sub-title">
-									You have no past Activity, start now using the Marketplace
+									{t('Activity.no.activity')}
 									<span role="img" aria-label="Cool dude">
 										🤙
 									</span>
@@ -103,13 +105,15 @@ const ActivityContent = () => {
 };
 
 const Activity = () => {
+	const { t, i18n } = useTranslation();
+
 	const { state } = useContext(UserContext);
 	const { isLoggedIn: userAuthenticated } = state;
 
 	if (!userAuthenticated) {
-		return <ActivityContentLoginRequired />;
+		return <ActivityContentLoginRequired t={t}/>;
 	}
-	return <ActivityLayout state={state} />;
+	return <ActivityLayout state={state} t={t}/>;
 };
 
 export default Activity;

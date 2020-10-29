@@ -9,8 +9,10 @@ import LandCard from '../../components/LandCard/LandCard';
 import { indexMyOpenAuctions, indexMyLands } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 import Pagination from '@material-ui/lab/Pagination';
+import {Trans, useTranslation } from 'react-i18next'
 
 const Overview = () => {
+	const { t, i18n } = useTranslation();
 	const [listAuctions, setListAuctions] = useState('');
 	const [numberOfAuctionPages, setNumberOfAuctionPages] = useState(0);
 	const [currentAuctionPage, setCurrentAuctionPage] = useState(1);
@@ -53,10 +55,12 @@ const Overview = () => {
 						setListAuctions(
 							<div className="c-dialog --centered">
 								<div className="c-dialog-main-title">
-									There is currently no <div className="c-status-badge">OPEN</div> auction ⚡️
+									<Trans i18nKey="Overview.no.auctions.open">
+										There is currently no <div className="c-status-badge">OPEN</div> auction
+									</Trans>{' '}⚡️
 								</div>
 								<div className="c-dialog-sub-title">
-									Browse the OVRLands: search for a location or click a point in the map and mint a land now.
+									{t('Overview.browse.ovr.lands')}
 								</div>
 							</div>,
 						);
@@ -98,8 +102,8 @@ const Overview = () => {
 					} else {
 						setListLands(
 							<div className="c-dialog --centered">
-								<div className="c-dialog-main-title">There is currently no lands to display</div>
-								<div className="c-dialog-sub-title">Browse the aviable OVRLands: mint a land and own it now.</div>
+								<div className="c-dialog-main-title">{t('Overview.no.lands')}</div>
+								<div className="c-dialog-sub-title">{t('Overview.browse.lands')}</div>
 							</div>,
 						);
 					}
@@ -218,7 +222,7 @@ const Overview = () => {
 		customReturn = (
 			<div className="Overview">
 				<div className="o-container">
-					<h2 className="o-section-title">Auctions</h2>
+					<h2 className="o-section-title">{t('Overview.auctions.label')}</h2>
 				</div>
 				<div className="o-container">
 					<div className="o-auction-list">{listAuctions}</div>
@@ -229,7 +233,7 @@ const Overview = () => {
 					</div>
 				</div>
 				<div className="o-container">
-					<h2 className="o-section-title">My OVR Lands</h2>
+					<h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
 				</div>
 				<div className="o-container">
 					<div className="o-land-list">{listLands}</div>
@@ -247,12 +251,12 @@ const Overview = () => {
 				<div className="o-container">
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							You have to log in to visit My Assets
+							{t('Overview.login.required')}
 							<span role="img" aria-label="Cool dude">
 								😎
 							</span>
 						</div>
-						<div className="c-dialog-sub-title">Browse your OVRLands and ongoing Auctions. Login now.</div>
+						<div className="c-dialog-sub-title">{t('Overview.login.to.browse')}</div>
 					</div>
 				</div>
 			</div>
