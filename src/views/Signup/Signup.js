@@ -22,11 +22,16 @@ import Web3 from 'web3';
 import { GoogleLogin } from 'react-google-login';
 import FacebookLoginWithButton from '../../facebook/facebook-with-button';
 
+import { useTranslation } from 'react-i18next'
+
+
 /**
  * Signup page component
  */
 
 const Signup = () => {
+	const { t, i18n } = useTranslation()
+
 	const context = useContext(Web3Context);
 	const userContext = useContext(UserContext);
 
@@ -380,9 +385,10 @@ const Signup = () => {
 				);
 			case 1:
 				return (
+					
 					<div className="o-container">
 						<div className="o-box">
-							<h1>First things first</h1>
+							<h1>{t('hello.label')}</h1>
 							<div className="Signup__section --left">
 								{isWeb3Active ? (
 									<div className="o-list">

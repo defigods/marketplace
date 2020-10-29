@@ -16,6 +16,8 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
 
+import LanguageSelector from '../LanguageSelector/LanguageSelector'
+
 const NavBar = () => {
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State } = useContext(Web3Context);
@@ -85,11 +87,12 @@ const NavBar = () => {
 	}
 
 	function rightContainer() {
-		let rightContainer = <div></div>;
+		let rightContainer = <div></div>; 
 		if (userState.isLoggedIn === true && userState.user !== null) {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
+					<LanguageSelector />
 						{/* <Link
 							to="/"
 							id="js-open-notification-link"
@@ -210,6 +213,8 @@ const NavBar = () => {
 			);
 		} else {
 			rightContainer = (
+				<div>
+				<LanguageSelector />
 				<div className="AuthLogin__link">
 					<NavLink className="NavBar__link General__link" to="/login">
 						Login
@@ -217,6 +222,7 @@ const NavBar = () => {
 					<NavLink className="NavBar__link General__link" to="/signup">
 						Signup
 					</NavLink>
+				</div>
 				</div>
 			);
 		}
