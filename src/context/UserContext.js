@@ -34,8 +34,7 @@ export class UserProvider extends Component {
 					this.setState({ user: response.data.user });
 					this.liveSocket();
 				} else {
-						let { t, i18n } = useTranslation();
-						dangerNotification(t('Danger.session.expired.title'), t('Danger.session.expired.desc'));
+						dangerNotification(this.props.t('Danger.session.expired.title'), this.props.t('Danger.session.expired.desc'));
 						this.logoutUser();
 					}
 				})
@@ -176,7 +175,7 @@ export class UserProvider extends Component {
 		try {
 			await this.getPrices()
 		} catch (e) {
-			return warningNotification(t('Warning.get.prices.title'), t('Warning.get.prices.desc')+ ` ${e.message}`)
+			return warningNotification(this.props.t('Warning.get.prices.title'), this.props.t('Warning.get.prices.desc')+ ` ${e.message}`)
 		}
 		try {
 			// For ether we send the value instead of the bid
@@ -190,7 +189,7 @@ export class UserProvider extends Component {
 			}
 			return tx
 		} catch (e) {
-			return warningNotification(t('Warning.buy.error.title'), t('Warning.buy.error.desc')+ ` ${e.message}`);
+			return warningNotification(this.props.t('Warning.buy.error.title'), this.props.t('Warning.buy.error.desc')+ ` ${e.message}`);
 		}
 	};
 

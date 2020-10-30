@@ -63,7 +63,7 @@ function App() {
 		<Suspense fallback="loading">
 			<Translation>
 				{(t, { i18n }) =>
-				<UserProvider>
+				<UserProvider t={t} i18n={i18n}>
 					<Web3Provider t={t} i18n={i18n}>
 						<MapProvider>
 							<UserContext.Consumer>
