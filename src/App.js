@@ -30,8 +30,34 @@ import { Web3Provider, Web3Context } from './context/Web3Context';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+const supportedLangs = ['en', 'zh-HK'];
+const fallbackLang = 'en';
 
 function App() {
+
+	i18next.use(LanguageDetector).init({
+		// order and from where user language should be detected
+		order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+
+		// keys or params to lookup language from
+		lookupQuerystring: 'lng',
+		lookupCookie: 'i18next',
+		lookupLocalStorage: 'i18nextLng',
+		lookupSessionStorage: 'i18nextLng',
+		lookupFromPathIndex: 0,
+		lookupFromSubdomainIndex: 0,
+	  
+		// cache user language on
+		caches: ['localStorage', 'cookie'],
+		excludeCacheFor: ['cimode'], // languages to not persist (cookie, localStorage)
+	});
+
+	if(!supportedLangs.includes(i18next.language)){
+		localStorage.removeItem('i18nextLng');
+		console.log("Language "+ i18next.language +" not currently supported!" )
+		i18next.changeLanguage(fallbackLang)
+	}
+
 	return (
 		<Suspense fallback="loading">
 			<UserProvider>
