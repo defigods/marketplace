@@ -331,5 +331,8 @@
 	"MetamaskMessage.set.buy.dai": "Placing Buy Offer with DAI...",
 	"MetamaskMessage.set.buy.usdt": "Placing Buy Offer with Tether...",
 	"MetamaskMessage.set.buy.usdc": "Placing Buy Offer with USDC...",
-	"MetamaskMessage.set.approve.erc721": "Approving ERC721 token for the Smart Contract..."
+	"MetamaskMessage.set.approve.erc721": "Approving ERC721 token for the Smart Contract...",
+
+	"LanguageSelection.lang.eng": "English",
+	"LanguageSelection.lang.zhHK": "Traditional Chinese"
 }

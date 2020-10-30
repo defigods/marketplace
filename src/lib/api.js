@@ -370,6 +370,11 @@ export function request(endpoint, params, req_config = { headers: { 'Content-Typ
 	if (token) {
 		axios.defaults.headers.common['Authorization'] = token; // eslint-disable-line
 	}
+	if(req_config && req_config.headers){
+		req_config.headers['Content-Language'] = localStorage.getItem('i18nextLng');
+	}else{
+		req_config = { headers: { 'Content-Language': localStorage.getItem('i18nextLng') } }
+	}
 
 	return new Promise((resolve, reject) => {
 		let req;

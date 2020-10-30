@@ -23,6 +23,7 @@ const NavBar = () => {
 	const { t, i18n } = useTranslation();
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State } = useContext(Web3Context);
+	const [langOpen, setLangOpen] = React.useState(false);
 
 	let ovrsOwned;
 	if (web3State.ovrsOwned) {
@@ -34,6 +35,10 @@ const NavBar = () => {
 			ovrsOwned = ovrsOwned[0];
 		}
 	}
+
+	const changeLanguage = (string) => {
+		i18n.changeLanguage(string)
+	  }
 
 	// START - Profile sub menu
 	const [open, setOpen] = React.useState(false);
@@ -48,6 +53,11 @@ const NavBar = () => {
 	const handleGoTo = (link) => {
 		history.push(link);
 	};
+
+	const handleShowMenu = (event) => {
+		event.preventDefault();
+		setLangOpen(!langOpen);
+	}
 
 	const handleClose = (event) => {
 		if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -94,7 +104,7 @@ const NavBar = () => {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
-					<LanguageSelector />
+					
 						{/* <Link
 							to="/"
 							id="js-open-notification-link"
@@ -178,7 +188,10 @@ const NavBar = () => {
 								>
 									<Paper>
 										<ClickAwayListener onClickAway={handleClose}>
+										
+
 											<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+												
 												<MenuItem
 													onClick={(e) => {
 														handleClose(e);
@@ -203,6 +216,18 @@ const NavBar = () => {
 												>
 													{t('Navbar.Logout.label')}
 												</MenuItem>
+												<div>
+												<MenuItem
+													onClick={(e) => {
+														handleClose(e);
+														handleShowMenu(e);
+													}}
+												>
+													LINGUA
+												</MenuItem>
+												{langOpen && <LanguageSelector/>}
+												</div>
+
 											</MenuList>
 										</ClickAwayListener>
 									</Paper>
@@ -216,7 +241,7 @@ const NavBar = () => {
 		} else {
 			rightContainer = (
 				<div>
-				<LanguageSelector />
+				
 				<div className="AuthLogin__link">
 					<NavLink className="NavBar__link General__link" to="/login">
 					{t('Navbar.Login.label')}
@@ -224,6 +249,10 @@ const NavBar = () => {
 					<NavLink className="NavBar__link General__link" to="/signup">
 					{t('Navbar.Signup.label')}
 					</NavLink>
+					<NavLink className="NavBar__link General__link" to="#" onClick={(e)=>{handleShowMenu(e); console.log(langOpen)}}>
+					Lingua
+					</NavLink>
+					{langOpen && <LanguageSelector/>}
 				</div>
 				</div>
 			);
