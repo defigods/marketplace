@@ -35,7 +35,7 @@ const BuyOfferOverlay = (props) => {
 	const [proposedValue, setProposedValue] = useState('');
 	const [activeStep, setActiveStep] = useState(0);
 	const [expirationDate, setExpirationDate] = useState(tomorrow);
-	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
 	const [solidityExpirationDate, setSolidityExpirationDate] = useState(0);
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
@@ -124,31 +124,31 @@ const BuyOfferOverlay = (props) => {
 			}
 			switch (type) {
 				case 'ovr':
-					setMetamaskMessage('Approving OVR tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
 					await approveOvrTokens(true, ovr);
-					setMetamaskMessage('Placing Buy Offer with OVR...');
+					setMetamaskMessage(t('MetamaskMessage.set.buy.ovr'));
 					await participateBuyOffer(4, proposedValue, solidityExpirationDate, hexId);
 					break;
 				case 'eth':
-					setMetamaskMessage('Placing Buy Offer with ETH...');
+					setMetamaskMessage(t('MetamaskMessage.set.buy.eth'));
 					await participateBuyOffer(0, proposedValue, solidityExpirationDate, hexId);
 					break;
 				case 'usdt':
-					setMetamaskMessage('Approving Tether tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
 					await approveOvrTokens(true, tether);
-					setMetamaskMessage('Placing Buy Offer with Tether...');
+					setMetamaskMessage(t('MetamaskMessage.set.buy.usct'));
 					await participateBuyOffer(2, proposedValue, solidityExpirationDate, hexId);
 					break;
 				case 'usdc':
-					setMetamaskMessage('Approving USDC tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
 					await approveOvrTokens(true, usdc);
-					setMetamaskMessage('Placing Buy Offer with USDC...');
+					setMetamaskMessage(t('MetamaskMessage.set.buy.usdc'));
 					await participateBuyOffer(3, proposedValue, solidityExpirationDate, hexId);
 					break;
 				case 'dai':
-					setMetamaskMessage('Approving DAI tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
 					await approveOvrTokens(true, dai);
-					setMetamaskMessage('Placing Buy Offer with DAI...');
+					setMetamaskMessage(t('MetamaskMessage.set.buy.dai'));
 					await participateBuyOffer(1, proposedValue, solidityExpirationDate, hexId);
 					break;
 			}

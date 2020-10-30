@@ -28,13 +28,14 @@ export class UserProvider extends Component {
 	componentDidMount() {
 		if (isLogged()) {
 			userProfile()
-				.then((response) => {
-					if (response.data.result === true) {
-						// console.log('userState', response.data.user)
-						this.setState({ user: response.data.user });
-						this.liveSocket();
-					} else {
-						dangerNotification('Session expired', 'Please login again');
+			.then((response) => {
+				if (response.data.result === true) {
+					// console.log('userState', response.data.user)
+					this.setState({ user: response.data.user });
+					this.liveSocket();
+				} else {
+						let { t, i18n } = useTranslation();
+						dangerNotification(t('Danger.session.expired.title'), t('Danger.session.expired.desc'));
 						this.logoutUser();
 					}
 				})

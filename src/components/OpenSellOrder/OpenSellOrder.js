@@ -23,11 +23,11 @@ export class OpenSellOrder extends Component {
 		deleteSellLand(this.props.order.landUuid) // Call API function
 			.then((response) => {
 				if (response.data.result === true) {
-					successNotification('Action complete', 'Delete of sell order complete');
+					successNotification(t('Success.action.title'), t('Success.delete.order.desc'));
 					// this.props.reloadLandStatefromApi(this.props.order.landUuid)
 					this.handleClose();
 				} else {
-					dangerNotification('Unable to delete sell order', response.data.errors[0].message);
+					dangerNotification(t('Danger.unable.delete.sell.title'), response.data.errors[0].message);
 				}
 			})
 			.catch(() => {
@@ -41,11 +41,11 @@ export class OpenSellOrder extends Component {
 		buyLand(this.props.order.landUuid) // Call API function
 			.then((response) => {
 				if (response.data.result === true) {
-					successNotification('Action complete', 'Now you own this land');
+					successNotification(t('Success.action.title'), t('Success.land.own.desc'));
 					// this.props.reloadLandStatefromApi(this.props.order.landUuid)
 					this.handleClose();
 				} else {
-					dangerNotification('Unable to buy land', response.data.errors[0].message);
+					dangerNotification(t('Danger.unable.buy.land.title'), response.data.errors[0].message);
 				}
 			})
 			.catch(() => {

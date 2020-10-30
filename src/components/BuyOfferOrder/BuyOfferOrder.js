@@ -45,14 +45,14 @@ export class BuyOfferOrder extends Component {
 		try {
 			const tx = await this.props.web3Provider.actions.cancelBuyOffer(offerId);
 			this.setState({
-				metamaskMessage: 'Cancelling buy offer transaction...',
+				metamaskMessage: t('MetamaskMessage.cancel.buy'),
 				transactionInProcess: true,
 			});
 			await this.props.web3Provider.actions.waitTx(tx);
 		} catch (e) {
-			return dangerNotification('Error cancelling buy offer', e.message);
+			return dangerNotification(t('Danger.cancel.buy.title'), e.message);
 		}
-		successNotification('Delete successful', 'Your order request has be processed successfully on the blockchain');
+		successNotification(t('Success.delete.title'), t('Success.request.process.desc'));
 		this.handleClose();
 	};
 
@@ -62,14 +62,14 @@ export class BuyOfferOrder extends Component {
 		try {
 			const tx = await this.props.web3Provider.actions.declineBuyOffer(offerId);
 			this.setState({
-				metamaskMessage: 'Declining buy offer transaction...',
+				metamaskMessage: t('MetamaskMessage.decline.buy'),
 				transactionInProcess: true,
 			});
 			await this.props.web3Provider.actions.waitTx(tx);
 		} catch (e) {
-			return dangerNotification('Error declining buy offer', e.message);
+			return dangerNotification(t('Danger.decline.buy.title'), e.message);
 		}
-		successNotification('Decline successful', 'Your order request has be processed successfully on the blockchain');
+		successNotification(t('Success.decline.title'), t('Success.request.process.desc'));
 		this.handleClose();
 	};
 
@@ -78,20 +78,20 @@ export class BuyOfferOrder extends Component {
 		const { t, i18n } = useTranslation()
 		try {
 			this.setState({
-				metamaskMessage: 'Approving the OVRLand token...',
+				metamaskMessage: t('MetamaskMessage.approve.ovr'),
 				transactionInProcess: true,
 			});
 			await this.props.web3Provider.actions.approveErc721Token(landId, true);
 
 			this.setState({
-				metamaskMessage: 'Accepting sell order...',
+				metamaskMessage: t('MetamaskMessage.accept.sell'),
 			});
 			const newTx = await this.props.web3Provider.actions.acceptBuyOffer(offerId, landId);
 			await this.props.web3Provider.actions.waitTx(newTx);
 		} catch (e) {
-			return dangerNotification('Error accepting buy offer', e.message);
+			return dangerNotification(t('Danger.accept.buy.title'), e.message);
 		}
-		successNotification('Land sold successfully', 'Your order request has be processed successfully on the blockchain');
+		successNotification(t('Success.land.sold.title'), t('Success.request.process.desc'));
 		this.handleClose();
 	};
 
