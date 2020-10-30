@@ -15,30 +15,34 @@ import ValueCounter from '../../components/ValueCounter/ValueCounter';
 import { Web3Context } from '../../context/Web3Context';
 
 import snsWebSdk from '@sumsub/websdk';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Translation} from 'react-i18next';
 
 
 // import { networkError } from '../../lib/notifications';
 
 
 
-const ProfileContentLoginRequired = (t) => (
-	<div className="profile">
+const ProfileContentLoginRequired = () => (
+	<Translation>
+		<div className="profile">
 		<div className="o-container">
 			<div className="c-dialog --centered">
 				<div className="c-dialog-main-title">
-					{t('Profile.login.required')}
+					{(t, { i18n }) => t('Profile.login.required')}
 					<span role="img" aria-label="Cool dude">
 						😎
 					</span>
 				</div>
-				<div className="c-dialog-sub-title">{t('Profile.check.profile')}</div>
+				<div className="c-dialog-sub-title">{(t, { i18n }) =>t('Profile.check.profile')}</div>
 			</div>
 		</div>
 	</div>
+	</Translation>
+	
 );
 
-const ProfileLayout = (t) => {
+const ProfileLayout = () => {
+	const { t, i18n } = useTranslation();
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 	const { state: userState } = useContext(UserContext);
 	return (
@@ -137,7 +141,8 @@ const countdownTimer = (t) => {
 	}
 	return custom_return;
 };
-const ProfileContent = (t) => {
+const ProfileContent = () => {
+	const { t, i18n } = useTranslation();
 	const { state: userState } = useContext(UserContext);
 	const web3Context = useContext(Web3Context);
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
@@ -293,7 +298,7 @@ const Profile = () => {
 	if (!userAuthenticated) {
 		return <ProfileContentLoginRequired t={t}/>;
 	}
-	return <ProfileLayout state={state} t={t}/>;
+	return <ProfileLayout state={state}/>;
 };
 
 export default Profile;

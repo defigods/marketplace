@@ -223,7 +223,7 @@ const NavBar = () => {
 														handleShowMenu(e);
 													}}
 												>
-													LINGUA
+													{t('LanguageSelection.lang.select')}
 												</MenuItem>
 												{langOpen && <LanguageSelector/>}
 												</div>
@@ -250,7 +250,7 @@ const NavBar = () => {
 					{t('Navbar.Signup.label')}
 					</NavLink>
 					<NavLink className="NavBar__link General__link" to="#" onClick={(e)=>{handleShowMenu(e); console.log(langOpen)}}>
-					Lingua
+					{t('LanguageSelection.lang.select')}
 					</NavLink>
 					{langOpen && <LanguageSelector/>}
 				</div>
