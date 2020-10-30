@@ -28,7 +28,7 @@ const BuyLandOverlay = (props) => {
 
 	const [buyAt, setBuyAt] = useState(props.currentBid);
 	const [activeStep, setActiveStep] = useState(0);
-	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
@@ -105,20 +105,18 @@ const BuyLandOverlay = (props) => {
 			try {
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
 				if (!currentBalance.greaterThan(buyAt)) {
-					return dangerNotification(
-						'Balance insufficient',
-						"You don't have enough tokens to buy that land get more and try again",
+					return dangerNotification(t('Danger.balance.insuff.title'),t('Danger.balance.insuff.desc'),
 					);
 				}
-				setMetamaskMessage('Approving OVR tokens...');
+				setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
 				await approveOvrTokens(true, ovr);
-				setMetamaskMessage('Waiting for buy confirmation on MetaMask');
+				setMetamaskMessage(t('MetamaskMessage.set.waiting.buy'));
 				await buyLand(hexId);
 				handleNext();
 				// TODO Centralized flux
 			} catch (e) {
 				console.log('Error', e);
-				return dangerNotification('Error processing the transactions', e.message);
+				return dangerNotification(t('Danger.error.processing.title'), e.message);
 			}
 		} else {
 			setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -185,7 +183,7 @@ const BuyLandOverlay = (props) => {
 														<MenuItem
 															onClick={async (e) => {
 																handleClose(e);
-																setMetamaskMessage('Getting OVR first...');
+																setMetamaskMessage(t('MetamaskMessage.set.get.ovr.first'));
 																if (checkUserLoggedIn() === false) {
 																	return false;
 																}
@@ -200,7 +198,7 @@ const BuyLandOverlay = (props) => {
 														<MenuItem
 															onClick={async (e) => {
 																handleClose(e);
-																setMetamaskMessage('Getting OVR first...');
+																setMetamaskMessage(t('MetamaskMessage.set.get.ovr.first'));
 																if (checkUserLoggedIn() === false) {
 																	return false;
 																}
@@ -215,7 +213,7 @@ const BuyLandOverlay = (props) => {
 														<MenuItem
 															onClick={async (e) => {
 																handleClose(e);
-																setMetamaskMessage('Getting OVR first...');
+																setMetamaskMessage(t('MetamaskMessage.set.get.ovr.first'));
 																if (checkUserLoggedIn() === false) {
 																	return false;
 																}

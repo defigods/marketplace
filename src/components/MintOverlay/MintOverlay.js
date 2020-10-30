@@ -26,7 +26,7 @@ const MintOverlay = (props) => {
 	const [bidValid, setBidValid] = useState(false);
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
-	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
 	const [bid, setBid] = useState(0);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
@@ -146,31 +146,31 @@ const MintOverlay = (props) => {
 		try {
 			switch (type) {
 				case 'ovr':
-					setMetamaskMessage('Approving OVR tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
 					await approveOvrTokens(true, ovr);
-					setMetamaskMessage('Participating in the auction with OVR...');
+					setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
 					await participateMint(4, bid, hexId);
 					break;
 				case 'eth':
-					setMetamaskMessage('Participating in the auction with ETH...');
+					setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
 					await participateMint(0, bid, hexId);
 					break;
 				case 'usdt':
-					setMetamaskMessage('Approving Tether tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
 					await approveOvrTokens(true, tether);
-					setMetamaskMessage('Participating in the auction with Tether...');
+					setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
 					await participateMint(2, bid, hexId);
 					break;
 				case 'usdc':
-					setMetamaskMessage('Approving USDC tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
 					await approveOvrTokens(true, usdc);
-					setMetamaskMessage('Participating in the auction with USDC...');
+					setMetamaskMessage(t('"MetamaskMessage.set.participate.usdc'));
 					await participateMint(3, bid, hexId);
 					break;
 				case 'dai':
-					setMetamaskMessage('Approving DAI tokens...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
 					await approveOvrTokens(true, dai);
-					setMetamaskMessage('Participating in the auction with DAI...');
+					setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
 					await participateMint(1, bid, hexId);
 					break;
 			}

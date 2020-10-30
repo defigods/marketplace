@@ -11,7 +11,7 @@ const LanguageSelector = () => {
   return (
     <div onChange={changeLanguage}>
       <input type="radio" value="en" name="language" defaultChecked /> English
-      <input type="radio" value="zh-hk" name="language"/> Traditional Chinese
+      <input type="radio" value="zh-hk" name="language" /> Traditional Chinese
     </div>
   )
 }

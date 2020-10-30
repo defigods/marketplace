@@ -23,7 +23,7 @@ const SellOverlay = (props) => {
 	const [sellWorth, setNewSellWorth] = useState(props.currentBid);
 	const [bidValid, setBidValid] = useState(false);
 	const [activeStep, setActiveStep] = useState(0);
-	const [metamaskMessage, setMetamaskMessage] = useState('Waiting for MetaMask confirmation');
+	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
@@ -85,13 +85,13 @@ const SellOverlay = (props) => {
 			} else {
 				setActiveStep((prevActiveStep) => prevActiveStep + 1);
 				try {
-					setMetamaskMessage('Approving ERC721 token for the Smart Contract...');
+					setMetamaskMessage(t('MetamaskMessage.set.approve.erc721'));
 					await approveErc721Token(hexId);
-					setMetamaskMessage('Waiting for MetaMask confirmation');
+					setMetamaskMessage(t('MetamaskMessage.set.waiting'));
 					await putLandOnSale(hexId, String(window.web3.toWei(sellWorth)), true);
 					// TODO Centralized flux
 				} catch (e) {
-					return dangerNotification('Error processing the transactions', e.message);
+					return dangerNotification(t('Danger.error.processing.title'), e.message);
 				}
 				sendSell();
 			}
@@ -111,7 +111,7 @@ const SellOverlay = (props) => {
 				} else {
 					// response.data.errors[0].message
 					// console.log('responseFalse');
-					dangerNotification('Unable to place sell request', response.data.errors[0].message);
+					dangerNotification(t('Danger.unable.place.sell.title'), response.data.errors[0].message);
 				}
 			})
 			.catch(() => {

@@ -228,7 +228,7 @@ export class Web3Provider extends Component {
         let nonce = response.data.user.nonce;
         this.handleUserSignMessage(publicAddress, nonce, callback);
       } else {
-        dangerNotification('Unable to login', response.data.errors);
+        dangerNotification(this.props.t('Danger.unable.login.title'), response.data.errors);
       }
     });
   }
@@ -255,7 +255,7 @@ export class Web3Provider extends Component {
           callback();
         }
       } else {
-        dangerNotification('Unable to login', response.data.errors[0].message);
+        dangerNotification(this.props.t('Danger.unable.login.title'), response.data.errors[0].message);
       }
     });
   };
@@ -281,17 +281,14 @@ export class Web3Provider extends Component {
           });
           landsRedeemed++;
         } catch (e) {
-          return dangerNotification(`Error redeeming the land ${activeLandsIds[i]}`, e.message);
+          return dangerNotification(this.props.t('Danger.error.redeem.land.title',{land:activeLandsIds[i]}) , e.message);
         }
       }
     }
     if (landsRedeemed === 0) {
-      warningNotification(
-        'No lands to redeem',
-        "You don't have any lands to redeem for now. Check in a few hours when the auction time is reached.",
-      );
+      warningNotification(this.props.t('Warning.no.lands.title'),this.props.t('Warning.no.lands.desc'));
     } else {
-      successNotification('Your lands are on their way!', "You'll receive your lands in a few minutes");
+      successNotification(this.props.t('Success.receive.lands.title'),this.props.t('Success.receive.lands.desc'));
     }
   };
 
@@ -304,7 +301,7 @@ export class Web3Provider extends Component {
       });
       await this.waitTx(tx);
     } catch (e) {
-      return dangerNotification(`Error redeeming the land ${landId}`, e.message);
+      return dangerNotification(this.props.t('Danger.error.redeem.land.title',{land:landId}) , e.message);
     }
   };
 
@@ -323,7 +320,7 @@ export class Web3Provider extends Component {
       });
       await this.waitTx(tx);
     } catch (e) {
-      dangerNotification('Error approving the OVR land token', e.message);
+      dangerNotification(this.props.t('Danger.error.approving.title'), e.message);
       return false;
     }
     return true;
@@ -340,9 +337,7 @@ export class Web3Provider extends Component {
         });
         await this.waitTx(tx);
       } catch (e) {
-        dangerNotification('Approval error',
-          'There was an error processing the approval of your tokens try again in a few minutes',
-        );
+        dangerNotification(this.props.t('Danger.approval.error.title'),this.props.t('Danger.approval.error.desc'));
         return false;
       }
     }
@@ -368,9 +363,9 @@ export class Web3Provider extends Component {
       });
       await this.waitTx(tx);
     } catch (e) {
-      return dangerNotification('Error listing the land on sale', e.message);
+      return dangerNotification(this.props.t('Danger.error.listing.title'), e.message);
     }
-    successNotification('Successful land listing', 'Your land has been listed successfully');
+    successNotification(this.props.t('Success.listing.lands.title'), this.props.t('Success.listing.lands.desc'));
   };
 
   setAllNotificationsAsReaded = () => {
@@ -507,8 +502,9 @@ export class Web3Provider extends Component {
     // Check if the user has enough balance to buy those tokens
     if (currentBalance.lessThan(tokensToBuy)) {
       return warningNotification(
-        'Not enough tokens',
-        `You don't have enough to buy ${window.web3.fromWei(tokensToBuy)} OVR tokens`,
+		this.props.t('Not enough tokens'),
+		this.props.t('Warning.no.tokens.desc', {message: window.web3.fromWei(tokensToBuy)})
+        //`You don't have enough to buy ${window.web3.fromWei(tokensToBuy)} OVR tokens`,
       );
     }
     try {
@@ -534,7 +530,7 @@ export class Web3Provider extends Component {
           break;
       }
       await this.waitTxWithCallback(tx, () => {
-        successNotification('Your OVR are on their way!', 'You can check transaction status in MetaMask');
+        successNotification(this.props.t('Success.receive.ovr.title'), this.props.t('Success.receive.ovr.desc'));
       });
     } catch (e) {
       return warningNotification(this.props.t('Warning.buy.error.title'), this.props.t('Warning.buy.error.desc.token'));

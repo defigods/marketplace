@@ -33,7 +33,7 @@ const BuyTokens = (context) => {
 	}, [setupComplete]);
 
 	const buyWithIndacoin = () => {
-		if (config.environment != 'DEVELOPMENT' && user.kycReviewAnswer < 1) { return dangerNotification('Identity verification required', 'To buy OVR token it is required that you pass our KYC. Go to your Profile and Start now the Identity Verification.'); }
+		if (config.environment != 'DEVELOPMENT' && user.kycReviewAnswer < 1) { return dangerNotification(t('Danger.require.verification.title'), t('Danger.require.verification.desc')); }
 		if (tokensToBuy <= 0)
 			return warningNotification(t('Warning.amount.empty.title'), t('Warning.amount.empty.desc'));
 		const url = `https://indacoin.com/gw/payment_form?partner=${partnerName}&cur_from=USD&cur_to=USD&amount=${usdToSpend}&address=${window.web3.eth.accounts[0]}&user_id=${user.uuid}`;
