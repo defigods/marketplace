@@ -24,6 +24,10 @@ const NavBar = () => {
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State } = useContext(Web3Context);
 	const [langOpen, setLangOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(false);
+	const anchorRef = React.useRef(null);
+	const prevOpen = React.useRef(open);
+	const langRef = React.useRef(langOpen);
 
 	let ovrsOwned;
 	if (web3State.ovrsOwned) {
@@ -41,8 +45,7 @@ const NavBar = () => {
 	  }
 
 	// START - Profile sub menu
-	const [open, setOpen] = React.useState(false);
-	const anchorRef = React.useRef(null);
+
 
 	let history = useHistory();
 
@@ -50,14 +53,13 @@ const NavBar = () => {
 		setOpen((prevOpen) => !prevOpen);
 	};
 
+	const handleLang = () => {
+		setLangOpen((langOpen) => !langOpen);
+	};
+
 	const handleGoTo = (link) => {
 		history.push(link);
 	};
-
-	const handleShowMenu = (event) => {
-		event.preventDefault();
-		setLangOpen(!langOpen);
-	}
 
 	const handleClose = (event) => {
 		if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -66,7 +68,13 @@ const NavBar = () => {
 		setOpen(false);
 	};
 
-	const prevOpen = React.useRef(open);
+	const handleCloseLang = (event) => {
+		if (anchorRef.current && anchorRef.current.contains(event.target)) {
+			return;
+		}
+		setLangOpen(false);
+	};
+
 	React.useEffect(() => {
 		if (userState.isLoggedIn) {
 			if (prevOpen.current === true && open === false) {
@@ -96,6 +104,58 @@ const NavBar = () => {
 			);
 		}
 		return cont;
+	}
+
+	function leftContainer(){
+		let cont =<></>
+		cont = (
+		<div className="Navbar__left_container">
+		<Link
+			to="#"
+			className="NavBar__link General__link Language__link"
+			ref={langRef}
+			aria-controls={langOpen ? 'menu-list-grow' : undefined}
+			aria-haspopup="true"
+			onClick={(e) => {
+				handleCloseLang(e);
+				handleLang(e);
+			}}
+		>
+			{t('LanguageSelection.lang.select')}
+		</Link>
+		<Popper open={langOpen} anchorEl={langRef.current} role={undefined} transition disablePortal>
+			{({ TransitionProps, placement }) => (
+				<Grow
+					{...TransitionProps}
+					style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+				>
+					<Paper>
+						<ClickAwayListener onClickAway={handleCloseLang}>
+							<MenuList autoFocusItem={langOpen} id="menu-lang-list-grow" className="navbar-lang-submenu">
+								<MenuItem
+									onClick={(e) => {
+										changeLanguage("en");
+										handleCloseLang();
+									}}
+								>
+									{t('LanguageSelection.lang.eng')}
+								</MenuItem>
+								<MenuItem
+									onClick={(e) => {
+										changeLanguage("zh-hk");
+										handleCloseLang();
+									}}
+								>
+									{t('LanguageSelection.lang.zhHK')}
+								</MenuItem>
+							</MenuList>
+						</ClickAwayListener>
+					</Paper>
+				</Grow>
+			)}
+		</Popper>
+		</div>)
+		return cont
 	}
 
 	function rightContainer() {
@@ -216,18 +276,6 @@ const NavBar = () => {
 												>
 													{t('Navbar.Logout.label')}
 												</MenuItem>
-												<div>
-												<MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														handleShowMenu(e);
-													}}
-												>
-													{t('LanguageSelection.lang.select')}
-												</MenuItem>
-												{langOpen && <LanguageSelector/>}
-												</div>
-
 											</MenuList>
 										</ClickAwayListener>
 									</Paper>
@@ -249,10 +297,10 @@ const NavBar = () => {
 					<NavLink className="NavBar__link General__link" to="/signup">
 					{t('Navbar.Signup.label')}
 					</NavLink>
-					<NavLink className="NavBar__link General__link" to="#" onClick={(e)=>{handleShowMenu(e); console.log(langOpen)}}>
+					{/* <NavLink className="NavBar__link General__link" to="#" onClick={(e)=>{handleShowMenu(e); console.log(langOpen)}}>
 					{t('LanguageSelection.lang.select')}
-					</NavLink>
-					{langOpen && <LanguageSelector/>}
+					</NavLink> */}
+					{/* {langOpen && <LanguageSelector/>} */}
 				</div>
 				</div>
 			);
@@ -378,6 +426,7 @@ const NavBar = () => {
 				</div>
 			</Link>
 			<div className="Navbar__link_container">
+				{leftContainer()}
 				{/* <NavLink className="NavBar__link" to="/map/overview">
 					My Assets
 				</NavLink>

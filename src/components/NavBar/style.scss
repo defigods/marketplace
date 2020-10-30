@@ -98,6 +98,10 @@
 .Funds__link{
     float: left;
 }
+.Language__link{
+	float: left;
+	max-width: 100px;
+}
 
 
 @-webkit-keyframes ring {
@@ -217,7 +221,11 @@
   .navbar-submenu .MuiButtonBase-root{
     padding-left: 25px;
     padding-right: 25px;
-  }
+	}
+	.navbar-lang-submenu .MuiButtonBase-root{
+			padding-left: 25px;
+			padding-right: 25px;
+	}
 	.Funds__container {
 		float: left;
 		line-height: 70px;
@@ -231,7 +239,9 @@
 		}
 	}
 }
-
+.Navbar__left_container{
+	position: absolute;
+}
 .js--ring-notification-bell{
   .Notifications__link{
     svg{
