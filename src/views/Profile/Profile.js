@@ -97,6 +97,7 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 	if (sumsubLang == "zh-HK") {
 		sumsubLang = "zh";
 	}
+	console.log('sumsubLang',sumsubLang)
 	let snsWebSdkInstance = snsWebSdk
 		.Builder(apiUrl, flowName)
 		.withAccessToken(accessToken, (newAccessTokenCallback) => {
