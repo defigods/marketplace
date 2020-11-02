@@ -101,7 +101,7 @@ const NavBar = () => {
 		if (userState.isLoggedIn === true && userState.user !== null) {
 			cont = (
 				<NavLink className="NavBar__link" to="/profile">
-					Profile
+					{t('Navbar.profile.label')}
 				</NavLink>
 			);
 		}
@@ -123,7 +123,7 @@ const NavBar = () => {
 				handleLang(e);
 			}}
 		>
-			<Translate className="Translate" shapeRendering="auto"/>{t('LanguageSelection.lang.select')}
+			<Translate className="Translate" shapeRendering="auto"/>
 		</Link>
 		<Popper open={langOpen} anchorEl={langRef.current} role={undefined} transition disablePortal>
 			{({ TransitionProps, placement }) => (
@@ -140,7 +140,7 @@ const NavBar = () => {
 										handleCloseLang();
 									}}
 								>
-									{t('LanguageSelection.lang.eng')}
+									English
 								</MenuItem>
 								<MenuItem
 									onClick={(e) => {
@@ -148,7 +148,7 @@ const NavBar = () => {
 										handleCloseLang();
 									}}
 								>
-									{t('LanguageSelection.lang.zhHK')}
+									中文
 								</MenuItem>
 							</MenuList>
 						</ClickAwayListener>
