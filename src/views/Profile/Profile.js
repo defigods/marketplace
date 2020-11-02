@@ -94,7 +94,7 @@ const renderBadge = (status, t) => {
 
 const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone) => {
 	let sumsubLang = localStorage.getItem('i18nextLng');
-	if (sumsubLang == "zh-HK") {
+	if (sumsubLang == "zh-hk") {
 		sumsubLang = "zh";
 	}
 	console.log('sumsubLang',sumsubLang)
