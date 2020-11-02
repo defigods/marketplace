@@ -15,8 +15,8 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
+import Translate from '@material-ui/icons/Translate';
 
-import LanguageSelector from '../LanguageSelector/LanguageSelector'
 import { useTranslation } from 'react-i18next'
 
 const NavBar = () => {
@@ -69,8 +69,10 @@ const NavBar = () => {
 	};
 
 	const handleCloseLang = (event) => {
-		if (anchorRef.current && anchorRef.current.contains(event.target)) {
-			return;
+		if(event){
+			if (anchorRef.current && anchorRef.current.contains(event.target)) {
+				return;
+			}
 		}
 		setLangOpen(false);
 	};
@@ -112,7 +114,7 @@ const NavBar = () => {
 		<div className="Navbar__left_container">
 		<Link
 			to="#"
-			className="NavBar__link General__link Language__link"
+			className="NavBar__link Language__link"
 			ref={langRef}
 			aria-controls={langOpen ? 'menu-list-grow' : undefined}
 			aria-haspopup="true"
@@ -121,7 +123,7 @@ const NavBar = () => {
 				handleLang(e);
 			}}
 		>
-			{t('LanguageSelection.lang.select')}
+			<Translate className="Translate" shapeRendering="auto"/>{t('LanguageSelection.lang.select')}
 		</Link>
 		<Popper open={langOpen} anchorEl={langRef.current} role={undefined} transition disablePortal>
 			{({ TransitionProps, placement }) => (
@@ -297,10 +299,6 @@ const NavBar = () => {
 					<NavLink className="NavBar__link General__link" to="/signup">
 					{t('Navbar.Signup.label')}
 					</NavLink>
-					{/* <NavLink className="NavBar__link General__link" to="#" onClick={(e)=>{handleShowMenu(e); console.log(langOpen)}}>
-					{t('LanguageSelection.lang.select')}
-					</NavLink> */}
-					{/* {langOpen && <LanguageSelector/>} */}
 				</div>
 				</div>
 			);

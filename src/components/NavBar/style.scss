@@ -101,6 +101,14 @@
 .Language__link{
 	float: left;
 	max-width: 100px;
+	.Translate{
+		line-height: 70px;
+		position: relative;
+		top: 6px;
+		color: rgba(40, 45, 50, 0.5);
+		margin-right: 5px;
+		font-size: 21px;
+	}
 }
 
 

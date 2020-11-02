@@ -93,6 +93,10 @@ const renderBadge = (status, t) => {
 };
 
 const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone) => {
+	let sumsubLang = localStorage.getItem('i18nextLng');
+	if (sumsubLang == "zh-HK") {
+		sumsubLang = "zh";
+	}
 	let snsWebSdkInstance = snsWebSdk
 		.Builder(apiUrl, flowName)
 		.withAccessToken(accessToken, (newAccessTokenCallback) => {
@@ -102,7 +106,7 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 			newAccessTokenCallback(newAccessToken);
 		})
 		.withConf({
-			lang: 'en',
+			lang: sumsubLang,
 			email: applicantEmail,
 			phone: applicantPhone,
 			onMessage: (type, payload) => {
@@ -172,7 +176,7 @@ const ProfileContent = () => {
 					.catch(() => {});
 			}
 		}
-	}, [user.uuid, sumsubShowPanel]);
+	}, [user.uuid, sumsubShowPanel, localStorage.getItem('i18nextLng')]);
 
 	const toggleKycVerificationFrame = (e) => {
 		e.preventDefault();
