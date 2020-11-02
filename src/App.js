@@ -31,7 +31,7 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { Translation } from 'react-i18next';
 
-const supportedLangs = ['en', 'zh-HK'];
+const supportedLangs = ['en', 'zh'];
 const fallbackLang = 'en';
 
 function App() {

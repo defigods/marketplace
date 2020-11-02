@@ -94,9 +94,6 @@ const renderBadge = (status, t) => {
 const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone, t) => {
 	let sumsubLang = localStorage.getItem('i18nextLng');
 	let userWallet;
-	if (sumsubLang == "zh-hk") {
-		sumsubLang = "zh";
-	}
 	if (window.web3 && window.web3.eth && window.web3.eth.defaultAccount && window.web3.eth.defaultAccount.toLowerCase()){
 		userWallet = window.web3.eth.defaultAccount.toLowerCase();
 	}

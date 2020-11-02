@@ -144,7 +144,7 @@ const NavBar = () => {
 								</MenuItem>
 								<MenuItem
 									onClick={(e) => {
-										changeLanguage("zh-hk");
+										changeLanguage("zh");
 										handleCloseLang();
 									}}
 								>
