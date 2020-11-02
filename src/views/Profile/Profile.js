@@ -17,8 +17,7 @@ import { Web3Context } from '../../context/Web3Context';
 import snsWebSdk from '@sumsub/websdk';
 import { useTranslation, Translation} from 'react-i18next';
 
-
-// import { networkError } from '../../lib/notifications';
+import { warningNotification } from '../../lib/notifications';
 
 
 
@@ -56,7 +55,7 @@ const ProfileLayout = () => {
 					<div className="o-fourth">
 						{/* <HexImage className="profile-image" /> */}
 						<Blockies
-							seed={userState.user.uuid || 'wewewe'}
+							seed={userState.user.uuid || 'loading'}
 							size={12}
 							scale={13}
 							color="#7521c8"
@@ -92,34 +91,43 @@ const renderBadge = (status, t) => {
 	return badge;
 };
 
-const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone) => {
+const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone, t) => {
 	let sumsubLang = localStorage.getItem('i18nextLng');
+	let userWallet;
 	if (sumsubLang == "zh-hk") {
 		sumsubLang = "zh";
 	}
-	console.log('sumsubLang',sumsubLang)
-	let snsWebSdkInstance = snsWebSdk
-		.Builder(apiUrl, flowName)
-		.withAccessToken(accessToken, (newAccessTokenCallback) => {
-			// Access token expired
-			// get a new one and pass it to the callback to re-initiate the WebSDK
-			let newAccessToken = '...'; // get a new token from your backend
-			newAccessTokenCallback(newAccessToken);
-		})
-		.withConf({
-			lang: sumsubLang,
-			email: applicantEmail,
-			phone: applicantPhone,
-			onMessage: (type, payload) => {
-				console.log('WebSDK onMessage', type, payload);
-			},
-			customCss: 'url',
-			onError: (error) => {
-				console.error('WebSDK onError', error);
-			},
-		})
-		.build();
-	snsWebSdkInstance.launch('#sumsub-websdk-container');
+	if (window.web3 && window.web3.eth && window.web3.eth.defaultAccount && window.web3.eth.defaultAccount.toLowerCase()){
+		userWallet = window.web3.eth.defaultAccount.toLowerCase();
+	}
+	if (userWallet){
+		let snsWebSdkInstance = snsWebSdk
+			.Builder(apiUrl, flowName)
+			.withAccessToken(accessToken, (newAccessTokenCallback) => {
+				// Access token expired
+				// get a new one and pass it to the callback to re-initiate the WebSDK
+				let newAccessToken = '...'; // get a new token from your backend
+				newAccessTokenCallback(newAccessToken);
+			})
+			.withConf({
+				lang: sumsubLang,
+				email: applicantEmail,
+				phone: applicantPhone,
+				metadata: [{"key": "walletAddress", "value": userWallet}],
+				onMessage: (type, payload) => {
+					console.log('WebSDK onMessage', type, payload);
+				},
+				customCss: 'url',
+				onError: (error) => {
+					console.error('WebSDK onError', error);
+				},
+			})
+			.build();
+		snsWebSdkInstance.launch('#sumsub-websdk-container');
+	} else {
+		warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+	}
+	
 };
 
 const countdownTimer = (t) => {
@@ -156,13 +164,12 @@ const ProfileContent = () => {
 	// console.log('ProfileContent->These are user and web3Context from UserContext', web3Context, user);
 	useEffect(() => {
 		if (sumsubShowPanel == true && user.uuid != undefined) {
-			// console.log('eccolo 2');
 			getSumsubData()
 				.then((response) => {
 					// console.log(response);
 					if (response.data.result === true) {
 						// console.log(user.email);
-						launchWebSdk(config.apis.sumsubApi, 'basic-kyc', response.data.content.token, user.email, null);
+						launchWebSdk(config.apis.sumsubApi, 'basic-kyc', response.data.content.token, user.email, null, t);
 						// 	externalUserId={sumsubExternalUserId}
 						// 	accessToken={sumsubAccessToken}
 					}

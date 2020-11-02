@@ -47,6 +47,7 @@ function App() {
 		lookupSessionStorage: 'i18nextLng',
 		lookupFromPathIndex: 0,
 		lookupFromSubdomainIndex: 0,
+		lng: navigator.language || navigator.userLanguage,
 	  
 		// cache user language on
 		caches: ['localStorage', 'cookie'],
@@ -55,7 +56,6 @@ function App() {
 
 	if(!supportedLangs.includes(i18next.language)){
 		localStorage.removeItem('i18nextLng');
-		console.log("Language "+ i18next.language +" not currently supported!" )
 		i18next.changeLanguage(fallbackLang)
 	}
 
