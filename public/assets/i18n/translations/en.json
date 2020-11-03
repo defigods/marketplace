@@ -21,9 +21,14 @@
 	"Profile.identify.verification" : "Identity verification",
 	"Profile.whitelisted.ok" : "You are whitelisted and ready to buy OVR at the beginning of the public sale.",
 	"Profile.whitelisted.no.ok" : "To be whitelisted and able to buy OVR at the beginning of the public sale verify your identity.",
-	"Profile.status.label" : "Status",
 	"Profile.start.verification" : "START VERIFICATION",
 	"Profile.check.verification" : "CHECK VERIFICATION",
+
+	"Profile.status.label" : "KYC Status",
+	"Profile.emailPresence.label" : "Email address",
+	"Email.add" : "Save",
+	"Warning.email.not.detected.title":"Email not present in our db",
+	"Warning.email.not.detected.desc":"In order to perform the KYC you have to set up an email address",
 
 	"Signup.email.not.valid" : "The inserted email address is not a valid email address",
 	"Signup.try.login" : "Try to login instead",

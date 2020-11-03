@@ -89,7 +89,7 @@ function App() {
 																				{userValue.state.isLoggedIn ? (
 																					<Redirect to="/profile" />
 																				) : (
-																					<Redirect to="/signup" />
+																					<Redirect to="/login" />
 																				)}
 																				{/* TODO: KYC - Redirect to Redirect to="/map/discover" */}
 																			</Route>

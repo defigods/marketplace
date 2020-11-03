@@ -52,8 +52,8 @@
     height: 70px;
     border-right: rgba(43, 48, 52, 0.1) solid 1px;
     float: left;
-    svg{
-        width: 36px;
+    svg, img{
+        width: auto;
         height: 36px;
         display: block;
         margin: 17px auto;
@@ -287,12 +287,22 @@
     display: block;   
 }
 
-.AuthLogin__link{
+/* .AuthLogin__link{
   top: 0px;
   position: absolute;
   line-height: 70px;
   right: 0px;
   margin: 0px 70px;
+  .General__link{
+    display: inline-block;
+  }
+} */
+.AuthLogin__link{
+  top: 0px;
+  position: absolute;
+  right: 0px;
+	margin: 0px 70px;
+	margin-top: 19px;
   .General__link{
     display: inline-block;
   }

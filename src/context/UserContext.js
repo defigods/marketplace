@@ -51,6 +51,13 @@ export class UserProvider extends Component {
 		this.setState({ user: user });
 	}
 
+	setUserEmail = (email) => {
+		this.setState({ user: {
+			...this.state.user,
+			email: email
+		} });
+	}
+
 	setUserActivity = (activities) => {
 		this.setState({ user: {
 			...this.state.user,
@@ -203,6 +210,7 @@ export class UserProvider extends Component {
 						logoutUser: this.logoutUser,
 						setUserState: this.setUserState,
 						setUserActivity: this.setUserActivity,
+						setUserEmail: this.setUserEmail,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
 						notification: {

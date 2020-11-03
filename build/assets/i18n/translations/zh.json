@@ -19,7 +19,11 @@
 	"Profile.identify.verification" : "身份认证",
 	"Profile.whitelisted.ok" : "你已经加入白名单，可以参加OVR公售了。",
 	"Profile.whitelisted.no.ok" : "认证你的身份才能加入白名单参加OVR公售",
-	"Profile.status.label" : "状态",
+	"Profile.status.label" : "身份认证状态",
+	"Profile.emailPresence.label" : "邮箱地址",
+	"Email.add" : "保存",
+	"Warning.email.not.detected.title":"此邮箱不存在于我们的数据库里",
+	"Warning.email.not.detected.desc":"你必须设置邮箱地址才能开始身份认证",
 	"Profile.start.verification" : "开始认证",
 	"Profile.check.verification" : "检查认证信息",
 	"Signup.email.not.valid" : "输入的邮箱地址无效",
@@ -40,7 +44,7 @@
 	"Signup.web3.present" : "点击下方以继续.",
 	"Signup.web3.not.present" : "请安装MetaMask，并在正确的网络上配置它。然后重新加载此页面。",
 	"Signup.create.account": "创建账户",
-
+	
 	"Signup.use.social": "用邮箱或者社交账户注册",
 	"Signup.info.stored": "帐户信息会被安全的存储在区块链中",
 	"Signup.set.username": "设置用户名",

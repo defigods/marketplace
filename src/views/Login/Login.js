@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { withWeb3Context, Web3Context } from '../../context/Web3Context';
 import { MapContext } from '../../context/MapContext';
 import { useTranslation } from 'react-i18next'
+import { UserContext } from '../../context/UserContext';
 
 /**
  * Login page component
@@ -14,21 +15,25 @@ const Login = () => {
 	const { t, i18n } = useTranslation();
 	const web3Context = useContext(Web3Context);
 	const mapContext = useContext(MapContext);
+	const userContext = useContext(UserContext);
 	let history = useHistory();
 
 	useEffect(() => {
 		// Login via web3
-		web3Context.actions.setupWeb3(() => {
+		console.log(userContext)
+		if(userContext.state.isLoggedIn){
+			history.push('/profile');
+		}
+/* 		web3Context.actions.setupWeb3(() => {
 			history.push('/profile');
 			// TODO: KYC - history.push('map/discover');
-
 			// console.log('login here eheh');
 			if (mapContext.state.onSingleView) {
 				history.push('/map/land/' + mapContext.state.hex_id);
 			}
 			// onSingleView
-		});
-	}, []);
+		}); */
+	}, [userContext.state.isLoggedIn]);
 
 	//
 	// Return

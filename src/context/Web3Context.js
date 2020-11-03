@@ -2,7 +2,7 @@ import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
 import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendAuctionBidConfirm, sendPreAuctionBid } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendAuctionBidConfirm, sendPreAuctionBid, signUpLoginMetamask } from '../lib/api';
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -223,6 +223,9 @@ export class Web3Provider extends Component {
   //
 
   handleCentralizedLogin(publicAddress, callback) {
+		signUpLoginMetamask(publicAddress).then((response) => {
+			console.log(response)
+		});
     getUserNonce(publicAddress).then((response) => {
       if (response.data.result === true) {
         let nonce = response.data.user.nonce;
@@ -621,7 +624,7 @@ export class Web3Provider extends Component {
             getOvrsOwned: this.getOvrsOwned,
             waitTx: this.waitTx,
             waitTxWithCallback: this.waitTxWithCallback,
-            setupWeb3: this.setupWeb3,
+						setupWeb3: this.setupWeb3,
             redeemLands: this.redeemLands,
             putLandOnSale: this.putLandOnSale,
             approveErc721Token: this.approveErc721Token,

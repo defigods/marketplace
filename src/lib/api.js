@@ -73,6 +73,25 @@ export function signUpPublicAddress(publicAddress) {
 	return request({ url: '/user/registration', method: 'POST' }, { public_address: publicAddress }, null);
 }
 
+export function signUpLoginMetamask(publicAddress) {
+	return request(
+		{ url: '/authentication/metamask', method: 'POST' },
+		{ public_address: publicAddress },
+		null,
+	);
+}
+
+
+export function setDbUserEmail(email = null) {
+	return request(
+		{ url: '/user/set/email', method: 'POST' },
+		{
+			email: email,
+		},
+		null,
+	);
+}
+
 // AUCTIONS
 // ----------------------------------------------------------------------------------------
 export function indexOpenAuctions(sort = null, page = 1) {
