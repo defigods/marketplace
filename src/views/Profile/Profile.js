@@ -10,6 +10,8 @@ import config from '../../lib/config';
 // import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
 // import IdensicComp from '../../components/IdensicComp/IdensicComp';
 import { getSumsubData, setSumsubVerificationToStarted, setDbUserEmail } from '../../lib/api';
+import { successNotification, warningNotification } from '../../lib/notifications';
+
 import Blockies from 'react-blockies';
 
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
@@ -19,8 +21,6 @@ import snsWebSdk from '@sumsub/websdk';
 import { useTranslation, Translation} from 'react-i18next';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { warningNotification } from '../../lib/notifications';
-
 
 
 const ProfileContentLoginRequired = () => {
@@ -99,6 +99,7 @@ const ProfileLayout = () => {
 			setDbUserEmail(userEmail).then((response) => {
 				if (response.data.result === true) {
 					userContext.actions.setUserEmail(userEmail)
+					successNotification(t('Generic.congrats.label'), t('Signup.email.saved.title'))
 				} else {
 					let error_message = response.data.errors[0].message;
 					setIsSignupLoading(false)

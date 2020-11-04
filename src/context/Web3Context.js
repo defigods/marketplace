@@ -135,7 +135,7 @@ export class Web3Provider extends Component {
       return warningNotification(this.props.t('Warning.metamask.not.detected.title'), this.props.t('Warning.metamask.not.detected.desc'));
     }
     window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
-
+		console.log("window.web3.eth.defaultAccount", window.web3.eth.defaultAccount)
     // Sign nonce for centralized login
     let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
     await this.handleCentralizedLogin(publicAddress, callback);
@@ -188,6 +188,7 @@ export class Web3Provider extends Component {
   refreshWhenAccountsChanged = () => {
     // console.log('init refresh');
     window.ethereum.on('accountsChanged', (accounts) => {
+			console.log("Account changed")
       // console.log('this.context.state.isLoggedIn', this.context.state.isLoggedIn);
       if (this.context.state.isLoggedIn) {
         // console.log('isLoggedin');
@@ -224,16 +225,15 @@ export class Web3Provider extends Component {
 
   handleCentralizedLogin(publicAddress, callback) {
 		signUpLoginMetamask(publicAddress).then((response) => {
-			console.log(response)
+			getUserNonce(publicAddress).then((response) => {
+					if (response.data.result === true) {
+							let nonce = response.data.user.nonce;
+							this.handleUserSignMessage(publicAddress, nonce, callback);
+					} else {
+							dangerNotification(this.props.t('Danger.unable.login.title'), response.data.errors);
+					}
+			});
 		});
-    getUserNonce(publicAddress).then((response) => {
-      if (response.data.result === true) {
-        let nonce = response.data.user.nonce;
-        this.handleUserSignMessage(publicAddress, nonce, callback);
-      } else {
-        dangerNotification(this.props.t('Danger.unable.login.title'), response.data.errors);
-      }
-    });
   }
 
   handleUserSignMessage = (publicAddress, nonce, callback) => {
