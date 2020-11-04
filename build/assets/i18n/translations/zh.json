@@ -24,6 +24,7 @@
 	"Email.add" : "保存",
 	"Warning.email.not.detected.title":"此邮箱不存在于我们的数据库里",
 	"Warning.email.not.detected.desc":"你必须设置邮箱地址才能开始身份认证",
+	"Signup.email.saved.title" : "输入的邮箱地址已经保存",
 	"Profile.start.verification" : "开始认证",
 	"Profile.check.verification" : "检查认证信息",
 	"Signup.email.not.valid" : "输入的邮箱地址无效",
