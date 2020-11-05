@@ -58,7 +58,7 @@ const LoginHelper = () => {
 			}
 		}
 		startEth();
-	}, []); //window.web3.networkVersion, window.web3.eth.defaultAccount, window.web3.eth.accounts[0]
+}, []); //window.web3.networkVersion, window.web3.eth.defaultAccount, window.web3.eth.accounts[0]
 
 	function metamaskComponent() {
 		let isWeb3Active = typeof window.web3 !== 'undefined';

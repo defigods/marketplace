@@ -121,13 +121,8 @@ export class Web3Provider extends Component {
 
   // Note: the web3 version is always 0.20.7 because of metamask
   setupWeb3 = async (callback) => {
-    // console.log('render setupweb3');
+		// console.log('render setupweb3');
 		const ethereum = window.ethereum;
-		let web3NetworkVersion = parseInt(ethereum.chainId, 16) === config.web3network;
-		if( web3NetworkVersion === false ) {
-			callback(false);
-			return false;
-		}
     if (typeof ethereum !== 'undefined') {
       try {
         await ethereum.enable();
@@ -143,7 +138,13 @@ export class Web3Provider extends Component {
 			return false;
     }
     window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
-		console.log("window.web3.eth.defaultAccount", window.web3.eth.defaultAccount)
+		
+		let web3NetworkVersion = parseInt(ethereum.chainId, 16) === config.web3network;
+		if( web3NetworkVersion === false ) {
+			callback(false);
+			return false;
+		}
+
     // Sign nonce for centralized login
     let publicAddress = window.web3.eth.defaultAccount.toLowerCase();
     await this.handleCentralizedLogin(publicAddress, callback);
