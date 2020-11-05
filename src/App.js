@@ -11,6 +11,7 @@ import Lands from './views/Lands/Lands';
 import Profile from './views/Profile/Profile';
 import Activity from './views/Activity/Activity';
 import Login from './views/Login/Login';
+import LoginHelper from './views/LoginHelper/LoginHelper';
 import Signup from './views/Signup/Signup';
 import BuyTokens from './views/BuyTokens/BuyTokens';
 import IndacoinResponse from './views/IndacoinResponse/IndacoinResponse';
@@ -101,6 +102,7 @@ function App() {
 																			{/* <Route path="/activity" component={Activity}></Route>  TODO: KYC - Remove comment */}
 																			<Route path="/login" component={Login}></Route>
 																			<Route path="/signup" component={Signup}></Route>
+																			<Route path="/login-helper" component={LoginHelper}></Route>
 																			{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
 																			<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}
 																		</Switch>

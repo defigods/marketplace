@@ -27,7 +27,7 @@
 	"Profile.status.label" : "KYC Status",
 	"Profile.emailPresence.label" : "Email address",
 	"Email.add" : "Save",
-	"Warning.email.not.detected.title":"Email not present in our db",
+	"Warning.email.not.detected.title":"Email not present",
 	"Warning.email.not.detected.desc":"In order to perform the KYC you have to set up an email address",
 	"Signup.email.saved.title" : "The inserted email address has been saved",
 
@@ -46,7 +46,7 @@
 	"Signup.web3.login": "Log in to Web3 provider",
 	"Signup.connect.to": "Connect to",
 	"Signup.network": "network",
-	"Signup.web3.present" : "Hurray! Click below to continue.",
+	"Signup.web3.present" : "Click Connect Wallet on the menu to continue.",
 	"Signup.web3.not.present" : "Please install MetaMask and configure it on the correct network. Then reload this page.",
 	"Signup.create.account": "Create an account",
 	"Signup.use.social": "Sign up with your social media account or email address",
@@ -61,6 +61,7 @@
 	"Navbar.Signup.label" : "Signup",
 	"Navbar.ovr" : "OVR",
 	"Navbar.ovr.logo" : "OVR Logo",
+	"Navbar.wallet.connect" : "Connect Wallet",
 
 	"Login.welcome.back" : "Welcome back to OVR",
 	"Login.use.metamask" : "We use MetaMask to authenticate Users. Please sign the nonce which will be used for this session.",

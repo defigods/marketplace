@@ -18,13 +18,14 @@ import {
 } from '../lib/contracts';
 import { tokenBuyAbi, erc20Abi, icoAbi, ovr721Abi, icoParticipateAbi, } from '../lib/abis';
 import { UserContext } from './UserContext';
+import { useHistory } from 'react-router-dom';
+
 
 
 export const Web3Context = createContext();
 
 export class Web3Provider extends Component {
   static contextType = UserContext;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -121,7 +122,12 @@ export class Web3Provider extends Component {
   // Note: the web3 version is always 0.20.7 because of metamask
   setupWeb3 = async (callback) => {
     // console.log('render setupweb3');
-    const ethereum = window.ethereum;
+		const ethereum = window.ethereum;
+		let web3NetworkVersion = parseInt(ethereum.chainId, 16) === config.web3network;
+		if( web3NetworkVersion === false ) {
+			callback(false);
+			return false;
+		}
     if (typeof ethereum !== 'undefined') {
       try {
         await ethereum.enable();
@@ -132,7 +138,9 @@ export class Web3Provider extends Component {
     } else if (typeof window.web3 !== 'undefined') {
       window.web3 = new Web3(window.web3.currentProvider);
     } else {
-      return warningNotification(this.props.t('Warning.metamask.not.detected.title'), this.props.t('Warning.metamask.not.detected.desc'));
+			callback(false)
+			warningNotification(this.props.t('Warning.metamask.not.detected.title'), this.props.t('Warning.metamask.not.detected.desc'));
+			return false;
     }
     window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		console.log("window.web3.eth.defaultAccount", window.web3.eth.defaultAccount)
@@ -186,16 +194,23 @@ export class Web3Provider extends Component {
 
   // Refreshes the page when the metamask account is changed
   refreshWhenAccountsChanged = () => {
-    // console.log('init refresh');
+		window.ethereum.on('networkChanged', function (networkId) {
+			let web3NetworkVersion = parseInt(window.ethereum.chainId, 16) === config.web3network;
+			if( web3NetworkVersion === false ) {
+				if (this.context.state.isLoggedIn) {
+						this.context.actions.logoutUser();
+						this.setupWeb3();
+				} else {
+						this.context.actions.logoutUser();
+				}
+			}
+		})
+
     window.ethereum.on('accountsChanged', (accounts) => {
-			console.log("Account changed")
-      // console.log('this.context.state.isLoggedIn', this.context.state.isLoggedIn);
       if (this.context.state.isLoggedIn) {
-        // console.log('isLoggedin');
         this.context.actions.logoutUser();
         this.setupWeb3();
       } else {
-        //
         this.context.actions.logoutUser();
       }
     });

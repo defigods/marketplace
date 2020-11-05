@@ -78,8 +78,12 @@ const NavBar = () => {
 	};
 
 	const handleMetamaskAuthentication = () => {
-		web3Actions.setupWeb3(() => {
-			history.push('/profile');
+		web3Actions.setupWeb3((res) => {
+			if( res == false ){
+				history.push('/login-helper');
+			} else {
+				history.push('/profile');
+			}
 		})
 	}
 
@@ -310,7 +314,7 @@ const NavBar = () => {
 			rightContainer = (
 				<div className="AuthLogin__link">
 					<div className="HexButton --orange" onClick={handleMetamaskAuthentication}>
-						Connect Wallet
+						{t('Navbar.wallet.connect')}
 					</div>
 				</div>
 			)

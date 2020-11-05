@@ -42,7 +42,7 @@
 	"Signup.web3.login": "登录 Web3 提供者",
 	"Signup.connect.to": "连接到",
 	"Signup.network": "网络",
-	"Signup.web3.present" : "点击下方以继续.",
+	"Signup.web3.present" : "点击菜单上的“连接钱包地址”来继续",
 	"Signup.web3.not.present" : "请安装MetaMask，并在正确的网络上配置它。然后重新加载此页面。",
 	"Signup.create.account": "创建账户",
 	
@@ -57,6 +57,7 @@
 	"Navbar.Signup.label" : "注册",
 	"Navbar.ovr" : "OVR",
 	"Navbar.ovr.logo" : "OVR 标志",
+	"Navbar.wallet.connect" : "链接钱包地址",
 	"Login.welcome.back" : "欢迎来到 OVR",
 	"Login.use.metamask" : "我们使用Metamask来认证用户。请同意本次认证协议。",
 	"Login.contact.us" : "如果你对你的账户有什么疑问，请联系我们",
