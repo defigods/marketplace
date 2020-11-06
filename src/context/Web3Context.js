@@ -2,7 +2,7 @@ import React, { createContext, Component } from 'react';
 import Web3 from 'web3';
 import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendAuctionBidConfirm, sendPreAuctionBid, signUpLoginMetamask } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendPreAuctionBid, signUpLoginMetamask } from '../lib/api';
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -140,6 +140,7 @@ export class Web3Provider extends Component {
     window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
 		
 		let web3NetworkVersion = parseInt(ethereum.chainId, 16) === config.web3network;
+		console.log(web3NetworkVersion)
 		if( web3NetworkVersion === false ) {
 			callback(false);
 			return false;
@@ -246,7 +247,7 @@ export class Web3Provider extends Component {
 							let nonce = response.data.user.nonce;
 							this.handleUserSignMessage(publicAddress, nonce, callback);
 					} else {
-							dangerNotification(this.props.t('Danger.unable.login.title'), response.data.errors);
+							// dangerNotification(this.props.t('Danger.unable.login.title'), response.data.errors);
 					}
 			});
 		});
@@ -609,9 +610,9 @@ export class Web3Provider extends Component {
     let landIdBase16 = parseInt(landId, 16);
     let tx = await this.participate(type, bidInWei, landIdBase16);
     this.setState({lastTransaction: tx});
-    sendPreAuctionBid(landId, bid, tx);
+    //sendPreAuctionBid(landId, bid, tx);
     this.waitTxWithCallback(tx, () => {
-      sendAuctionBidConfirm(landId, bid)
+      //sendAuctionBidConfirm(landId, bid)
     })
   }
 

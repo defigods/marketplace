@@ -110,9 +110,17 @@ const NavBar = () => {
 		let cont = <div></div>;
 		if (userState.isLoggedIn === true && userState.user !== null) {
 			cont = (
+				<>
 				<NavLink className="NavBar__link" to="/profile">
 					{t('Navbar.profile.label')}
 				</NavLink>
+				<NavLink className="NavBar__link" to="/map/overview">
+					My Assets
+				</NavLink>
+				<NavLink className="NavBar__link" to="/map/discover">
+					Marketplace
+				</NavLink>
+				</>
 			);
 		}
 		return cont;
@@ -177,7 +185,7 @@ const NavBar = () => {
 				<>
 					<div className="Navbar__right_container">
 					
-						{/* <Link
+						<Link
 							to="/"
 							id="js-open-notification-link"
 							className="Notifications__link"
@@ -209,7 +217,7 @@ const NavBar = () => {
 									? userState.user.notifications.unreadedCount
 									: 0}
 							</div>
-						</Link>  // TODO: KYC - Remove comment */}
+						</Link> 
 
 						<div className="Funds__container">
 							{/* <Link to="/buy-tokens" className="Funds__link">
@@ -272,14 +280,14 @@ const NavBar = () => {
 												>
 													{t('Navbar.profile.label')}
 												</MenuItem>
-												{/* <MenuItem
+												<MenuItem
 													onClick={(e) => {
 														handleClose(e);
 														handleGoTo('/activity');
 													}}
 												>
 													Activity
-												</MenuItem>   // TODO: KYC - Remove comment*/}
+												</MenuItem>
 												<MenuItem
 													onClick={(e) => {
 														handleClose(e);
@@ -331,12 +339,6 @@ const NavBar = () => {
 			</Link>
 			<div className="Navbar__link_container">
 				{leftContainer()}
-				{/* <NavLink className="NavBar__link" to="/map/overview">
-					My Assets
-				</NavLink>
-				<NavLink className="NavBar__link" to="/map/discover">
-					Marketplace
-				</NavLink> // TODO: KYC - Remove comment */}
 				{centerContainer()}
 				{rightContainer()}
 			</div>

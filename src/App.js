@@ -82,7 +82,7 @@ function App() {
 																		<NavBar></NavBar>
 																		<BannerNotification></BannerNotification>
 																		<div className="o-container">
-																			{/* <Route path="/map/" component={Map}></Route>  TODO: KYC - Remove comment */}
+																		<Route path="/map/" component={Map}></Route>
 																		</div>
 																		<Switch>
 																			{/* <Route path="/" exact component={Home}></Route> */}
@@ -94,12 +94,12 @@ function App() {
 																				)}
 																				{/* TODO: KYC - Redirect to Redirect to="/map/discover" */}
 																			</Route>
-																			{/* <Route path="/map/discover" component={Discover}></Route>
+																			<Route path="/map/discover" component={Discover}></Route>
 																			<Route path="/map/overview" component={Overview}></Route>
 																			<Route path="/map/lands" component={Lands}></Route>
-																			<Route path="/map/land/:id" component={Land}></Route>  TODO: KYC - Remove comment */}
+																			<Route path="/map/land/:id" component={Land}></Route> 
 																			<Route path="/profile" component={Profile}></Route>
-																			{/* <Route path="/activity" component={Activity}></Route>  TODO: KYC - Remove comment */}
+																			<Route path="/activity" component={Activity}></Route>
 																			<Route path="/login" component={Login}></Route>
 																			<Route path="/signup" component={Signup}></Route>
 																			<Route path="/login-helper" component={LoginHelper}></Route>

@@ -97,8 +97,8 @@ const Land = (props) => {
 			return false;
 		}
 		getBuyOffers();
-		updateMarketStatusFromSmartContract(hexId);
-		setContractPrice(hexId);
+		// updateMarketStatusFromSmartContract(hexId);
+		// setContractPrice(hexId);
 	};
 
 	// Call API function
@@ -117,8 +117,11 @@ const Land = (props) => {
 					setName({ sentence: data.sentenceId, hex: data.hexId });
 					setLocation(data.address.full);
 					setUserPerspective(data.userPerspective);
-					setUserPerspective(data.userPerspective);
 					setAuction(data.auction);
+					// Centralized
+					console.log(data)
+					setValue(data.value);
+					setMarketStatus(data.marketStatus)
 
 					// Update state for MapContext
 					let state = {
@@ -302,14 +305,22 @@ const Land = (props) => {
 				);
 				break;
 			case 2:
-				button = (
-					<HexButton
-						url="/"
-						text={t('Land.buy.offer')}
-						className="--blue"
-						onClick={(e) => setActiveBuyOfferOverlay(e)}
-					></HexButton>
-				);
+				button = <></>;
+				if (userPerspective == 0) {
+					button = (
+						<HexButton
+							url="/"
+							text={t('Land.buy.offer')}
+							className="--blue"
+							onClick={(e) => setActiveBuyOfferOverlay(e)}
+						></HexButton>
+					);
+				} else if (userPerspective == 1) {
+					button = (
+						<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+					);
+				}
+				
 				break;
 			case 3:
 				button = (

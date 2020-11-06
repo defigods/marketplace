@@ -8,6 +8,9 @@ import HexButton from '../HexButton/HexButton';
 import config from '../../lib/config';
 import { warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
+import { auctionCreate } from '../../lib/api';
+
+
 
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -142,44 +145,64 @@ const MintOverlay = (props) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		if (!checkUserLoggedIn()) return;
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		try {
-			switch (type) {
-				case 'ovr':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
-					await approveOvrTokens(true, ovr);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
-					await participateMint(4, bid, hexId);
-					break;
-				case 'eth':
-					setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
-					await participateMint(0, bid, hexId);
-					break;
-				case 'usdt':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
-					await approveOvrTokens(true, tether);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
-					await participateMint(2, bid, hexId);
-					break;
-				case 'usdc':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
-					await approveOvrTokens(true, usdc);
-					setMetamaskMessage(t('"MetamaskMessage.set.participate.usdc'));
-					await participateMint(3, bid, hexId);
-					break;
-				case 'dai':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
-					await approveOvrTokens(true, dai);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
-					await participateMint(1, bid, hexId);
-					break;
-			}
-		} catch (e) {
-			setOpen(false);
-			setActiveStep(0);
-			return dangerNotification(t('Danger.error.processing.title'), e.message);
-		}
+
+		// Centralized
 		setActiveStep(2);
+		auctionCreate(hexId, bid)
+		.then((response) => {
+			if (response.data.result === true) {
+				console.log('sendConfirmAuctionStart - response true', response.data);
+			} else {
+				// console.log('responseFalse');
+				console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
+				// setActiveStep(0);
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+
+
+		// Decentralized
+
+		// setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		// try {
+		// 	switch (type) {
+		// 		case 'ovr':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
+		// 			await approveOvrTokens(true, ovr);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
+		// 			await participateMint(4, bid, hexId);
+		// 			break;
+		// 		case 'eth':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
+		// 			await participateMint(0, bid, hexId);
+		// 			break;
+		// 		case 'usdt':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
+		// 			await approveOvrTokens(true, tether);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
+		// 			await participateMint(2, bid, hexId);
+		// 			break;
+		// 		case 'usdc':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
+		// 			await approveOvrTokens(true, usdc);
+		// 			setMetamaskMessage(t('"MetamaskMessage.set.participate.usdc'));
+		// 			await participateMint(3, bid, hexId);
+		// 			break;
+		// 		case 'dai':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
+		// 			await approveOvrTokens(true, dai);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
+		// 			await participateMint(1, bid, hexId);
+		// 			break;
+		// 	}
+		// } catch (e) {
+		// 	setOpen(false);
+		// 	setActiveStep(0);
+		// 	return dangerNotification(t('Danger.error.processing.title'), e.message);
+		// }
+		// setActiveStep(2);
 	};
 
 	function getStepContent(step) {
