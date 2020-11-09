@@ -34,7 +34,13 @@
   .profile .p-section .p-section-content{
     width: 100%;
   }
-
+	.Profile__link span, .Navbar__link_container .NavBar__link {
+		display: none;
+	}
+	.Navbar__link_container .Language__link{
+		display: inline;
+	}
+	
 }
 
 .ignore-this{
