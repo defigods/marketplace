@@ -347,9 +347,9 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 };
 
 const countdownTimer = (t) => {
-	const difference = +new Date("2020-11-30") - +new Date();
+	const difference = +new Date("2020-11-30 13:00") - +new Date();
 	let custom_return = '';
-
+		
 	if (difference > 0) {
 		const parts = {
 			days: Math.floor(difference / (1000 * 60 * 60 * 24)),
