@@ -21,7 +21,8 @@ import snsWebSdk from '@sumsub/websdk';
 import { useTranslation, Translation} from 'react-i18next';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import i18n from 'i18next';
+import {getCurrentLocale} from '../../i18n';
 
 const ProfileContentLoginRequired = () => {
 	const { t, i18n } = useTranslation();
@@ -307,7 +308,10 @@ const renderBadge = (status, t) => {
 };
 
 const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone, t) => {
-	let sumsubLang = localStorage.getItem('i18nextLng');
+	let sumsubLang = "en";
+	if(getCurrentLocale().includes('zh')){
+		sumsubLang = "zh";
+	} 
 	let userWallet;
 	if (window.web3 && window.web3.eth && window.web3.eth.defaultAccount && window.web3.eth.defaultAccount.toLowerCase()){
 		userWallet = window.web3.eth.defaultAccount.toLowerCase();
