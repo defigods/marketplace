@@ -198,7 +198,7 @@ export class Web3Provider extends Component {
 		window.ethereum.on('networkChanged', function (networkId) {
 			let web3NetworkVersion = parseInt(window.ethereum.chainId, 16) === config.web3network;
 			if( web3NetworkVersion === false ) {
-				if (this.context.state.isLoggedIn) {
+				if (this.context && this.context.state.isLoggedIn) {
 						this.context.actions.logoutUser();
 						this.setupWeb3();
 				} else {

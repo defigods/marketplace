@@ -26,6 +26,7 @@ const NavBar = () => {
 	const [langOpen, setLangOpen] = React.useState(false);
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
+	const [isConnecting, setIsConnecting] = React.useState(false);
 	const prevOpen = React.useRef(open);
 	const langRef = React.useRef(langOpen);
 
@@ -78,12 +79,14 @@ const NavBar = () => {
 	};
 
 	const handleMetamaskAuthentication = () => {
+		setIsConnecting(true);
 		web3Actions.setupWeb3((res) => {
 			if( res == false ){
 				history.push('/login-helper');
 			} else {
 				history.push('/profile');
 			}
+			setIsConnecting(false);
 		})
 	}
 
@@ -313,7 +316,7 @@ const NavBar = () => {
 			); */
 			rightContainer = (
 				<div className="AuthLogin__link">
-					<div className="HexButton --orange" onClick={handleMetamaskAuthentication}>
+					<div className={`HexButton --orange ${!isConnecting ? '' : '--disabled'}`} onClick={handleMetamaskAuthentication}>
 						{t('Navbar.wallet.connect')}
 					</div>
 				</div>
