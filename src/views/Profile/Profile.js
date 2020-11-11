@@ -58,8 +58,12 @@ const ProfileLayout = () => {
 	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
-		if (isiOS == true && isImToken == true){
-			setIsIMWallet(true)
+		if (isiOS == true){
+			if(window.ethereum){
+				if(window.ethereum.isImToken){
+					setIsIMWallet(true)
+				}
+			}
 		}
 		if (sumsubShowPanel == true && user.uuid != undefined) {
 			getSumsubData()
