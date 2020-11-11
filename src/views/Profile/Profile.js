@@ -65,7 +65,11 @@ const ProfileLayout = () => {
 				if(window.ethereum.isImToken){
 					setIsIMWallet(true)
 					if(user.uuid != undefined){
-						getSumsubExternalLink().then((response) => {
+						let sumsubLang = "en";
+						if(getCurrentLocale().includes('zh')){
+							sumsubLang = "zh";
+						} 
+						getSumsubExternalLink(sumsubLang).then((response) => {
 							if (response.data.result === true) {
 								setUrlKyc(response.data.url)
 							}
@@ -409,6 +413,7 @@ const Profile = () => {
 	if (!userAuthenticated) {
 		return <ProfileContentLoginRequired t={t}/>;
 	}
+	window.location.hash = "authenticated"
 	return <ProfileLayout state={state}/>;
 };
 
