@@ -21,7 +21,7 @@
 	"Profile.whitelisted.no.ok" : "认证你的身份才能加入白名单参加OVR公售",
 	"Profile.status.label" : "身份认证状态",
 	"Profile.emailPresence.label" : "邮箱地址",
-	"Profile.imwallet.sumsub":"如果你正在使用手机版IMTOKEN钱包，请你开始身份认证， 然后选择“通过手机开始”这个选项，再点击“复制链接”将连接粘贴到Safari浏览器进行身份验证",
+	"Profile.imwallet.sumsub":"如果你在使用手机版Imtoken钱包，请复制“外部链接”，并在Safari浏览器中打开这个链接",
 	"Email.add" : "保存",
 	"Warning.email.not.detected.title":"此邮箱不存在于我们的数据库里",
 	"Warning.email.not.detected.desc":"你必须设置邮箱地址才能开始身份认证",
@@ -101,6 +101,8 @@
 	"Generic.cancel.label" : "取消",
 	"Generic.close.label" : "关闭",
 	"Generic.delete.label" : "删除",
+	"Generic.external.link" : "外部链接",
+
 	"BannerNotification.welcome": "欢迎来到OVR",
 	"BannerNotification.intro": "你现在可以拥有自己的土地, 将它定制化, 为你的 OVR 钱包充值",
 	"ActivityTile.goto.land": "去到OVR土地",

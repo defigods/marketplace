@@ -10,7 +10,7 @@ import {isiOS, isImToken} from '../../lib/config';
 // import CheckBox from '../../components/CheckBox/CheckBox';
 // import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
 // import IdensicComp from '../../components/IdensicComp/IdensicComp';
-import { getSumsubData, setSumsubVerificationToStarted, setDbUserEmail } from '../../lib/api';
+import { getSumsubData, setSumsubVerificationToStarted, setDbUserEmail, getSumsubExternalLink } from '../../lib/api';
 import { successNotification, warningNotification } from '../../lib/notifications';
 
 import Blockies from 'react-blockies';
@@ -54,17 +54,28 @@ const ProfileLayout = () => {
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
 	const [userEmail, setUserEmail] = useState('');
+	const [urlKyc, setUrlKyc] = useState("#");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
+		// IMWallet workaround
 		if (isiOS() == true){
 			if(window.ethereum){
 				if(window.ethereum.isImToken){
 					setIsIMWallet(true)
+					if(user.uuid != undefined){
+						getSumsubExternalLink().then((response) => {
+							if (response.data.result === true) {
+								setUrlKyc(response.data.url)
+							}
+						})
+						.catch(() => {});
+					}
 				}
 			}
 		}
+		// Sumsub reload of webview
 		if (sumsubShowPanel == true && user.uuid != undefined) {
 			getSumsubData()
 				.then((response) => {
@@ -219,15 +230,22 @@ const ProfileLayout = () => {
 									{isIMWallet ? <><div className="p-tiny-message">
 										{t('Profile.imwallet.sumsub')}
 									</div><br></br></> : <></>}
+
 									<div className="p-balance-value">
 										{renderBadge(user.kycReviewAnswer, t)}
 										<div>
-											<HexButton
-												url=""
+											{ !isIMWallet ? <HexButton
+												url="#"
 												className="--blue"
 												text={user.kycReviewAnswer == -1 ? t('Profile.start.verification') : t('Profile.check.verification')}
 												onClick={toggleKycVerificationFrame}
+											></HexButton> : <HexButton
+												target={urlKyc}
+												url={urlKyc}
+												className="--blue"
+												text={t('Generic.external.link')}
 											></HexButton>
+											}
 										</div>
 									</div>
 								</div>

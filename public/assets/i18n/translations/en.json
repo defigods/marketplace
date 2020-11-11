@@ -149,7 +149,7 @@
 	"Activity.login.now":"Check your profile. Login now.",
 	"Activity.list.transactions" : "Here's a list of your transactions. You can view the details on Etherscan to keep track of what's happening!",
 	"Activity.no.activity": "You have no past Activity, start now using the Marketplace",
-	"Profile.imwallet.sumsub":"If you are using imToken wallet from mobile, please start our verification, then on the START VIA MOBILE section click on Copy Link and paste it on Safari.",
+	"Profile.imwallet.sumsub":"If you are using imToken wallet from mobile, please copy the External Link button URL and open it on Safari",
 	"Aragon.loading.label" : "Loading...",
 	"Aragon.error.msg" : "Error:",
 	"Aragon.apps.label" : "Apps",
@@ -196,6 +196,7 @@
 	"Generic.cancel.label" : "Cancel",
 	"Generic.close.label" : "Close",
 	"Generic.delete.label" : "Delete",
+	"Generic.external.link" : "External link",
 	
 	"BuyOfferOverlay.place.offer" : "Place Buy Offer for",
 	"BuyOfferOverlay.current.value":"Current value",
