@@ -59,7 +59,7 @@ const ProfileLayout = () => {
 	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
-		window.location.hash = "authenticated"
+		window.location.hash = "authenticated";
 		// IMWallet workaround
 		if (isiOS() == true){
 			if(window.ethereum){
