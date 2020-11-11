@@ -72,7 +72,7 @@ const ProfileLayout = () => {
 						} 
 						getSumsubExternalLink(sumsubLang).then((response) => {
 							if (response.data.result === true) {
-								setUrlKyc(response.data.url)
+								setUrlKyc('safari:'+response.data.url)
 							}
 						})
 						.catch(() => {});
