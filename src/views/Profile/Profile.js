@@ -58,7 +58,7 @@ const ProfileLayout = () => {
 	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
-		if (isiOS == true){
+		if (isiOS() == true){
 			if(window.ethereum){
 				if(window.ethereum.isImToken){
 					setIsIMWallet(true)
