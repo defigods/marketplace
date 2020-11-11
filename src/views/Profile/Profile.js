@@ -72,7 +72,7 @@ const ProfileLayout = () => {
 						} 
 						getSumsubExternalLink(sumsubLang).then((response) => {
 							if (response.data.result === true) {
-								setUrlKyc('safari:'+response.data.url)
+								setUrlKyc(response.data.url)
 							}
 						})
 						.catch(() => {});
@@ -245,7 +245,7 @@ const ProfileLayout = () => {
 												text={user.kycReviewAnswer == -1 ? t('Profile.start.verification') : t('Profile.check.verification')}
 												onClick={toggleKycVerificationFrame}
 											></HexButton> : <HexButton
-												target={urlKyc}
+												target={'_blank'}
 												url={urlKyc}
 												className="--blue"
 												text={t('Generic.external.link')}
