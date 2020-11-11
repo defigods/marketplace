@@ -6,6 +6,7 @@ import { UserContext } from '../../context/UserContext';
 // import HexImage from '../../components/HexImage/HexImage';
 import HexButton from '../../components/HexButton/HexButton';
 import config from '../../lib/config';
+import {isiOS, isImToken} from '../../lib/config';
 // import CheckBox from '../../components/CheckBox/CheckBox';
 // import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
 // import IdensicComp from '../../components/IdensicComp/IdensicComp';
@@ -54,8 +55,12 @@ const ProfileLayout = () => {
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
 	const [userEmail, setUserEmail] = useState('');
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
+	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
+		if (isiOS == true && isImToken == true){
+			setIsIMWallet(true)
+		}
 		if (sumsubShowPanel == true && user.uuid != undefined) {
 			getSumsubData()
 				.then((response) => {
@@ -207,6 +212,9 @@ const ProfileLayout = () => {
 								<br></br>
 								<div className="p-section-content">
 									<h4 className="p-content-title">{t('Profile.status.label')}</h4>
+									{isIMWallet ? <><div className="p-tiny-message">
+										{t('Profile.imwallet.sumsub')}
+									</div><br></br></> : <></>}
 									<div className="p-balance-value">
 										{renderBadge(user.kycReviewAnswer, t)}
 										<div>

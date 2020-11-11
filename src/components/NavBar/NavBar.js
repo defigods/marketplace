@@ -23,24 +23,13 @@ const NavBar = () => {
 	const { t, i18n } = useTranslation();
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State, actions: web3Actions } = useContext(Web3Context);
-	const [langOpen, setLangOpen] = React.useState(false);
+	const [langOpen, setLangOpen] = React.useState(0);
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
 	const [isConnecting, setIsConnecting] = React.useState(false);
 	const prevOpen = React.useRef(open);
 	const langRef = React.useRef(langOpen);
-
-	let ovrsOwned;
-	if (web3State.ovrsOwned) {
-		ovrsOwned = web3State.ovrsOwned.split('.');
-		if (ovrsOwned.length > 1) {
-			let decimals = ovrsOwned[1].substring(0, 2);
-			ovrsOwned = ovrsOwned[0] + '.' + decimals;
-		} else {
-			ovrsOwned = ovrsOwned[0];
-		}
-	}
-
+	
 	const changeLanguage = (string) => {
 		i18n.changeLanguage(string)
 	  }
@@ -218,7 +207,7 @@ const NavBar = () => {
 							{/* <Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
 							</Link> // TODO: KYC - Remove comment */}
-							<ValueCounter value={ovrsOwned}></ValueCounter>
+							<ValueCounter value={web3State.ovrsOwned}></ValueCounter>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
 							}}>
