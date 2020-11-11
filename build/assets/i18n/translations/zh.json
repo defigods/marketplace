@@ -21,6 +21,7 @@
 	"Profile.whitelisted.no.ok" : "认证你的身份才能加入白名单参加OVR公售",
 	"Profile.status.label" : "身份认证状态",
 	"Profile.emailPresence.label" : "邮箱地址",
+	"Profile.imwallet.sumsub":"如果你正在使用手机版IMTOKEN钱包，请你开始身份认证， 然后选择“通过手机开始”这个选项，再点击“复制链接”将连接粘贴到Safari浏览器进行身份验证",
 	"Email.add" : "保存",
 	"Warning.email.not.detected.title":"此邮箱不存在于我们的数据库里",
 	"Warning.email.not.detected.desc":"你必须设置邮箱地址才能开始身份认证",
