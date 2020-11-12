@@ -24,6 +24,7 @@ import { useTranslation, Translation} from 'react-i18next';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {getCurrentLocale} from '../../i18n';
 
+import ReactGA from 'react-ga';
 
 const ProfileContentLoginRequired = () => {
 	const { t, i18n } = useTranslation();
@@ -59,7 +60,6 @@ const ProfileLayout = () => {
 	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
-		window.location.hash = "authenticated";
 		// IMWallet workaround
 		if (isiOS() == true){
 			if(window.ethereum){
@@ -103,6 +103,8 @@ const ProfileLayout = () => {
 		e.preventDefault();
 		if(user.email){
 			setSumsubShowPanel(!sumsubShowPanel);
+			ReactGA.set({ page: window.location.pathname + "/kyc-started"}); 
+			ReactGA.pageview(window.location.pathname + "/kyc-started");
 		} else {
 			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.not.detected.desc'));
 		}
@@ -126,6 +128,8 @@ const ProfileLayout = () => {
 				if (response.data.result === true) {
 					userContext.actions.setUserEmail(userEmail)
 					successNotification(t('Generic.congrats.label'), t('Signup.email.saved.title'))
+					ReactGA.set({ page: window.location.pathname + "/email-saved"}); 
+					ReactGA.pageview(window.location.pathname + "/email-saved"); 
 				} else {
 					let error_message = response.data.errors[0].message;
 					setIsSignupLoading(false)
@@ -410,6 +414,16 @@ const Profile = () => {
 	const { t, i18n } = useTranslation();
 	const { state } = useContext(UserContext);
 	const { isLoggedIn: userAuthenticated } = state;
+
+	// Google Analytics
+	useEffect(() => {
+		let authenticated = "";
+		if(userAuthenticated){
+			authenticated = "/authenticated"
+		}
+		ReactGA.set({ page: window.location.pathname + authenticated}); 
+		ReactGA.pageview(window.location.pathname + authenticated); 
+	}, [userAuthenticated])
 
 	if (!userAuthenticated) {
 		return <ProfileContentLoginRequired t={t}/>;
