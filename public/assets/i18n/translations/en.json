@@ -56,6 +56,9 @@
 	"Signup.success": "You've succesfully registered your account. From now on you can log in with Metamask by signing a secret code with one click.",
 	"Signup.web3.install.metamask": "Install MetaMask",
 	"Signup.web3.install.imtoken": "Install imToken",
+	"Signup.imwallet.tutorial.title" : "imToken tutorial",
+	"Signup.imwallet.tutorial.link" : "I already have imToken App",
+	"Signup.imwallet.tutorial.body" : "Before you start the KYC, please make sure that you have given imToken app the access to camera. \n\nIf you are using iPhone, in the later step you need to copy the external link and open the link in Safari to continue the facial scan,\n\nStep 1: open imToken app, go to the browser inside the app\n\nStep 2: insert address: www.ovr.ai, click and enter the IBCO page, then click “Join the whitelist”\n\nStep 3: Click on the top of the page “Connect Wallet”\n\nStep 4: connect your imToken wallet, and insert your email address, starting the KYC.\n\nStep 5: upload pictures of your ID document, then do the facial scan (please note, when you place your face into the circle, you need to slowly move around your head)\n\n", 
 
 	"Navbar.profile.label" : "Profile",
 	"Navbar.Login.label" : "Login",
@@ -199,6 +202,7 @@
 	"Generic.close.label" : "Close",
 	"Generic.delete.label" : "Delete",
 	"Generic.external.link" : "External link",
+	"Generic.back.link" : "Back",
 	
 	"BuyOfferOverlay.place.offer" : "Place Buy Offer for",
 	"BuyOfferOverlay.current.value":"Current value",

@@ -48,6 +48,10 @@
 	"Signup.create.account": "创建账户",
 	"Signup.web3.install.metamask": "安装小狐狸钱包",
 	"Signup.web3.install.imtoken": "安装imToken钱包",
+	"Signup.imwallet.tutorial.title" : "imToken用户认证指南",
+	"Signup.imwallet.tutorial.link" : "我已经安装了imToken APP",
+	"Signup.imwallet.tutorial.body" : "在开始认证之前，请在手机设置中确认允许imToken APP使用摄像头。 如果你正在使用苹果手机，你需要在后续步骤中复制“外部链接”到Safari浏览器中打开，继续面部扫描。\n\n第一步：打开imToken APP， 打开APP里的浏览器\n\n第二步：输入地址：www.ovr.ai, 并点击进入IBCO页面， 点击“加入白名单”\n\n第三步： 点击页面上方“连接钱包”\n\n第四步：连接你的imToken钱包，输入邮箱地址（注意要是新的地址，之前做过KYC的邮箱地址不能重复使用），开始身份认证\n\n第五步：上传身份证正反面， 然后扫描你的脸 （注意，在你把脸部放进小圆圈时候要上下左右慢慢转动头，让它可以扫描你的脸部）\n\n",
+
 	
 	"Signup.use.social": "用邮箱或者社交账户注册",
 	"Signup.info.stored": "帐户信息会被安全的存储在区块链中",
@@ -104,6 +108,7 @@
 	"Generic.close.label" : "关闭",
 	"Generic.delete.label" : "删除",
 	"Generic.external.link" : "外部链接",
+	"Generic.back.link" : "返回",
 
 	"BannerNotification.welcome": "欢迎来到OVR",
 	"BannerNotification.intro": "你现在可以拥有自己的土地, 将它定制化, 为你的 OVR 钱包充值",
