@@ -23,6 +23,7 @@ import { GoogleLogin } from 'react-google-login';
 import FacebookLoginWithButton from '../../facebook/facebook-with-button';
 
 import { useTranslation } from 'react-i18next'
+import ReactGA from 'react-ga';
 
 
 /**
@@ -38,6 +39,8 @@ const LoginHelper = () => {
 	let history = useHistory();
 
 	useEffect(() => {
+		ReactGA.set({ page: window.location.pathname}); 
+		ReactGA.pageview(window.location.pathname);
 		// If user is logged in
 		if (userContext.state.isLoggedIn) {
 			history.push('/profile');
@@ -130,9 +133,15 @@ const LoginHelper = () => {
 							<div className="Signup__section">
 								<HexButton
 									url="https://metamask.io"
-									text="Install MetaMask"
+									text={t('Signup.web3.install.metamask')}  
 									target="_blank"
 									className={'--purple'}
+								></HexButton>
+								<HexButton
+									url="https://token.im/"
+									text={t('Signup.web3.install.imtoken')} 
+									target="_blank"
+									className={'--purple --install-imtoken'}
 								></HexButton>
 							</div>
 						</>
