@@ -60,7 +60,28 @@
     <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,800&display=swap" rel="stylesheet">
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.6.1/mapbox-gl.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-	
+		
+		<script async src="https://www.googletagmanager.com/gtag/js?id=AW-1014451041"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'AW-1014451041');
+
+			function gtag_report_metamask_conversion(url) {
+				var callback = function () {
+						if (typeof(url) != 'undefined') {
+								window.location = url;
+						}
+				};
+				gtag('event', 'conversion', {
+								'send_to': 'AW-1014451041/Pg-RCOS4zekBEOGW3eMD',
+								'event_callback': callback
+				});
+				return false;
+			}
+			window.gtag_report_metamask_conversion = gtag_report_metamask_conversion;
+		</script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

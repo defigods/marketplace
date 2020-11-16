@@ -69,6 +69,7 @@ const NavBar = () => {
 
 	const handleMetamaskAuthentication = () => {
 		setIsConnecting(true);
+		window.gtag_report_metamask_conversion();
 		web3Actions.setupWeb3((res) => {
 			if( res == false ){
 				history.push('/login-helper');
