@@ -11,6 +11,7 @@ export function getToken(tokenName = 'token') {
 
 export function removeToken(tokenName = 'token') {
 	Cookies.remove(tokenName);
+	Cookies.remove(tokenName, { domain: config.apis.cookieDomain });
 }
 
 export function checkToken(tokenName = 'token') {
@@ -27,6 +28,7 @@ export function getUser(cookieName = 'userToken') {
 
 export function removeUser(cookieName = 'userToken') {
 	Cookies.remove(cookieName);
+	Cookies.remove(cookieName, { domain: config.apis.cookieDomain });
 }
 
 export function isLogged() {

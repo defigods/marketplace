@@ -110,6 +110,15 @@ const ProfileLayout = () => {
 		}
 	};
 
+	const toggleImWalletKycVerificationFrame = (e) => {		
+		if(user.email){
+
+		} else {
+			e.preventDefault();
+			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.not.detected.desc'));
+		}
+	};
+
 	const updateUserEmail = (e) => {
 		if (userEmail === '') {
 			setUserEmailValid(false);
@@ -253,6 +262,7 @@ const ProfileLayout = () => {
 												url={urlKyc}
 												className="--blue"
 												text={t('Generic.external.link')}
+												onClick={toggleImWalletKycVerificationFrame}
 											></HexButton>
 											}
 										</div>
