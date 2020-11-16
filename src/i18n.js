@@ -27,9 +27,10 @@ i18n
     react: {
       wait: true
     }
-  })
-
+	})
+	
 export function getCurrentLocale() {
   return i18n.language || window.localStorage.i18nextLng || '';
 }
+
 export default i18n

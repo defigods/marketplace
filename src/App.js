@@ -27,6 +27,9 @@ import { MapProvider, MapContext } from './context/MapContext';
 import { UserProvider, UserContext } from './context/UserContext';
 import { Web3Provider, Web3Context } from './context/Web3Context';
 
+import ReactGA from 'react-ga';
+import { createBrowserHistory } from 'history';
+
 //TODO
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -60,6 +63,16 @@ function App() {
 		i18next.changeLanguage(fallbackLang)
 	}
 
+	const history = createBrowserHistory();
+	
+	// Initialize google analytics page view tracking
+	history.listen(location => {
+		console.log('GA', location.pathname)
+		ReactGA.initialize('UA-128415861-1');
+		ReactGA.set({ page: location.pathname }); // Update the user's current page
+		ReactGA.pageview(location.pathname); // Record a pageview for the given page
+	});
+
 	return (
 		<Suspense fallback="loading">
 			<Translation>
@@ -76,7 +89,7 @@ function App() {
 													<MapContext.Consumer>
 														{(mapValue) => {
 															return (
-																<Router>
+																<Router history={history}>
 																	<div className="App">
 																		<ReactNotification />
 																		<NavBar></NavBar>

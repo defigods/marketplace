@@ -81,7 +81,6 @@ export function signUpLoginMetamask(publicAddress) {
 	);
 }
 
-
 export function setDbUserEmail(email = null) {
 	return request(
 		{ url: '/user/set/email', method: 'POST' },
@@ -91,6 +90,7 @@ export function setDbUserEmail(email = null) {
 		null,
 	);
 }
+
 
 // AUCTIONS
 // ----------------------------------------------------------------------------------------
@@ -396,6 +396,16 @@ export function getSumsubData() {
 
 export function setSumsubVerificationToStarted() {
 	return request({ url: '/user/sumsub/set_verification/started', method: 'GET' }, {}, null);
+}
+
+export function getSumsubExternalLink(language = "en") {
+	return request(
+		{ url: '/user/sumsub/external_link', method: 'GET' },
+		{
+			language: language,
+		},
+		null,
+	);
 }
 
 // GENERAL REQUEST

@@ -6,10 +6,11 @@ import { UserContext } from '../../context/UserContext';
 // import HexImage from '../../components/HexImage/HexImage';
 import HexButton from '../../components/HexButton/HexButton';
 import config from '../../lib/config';
+import {isiOS, isImToken} from '../../lib/config';
 // import CheckBox from '../../components/CheckBox/CheckBox';
 // import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
 // import IdensicComp from '../../components/IdensicComp/IdensicComp';
-import { getSumsubData, setSumsubVerificationToStarted, setDbUserEmail } from '../../lib/api';
+import { getSumsubData, setSumsubVerificationToStarted, setDbUserEmail, getSumsubExternalLink } from '../../lib/api';
 import { successNotification, warningNotification } from '../../lib/notifications';
 
 import Blockies from 'react-blockies';
@@ -23,6 +24,8 @@ import { useTranslation, Translation} from 'react-i18next';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import i18n from 'i18next';
 import {getCurrentLocale} from '../../i18n';
+
+import ReactGA from 'react-ga';
 
 const ProfileContentLoginRequired = () => {
 	const { t, i18n } = useTranslation();
@@ -53,9 +56,32 @@ const ProfileLayout = () => {
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
 	const [userEmail, setUserEmail] = useState('');
+	const [urlKyc, setUrlKyc] = useState("#");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
+	const [isIMWallet, setIsIMWallet] = useState(false);
 
 	useEffect(() => {
+		// IMWallet workaround
+		if (isiOS() == true){
+			if(window.ethereum){
+				if(window.ethereum.isImToken){
+					setIsIMWallet(true)
+					if(user.uuid != undefined){
+						let sumsubLang = "en";
+						if(getCurrentLocale().includes('zh')){
+							sumsubLang = "zh";
+						} 
+						getSumsubExternalLink(sumsubLang).then((response) => {
+							if (response.data.result === true) {
+								setUrlKyc(response.data.url)
+							}
+						})
+						.catch(() => {});
+					}
+				}
+			}
+		}
+		// Sumsub reload of webview
 		if (sumsubShowPanel == true && user.uuid != undefined) {
 			getSumsubData()
 				.then((response) => {
@@ -78,6 +104,8 @@ const ProfileLayout = () => {
 		e.preventDefault();
 		if(user.email){
 			setSumsubShowPanel(!sumsubShowPanel);
+			ReactGA.set({ page: window.location.pathname + "/kyc-started"}); 
+			ReactGA.pageview(window.location.pathname + "/kyc-started");
 		} else {
 			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.not.detected.desc'));
 		}
@@ -101,6 +129,8 @@ const ProfileLayout = () => {
 				if (response.data.result === true) {
 					userContext.actions.setUserEmail(userEmail)
 					successNotification(t('Generic.congrats.label'), t('Signup.email.saved.title'))
+					ReactGA.set({ page: window.location.pathname + "/email-saved"}); 
+					ReactGA.pageview(window.location.pathname + "/email-saved"); 
 				} else {
 					let error_message = response.data.errors[0].message;
 					setIsSignupLoading(false)
@@ -207,15 +237,25 @@ const ProfileLayout = () => {
 								<br></br>
 								<div className="p-section-content">
 									<h4 className="p-content-title">{t('Profile.status.label')}</h4>
+									{isIMWallet ? <><div className="p-tiny-message">
+										{t('Profile.imwallet.sumsub')}
+									</div><br></br></> : <></>}
+
 									<div className="p-balance-value">
 										{renderBadge(user.kycReviewAnswer, t)}
 										<div>
-											<HexButton
-												url=""
+											{ !isIMWallet ? <HexButton
+												url="#"
 												className="--blue"
 												text={user.kycReviewAnswer == -1 ? t('Profile.start.verification') : t('Profile.check.verification')}
 												onClick={toggleKycVerificationFrame}
+											></HexButton> : <HexButton
+												target={'_blank'}
+												url={urlKyc}
+												className="--blue"
+												text={t('Generic.external.link')}
 											></HexButton>
+											}
 										</div>
 									</div>
 								</div>
@@ -347,9 +387,9 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 };
 
 const countdownTimer = (t) => {
-	const difference = +new Date("2020-11-30") - +new Date();
+	const difference = +new Date("2020-11-30 13:00") - +new Date();
 	let custom_return = '';
-
+		
 	if (difference > 0) {
 		const parts = {
 			days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -376,9 +416,20 @@ const Profile = () => {
 	const { state } = useContext(UserContext);
 	const { isLoggedIn: userAuthenticated } = state;
 
+	// Google Analytics
+	useEffect(() => {
+		let authenticated = "";
+		if(userAuthenticated){
+			authenticated = "/authenticated"
+		}
+		ReactGA.set({ page: window.location.pathname + authenticated}); 
+		ReactGA.pageview(window.location.pathname + authenticated); 
+	}, [userAuthenticated])
+
 	if (!userAuthenticated) {
 		return <ProfileContentLoginRequired t={t}/>;
 	}
+
 	return <ProfileLayout state={state}/>;
 };
 

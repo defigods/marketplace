@@ -34,7 +34,8 @@
     }
   }
   .--left{
-    text-align: left;
+		text-align: left;
+		white-space: pre-line;
   }
   .o-list{
     line-height: 20px;
@@ -187,4 +188,8 @@
 .Social__buttons{
   display: inline-block;
 
+}
+
+.--tutorial .Signup__section{
+	font-size: 14px;
 }
