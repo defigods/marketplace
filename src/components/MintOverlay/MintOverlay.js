@@ -30,6 +30,7 @@ const MintOverlay = (props) => {
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
+	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const [bid, setBid] = useState(0);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
@@ -53,6 +54,7 @@ const MintOverlay = (props) => {
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
+		console.log(currentBid)
 		if (props.mapProvider.state.activeMintOverlay) {
 			setShowOverlay(true);
 			setTimeout(() => {
@@ -73,7 +75,7 @@ const MintOverlay = (props) => {
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
-	}, [setupComplete, ico, ovr, hexId, marketStatus]);
+	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
@@ -81,7 +83,8 @@ const MintOverlay = (props) => {
 		}
 		const initialBid = String(await ico.initialLandBidAsync());
 		let nextPayment = window.web3.fromWei(initialBid);
-		setNextBid(nextPayment);
+		setNextBid(props.currentBid);
+		setCurrentBid(props.currentBid);
 	};
 
 	// Toggle bidding menu of selection currencies
@@ -216,7 +219,7 @@ const MintOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__currency_cont">
+							{/* {<div className="Overlay__currency_cont">
 								<div className="c-currency-selector_cont">
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
@@ -249,13 +252,13 @@ const MintOverlay = (props) => {
 										{t('Currency.usdc.label')}
 									</div>
 								</div>
-							</div>
+							</div>} */}
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__minimum_bid">
 										<div className="Overlay__bid_title">{t('MintOverlay.min.bid')}</div>
 										<div className="Overlay__bid_cont">
-											<ValueCounter value={10}></ValueCounter>
+											<ValueCounter value={currentBid}></ValueCounter>
 										</div>
 									</div>
 								</div>
@@ -272,10 +275,10 @@ const MintOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__expense_projection">
-									{bid >= 10 &&
+									{bid >= currentBid &&
 										props.userProvider.state.isLoggedIn &&
-										'Bid using ' + bidProjection + ' ' + bidProjectionCurrency.toUpperCase()}
-									{bid >= 10 && props.userProvider.state.isLoggedIn && (
+									  bidProjection + ' ' + bidProjectionCurrency.toUpperCase() }
+									{bid >= currentBid && props.userProvider.state.isLoggedIn && (
 										<Tooltip
 											title={
 												<React.Fragment>

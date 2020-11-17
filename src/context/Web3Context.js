@@ -234,7 +234,13 @@ export class Web3Provider extends Component {
       );
       this.setState({ ovrsOwned });
     }
-  };
+	};
+	
+	getUSDValueInOvr = (usd = 1) => {
+		let floorValue = 0.1;
+		// TODO get value of OVR token and if it's more than 0.1 use it as floor
+		return Math.round(usd / floorValue);
+	}
 
   //
   // Centralized authentication with Metamask
@@ -658,7 +664,8 @@ export class Web3Provider extends Component {
             participate: this.participate,
             participateMint: this.participateMint,
             participateBid: this.participateBid,
-            participateBuyOffer: this.participateBuyOffer
+						participateBuyOffer: this.participateBuyOffer,
+						getUSDValueInOvr: this.getUSDValueInOvr
           },
         }}
       >

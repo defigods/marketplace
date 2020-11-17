@@ -37,7 +37,7 @@ const Land = (props) => {
 		changeActiveBuyOverlay,
 		changeActiveBuyOfferOverlay,
 	} = props.mapProvider.actions;
-	const { redeemSingleLand, getOffersToBuyLand } = props.web3Provider.actions;
+	const { redeemSingleLand, getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 	const { isLoggedIn } = props.userProvider.state;
 
@@ -119,8 +119,8 @@ const Land = (props) => {
 					setUserPerspective(data.userPerspective);
 					setAuction(data.auction);
 					// Centralized
-					console.log(data)
-					setValue(data.value);
+					let val = getUSDValueInOvr(data.value);
+					setValue(val);
 					setMarketStatus(data.marketStatus)
 
 					// Update state for MapContext

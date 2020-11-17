@@ -120,28 +120,30 @@ const BidOverlay = (props) => {
 
 	// Change the bid projection on selection
 	const updateBidProjectionCurrency = (type) => {
-		switch (type) {
-			case 'ovr':
-				setBidProjection(bid);
-				setBidProjectionCurrency('ovr');
-				break;
-			case 'eth':
-				setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
-				setBidProjectionCurrency('eth');
-				break;
-			case 'usdt':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('usdt');
-				break;
-			case 'usdc':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('usdc');
-				break;
-			case 'dai':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('dai');
-				break;
-		}
+		setBidProjection(bid);
+		setBidProjectionCurrency('ovr');
+		// switch (type) {
+		// 	case 'ovr':
+		// 		setBidProjection(bid);
+		// 		setBidProjectionCurrency('ovr');
+		// 		break;
+		// 	case 'eth':
+		// 		setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
+		// 		setBidProjectionCurrency('eth');
+		// 		break;
+		// 	case 'usdt':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('usdt');
+		// 		break;
+		// 	case 'usdc':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('usdc');
+		// 		break;
+		// 	case 'dai':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('dai');
+		// 		break;
+		// }
 	};
 
 	const participateInAuction = async (type) => {
@@ -217,7 +219,7 @@ const BidOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__currency_cont">
+							{/* <div className="Overlay__currency_cont">
 								<div className="c-currency-selector_cont">
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
@@ -250,7 +252,7 @@ const BidOverlay = (props) => {
 										{t('Currency.usdc.label')}
 									</div>
 								</div>
-							</div>
+							</div> */}
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__current_bid">
@@ -400,7 +402,7 @@ const BidOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>BidOverlay.request.sent
+								<br></br>{t('BidOverlay.request.sent')}
 								<div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('BidOverlay.view.status')}
