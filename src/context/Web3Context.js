@@ -237,9 +237,9 @@ export class Web3Provider extends Component {
 	};
 	
 	getUSDValueInOvr = (usd = 1) => {
-		let floorValue = 0.1;
+		let floorValue = 0.066;
 		// TODO get value of OVR token and if it's more than 0.1 use it as floor
-		return Math.round(usd / floorValue);
+		return (usd / floorValue).toFixed(2);
 	}
 
   //

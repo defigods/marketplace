@@ -34,6 +34,7 @@ const MintOverlay = (props) => {
 	const [bid, setBid] = useState(0);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
+	const [gasProjection, setGasProjection]  = useState(0);
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
@@ -51,6 +52,15 @@ const MintOverlay = (props) => {
 			setBidValid(false);
 		}, 500);
 	}
+
+	const getProjectionGasValue = () => {
+		setGasProjection(100)
+	}
+
+	const getUserExpenseProjection = () => {
+		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
+		return projection
+	} 
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
@@ -83,8 +93,11 @@ const MintOverlay = (props) => {
 		}
 		const initialBid = String(await ico.initialLandBidAsync());
 		let nextPayment = window.web3.fromWei(initialBid);
-		setNextBid(props.currentBid);
+		
+		setNextBid(parseFloat(props.currentBid));
 		setCurrentBid(props.currentBid);
+
+		getProjectionGasValue();
 	};
 
 	// Toggle bidding menu of selection currencies
@@ -100,11 +113,12 @@ const MintOverlay = (props) => {
 
 	// Update bid value in state
 	const updateNewBidValue = (myBid) => {
-		if (myBid >= nextBid && myBid >= 10) {
+		if (myBid >= nextBid) {
 			setBidValid(true);
 		} else {
 			setBidValid(false);
 		}
+		console.log('myBid',myBid)
 		setBid(myBid);
 	};
 
@@ -165,7 +179,7 @@ const MintOverlay = (props) => {
 			console.log(error);
 		});
 
-
+		
 		// Decentralized
 
 		// setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -277,22 +291,18 @@ const MintOverlay = (props) => {
 								<div className="Overlay__expense_projection">
 									{bid >= currentBid &&
 										props.userProvider.state.isLoggedIn &&
-									  bidProjection + ' ' + bidProjectionCurrency.toUpperCase() }
+									  getUserExpenseProjection()}
 									{bid >= currentBid && props.userProvider.state.isLoggedIn && (
 										<Tooltip
 											title={
 												<React.Fragment>
-													{t('MintOverlay.use.direct')}
-													<br></br>
-													{t('MintOverlay.click.to.buy')}
+													{t('Generic.bid.tooltip')}
 												</React.Fragment>
 											}
 											aria-label="info"
 											placement="bottom"
 										>
-											<a href={'/buy-tokens'} rel="noopener noreferrer" target={'_blank'}>
-												<Help className="Help" />
-											</a>
+											<Help className="Help" />
 										</Tooltip>
 									)}
 								</div>

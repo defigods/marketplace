@@ -365,7 +365,7 @@ const Map = (props) => {
 			<Breadcrumbs />
 			<div id="Map" className="Map">
 				<div id="js-map-view">Satellite</div>
-				<MapNavigationBox />
+				{/* <MapNavigationBox /> */}
 			</div>
 		</>
 	);

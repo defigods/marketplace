@@ -203,6 +203,7 @@
 	"Generic.delete.label" : "Delete",
 	"Generic.external.link" : "External link",
 	"Generic.back.link" : "Back",
+	"Generic.bid.tooltip" : "The GAS amount will be used to pay for the minting gas fees on the ethereum network. This total OVR amount will be withdrawn from your wallet only if you win the auction.",
 	
 	"BuyOfferOverlay.place.offer" : "Place Buy Offer for",
 	"BuyOfferOverlay.current.value":"Current value",

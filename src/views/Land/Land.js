@@ -119,8 +119,12 @@ const Land = (props) => {
 					setUserPerspective(data.userPerspective);
 					setAuction(data.auction);
 					// Centralized
-					let val = getUSDValueInOvr(data.value);
-					setValue(val);
+					setValue(data.value);
+					// If it's unminted take 10
+					if(data.value < 100){
+						let val = getUSDValueInOvr(10);
+						setValue(val);
+					}
 					setMarketStatus(data.marketStatus)
 
 					// Update state for MapContext
