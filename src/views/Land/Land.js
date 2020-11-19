@@ -52,6 +52,8 @@ const Land = (props) => {
 	const [openBuyOffers, setOpenBuyOffers] = useState([]);
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 	const [isNotValidH3, setIsNotValidH3] = useState(false);
+	const [isUnavailable, setIsUnavailable] = useState(false);
+	
 
 	// First load
 	useEffect(() => {
@@ -118,6 +120,7 @@ const Land = (props) => {
 					setLocation(data.address.full);
 					setUserPerspective(data.userPerspective);
 					setAuction(data.auction);
+					setIsUnavailable(data.isUnavailable);
 					// Centralized
 					setValue(data.value);
 					// If it's unminted take 10
@@ -237,6 +240,8 @@ const Land = (props) => {
 
 	function renderBadge() {
 		let badge = <div>&nbsp;</div>;
+
+		
 		switch (marketStatus) {
 			case 1:
 				badge = (
@@ -287,6 +292,15 @@ const Land = (props) => {
 				break;
 		}
 
+		if(isUnavailable == true){
+			badge = (
+			<div>
+				<h3 className="o-small-title">{t('Land.status.label')}</h3>
+				<div className="c-status-badge  --outbidded">{t('Land.unvabilable')}</div>
+			</div>
+			);
+		} 
+
 		return badge;
 	}
 
@@ -294,6 +308,7 @@ const Land = (props) => {
 		let button = <div>&nbsp;</div>;
 		switch (marketStatus) {
 			case 0:
+				if(isUnavailable == false){
 				button = (
 					<HexButton
 						url="/"
@@ -301,7 +316,14 @@ const Land = (props) => {
 						className="--blue"
 						onClick={(e) => setActiveMintOverlay(e)}
 					></HexButton>
-				);
+				);} else {
+					button = (<HexButton
+						url={`mailto:info@ovr.ai?subject=Interested in ${hexId}`}
+						target="_blank"
+						text={t('Generic.contactus.interested')}
+						className="--blue"
+					></HexButton>)
+				}
 				break;
 			case 1:
 				button = (

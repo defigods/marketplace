@@ -164,15 +164,14 @@ const MintOverlay = (props) => {
 		if (!checkUserLoggedIn()) return;
 
 		// Centralized
-		setActiveStep(2);
 		auctionCreate(hexId, bid)
 		.then((response) => {
 			if (response.data.result === true) {
-				console.log('sendConfirmAuctionStart - response true', response.data);
+				setActiveStep(2);
 			} else {
 				// console.log('responseFalse');
-				console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
-				// setActiveStep(0);
+				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+				setActiveStep(0);
 			}
 		})
 		.catch((error) => {
