@@ -139,6 +139,7 @@ const ProfileLayout = () => {
 					successNotification(t('Generic.congrats.label'), t('Signup.email.saved.title'))
 					ReactGA.set({ page: window.location.pathname + "/email-saved"}); 
 					ReactGA.pageview(window.location.pathname + "/email-saved"); 
+					window.gtag_report_email_inserted_conversion();
 				} else {
 					let error_message = response.data.errors[0].message;
 					setIsSignupLoading(false)

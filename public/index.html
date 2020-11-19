@@ -81,6 +81,21 @@
 				return false;
 			}
 			window.gtag_report_metamask_conversion = gtag_report_metamask_conversion;
+
+
+			function gtag_report_email_inserted_conversion(url) {
+				var callback = function () {
+						if (typeof(url) != 'undefined') {
+								window.location = url;
+						}
+				};
+				gtag('event', 'conversion', {
+								'send_to': 'AW-1014451041/mYg5CMCuoOoBEOGW3eMD',
+								'event_callback': callback
+				});
+				return false;
+			}
+			window.gtag_report_email_inserted_conversion = gtag_report_email_inserted_conversion;
 		</script>
   </head>
   <body>
