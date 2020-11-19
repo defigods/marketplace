@@ -8,8 +8,9 @@ import ActivityTile from '../../components/ActivityTile/ActivityTile';
 import { useTranslation } from 'react-i18next'
 
 
-const ActivityContentLoginRequired = (t) => (
-	<div className="profile">
+const ActivityContentLoginRequired = () => {
+	const { t, i18n } = useTranslation();
+	return (<div className="profile">
 		<div className="o-container">
 			<div className="c-dialog --centered">
 				<div className="c-dialog-main-title">
@@ -21,11 +22,12 @@ const ActivityContentLoginRequired = (t) => (
 				<div className="c-dialog-sub-title">{t('Activity.login.now')}</div>
 			</div>
 		</div>
-	</div>
-);
+	</div>)
+}
 
-const ActivityLayout = (t) => {
+const ActivityLayout = () => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
+	const { t, i18n } = useTranslation();
 	return (
 		<div className="activity">
 			<div className="o-container">
@@ -105,15 +107,13 @@ const ActivityContent = (t) => {
 };
 
 const Activity = () => {
-	const { t, i18n } = useTranslation();
-
 	const { state } = useContext(UserContext);
 	const { isLoggedIn: userAuthenticated } = state;
 
 	if (!userAuthenticated) {
-		return <ActivityContentLoginRequired t={t}/>;
+		return <ActivityContentLoginRequired/>;
 	}
-	return <ActivityLayout state={state} t={t}/>;
+	return <ActivityLayout state={state} />;
 };
 
 export default Activity;
