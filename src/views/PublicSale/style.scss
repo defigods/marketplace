@@ -1,0 +1,129 @@
+.PublicSale{
+	background-image: linear-gradient(90deg, #5e509d 0%, #724a93 100%);
+	padding-bottom: 50px;
+	.o-section{
+		margin-top: 45px;
+		display: inline-block;
+		width: 100%;
+	}
+	.o-card{
+		padding: 25px;
+		border-radius: 15px;
+		background-color: #fff;
+		box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.05);
+		width: calc(100% - 50px);
+		height: auto;
+		z-index: 10;
+		display: flow-root;
+	}
+	.o-label{
+		font-weight: bold;
+	}
+	.o-value{
+		margin-top: 8px;
+		color: $ovr-orange;
+	}
+	.s-f-curve{
+		@include column(6/10);
+	}
+	.s-f-panel{
+		@include column(4/10);
+	}
+	.c-transaction-selector_cont{
+		width: 100%;
+		margin-bottom: 20px;
+		display: flex;
+
+	}
+	.c-transaction-selector{
+		line-height: 22px;
+		display: block;
+		flex-grow: 1;
+		font-weight: 400;
+		font-size: 18px;
+		padding: 8px 15px;
+		background: #ffffff;
+		width: fit-content;
+		text-transform: uppercase;
+		width: 40%;
+		text-align: center;
+		margin-right: 12px;
+		border-radius: 5px;
+		float: left;
+		box-shadow: 8px 8px 16px rgba(217, 217, 217, 0.3), -8px -8px 16px #ffffff;
+		position: relative;
+		transition: 250ms trasform ease-in-out;
+		cursor: pointer;
+		&:hover{
+			box-shadow: 0px 0px 0px rgba(217, 217, 217, 0);
+			transform: scale(0.96);
+		}
+		&.--selected{
+			box-shadow: 0px 0px 0px rgba(217, 217, 217, 0)!important;
+			pointer-events: none;
+			background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
+			color: #fff;
+			z-index: 2;
+			&::after {
+				position: absolute;
+				top: -2px; bottom: -2px;
+				left: -2px; right: -2px;
+				background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
+				content: '';
+				z-index: -10;
+				border-radius: 7px;
+			}
+		}
+	}
+	.p-section-title{
+		margin-top: 40px;
+		margin-bottom: 5px;
+		color: $ovr-grey;
+	}
+	.o-row__your_wallet{
+		.ValueCounter{
+			clear: both;
+			margin-top: 15px;
+			font-size: 23px;
+			svg{
+				width: 23px;
+				max-width: 25px;
+				height: auto;
+				margin-right: 5px;
+			}
+			.Dai__icon__svg svg{
+				width: 23px;
+				max-width: 25px;
+			}
+		}
+	}
+	.o-line{
+		height: 1px;
+		width: 100%;
+		background-color: $ovr-light-grey;
+		margin-top: 40px;
+		margin-bottom: 30px;
+	}
+	.o-info-row{
+		margin-top: 0px;
+		margin-bottom: 15px;
+		display: flex;
+	}
+	.o-info-title{
+		margin-top: 0px;
+		margin-bottom: 0px;
+		font-size: 16px;
+	}
+	.o-field-row{
+		.HexButton{
+			margin-left: 45px;
+		}
+	}
+}
+
+.chart-js{
+	height: 300px;
+	padding-top: 25px;
+	text-align: center;
+	line-height: 300px;
+}
