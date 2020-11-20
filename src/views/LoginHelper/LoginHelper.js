@@ -6,7 +6,6 @@ import config from '../../lib/config';
 import { Web3Context, withWeb3Context } from '../../context/Web3Context';
 import { UserContext, withUserContext } from '../../context/UserContext';
 import { useHistory,Link } from 'react-router-dom';
-import Web3 from 'web3';
 import { useTranslation } from 'react-i18next'
 import ReactGA from 'react-ga';
 
@@ -18,7 +17,7 @@ import ReactGA from 'react-ga';
 const LoginHelper = () => {
 	const { t, i18n } = useTranslation()
 
-	const context = useContext(Web3Context);
+	const web3context = useContext(Web3Context);
 	const userContext = useContext(UserContext);
 
 	let history = useHistory();
@@ -27,37 +26,50 @@ const LoginHelper = () => {
 
 	useEffect(() => {
 		ReactGA.set({ page: window.location.pathname}); 
-		ReactGA.pageview(window.location.pathname);
+    ReactGA.pageview(window.location.pathname);
+    
+    // Setup Web3
+    web3context.actions.setupWeb3((res) =>{
+      if( res == false ){
+        history.push('/login-helper');
+      } else {
+        history.push('/profile');
+      }
+    })
+
 		// If user is logged in
 		if (userContext.state.isLoggedIn) {
 			history.push('/profile');
-		}
+    } 
+    
 		// Load Web3
-		const ethereum = window.ethereum;
-		async function startEth() {
-			if (typeof ethereum !== 'undefined') {
-				try {
-					await ethereum.enable();
-				} catch (e) {
-					// console.log(e);
-				}
-				window.web3 = new Web3(ethereum);
-			} else if (typeof window.web3 !== 'undefined') {
-				window.web3 = new Web3(window.web3.currentProvider);
-				window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
-			}
-		}
-		startEth();
-	}, []); //window.web3.networkVersion, window.web3.eth.defaultAccount, window.web3.eth.accounts[0]
+		// const ethereum = window.ethereum;
+		// async function startEth() {
+		// 	if (typeof ethereum !== 'undefined') {
+		// 		try {
+		// 			await ethereum.enable();
+		// 		} catch (e) {
+		// 			// console.log(e);
+		// 		}
+		// 		window.web3 = new Web3(ethereum);
+		// 	} else if (typeof window.web3 !== 'undefined') {
+		// 		window.web3 = new Web3(window.web3.currentProvider);
+		// 		window.web3.eth.defaultAccount = window.web3.eth.accounts[0];
+		// 	}
+		// }
+    // startEth();
+    
 
+  }, []); 
+  
 	function metamaskComponent() {
-		let isWeb3Active = typeof window.web3 !== 'undefined';
+		let isWeb3Active = web3context.state.provider !== null;
 		let isWeb3Account = false;
 		let web3NetworkVersion = false;
 		if (isWeb3Active) {
-			isWeb3Account = window.web3.eth.accounts.length > 0;
-			web3NetworkVersion = parseInt(window.ethereum.chainId, 16) === config.web3network;
-		}
+			isWeb3Account = web3context.state.address !== null;
+			web3NetworkVersion = parseInt(web3context.state.chainId, 16) === config.web3network;
+    }
 		if(!imWalletInstruction){
 			return(
 				<div className="o-container">
