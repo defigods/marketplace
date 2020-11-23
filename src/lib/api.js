@@ -109,24 +109,34 @@ export function indexMyOpenAuctions(sort = null, page = 1) {
 	);
 }
 
-export function auctionCreate(landUuid = null, worth = 10) {
+export function auctionCreate(landUuid = null, worth = 10, gas = 10) {
 	return request(
 		{ url: '/auction/start', method: 'POST' },
 		{
 			hex_id: landUuid,
 			worth: worth,
+			gas: gas
 		},
 		null,
 	);
 }
 
-export function auctionBid(hexId = null, worth = 10) {
+export function auctionBid(hexId = null, worth = 10, gas = 10) {
 	return request(
 		{ url: '/auction/bid', method: 'POST' },
 		{
 			hex_id: hexId,
 			worth: worth,
+			gas: gas
 		},
+		null,
+	);
+}
+
+export function getGasPrice() {
+	return request(
+		{ url: '/auctions/lands_gas_cost', method: 'GET' },
+		{},
 		null,
 	);
 }

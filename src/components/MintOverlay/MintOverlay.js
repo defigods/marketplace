@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next'
 const MintOverlay = (props) => {
 	const { t, i18n } = useTranslation()
 
-	const { participateMint, approveOvrTokens } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
+	const { authorizeOvrExpense, getUSDValueInOvr } = props.web3Provider.actions;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -53,10 +53,6 @@ const MintOverlay = (props) => {
 		}, 500);
 	}
 
-	const getProjectionGasValue = () => {
-		setGasProjection(100)
-	}
-
 	const getUserExpenseProjection = () => {
 		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
 		return projection
@@ -64,7 +60,6 @@ const MintOverlay = (props) => {
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
-		console.log(currentBid)
 		if (props.mapProvider.state.activeMintOverlay) {
 			setShowOverlay(true);
 			setTimeout(() => {
@@ -82,22 +77,21 @@ const MintOverlay = (props) => {
 		updateBidProjectionCurrency(bidProjectionCurrency);
 	}, [bid]);
 
+	useEffect(() => {
+		setGasProjection(gasLandCost)
+	}, [gasLandCost]);
+
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
 	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
 
 	const setNextBidSelectedLand = async () => {
-		if (!setupComplete || !ico || !ovr) {
-			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+		if (!setupComplete) {
+			return false;
 		}
-		const initialBid = String(await ico.initialLandBidAsync());
-		let nextPayment = window.web3.fromWei(initialBid);
-		
 		setNextBid(parseFloat(props.currentBid));
 		setCurrentBid(props.currentBid);
-
-		getProjectionGasValue();
 	};
 
 	// Toggle bidding menu of selection currencies
@@ -118,7 +112,6 @@ const MintOverlay = (props) => {
 		} else {
 			setBidValid(false);
 		}
-		console.log('myBid',myBid)
 		setBid(myBid);
 	};
 
@@ -162,9 +155,11 @@ const MintOverlay = (props) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		if (!checkUserLoggedIn()) return;
+		
+		await authorizeOvrExpense(); //bid+gasProjection
 
 		// Centralized
-		auctionCreate(hexId, bid)
+		auctionCreate(hexId, bid, gasProjection)
 		.then((response) => {
 			if (response.data.result === true) {
 				setActiveStep(2);

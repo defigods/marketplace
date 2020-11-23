@@ -17,6 +17,8 @@ if (environment === 'PRODUCTION') {
 		etherscan: 'https://etherscan.io/',
 		cookieDomain: 'ovr.ai',
 		sumsubApi: 'https://api.sumsub.com',
+		OVRContract: '0x128989bd5bac572d8f60c89d6eaa8f6d35f5c25c',
+		walletApproved: '0xC08ac3aB7a9Df0E095a153C4b80D929edA5460F2',
 	};
 } else if (environment === 'STAGING') {
 	apis = {
@@ -26,6 +28,8 @@ if (environment === 'PRODUCTION') {
 		etherscan: 'https://ropsten.etherscan.io/',
 		cookieDomain: 'ovr.ai',
 		sumsubApi: 'https://test-api.sumsub.com',
+		OVRContract: '0x128989bd5bac572d8f60c89d6eaa8f6d35f5c25c',
+		walletApproved: '0xC08ac3aB7a9Df0E095a153C4b80D929edA5460F2',
 	};
 } else {
 	apis = {
@@ -35,6 +39,8 @@ if (environment === 'PRODUCTION') {
 		etherscan: 'https://ropsten.etherscan.io/',
 		cookieDomain: 'localhost',
 		sumsubApi: 'https://test-api.sumsub.com',
+		OVRContract: '0x128989bd5bac572d8f60c89d6eaa8f6d35f5c25c',
+		walletApproved: '0xC08ac3aB7a9Df0E095a153C4b80D929edA5460F2',
 	};
 }
 

@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next'
 const BidOverlay = (props) => {
 	const { t, i18n } = useTranslation()
 	const { participateBid, approveOvrTokens } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -30,6 +30,7 @@ const BidOverlay = (props) => {
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
+	const [gasProjection, setGasProjection]  = useState(0);
 
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
@@ -50,6 +51,11 @@ const BidOverlay = (props) => {
 		}, 500);
 	}
 
+	const getUserExpenseProjection = () => {
+		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
+		return projection
+	} 
+
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
 		if (props.mapProvider.state.activeBidOverlay) {
@@ -69,20 +75,25 @@ const BidOverlay = (props) => {
 		updateBidProjectionCurrency(bidProjectionCurrency);
 	}, [bid]);
 
+	useEffect(() => {
+		setGasProjection(gasLandCost)
+	}, [gasLandCost]);
+	
+
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
 	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
 
 	const setNextBidSelectedLand = async () => {
-		if (!setupComplete || !ico || !ovr) {
-			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+		if (!setupComplete) {
+			return false;
 		}
 		// const landId = parseInt(hexId, 16);
 		// const land = await ico.landsAsync(landId);
 		// const currentBid = String(window.web3.fromWei(land[2]));
 
-		setCurrentBid(props.currentBid);
+		setCurrentBid(parseFloat(props.currentBid));
 		setNextBid(props.currentBid * 2);
 	};
 
@@ -152,15 +163,16 @@ const BidOverlay = (props) => {
 		if (!checkUserLoggedIn()) return;
 
 		// Centralized
-		setActiveStep(2);
-		auctionBid(hexId, bid)
+		// TODOOOO CHECK ALLOWANCE await authorizeOvrExpense(); //bid+gasProjection
+		auctionBid(hexId, bid, gasProjection)
 		.then((response) => {
 			if (response.data.result === true) {
+				setActiveStep(2);
 				console.log('sendConfirmAuctionStart - response true', response.data);
 			} else {
-				// console.log('responseFalse');
-				console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
 				// setActiveStep(0);
+				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+				setActiveStep(0);
 			}
 		})
 		.catch((error) => {
@@ -308,8 +320,7 @@ const BidOverlay = (props) => {
 							</div>
 							<div className="Overlay__expense_projection">
 								{bid >= 10 &&
-									props.userProvider.state.isLoggedIn &&
-									'Bid using ' + bidProjection + ' ' + bidProjectionCurrency}
+									props.userProvider.state.isLoggedIn && getUserExpenseProjection()}
 								{bid >= 10 && props.userProvider.state.isLoggedIn && (
 									<Tooltip
 										title={

@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react';
 import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendPreAuctionBid, signUpLoginMetamask } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendPreAuctionBid, signUpLoginMetamask, getGasPrice } from '../lib/api';
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 import { UserContext } from './UserContext';
 import { useHistory } from 'react-router-dom';
 import {abi} from '../contract/abi';
+import ovrAbi from '../contract/ovrAbi';
 
 export const Web3Context = createContext();
 
@@ -21,7 +22,8 @@ export class Web3Provider extends Component {
 			provider: null,
 			signer: null,
       address: null,
-      ovrsOwned: 0,
+			ovrsOwned: 0,
+			gasLandCost: 0,
       perEth: 0,
       perUsd: 0,
       lastTransaction: "0x0"
@@ -65,13 +67,15 @@ export class Web3Provider extends Component {
 					"provider": provider,
 					"signer": signer,
 					"address": address,
-					"chainId": chainId
+					"chainId": chainId,
+					"setupComplete": true
 				});
 
         // Centralized Login
         if(login == true){
           await this.handleCentralizedLogin(address, callback)
-        }
+				}
+				this.keepUpdatedGasPrice()
 			}
 		} else {
 			// Metamask not detected
@@ -81,12 +85,37 @@ export class Web3Provider extends Component {
 		}
   };
 	
+	//
+	// Transactions helper
+	//
+
+	refreshGasPrice = async => {
+		getGasPrice().then((response) => {
+				if (response.data.result === true) {
+					this.setState({gasLandCost: (response.data.landGasCost * 590).toFixed(2)}) // Remove * 590
+				} 
+		});
+	}
+
+	keepUpdatedGasPrice = () => {
+		this.refreshGasPrice();
+		setInterval(() => {
+			this.refreshGasPrice();
+		}, 30000)
+	}
+
 	getUSDValueInOvr = (usd = 1) => {
 		let floorValue = 0.1;
 		// TODO get value of OVR token and if it's more than 0.1 use it as floor
 		return (usd / floorValue).toFixed(2);
 	}
 
+	authorizeOvrExpense = async ( ovr = "10000" ) => {
+		window.ethereum.enable() 
+		let contractAsAccount = new ethers.Contract(config.apis.OVRContract, ovrAbi, this.state.signer)
+		const howMuchTokens = ethers.utils.parseUnits(ovr, 18)
+		await contractAsAccount.approve(config.apis.walletApproved,howMuchTokens)
+	}
 
   //
   // Centralized authentication with Metamask
@@ -94,9 +123,7 @@ export class Web3Provider extends Component {
 
   handleCentralizedLogin(publicAddress, callback) {
 		signUpLoginMetamask(publicAddress).then((response) => {
-			console.log('response', response)
 			getUserNonce(publicAddress).then((response) => {
-				console.log('response', response)
 					if (response.data.result === true) {
 							let nonce = response.data.user.nonce;
 							this.handleUserSignMessage(publicAddress, nonce, callback);
@@ -113,8 +140,10 @@ export class Web3Provider extends Component {
   handleAuthenticate = (publicAddress, signature, callback) => {
     signIn(publicAddress, signature).then((response) => {
       if (response.data.result === true) {
-        // Save data in store
-        this.context.actions.loginUser(response.data.token, response.data.user);
+				// Save data in store
+				this.context.actions.loginUser(response.data.token, response.data.user);
+				this.setState({gasLandCost: response.data.gas.landGasCost})
+				
         if (callback) {
           callback();
         }
@@ -131,6 +160,7 @@ export class Web3Provider extends Component {
           state: this.state,
           actions: {
 						setupWeb3: this.setupWeb3,
+						authorizeOvrExpense: this.authorizeOvrExpense,
 						getUSDValueInOvr: this.getUSDValueInOvr
           },
         }}
