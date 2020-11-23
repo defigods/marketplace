@@ -114,7 +114,7 @@ export class Web3Provider extends Component {
 		window.ethereum.enable() 
 		let contractAsAccount = new ethers.Contract(config.apis.OVRContract, ovrAbi, this.state.signer)
 		const howMuchTokens = ethers.utils.parseUnits(ovr, 18)
-		await contractAsAccount.approve(config.apis.walletApproved,howMuchTokens)
+		await contractAsAccount.approve(config.apis.walletApproved, howMuchTokens)
 	}
 
   //

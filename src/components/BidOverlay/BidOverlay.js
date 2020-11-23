@@ -414,11 +414,11 @@ const BidOverlay = (props) => {
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
 								<br></br>{t('BidOverlay.request.sent')}
-								<div className="Overlay__etherscan_link">
+								{/* <div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('BidOverlay.view.status')}
 									</a>
-								</div>
+								</div> */}
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
