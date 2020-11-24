@@ -109,6 +109,8 @@
 	"Generic.delete.label" : "删除",
 	"Generic.external.link" : "外部链接",
 	"Generic.back.link" : "返回",
+	"Generic.contactus.interested" : "如果你感兴趣请联系我们",
+	"Generic.bid.tooltip" : "Gas费用会用来支付以太坊上的铸币gas费。 只有当你赢得拍卖的时候，这笔OVR才会从你的钱包里提走",
 
 	"BannerNotification.welcome": "欢迎来到OVR",
 	"BannerNotification.intro": "你现在可以拥有自己的土地, 将它定制化, 为你的 OVR 钱包充值",
@@ -163,6 +165,8 @@
 	"Success.action.title":"完成操作",
 	"LanguageSelection.lang.select": "语言",
 	"LanguageSelection.lang.eng": "英语",
-	"LanguageSelection.lang.zhHK": "中文"
+	"LanguageSelection.lang.zhHK": "中文",
+
+	"Land.unvabilable" : "不可以拍卖"
 
 }
