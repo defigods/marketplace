@@ -72,6 +72,10 @@ function App() {
 		ReactGA.set({ page: location.pathname }); // Update the user's current page
 		ReactGA.pageview(location.pathname); // Record a pageview for the given page
 	});
+	function historyPush(route){
+		history.push(route)
+	}
+	window.historyPush = historyPush;
 
 	return (
 		<Suspense fallback="loading">

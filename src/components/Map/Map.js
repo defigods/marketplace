@@ -148,6 +148,15 @@ const Map = (props) => {
 		}
 	}, [isMapReady, onSingleView, onMultipleLandSelection, multipleLandSelectionList]);
 
+	useEffect(() => {
+		if (isMapReady == true) {
+			if (auctionList.length > 0) {
+				plotAuctions();
+			}
+		}
+	}, [isMapReady, auctionList]);
+
+
 	//
 	// Map init
 	//
@@ -312,10 +321,7 @@ const Map = (props) => {
 			selected_source.setData(featureOfSelectedLands);
 			map.setLayoutProperty(selected_layerId, 'visibility', 'visible');
 		}
-		// Plot active Auctions
-		if (auctionList.length > 0) {
-			plotAuctions();
-		}
+		console.log("changeAuctionList",auctionList)		
 	}
 
 	function plotAuctions() {
@@ -329,16 +335,17 @@ const Map = (props) => {
 		while (paras[0]) {
 			paras[0].parentNode.removeChild(paras[0]);
 		}
-
+	
+		let markers = [];
 		// Add all markers on map
 		for (const auction of auctionList) {
 			let statusClassName = 0;
-			switch (auction.status) {
-				case 0:
-					statusClassName = '--open';
-					break;
-				case 1:
+			switch (auction.land.userPerspective) {
+				case 3:
 					statusClassName = '--outbidded';
+					break;
+				case 2:
+					statusClassName = '--bestbid';
 					break;
 				default:
 					statusClassName = '--open';
@@ -350,13 +357,35 @@ const Map = (props) => {
 			el.insertAdjacentHTML('beforeend', '<div class="c-ping-layer c-ping-layer-1"></div>');
 			if (
 				auction.land.address &&
-				!isNaN(auction.land.address.geocenter[1]) &&
-				!isNaN(auction.land.address.geocenter[0])
+				!isNaN(auction.land.address.geocenterString[1]) &&
+				!isNaN(auction.land.address.geocenterString[0])
 			) {
-				new mapboxgl.Marker(el)
-					.setLngLat([auction.land.address.geocenter[1], auction.land.address.geocenter[0]])
-					.addTo(map);
+
+				// let popupContent = `<div>Land name:<b> ${auction.land.sentenceId}</b><br>
+				// Current Value: <b>${auction.land.value} OVR</b><br>
+				// <div onClick=`+window.historyPush(`/map/land/${auction.land.hexId}`)+`>Go to</div>
+				// </div>`;
+				// var popup = new mapboxgl.Popup({offset: 25})
+				// .setHTML(popupContent);
+				// let marker = 	new mapboxgl.Marker(el)
+				// 	.setLngLat([auction.land.address.geocenterString[1], auction.land.address.geocenterString[0]])
+				// 	.setPopup(popup) 
+				// 	.addTo(map);
+				// markers.push(marker)
+
+				// Todo Markers ^^^
+				let marker = 	new mapboxgl.Marker(el)
+						.setLngLat([auction.land.address.geocenterString[1], auction.land.address.geocenterString[0]])
+						.addTo(map);
 			}
+		}
+
+		// Popups of Markers
+		for (const marker of markers) {
+			let markerDiv = marker.getElement()
+			markerDiv.addEventListener('mouseenter', () => {
+				marker.togglePopup()
+			});
 		}
 	}
 

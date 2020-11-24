@@ -301,6 +301,15 @@ const Land = (props) => {
 			);
 		} 
 
+		if(marketStatus == 10){
+			badge = (
+			<div>
+				<h3 className="o-small-title">{t('Land.status.label')}</h3>
+				<div className="c-status-badge  --open">CLOSING</div>
+			</div>
+			);
+		} 
+
 		return badge;
 	}
 
@@ -330,50 +339,37 @@ const Land = (props) => {
 					<HexButton url="/" text={t('Land.place.bid')} className="--purple" onClick={(e) => setActiveBidOverlay(e)}></HexButton>
 				);
 				break;
-			case 2:
-				button = <></>;
-				if (userPerspective == 0) {
-					button = (
-						<HexButton
-							url="/"
-							text={t('Land.buy.offer')}
-							className="--blue"
-							onClick={(e) => setActiveBuyOfferOverlay(e)}
-						></HexButton>
-					);
-				} else if (userPerspective == 1) {
-					button = (
-						<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
-					);
-				}
+			case 10:
+				button = <div>&nbsp;</div>
+				break;
+			// case 2:
+			// 	button = <></>;
+			// 	if (userPerspective == 0) {
+			// 		button = (
+			// 			<HexButton
+			// 				url="/"
+			// 				text={t('Land.buy.offer')}
+			// 				className="--blue"
+			// 				onClick={(e) => setActiveBuyOfferOverlay(e)}
+			// 			></HexButton>
+			// 		);
+			// 	} else if (userPerspective == 1) {
+			// 		button = (
+			// 			<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+			// 		);
+			// 	}
 				
-				break;
-			case 3:
-				button = (
-					<HexButton url="/" text={t('Land.sell.land')} className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
-				);
-				break;
-			case 4:
-				button = (
-					<HexButton url="/" text={t('Land.buy.now')} className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
-				);
-				break;
-			case 5:
-				button = <></>;
-				if (userPerspective != 0) {
-					button = (
-						<div className="redeem-land-map-button">
-							<HexButton
-								url="/"
-								text={t('Land.redeem.land')}
-								className={isRedeemingLand ? '--purple --disabled' : '--purple'}
-								onClick={(e) => redeemLand(e)}
-							></HexButton>
-							{!isRedeemingLand ? null : <p className="Overlay__message__container">{t('Land.redeeming.land')}</p>}
-						</div>
-					);
-				}
-				break;
+			// 	break;
+			// case 3:
+			// 	button = (
+			// 		<HexButton url="/" text={t('Land.sell.land')} className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+			// 	);
+			// 	break;
+			// case 4:
+			// 	button = (
+			// 		<HexButton url="/" text={t('Land.buy.now')} className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
+			// 	);
+			// 	break;
 			default:
 				button = <div>&nbsp;</div>;
 				break;

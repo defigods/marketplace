@@ -42,6 +42,7 @@ export class Web3Provider extends Component {
   }
 
   setupWeb3 = async (callback, login=true) => {
+		console.log("setupweb3")
 		if (typeof web3 !== "undefined") {
 			await window.ethereum.enable();
 			let provider = new ethers.providers.Web3Provider(window.ethereum);
