@@ -1,5 +1,5 @@
 import React, { createContext, Component } from 'react';
-import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
+import { removeToken, saveToken, isLogged, getToken, removeUser, getPublicAddress} from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
 import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendPreAuctionBid, signUpLoginMetamask, getGasPrice } from '../lib/api';
 import {promisify} from '../lib/config';
@@ -77,6 +77,7 @@ export class Web3Provider extends Component {
           await this.handleCentralizedLogin(address, callback)
 				}
 				this.keepUpdatedGasPrice()
+				this.keepUpdatedPublicAddress()
 			}
 		} else {
 			// Metamask not detected
@@ -96,6 +97,18 @@ export class Web3Provider extends Component {
 					this.setState({gasLandCost: (response.data.landGasCost * 590).toFixed(2)}) // Remove * 590
 				} 
 		});
+	}
+
+	keepUpdatedPublicAddress = async => {
+		setInterval(async () => {
+			if( this.context.state.user.publicAddress !== undefined && this.state.address !== null){
+				let sign = await this.state.signer.getAddress()
+				if(this.context.state.user.publicAddress !== sign.toLowerCase()){
+					removeUser()
+					window.location = "/"
+				}
+			}
+		}, 1000)
 	}
 
 	keepUpdatedGasPrice = () => {

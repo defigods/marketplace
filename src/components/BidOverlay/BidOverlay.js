@@ -17,7 +17,12 @@ import { useTranslation } from 'react-i18next'
 
 const BidOverlay = (props) => {
 	const { t, i18n } = useTranslation()
-	const { participateBid, approveOvrTokens } = props.web3Provider.actions;
+	
+	const userState = props.userProvider.state.user;
+	const { balance, allowance } = userState;
+	const { refreshBalanceAndAllowance } = props.userProvider.actions;
+	
+	const { participateBid, approveOvrTokens,authorizeOvrExpense,getUSDValueInOvr } = props.web3Provider.actions;
 	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
@@ -157,13 +162,34 @@ const BidOverlay = (props) => {
 		// }
 	};
 
+	const ensureBalanceAndAllowance = async (cost) => {
+		let floatCost = parseFloat(cost)
+		// Check balance
+		if( floatCost > balance){
+			warningNotification(t('Warning.no.token.title'), t('Warning.no.tokens.desc'));
+			return false;
+		}
+		// Check Allowance
+		if( floatCost > allowance){
+			await authorizeOvrExpense(String(floatCost * 3));
+		}
+		return true;
+	}
+
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		if (!checkUserLoggedIn()) return;
 
+		// Ensure user is logged in
+		if (!checkUserLoggedIn()) return;
+		// Refresh balance and allowance
+		refreshBalanceAndAllowance();
+		// Ensure balance and allowance
+		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
+		if( !checkOnBal ) return;
+
 		// Centralized
-		// TODOOOO CHECK ALLOWANCE await authorizeOvrExpense(); //bid+gasProjection
 		auctionBid(hexId, bid, gasProjection)
 		.then((response) => {
 			if (response.data.result === true) {
@@ -319,23 +345,19 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__expense_projection">
-								{bid >= 10 &&
+								{bidValid &&
 									props.userProvider.state.isLoggedIn && getUserExpenseProjection()}
-								{bid >= 10 && props.userProvider.state.isLoggedIn && (
+								{bidValid && props.userProvider.state.isLoggedIn && (
 									<Tooltip
 										title={
 											<React.Fragment>
-												{t('BidOverlay.use.direct')}
-												<br></br>
-												{t('BidOverlay.click.to.buy')}
+												{t('Generic.bid.tooltip')}
 											</React.Fragment>
 										}
 										aria-label="info"
 										placement="bottom"
 									>
-										<a href={'https://www.ovr.ai'} rel="noopener noreferrer" target={'_blank'}>
-											<Help className="Help" />
-										</a>
+										<Help className="Help" />
 									</Tooltip>
 								)}
 							</div>

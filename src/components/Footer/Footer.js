@@ -17,10 +17,9 @@ class Footer extends Component {
 				</div>
 				<div className="o-fourth">
 					<div className="Footer__container --large">
-						Over Holding Srl <br></br>
-						Viale Tricesimo n. 200<br></br>
-						33100 Udine - Italy<br></br>
-						Vat no. IT02945890305
+						OVRGLOBAL OÜ<br></br>
+						Registry Code: 14721068<br></br>
+						Harju maakond, Tallinn, Kesklinna linnaosa, Roseni tn 12-85, 10111 Estonia
 					</div>
 				</div>
 				<div className="o-fourth">

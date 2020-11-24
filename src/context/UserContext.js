@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react';
-import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
+import { removeToken, saveToken, isLogged, getToken, removeUser, getUser} from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn,getUserBalanceAndAllowance } from '../lib/api';
 import config, { camelCaseKeys } from '../lib/config';
 import { useTranslation } from 'react-i18next'
 
@@ -21,12 +21,15 @@ export class UserProvider extends Component {
 			token: null,
 			user: {
 				uuid: null,
+				allowance: 0,
+				balance: 0
 			}
 		};
 	}
 
 	componentDidMount() {
 		if (isLogged()) {
+			// Check
 			userProfile()
 			.then((response) => {
 				if (response.data.result === true) {
@@ -79,6 +82,26 @@ export class UserProvider extends Component {
 		removeToken('userToken');
 		removeToken('userUuid');
 	};
+
+	refreshBalanceAndAllowance = () => {
+		console.log("refreshBalanceAndAllowance")
+		getUserBalanceAndAllowance()
+		.then((response) => {
+			console.log("responseAAAA", response)
+			if (response.data.result === true) {
+				console.log("refreshBalanceAndAllowance", response.data)
+				this.setState({ user: { ...this.state.user,
+					allowance: response.data.allowance,
+					balance: response.data.balance,
+				}});
+			} 
+			})
+			.catch((err) => {
+				console.log("responseAAAA", err)
+				// Notify user if network error
+				networkError();
+			});
+	}
 	
 	// Centralized Notifications
 
@@ -213,6 +236,7 @@ export class UserProvider extends Component {
 						setUserEmail: this.setUserEmail,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
+						refreshBalanceAndAllowance: this.refreshBalanceAndAllowance,
 						notification: {
 							setAsReaded: this.setNotificationAsReaded,
 							setAllAsReaded: this.setAllNotificationsAsReaded,

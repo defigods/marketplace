@@ -16,10 +16,15 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import Help from '@material-ui/icons/Help';
 import { useTranslation } from 'react-i18next'
+import { parse } from 'date-fns';
 
 
 const MintOverlay = (props) => {
 	const { t, i18n } = useTranslation()
+
+	const userState = props.userProvider.state.user;
+	const { balance, allowance } = userState;
+	const { refreshBalanceAndAllowance } = props.userProvider.actions;
 
 	const { authorizeOvrExpense, getUSDValueInOvr } = props.web3Provider.actions;
 	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
@@ -37,6 +42,9 @@ const MintOverlay = (props) => {
 	const [gasProjection, setGasProjection]  = useState(0);
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
+
+	const [userBalance, setUserBalance] = useState(0);
+	const [userAllowance, setUserAllowance] = useState(0);
 
 	const anchorRef = React.useRef(null);
 	const [open, setOpen] = React.useState(false);
@@ -76,6 +84,11 @@ const MintOverlay = (props) => {
 	useEffect(() => {
 		updateBidProjectionCurrency(bidProjectionCurrency);
 	}, [bid]);
+
+	useEffect(() => {
+		setUserBalance(balance)
+		setUserAllowance(allowance)
+	}, [balance, allowance]);
 
 	useEffect(() => {
 		setGasProjection(gasLandCost)
@@ -151,14 +164,32 @@ const MintOverlay = (props) => {
 		}
 	};
 
+	const ensureBalanceAndAllowance = async (cost) => {
+		let floatCost = parseFloat(cost)
+		// Check balance
+		if( floatCost > balance){
+			warningNotification(t('Warning.no.token.title'), t('Warning.no.tokens.desc'));
+			return false;
+		}
+		// Check Allowance
+		if( floatCost > allowance){
+			await authorizeOvrExpense(String(floatCost * 3));
+		}
+		return true;
+	}
+
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
+		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
-		
-		await authorizeOvrExpense(); //bid+gasProjection
+		// Refresh balance and allowance
+		refreshBalanceAndAllowance();
+		// Ensure balance and allowance
+		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
+		if( !checkOnBal ) return;
 
-		// Centralized
+		// Start centralized auction
 		auctionCreate(hexId, bid, gasProjection)
 		.then((response) => {
 			if (response.data.result === true) {
@@ -283,10 +314,10 @@ const MintOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__expense_projection">
-									{bid >= currentBid &&
+									{bidValid &&
 										props.userProvider.state.isLoggedIn &&
 									  getUserExpenseProjection()}
-									{bid >= currentBid && props.userProvider.state.isLoggedIn && (
+									{bidValid && props.userProvider.state.isLoggedIn && (
 										<Tooltip
 											title={
 												<React.Fragment>

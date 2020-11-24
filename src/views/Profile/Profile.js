@@ -52,6 +52,8 @@ const ProfileLayout = () => {
 	const userContext = useContext(UserContext);
 	const web3Context = useContext(Web3Context);
 	const user = userContext.state.user;
+	const [balance, setBalance] = React.useState(user.balance);
+	const [address, setAddress] = React.useState(user.publicAddress);
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
@@ -59,6 +61,16 @@ const ProfileLayout = () => {
 	const [urlKyc, setUrlKyc] = useState("#");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 	const [isIMWallet, setIsIMWallet] = useState(false);
+
+	React.useEffect(() => {
+		if(user != undefined && user.balance != undefined){
+			setBalance(user.balance.toFixed(2))
+		}
+	}, [user.balance]);
+
+	React.useEffect(() => {
+		setAddress(user.publicAddress)
+	}, [user.publicAddress]);
 
 	useEffect(() => {
 		// IMWallet workaround
@@ -97,7 +109,7 @@ const ProfileLayout = () => {
 					.catch(() => {});
 			}
 		}
-	}, [user.uuid, sumsubShowPanel, localStorage.getItem('i18nextLng')]);
+	}, [user, sumsubShowPanel, localStorage.getItem('i18nextLng')]);
 
 
 	const toggleKycVerificationFrame = (e) => {
@@ -180,15 +192,12 @@ const ProfileLayout = () => {
 							<div className="p-section-content">
 								<h4 className="p-content-title">{t('Profile.wallet.addr')}</h4>
 								<div className="p-wallet-address">
-									{window.web3 &&
-										window.web3.eth &&
-										window.web3.eth.defaultAccount &&
-										window.web3.eth.defaultAccount.toLowerCase()}
+									{address}
 								</div>
 								<div className="p-balance">
 									<div className="p-small-title">{t('Profile.balance')}</div>
 									<div className="p-balance-value">
-										<ValueCounter value={web3Context.state.ovrsOwned} />
+										<ValueCounter value={balance} />
 										<div>
 											<HexButton url="/buy-tokens" className="--orange --disabled" text={t('Profile.buy.ovr')}></HexButton>
 											{/* history.push('/profile');

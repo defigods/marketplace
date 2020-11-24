@@ -78,3 +78,22 @@
 		margin-top: 10px;
 	}
 }
+
+.c-status-badge .MuiCircularProgress-root{
+	width: 10px!important;
+	height: 10px!important;
+	float: right;
+	color: $ovr-purple!important;
+	right: -5px!important;
+	position: relative;
+	path{
+		stroke-width: 6.4;
+	}
+}
+
+.l-check-on-etherscan{
+	margin-top: 40px;
+	display: inline-block;
+	font-size: 14px;
+	color: $ovr-sideral-grey;
+}

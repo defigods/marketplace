@@ -12,6 +12,7 @@ import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
 // import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
 import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { getLand, sendAuctionCheckClose } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
@@ -50,6 +51,7 @@ const Land = (props) => {
 	const [auction, setAuction] = useState(null);
 	// const [openSellOrder, setOpenSellOrder] = useState(null);
 	const [openBuyOffers, setOpenBuyOffers] = useState([]);
+	const [mintTxHash, setMintTxHash] = useState(undefined);
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 	const [isNotValidH3, setIsNotValidH3] = useState(false);
 	const [isUnavailable, setIsUnavailable] = useState(false);
@@ -121,6 +123,7 @@ const Land = (props) => {
 					setUserPerspective(data.userPerspective);
 					setAuction(data.auction);
 					setIsUnavailable(data.isUnavailable);
+					setMintTxHash(data.mintTxHash);
 					// Centralized
 					setValue(data.value);
 					// If it's unminted take 10
@@ -238,6 +241,20 @@ const Land = (props) => {
 		}
 	}
 
+	const handleEtherscan = (e) => {
+		e.preventDefault()
+		let etherscanLink = config.apis.etherscan + '/tx/' + mintTxHash;
+		window.open(etherscanLink, "_blank")
+	};
+	
+	function renderVisitOnEtherscan () {
+		let rend = <></>
+		if(mintTxHash !== undefined && mintTxHash !== "" && mintTxHash !== null){
+			rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.check.ether')}</a>
+		}
+		return rend
+	}
+
 	function renderBadge() {
 		let badge = <div>&nbsp;</div>;
 
@@ -305,7 +322,7 @@ const Land = (props) => {
 			badge = (
 			<div>
 				<h3 className="o-small-title">{t('Land.status.label')}</h3>
-				<div className="c-status-badge  --open">CLOSING</div>
+				<div className="c-status-badge  --open">CLOSING <CircularProgress /></div>
 			</div>
 			);
 		} 
@@ -340,7 +357,7 @@ const Land = (props) => {
 				);
 				break;
 			case 10:
-				button = <div>&nbsp;</div>
+				button = <div></div>
 				break;
 			// case 2:
 			// 	button = <></>;
@@ -413,8 +430,7 @@ const Land = (props) => {
 			return (
 				<div className="o-container">
 					<div className="Title__container">
-						{' '}
-						<h3 className="o-small-title">{t('Land.history.label')}</h3>
+						<h3 className="o-small-title"></h3>
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
@@ -435,7 +451,6 @@ const Land = (props) => {
 			return (
 				<div className="o-container">
 					<div className="Title__container">
-						{' '}
 						<h3 className="o-small-title">{t('Land.bid.history')}</h3>
 					</div>
 					<div className="Table__container">
@@ -561,11 +576,14 @@ const Land = (props) => {
 						<div className="Land__heading__2">
 							<div className="o-fourth">{renderPrice()}</div>
 							<div className="o-fourth">{renderTimer()}</div>
-							<div className="o-fourth">{renderBadge()}</div>
-							<div className="o-fourth">{renderOverlayButton()}</div>
+							<div className="o-fourth">
+								{renderBadge()} 
+							</div>
+							<div className="o-fourth">{renderOverlayButton()}
+							{renderVisitOnEtherscan()}</div>
 						</div>
 					</div>
-					{renderActiveOpenOrders()}
+					{/* {renderActiveOpenOrders()} */}
 					<div className="Land__section">{renderBidHistory()}</div>
 				</div>
 			);

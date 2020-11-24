@@ -40,10 +40,36 @@ const ActivityTile = (props) => {
 
 	const setAsReaded = () => {};
 
+	const renderIcon = () => {
+		console.log('props.data.typeOf',props.data.typeOf)
+		switch (props.data.typeOf) {
+			// 10 start
+			// 11 outbidded
+			// 11 Best bidder
+			// 13 win
+			case 10:
+				return <img src={require('../../assets/img/icone-marketplace-07.png')} />
+				break;
+			case 13:
+				return <img src={require('../../assets/img/icone-marketplace-01.png')} />
+				break;
+			case 11:
+				return <img src={require('../../assets/img/icone-marketplace-03.png')} />
+				break;
+			case 12:
+				return <img src={require('../../assets/img/icone-marketplace-05.png')} />
+				break;
+			default:
+				return <img src={require('../../assets/img/icone-marketplace-04.png')} />
+		}
+	}
+
 	return (
 		<div key={props.data.uuid} className={`ActivityTile ${!pending ? '--new' : ''}`} onClick={setAsReaded}>
 			<div className="ActivityTile__head">
-				<div className="ActivityTile__icon"></div>
+				<div className="ActivityTile__icon">
+					{ renderIcon() }
+				</div>
 			</div>
 			<div className="ActivityTile__body">
 				<div className="ActivityTile__time">{moment(props.data.createdAt).format('HH:mm, dddd, MMM D, YYYY')}</div>

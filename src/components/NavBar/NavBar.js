@@ -16,6 +16,7 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
 import Translate from '@material-ui/icons/Translate';
+import { removeUser } from '../../lib/auth';
 
 import { useTranslation } from 'react-i18next'
 
@@ -24,6 +25,7 @@ const NavBar = () => {
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State, actions: web3Actions } = useContext(Web3Context);
 	const [langOpen, setLangOpen] = React.useState(0);
+	const [balance, setBalance] = React.useState(userState.user.balance);
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
 	const [isConnecting, setIsConnecting] = React.useState(false);
@@ -79,7 +81,7 @@ const NavBar = () => {
 			setIsConnecting(false);
 		})
 	}
-
+	
 	React.useEffect(() => {
 		if (userState.isLoggedIn) {
 			if (prevOpen.current === true && open === false) {
@@ -88,6 +90,12 @@ const NavBar = () => {
 			prevOpen.current = open;
 		}
 	}, [open]);
+
+	React.useEffect(() => {
+		if(userState.user != undefined && userState.user.balance != undefined){
+			setBalance(userState.user.balance.toFixed(2))
+		}
+	}, [userState.user.balance]);
 	// END - Profile sub menu
 
 	React.useEffect(() => {
@@ -216,7 +224,7 @@ const NavBar = () => {
 							{/* <Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
 							</Link> // TODO: KYC - Remove comment */}
-							<ValueCounter value={web3State.ovrsOwned}></ValueCounter>
+							<ValueCounter value={balance}></ValueCounter>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
 							}}>

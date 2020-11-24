@@ -38,6 +38,10 @@ export function userProfile(userToken) {
 	return request({ url: '/user/profile', method: 'GET' }, {}, null);
 }
 
+export function getUserBalanceAndAllowance() {
+	return request({ url: '/user/balance_and_allowance', method: 'GET' }, {}, null);
+}
+
 // USER REGISTRATION
 // ----------------------------------------------------------------------------------------
 
