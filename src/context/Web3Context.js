@@ -94,7 +94,7 @@ export class Web3Provider extends Component {
 	refreshGasPrice = async => {
 		getGasPrice().then((response) => {
 				if (response.data.result === true) {
-					this.setState({gasLandCost: (response.data.landGasCost * 590).toFixed(2)}) // Remove * 590
+					this.setState({gasLandCost: (response.data.landGasCost).toFixed(2)}) 
 				} 
 		});
 	}
@@ -156,7 +156,7 @@ export class Web3Provider extends Component {
       if (response.data.result === true) {
 				// Save data in store
 				this.context.actions.loginUser(response.data.token, response.data.user);
-				this.setState({gasLandCost: response.data.gas.landGasCost})
+				this.setState({gasLandCost: (response.data.gas.landGasCost).toFixed(2)})
 				
         if (callback) {
           callback();
