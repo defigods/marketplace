@@ -43,6 +43,7 @@ export class UserProvider extends Component {
 				})
 				.catch(() => {
 					// Notify user if network error
+					console.log("isLogged")
 					networkError();
 				});
 
@@ -87,7 +88,6 @@ export class UserProvider extends Component {
 		console.log("refreshBalanceAndAllowance")
 		getUserBalanceAndAllowance()
 		.then((response) => {
-			console.log("responseAAAA", response)
 			if (response.data.result === true) {
 				console.log("refreshBalanceAndAllowance", response.data)
 				this.setState({ user: { ...this.state.user,
@@ -97,8 +97,8 @@ export class UserProvider extends Component {
 			} 
 			})
 			.catch((err) => {
-				console.log("responseAAAA", err)
 				// Notify user if network error
+				console.log("NetworkErrorCode: 1")
 				networkError();
 			});
 	}

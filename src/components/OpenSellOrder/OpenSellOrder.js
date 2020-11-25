@@ -32,6 +32,7 @@ export class OpenSellOrder extends Component {
 			})
 			.catch(() => {
 				// Notify user if network error
+				console.log("NetworkErrorCode: 11")
 				networkError();
 			});
 	};
@@ -50,6 +51,7 @@ export class OpenSellOrder extends Component {
 			})
 			.catch(() => {
 				// Notify user if network error
+				console.log("NetworkErrorCode: 13")
 				networkError();
 			});
 	};

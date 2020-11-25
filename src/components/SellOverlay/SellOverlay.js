@@ -116,6 +116,7 @@ const SellOverlay = (props) => {
 			})
 			.catch(() => {
 				// Notify user if network error
+				console.log("NetworkErrorCode: 143")
 				networkError();
 			});
 	}

@@ -67,6 +67,7 @@ const Discover = () => {
 			})
 			.catch(() => {
 				// Notify user if network error
+				console.log("NetworkErrorCode: 1232")
 				networkError();
 			});
 	}
@@ -103,8 +104,9 @@ const Discover = () => {
 				}
 			})
 			.catch((error) => {
-				// console.log(error);
+				 console.log(error);
 				// Notify user if network error
+				console.log("NetworkErrorCode: 12326")
 				networkError();
 			});
 	}
