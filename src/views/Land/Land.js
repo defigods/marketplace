@@ -250,7 +250,7 @@ const Land = (props) => {
 	function renderVisitOnEtherscan () {
 		let rend = <></>
 		if(mintTxHash !== undefined && mintTxHash !== "" && mintTxHash !== null){
-			rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.check.ether')}</a>
+			rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.view.ether')}</a>
 		}
 		return rend
 	}

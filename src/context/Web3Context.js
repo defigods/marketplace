@@ -26,7 +26,22 @@ export class Web3Provider extends Component {
 			gasLandCost: 0,
       perEth: 0,
       perUsd: 0,
-      lastTransaction: "0x0"
+			lastTransaction: "0x0",
+			ibcoPendingTransactions: [{
+				txId: "0xf6c3fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
+				type: "Sell",
+				price: 0.32,
+				amount: 100,
+				status: null},
+				{
+				txId: "0xf6c3fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
+				type: "Sell",
+				price: 0.32,
+				amount: 100,
+				status: null}
+			],
+			ibcoMyTransactions: [],
+			ibcoCurveHistory: []
     };
   }
 

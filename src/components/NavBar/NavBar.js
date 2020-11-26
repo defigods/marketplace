@@ -72,6 +72,7 @@ const NavBar = () => {
 	const handleMetamaskAuthentication = () => {
 		setIsConnecting(true);
 		window.gtag_report_metamask_conversion();
+		window.twitter_push_wallet_connect();
 		web3Actions.setupWeb3((res) => {
 			if( res == false ){
 				history.push('/login-helper');

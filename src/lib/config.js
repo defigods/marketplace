@@ -9,7 +9,7 @@ const environment = 'DEVELOPMENT';
 
 let apis;
 
-if (environment === 'PRODUCTION') {
+if (environment === 'STAGING') {
 	apis = {
 		hostname: 'https://mws.ovr.ai/api/v1',
 		socket: 'wss://mws.ovr.ai/cable',

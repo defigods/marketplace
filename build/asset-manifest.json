@@ -1,31 +1,32 @@
 {
   "files": {
-    "main.css": "./static/css/main.7b5b65ea.chunk.css",
-    "main.js": "./static/js/main.be8ae559.chunk.js",
-    "main.js.map": "./static/js/main.be8ae559.chunk.js.map",
+    "main.css": "./static/css/main.2e988d71.chunk.css",
+    "main.js": "./static/js/main.4d098282.chunk.js",
+    "main.js.map": "./static/js/main.4d098282.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.a034842e.js",
     "runtime-main.js.map": "./static/js/runtime-main.a034842e.js.map",
     "static/css/2.c6629948.chunk.css": "./static/css/2.c6629948.chunk.css",
-    "static/js/2.3cb1b787.chunk.js": "./static/js/2.3cb1b787.chunk.js",
-    "static/js/2.3cb1b787.chunk.js.map": "./static/js/2.3cb1b787.chunk.js.map",
+    "static/js/2.6a11de37.chunk.js": "./static/js/2.6a11de37.chunk.js",
+    "static/js/2.6a11de37.chunk.js.map": "./static/js/2.6a11de37.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.fa1e14b1bae02b406f2d8a5620858719.js": "./precache-manifest.fa1e14b1bae02b406f2d8a5620858719.js",
+    "precache-manifest.4becbcbe72567ee4c4b10128e84270e5.js": "./precache-manifest.4becbcbe72567ee4c4b10128e84270e5.js",
     "service-worker.js": "./service-worker.js",
     "static/css/2.c6629948.chunk.css.map": "./static/css/2.c6629948.chunk.css.map",
-    "static/css/main.7b5b65ea.chunk.css.map": "./static/css/main.7b5b65ea.chunk.css.map",
-    "static/js/2.3cb1b787.chunk.js.LICENSE.txt": "./static/js/2.3cb1b787.chunk.js.LICENSE.txt",
+    "static/css/main.2e988d71.chunk.css.map": "./static/css/main.2e988d71.chunk.css.map",
+    "static/js/2.6a11de37.chunk.js.LICENSE.txt": "./static/js/2.6a11de37.chunk.js.LICENSE.txt",
     "static/media/icone-marketplace-01.png": "./static/media/icone-marketplace-01.b71b842b.png",
-    "static/media/icone-marketplace-03.png": "./static/media/icone-marketplace-03.89ec92cb.png",
     "static/media/icone-marketplace-04.png": "./static/media/icone-marketplace-04.aca9f9d4.png",
-    "static/media/icone-marketplace-05.png": "./static/media/icone-marketplace-05.fa3a514f.png",
+    "static/media/icone-marketplace-05.png": "./static/media/icone-marketplace-05.10551744.png",
     "static/media/icone-marketplace-07.png": "./static/media/icone-marketplace-07.594c2e67.png",
+    "static/media/icone-marketplace-09.png": "./static/media/icone-marketplace-09.7b8ceb3e.png",
+    "static/media/icone-marketplace-10.png": "./static/media/icone-marketplace-10.90143188.png",
     "static/media/ovr.png": "./static/media/ovr.ee984550.png"
   },
   "entrypoints": [
     "static/js/runtime-main.a034842e.js",
     "static/css/2.c6629948.chunk.css",
-    "static/js/2.3cb1b787.chunk.js",
-    "static/css/main.7b5b65ea.chunk.css",
-    "static/js/main.be8ae559.chunk.js"
+    "static/js/2.6a11de37.chunk.js",
+    "static/css/main.2e988d71.chunk.css",
+    "static/js/main.4d098282.chunk.js"
   ]
 }

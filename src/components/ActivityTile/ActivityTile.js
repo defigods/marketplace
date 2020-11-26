@@ -54,10 +54,13 @@ const ActivityTile = (props) => {
 				return <img src={require('../../assets/img/icone-marketplace-01.png')} />
 				break;
 			case 11:
-				return <img src={require('../../assets/img/icone-marketplace-03.png')} />
+				return <img src={require('../../assets/img/icone-marketplace-09.png')} />
 				break;
 			case 12:
 				return <img src={require('../../assets/img/icone-marketplace-05.png')} />
+				break;
+			case 14:
+				return <img src={require('../../assets/img/icone-marketplace-10.png')} />
 				break;
 			default:
 				return <img src={require('../../assets/img/icone-marketplace-04.png')} />
@@ -83,7 +86,7 @@ const ActivityTile = (props) => {
 			</IconButton>
 			<Menu id="fade-menu" anchorEl={anchorEl} keepMounted open={open} onClose={handleClose} TransitionComponent={Fade}>
 				<MenuItem onClick={handleGoTo}>{t('ActivityTile.goto.land')}</MenuItem>
-				{props.data.txHash && <MenuItem onClick={handleEtherscan}>{t('ActivityTile.check.ether')}</MenuItem>}
+				{props.data.txHash && <MenuItem onClick={handleEtherscan}>{t('ActivityTile.view.ether')}</MenuItem>}
 			</Menu>
 		</div>
 	);
