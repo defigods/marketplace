@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'DEVELOPMENT';
+const environment = 'STAGING';
 
 let apis;
 
