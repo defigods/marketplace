@@ -42,6 +42,12 @@ export function getUserBalanceAndAllowance() {
 	return request({ url: '/user/balance_and_allowance', method: 'GET' }, {}, null);
 }
 
+export function postAcceptIBCOTerms() {
+	return request({ url: '/user/ibco/accept_terms', method: 'POST' }, {}, null);
+}
+
+
+
 // USER REGISTRATION
 // ----------------------------------------------------------------------------------------
 

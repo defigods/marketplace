@@ -2,9 +2,12 @@ import React, {useContext} from 'react';
 import { useTranslation } from 'react-i18next'
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
 import HexButton from '../../components/HexButton/HexButton';
+import TermsAndConditionsOverlay from '../../components/TermsAndConditionsOverlay/TermsAndConditionsOverlay'
 import { Web3Context } from '../../context/Web3Context';
+import { UserContext } from '../../context/UserContext';
+
 import config from '../../lib/config';
-import { Link } from 'react-router-dom';
+import { useHistory,Link } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 
@@ -14,18 +17,43 @@ function PublicSale() {
 	const [tab, setTab] = React.useState('buy');
 	const [transactionValue, setTransactionValue] = React.useState(0);
 
+	let history = useHistory();
 	const web3Context = useContext(Web3Context);
-	const web3State = web3Context.state;
-	const [ibcoPendingTransactions, setIbcoPendingTransactions] = React.useState(web3State.ibcoPendingTransactions);
-	const [ibcoMyTransactions, setIbcoMyTransactions] = React.useState(web3State.ibcoMyTransactions);
-	const [ibcoCurveHistory, setIbcoCurveHistory] = React.useState(web3State.ibcoCurveHistory);
+	const userContext = useContext(UserContext);
 
+	const [ibcoPendingTransactions, setIbcoPendingTransactions] = React.useState([]);
+	const [ibcoMyTransactions, setIbcoMyTransactions] = React.useState([]);
+	const [ibcoCurveHistory, setIbcoCurveHistory] = React.useState([]);
+	const [ibcoAreTermsAccepted, setIbcoAreTermsAccepted] = React.useState(false);
+	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
+	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
 
+	// Check if anything changed from web3context
 	React.useEffect(() => {
-		setIbcoPendingTransactions(web3State.ibcoPendingTransactions)
-		setIbcoMyTransactions(web3State.ibcoMyTransactions)
-		setIbcoCurveHistory(web3State.ibcoCurveHistory) 
-	}, [web3State.ibcoPendingTransactions,web3State.ibcoMyTransactions,web3State.ibcoCurveHistory]);
+		setIbcoPendingTransactions(web3Context.state.ibcoPendingTransactions)
+		setIbcoMyTransactions(web3Context.state.ibcoMyTransactions)
+		setIbcoCurveHistory(web3Context.state.ibcoCurveHistory) 
+	}, [web3Context.state.ibcoPendingTransactions,web3Context.state.ibcoMyTransactions,web3Context.state.ibcoCurveHistory]);
+
+	// Check if terms condition changed from userstate and kyc passed
+	React.useEffect(() => {
+		console.log('userContext state has changed',userContext.state)
+		if(userContext.state !== undefined && userContext.state.hasLoaded == true){
+			// Terms and conditions
+			if(Boolean(userContext.state.user.ibcoAcceptedTerms) == true){
+				setIbcoAreTermsAccepted(true)
+			} else {
+				setIbcoAreTermsAccepted(false)
+			}
+			// Kyc
+			if(Boolean(userContext.state.user.kycReviewAnswer) == true){
+				setIbcoIsKYCPassed(true)
+			}
+		} else {
+			setIbcoAreTermsAccepted(false)
+		}
+	}, [userContext.state, userContext.state.hasLoaded]);
+
 
 	const handleTabChange = (newValue) => {
 			setTab(newValue);
@@ -134,44 +162,89 @@ function PublicSale() {
 			);
 		}
 	}
+
+	function toggleTermsAndConditionsOverlay(a){
+		setShowTermsAndConditionsOverlay(a);
+		console.log('showTermsAndConditions')
+	}
 	
+	function renderActionButtonSection() {
+		if(ibcoIsKYCPassed !== true){
+			return (<div className="--centered-button-holder">
+				<HexButton
+					url="#"
+					text={'Pass Identity Verification to participate'}
+					className={`--orange --kyc-button`}
+					// ${bidValid ? '' : '--disabled'}
+					onClick={() => {history.push('/profile')}}
+				></HexButton>
+			</div>)
+		}
+		if(ibcoAreTermsAccepted !== true){ 
+			return (<div className="--centered-button-holder">
+				<HexButton
+					url="#"
+					text={'Accept Terms and Conditions'}
+					className={`--orange --kyc-button`}
+					// ${bidValid ? '' : '--disabled'}
+					onClick={() => toggleTermsAndConditionsOverlay(true)}
+				></HexButton>
+			</div>)
+		}
+
+		// If is Buy if is Sell
+		return (
+		<div className="">
+			<div className="Overlay__bid_title o-info-title">Buy OVR</div>
+			<div>
+				<TextField
+					type="number"
+					onChange={(e) => {
+						const transactionValue = e.target.value;
+						handleTransactionValueChange(transactionValue);
+					}}
+				/>
+				<HexButton
+					url="#"
+					text={'Buy Now'}
+					className={`--orange `}
+					// ${bidValid ? '' : '--disabled'}
+					onClick={() => handleBuyOvr(transactionValue)}
+				></HexButton>
+			</div>
+		</div>)
+	}
+
 	return (
 		<div className="PublicSale">
+			<TermsAndConditionsOverlay disableTermsAndConditionsOverlay={()=>toggleTermsAndConditionsOverlay(false)} showOverlay={showTermsAndConditionsOverlay}/>
 			<div className="o-container">
 				<div className="o-section">
 					<div className="s-f-curve">
 						<div className="o-card">
 							<div className="o-row">
-								<div className="o-fourth">
+								<div className="o-third">
 									<div className="o-label">
 										Buy Price
 									</div>
 									<div className="o-value">
-										<ValueCounter value={"0.066"} currency="dai"></ValueCounter>
+										<ValueCounter value={0.066} currency="dai"></ValueCounter>
 									</div>
 								</div>
-								<div className="o-fourth">
+								<div className="o-third">
 									<div className="o-label">
 										Reserve
 									</div>
 									<div className="o-value">
-										<ValueCounter value={"420,420,420"} currency="dai"></ValueCounter>
+										<ValueCounter value={420420420} currency="dai"></ValueCounter>
 									</div>
 								</div>
-								<div className="o-fourth">
+								<div className="o-third">
 									<div className="o-label">
 										Curve Issuance
 									</div>
 									<div className="o-value">
-										<ValueCounter value={"1,000,000"}></ValueCounter>
-									</div>
-								</div>
-								<div className="o-fourth">
-									<div className="o-label">
-										Total Supply
-									</div>
-									<div className="o-value">
-										<ValueCounter value={"10,000,000"}></ValueCounter>
+										<ValueCounter value={1000000}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -201,44 +274,26 @@ function PublicSale() {
 								</div>
 							</div>
 							<div className="o-row o-row__your_wallet">
-								<h3 class="p-section-title">Your Wallet</h3>
+								<h3 className="p-section-title">Your Wallet</h3>
 								<ValueCounter value={"5000.00"} currency="dai"></ValueCounter>
 								<ValueCounter value={"0.00"}></ValueCounter>
 							</div>
 							<div className="o-line"></div>
 							<div className="o-row o-info-row">
-								<div className="o-half"><h3 class="o-info-title">Price</h3></div>
+								<div className="o-half"><h3 className="o-info-title">Price</h3></div>
 								<div className="o-half">0.00</div>
 							</div>
 							<div className="o-row o-info-row">
-								<div className="o-half"><h3 class="o-info-title">Receive Amount</h3></div>
+								<div className="o-half"><h3 className="o-info-title">Receive Amount</h3></div>
 								<div className="o-half">0.00</div>
 							</div>
 							<div className="o-row o-info-row">
-								<div className="o-half"><h3 class="o-info-title">Slippage</h3></div>
+								<div className="o-half"><h3 className="o-info-title">Slippage</h3></div>
 								<div className="o-half">0.00</div>
 							</div>
 							<div className="o-line"></div>
 							<div className="o-row o-field-row">
-								<div className="">
-									<div className="Overlay__bid_title o-info-title">Buy OVR</div>
-									<div>
-										<TextField
-											type="number"
-											onChange={(e) => {
-												const transactionValue = e.target.value;
-												handleTransactionValueChange(transactionValue);
-											}}
-										/>
-										<HexButton
-											url="#"
-											text={'Buy Now'}
-											className={`--orange `}
-											// ${bidValid ? '' : '--disabled'}
-											onClick={() => handleBuyOvr(transactionValue)}
-										></HexButton>
-									</div>
-								</div>
+								{renderActionButtonSection()}
 							</div>
 						</div>
 					</div>	
@@ -246,7 +301,7 @@ function PublicSale() {
 				<div className="o-section">
 					<div className="o-card">
 						<div className="o-row">
-							<h3 class="o-card-title">Pending Transactions</h3>
+							<h3 className="o-card-title">Pending Transactions</h3>
 						</div>
 						<div className="o-line --venti"></div>
 						<div className="o-row">
@@ -257,7 +312,7 @@ function PublicSale() {
 				<div className="o-section">
 					<div className="o-card">
 						<div className="o-row">
-							<h3 class="o-card-title">My Transactions</h3>
+							<h3 className="o-card-title">My Transactions</h3>
 						</div>
 						<div className="o-line --venti"></div>
 						<div className="o-row">
@@ -268,7 +323,7 @@ function PublicSale() {
 				<div className="o-section">
 					<div className="o-card">
 						<div className="o-row">
-							<h3 class="o-card-title">Curve Historys</h3>
+							<h3 className="o-card-title">Curve Historys</h3>
 						</div>
 					</div>
 				</div>

@@ -24,7 +24,7 @@ const NavBar = () => {
 	const { t, i18n } = useTranslation();
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State, actions: web3Actions } = useContext(Web3Context);
-	const [langOpen, setLangOpen] = React.useState(0);
+	const [langOpen, setLangOpen] = React.useState(false);
 	const [balance, setBalance] = React.useState(userState.user.balance);
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);

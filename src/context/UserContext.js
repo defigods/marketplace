@@ -15,6 +15,7 @@ export class UserProvider extends Component {
 		super(props);
 
 		this.state = {
+			hasLoaded: false,
 			isLoggedIn: false,
 			subscribedToLiveSockets: false,
 			showNotificationCenter: false,
@@ -33,8 +34,8 @@ export class UserProvider extends Component {
 			userProfile()
 			.then((response) => {
 				if (response.data.result === true) {
-					// console.log('userState', response.data.user)
-					this.setState({ user: response.data.user });
+					console.log('userState', response.data.user)
+					this.setState({ hasLoaded: true, user: response.data.user });
 					this.liveSocket();
 				} else {
 						dangerNotification(this.props.t('Danger.session.expired.title'), this.props.t('Danger.session.expired.desc'));
@@ -109,6 +110,15 @@ export class UserProvider extends Component {
 		this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
 	};
 
+	acceptIbcoTermsAndConditions = () => {
+	this.setState({
+		user: {
+			...this.state.user,
+			ibcoAcceptedTerms: true
+		},
+	});
+	};
+
 	closeNotificationCenter = () => {
 		this.setState({ showNotificationCenter: false });
 	};
@@ -162,6 +172,7 @@ export class UserProvider extends Component {
 							const { kyc_review_answer } = data;
 							// Update KYC Status
 							this.setState({
+								hasLoaded: true,
 								user: {
 									...this.state.user,
 									kycReviewAnswer: kyc_review_answer
@@ -173,6 +184,7 @@ export class UserProvider extends Component {
 							const { unreaded_count } = data;
 							// Update state on new notification
 							this.setState({
+								hasLoaded: true,
 								user: {
 									...this.state.user,
 									balance: balance,
@@ -237,6 +249,7 @@ export class UserProvider extends Component {
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
 						refreshBalanceAndAllowance: this.refreshBalanceAndAllowance,
+						acceptIbcoTermsAndConditions: this.acceptIbcoTermsAndConditions,
 						notification: {
 							setAsReaded: this.setNotificationAsReaded,
 							setAllAsReaded: this.setAllNotificationsAsReaded,

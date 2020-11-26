@@ -63,6 +63,9 @@ body {
 .o-fourth {
 	@include column(1/4);
 }
+.o-third {
+	@include column(1/3, $cycle: 3);
+}
 .o-fifth {
 	@include column(1/5);
 }
@@ -121,6 +124,8 @@ body {
 @import './src/components/NotificationCenter/style.scss';
 @import './src/components/BannerNotification/style.scss';
 @import './src/components/ActivityTile/style.scss';
+@import './src/components/TermsAndConditionsOverlay/style.scss';
+
 
 @import './src/views/Land/style.scss';
 @import './src/views/Lands/style.scss';

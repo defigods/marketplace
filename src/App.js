@@ -119,9 +119,9 @@ function App() {
 																			<Route path="/profile" component={Profile}></Route>
 																			<Route path="/activity" component={Activity}></Route>
 																			<Route path="/login" component={Login}></Route>
-																			<Route path="/signup" component={Signup}></Route>
-																			<Route path="/public-sale" component={PublicSale}></Route>
 																			<Route path="/login-helper" component={LoginHelper}></Route>
+																			<Route path="/public-sale" component={PublicSale}></Route>
+
 																			{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
 																			<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}
 																		</Switch>
