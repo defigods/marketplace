@@ -190,10 +190,17 @@
 }
 
 .chart-js{
-	height: 300px;
 	padding-top: 25px;
 	text-align: center;
 	line-height: 300px;
+	canvas{
+			margin-top:0px;
+			height: auto!important;
+			width: 100%!important;
+	}
+}
+.--chart-js{
+	display: grid!important;
 }
 .i-ibco-input{
 	// & label.Mui-focused{

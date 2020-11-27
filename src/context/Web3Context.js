@@ -5,18 +5,25 @@ import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionS
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
-import { ethers } from 'ethers';
+import { ethers, BigNumber,utils } from 'ethers';
 import { UserContext } from './UserContext';
 import { useHistory } from 'react-router-dom';
 import {abi} from '../contract/abi';
 import ovrAbi from '../contract/ovrAbi';
+
+const controllerABI = require("../contract/controllerABI");
+const curveABI = require("../contract/curveABI");
+const DAIABI = require("../contract/DAIABI");
+const rewardABI = require("../contract/rewardABI");
+const bancorFormulaABI = require("../contract/bancorFormulaABI");
+
 
 export const Web3Context = createContext();
 
 export class Web3Provider extends Component {
   static contextType = UserContext;
   constructor(props) {
-    super(props);
+		super(props);
     this.state = {
 			setupComplete: false,
 			provider: null,
@@ -27,37 +34,15 @@ export class Web3Provider extends Component {
       perEth: 0,
       perUsd: 0,
 			lastTransaction: "0x0",
-			ibcoPendingTransactions: [{
-				txId: "0xf6c3fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
-				type: "Sell",
-				price: 0.32,
-				amount: 100,
-				status: null},
-				{
-				txId: "0xf6c33fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
-				type: "Sell",
-				price: 0.32,
-				amount: 100,
-				status: null}
-			],
-			ibcoMyTransactions: [
-				{
-				txId: "0xf6c33fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
-				type: "Sell",
-				price: 0.32,
-				amount: 100,
-				status: null}
-			],
-			ibcoCurveHistory: [
-				{
-				txId: "0xf6c33fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
-				type: "Sell",
-				price: 0.32,
-				amount: 100,
-				time: "2020/12/12 4:20"}
-			]
+			ibcoPendingTransactions: [],
+			ibcoMyTransactions: [],
+			ibcoCurveHistory: []
     };
-  }
+	}
+
+	//
+	//	Setup web3 and centralized login
+	//
 
   componentDidMount() {
     // If logged setup Web3
@@ -101,6 +86,19 @@ export class Web3Provider extends Component {
 					"setupComplete": true
 				});
 
+				// Intialize contracts 
+				let data = await this.initializeContracts();
+				await this.setSigners(
+						data[0],
+						data[1],
+						data[2],
+						data[3],
+						data[4],
+						data[5],
+						data[6],
+						data[7]
+				);
+				
         // Centralized Login
         if(login == true){
           await this.handleCentralizedLogin(address, callback)
@@ -114,7 +112,162 @@ export class Web3Provider extends Component {
 			callback(false);
 			return false;
 		}
-  };
+	};
+	
+	// 
+	// IBCO
+	//
+
+	setSigners = async (x, y, z, a, b, c, d, e) => {
+			this.setState({
+				"ibcoController": x,
+				"ibcoControllerViewer": y,
+				"ibcoCurveViewer": z,
+				"ibcoDAISigner": a,
+				"ibcoDAIViewer": b,
+				"ibcoRewardSigner": c,
+				"ibcoRewardViewer": d,
+				"ibcoBancorFormulaViewer": e,
+			});
+			this.initializeStore();
+	};
+
+	initializeStore = async () => {
+			// contract data storage initialization
+
+			// current Batch ID
+			let batchId = await this.state.ibcoCurveViewer.getCurrentBatchId();
+			this.setState({
+				"ibcoBatchId": batchId
+			});
+
+			// DAI collateral
+			let DAI = await this.state.ibcoCurveViewer.getCollateralToken(
+					config.apis.DAI
+			);
+			this.setState({
+				"ibcoCollateralDAI": DAI
+			});
+			console.log('this.state.address',this.state.address)
+			// Reward token balance
+			let reward = await this.state.ibcoRewardViewer.balanceOf(
+					this.state.address
+			);
+			this.setState({
+				"ibcoRewardBalance": reward
+			});
+
+			// DAI balance of user
+			let balance = await this.state.ibcoDAIViewer.balanceOf(
+					this.state.address
+			);
+			this.setState({
+				"ibcoDAIBalance": balance
+			});
+
+			// DAI balance of bonding curve
+			let reserve = await this.state.ibcoDAIViewer.balanceOf(
+					config.apis.curveAddress
+			);
+			this.setState({
+				"ibcoDAIReserve": reserve
+			});
+
+			// Total supply of OVR Token
+			let OVRSupply = await this.state.ibcoRewardViewer.totalSupply();
+			this.setState({
+				"ibcoOVRSupply": OVRSupply
+			});
+
+			// Allowance of DAI spendable by curve contract
+			let allowance = await this.state.ibcoDAIViewer.allowance(
+					this.state.address,
+					config.apis.curveAddress
+			);
+			this.setState({
+				"ibcoDAIAllowance": allowance
+			});
+
+			// price of next Token
+			//check if Reserve is zero. It it's zero, add 1
+			let res = this.state.ibcoDAIReserve.toString() === "0"
+							? BigNumber.from(1)
+							: this.state.ibcoDAIReserve;
+
+			let price1 = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
+					//supply,balance,weight, amount
+					this.state.ibcoOVRSupply,
+					res,
+					config.apis.connectorWeight,
+					BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
+			);
+
+			this.setState({
+				"ibcoPrice1": price1
+			});
+
+
+			// console.log("SWITCH LOADING");
+			// this.props.store.switchLoading();
+	};
+	initializeContracts = async () => {
+			// initialize all contracts as signer and viewer objects, which allow functions to be called from the blockchain
+			// signers call functions which mutate chain state and cost gas
+			// viewers call public view functions to retreive data without costing gas
+			console.log("controllerABI",controllerABI)
+			
+			let controllerSigner = new ethers.Contract(
+					config.apis.controllerAddress,
+					controllerABI,
+					this.state.signer
+			);
+			let controllerViewer = new ethers.Contract(
+					config.apis.controllerAddress,
+					controllerABI,
+					this.state.provider
+			);
+			let curveViewer = new ethers.Contract(
+					config.apis.curveAddress,
+					curveABI,
+					this.state.provider
+			);
+			let DAISigner = new ethers.Contract(
+					config.apis.DAI,
+					DAIABI,
+					this.state.signer
+			);
+			let DAIViewer = new ethers.Contract(
+					config.apis.DAI,
+					DAIABI,
+					this.state.provider
+			);
+			let rewardSigner = new ethers.Contract(
+					config.apis.RewardToken,
+					rewardABI,
+					this.state.signer
+			);
+			let rewardViewer = new ethers.Contract(
+					config.apis.RewardToken,
+					rewardABI,
+					this.state.provider
+			);
+			let bancorViewer = new ethers.Contract(
+					config.apis.BancorFormula,
+					bancorFormulaABI,
+					this.state.provider
+			);
+			let data = [
+					controllerSigner,
+					controllerViewer,
+					curveViewer,
+					DAISigner,
+					DAIViewer,
+					rewardSigner,
+					rewardViewer,
+					bancorViewer,
+			];
+			return data;
+	};
 	
 	//
 	// Transactions helper

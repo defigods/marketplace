@@ -19,6 +19,13 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		// IBCO
+		controllerAddress: "0xA421f87AaBdc0E071161b78A9a750fC2940B4E97",
+		curveAddress: "0x27769D53C65491eeD8e0460e871B2F4cfB6a37E7",
+		DAI: "0x349205F7378Bef80a70D65e465dAa45451DCbfb4",
+		RewardToken: "0x5d0ebAB6136a8794DC302dEF53267bFB92D9315f",
+		BancorFormula: "0x414f25B3A1Fc2c5f9D5642D2Ef72162d1C1DDbE2",
+		connectorWeight: "20000",
 	};
 } else if (environment === 'STAGING') {
 	apis = {
@@ -30,6 +37,13 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://test-api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		// IBCO
+		controllerAddress: "0xA421f87AaBdc0E071161b78A9a750fC2940B4E97",
+		curveAddress: "0x27769D53C65491eeD8e0460e871B2F4cfB6a37E7",
+		DAI: "0x349205F7378Bef80a70D65e465dAa45451DCbfb4",
+		RewardToken: "0x5d0ebAB6136a8794DC302dEF53267bFB92D9315f",
+		BancorFormula: "0x414f25B3A1Fc2c5f9D5642D2Ef72162d1C1DDbE2",
+		connectorWeight: "20000",
 	};
 } else {
 	apis = {
@@ -41,6 +55,13 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://test-api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		// IBCO
+		controllerAddress: "0xA421f87AaBdc0E071161b78A9a750fC2940B4E97",
+		curveAddress: "0x27769D53C65491eeD8e0460e871B2F4cfB6a37E7",
+		DAI: "0x349205F7378Bef80a70D65e465dAa45451DCbfb4",
+		RewardToken: "0x5d0ebAB6136a8794DC302dEF53267bFB92D9315f",
+		BancorFormula: "0x414f25B3A1Fc2c5f9D5642D2Ef72162d1C1DDbE2",
+		connectorWeight: "20000",
 	};
 }
 

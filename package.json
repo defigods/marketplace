@@ -20,6 +20,7 @@
     "animate.css": "^3.7.2",
     "axios": "^0.19.2",
     "bluebird": "^3.7.2",
+    "chart.js": "^2.9.4",
     "date-fns": "^2.0.0-beta.5",
     "dotenv": "^8.2.0",
     "ethers": "^5.0.21",
