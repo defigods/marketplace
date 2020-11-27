@@ -5,6 +5,8 @@ import HexButton from '../../components/HexButton/HexButton';
 import TermsAndConditionsOverlay from '../../components/TermsAndConditionsOverlay/TermsAndConditionsOverlay'
 import { Web3Context } from '../../context/Web3Context';
 import { UserContext } from '../../context/UserContext';
+import { ethers, BigNumber,utils } from 'ethers';
+import bn from "bignumber.js";
 
 import config from '../../lib/config';
 import { useHistory,Link } from 'react-router-dom';
@@ -12,6 +14,7 @@ import { useHistory,Link } from 'react-router-dom';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import TextField from '@material-ui/core/TextField';
 import {Chart} from 'chart.js'
+const mantissa = new bn(1e18);
 
 function PublicSale() {
 	const { t, i18n } = useTranslation();
@@ -29,6 +32,7 @@ function PublicSale() {
 	const [ibcoCurveHistory, setIbcoCurveHistory] = React.useState([]);
 	const [ibcoAreTermsAccepted, setIbcoAreTermsAccepted] = React.useState(false);
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
+	const [ibcoIsReady, setIbcoIsReady] = React.useState(false);
 	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.0);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
@@ -62,6 +66,18 @@ function PublicSale() {
 		renderChart();
 	}, []);
 
+	React.useEffect(() => {
+		if(web3Context.state){
+			if(web3Context.state.ibcoSetupComplete){
+				if(web3Context.state.ibcoSetupComplete === true){
+					console.log('web3Context.state', web3Context.state)
+					// web3Context.actions.ibcoPoll()
+					setIbcoIsReady(true)
+				}
+			}
+		}
+	}, [web3Context]);
+
 	// 
 
 	const handleTabChange = (newValue) => {
@@ -92,8 +108,21 @@ function PublicSale() {
 			}
 	};
 
-	const handleBuyOvr = () => {
+	const handleApprove = async (val) => {
+			let approve = await web3Context.state.ibcoDAISigner.approve(
+					config.api.curveAddress,
+					new bn(val).times(mantissa).toFixed(0)
+			);
+			if (approve.status === 1) {
+					alert(val, " DAI Approved");
+			}
+	};
 
+	const handleBuyOvr = (valueToBuy) => {
+		// Check allowance
+		if(web3Context.state.ibcoDAIAllowance < valueToBuy ){
+
+		}
 	}
 
 	const handleSellOvr = () => {
@@ -392,7 +421,7 @@ function PublicSale() {
 							text={transactionValueDescription}
 							className={`--purple --large --kyc-button ${transactionValueValid == false ? '--disabled' : ''}`}
 							// ${bidValid ? '' : '--disabled'}
-							onClick={() => handleBuyOvr(transactionValue)}
+							onClick={() => handleSellOvr(transactionValue)}
 						></HexButton>
 					</div>
 				</div>
@@ -421,7 +450,9 @@ function PublicSale() {
 										Reserve
 									</div>
 									<div className="o-value">
-										<ValueCounter value={420420420} currency="dai"></ValueCounter>
+										<ValueCounter value={ibcoIsReady ? <>
+											{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2)}
+										</> : '0.0'} currency="dai"></ValueCounter>
 									</div>
 								</div>
 								<div className="o-third">
@@ -429,7 +460,9 @@ function PublicSale() {
 										Curve Issuance
 									</div>
 									<div className="o-value">
-										<ValueCounter value={1000000}></ValueCounter>
+										<ValueCounter value={ibcoIsReady ? <>
+											{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2)}
+										</> : '0.0'}></ValueCounter>
 									</div>
 								</div>
 							</div>
@@ -460,11 +493,17 @@ function PublicSale() {
 							</div>
 							<div className="o-row o-row__your_wallet">
 								<h3 className="p-section-title">Your Wallet</h3>
-								<ValueCounter value={"5000.00"} currency="dai"></ValueCounter>
-								<ValueCounter value={"0.00"}></ValueCounter>
+								<ValueCounter value={ibcoIsReady ? <>
+									{ethers.utils.formatEther(web3Context.state.ibcoDAIBalance)}
+								</> : '0.0'} currency="dai"></ValueCounter>
+								<ValueCounter value={ibcoIsReady ? <>
+									{ethers.utils.formatEther(web3Context.state.ibcoRewardBalance)}
+								</> : '0.0'}></ValueCounter>
 							</div>
 							<br></br>
-							<div className="o-row">Allowance XXXX</div>
+							<div className="o-row">Allowance {ibcoIsReady ? <>
+								{ethers.utils.formatEther(web3Context.state.ibcoDAIAllowance)}
+							</> : '0.0'}</div>
 							<div className="o-line"></div>
 							<div className="o-row o-info-row">
 								<div className="o-half"><h3 className="o-info-title">Price</h3></div>
