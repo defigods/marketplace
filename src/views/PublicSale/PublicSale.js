@@ -29,7 +29,7 @@ function PublicSale() {
 	const [ibcoCurveHistory, setIbcoCurveHistory] = React.useState([]);
 	const [ibcoAreTermsAccepted, setIbcoAreTermsAccepted] = React.useState(false);
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
-	const [ibcoOVRPrice, setIbcoOVRPrice] = React.useState(0.06);
+	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.0);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
 
@@ -42,7 +42,6 @@ function PublicSale() {
 
 	// Check if terms condition changed from userstate and kyc passed
 	React.useEffect(() => {
-		console.log('userContext state has changed',userContext.state)
 		if(userContext.state !== undefined && userContext.state.hasLoaded == true){
 			// Terms and conditions
 			if(Boolean(userContext.state.user.ibcoAcceptedTerms) == true){
@@ -82,9 +81,9 @@ function PublicSale() {
 				setTransactionValueValid(false)
 			}
 			if(tab === 'sell'){
-				setTransactionValueDescription(`Sell ${transactionValue} OVR for ${(transactionValue * ibcoOVRPrice).toFixed(2)} DAI`)
+				setTransactionValueDescription(`Sell ${transactionValue} OVR for ${(transactionValue * ibcoOVRDAIPrice).toFixed(2)} DAI`)
 			} else {
-				setTransactionValueDescription(`Buy ${(transactionValue / ibcoOVRPrice).toFixed(2)} OVR for ${transactionValue} DAI`)
+				setTransactionValueDescription(`Buy ${(transactionValue / ibcoOVRDAIPrice).toFixed(2)} OVR for ${transactionValue} DAI`)
 			}
 	};
 
@@ -242,7 +241,6 @@ function PublicSale() {
 
 	function toggleTermsAndConditionsOverlay(a){
 		setShowTermsAndConditionsOverlay(a);
-		console.log('showTermsAndConditions')
 	}
 	
 	function renderActionButtonSection() {
@@ -338,7 +336,7 @@ function PublicSale() {
 										Buy Price
 									</div>
 									<div className="o-value">
-										<ValueCounter value={0.066} currency="dai"></ValueCounter>
+										<ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
 									</div>
 								</div>
 								<div className="o-third">
@@ -394,15 +392,15 @@ function PublicSale() {
 							<div className="o-row o-info-row">
 								<div className="o-half"><h3 className="o-info-title">Price</h3></div>
 								<div className="o-half --values-holder">
-									<ValueCounter value={ibcoOVRPrice} currency="ovr"></ValueCounter><span>=</span><ValueCounter value={"1"} currency="dai"></ValueCounter>
+									<ValueCounter value={"1"} currency="ovr"></ValueCounter><span>=</span><ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
 								</div>
 							</div>
 							<div className="o-row o-info-row">
 								<div className="o-half"><h3 className="o-info-title">Receive Amount</h3></div>
 								<div className="o-half">
 
-									{tab === "buy" ? <ValueCounter value={(transactionValue / ibcoOVRPrice).toFixed(2)} currency="ovr"></ValueCounter>
-										: <ValueCounter value={(transactionValue * ibcoOVRPrice).toFixed(2)} currency="dai"></ValueCounter>}
+									{tab === "buy" ? <ValueCounter value={(transactionValue / ibcoOVRDAIPrice).toFixed(2)} currency="ovr"></ValueCounter>
+										: <ValueCounter value={(transactionValue * ibcoOVRDAIPrice).toFixed(2)} currency="dai"></ValueCounter>}
 								</div>
 							</div>
 							<div className="o-row o-info-row">

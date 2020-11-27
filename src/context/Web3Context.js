@@ -130,11 +130,13 @@ export class Web3Provider extends Component {
 
 	keepUpdatedPublicAddress = async => {
 		setInterval(async () => {
-			if( this.context.state.user.publicAddress !== undefined && this.state.address !== null){
-				let sign = await this.state.signer.getAddress()
-				if(this.context.state.user.publicAddress !== sign.toLowerCase()){
-					removeUser()
-					window.location = "/"
+			if(this.context.state.hasLoaded === true){
+				if( this.context.state.user.publicAddress !== undefined && this.state.address !== null){
+					let sign = await this.state.signer.getAddress()
+					if(this.context.state.user.publicAddress !== sign.toLowerCase()){
+						removeUser()
+						window.location = "/"
+					}
 				}
 			}
 		}, 1000)

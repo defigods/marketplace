@@ -17,7 +17,7 @@ if (environment === 'PRODUCTION') {
 		etherscan: 'https://etherscan.io/',
 		cookieDomain: 'ovr.ai',
 		sumsubApi: 'https://api.sumsub.com',
-		OVRContract: '0x128989bd5bac572d8f60c89d6eaa8f6d35f5c25c',
+		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
 	};
 } else if (environment === 'STAGING') {
@@ -25,10 +25,10 @@ if (environment === 'PRODUCTION') {
 		hostname: 'https://mws-staging.ovr.ai/api/v1',
 		socket: 'wss://mws-staging.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
-		etherscan: 'https://ropsten.etherscan.io/',
+		etherscan: 'https://rinkeby.etherscan.io/',
 		cookieDomain: 'ovr.ai',
 		sumsubApi: 'https://test-api.sumsub.com',
-		OVRContract: '0x128989bd5bac572d8f60c89d6eaa8f6d35f5c25c',
+		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
 	};
 } else {
@@ -36,10 +36,10 @@ if (environment === 'PRODUCTION') {
 		hostname: 'http://localhost:3000/api/v1',
 		socket: 'ws://localhost:3000/cable',
 		indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
-		etherscan: 'https://ropsten.etherscan.io/',
+		etherscan: 'https://rinkeby.etherscan.io/',
 		cookieDomain: 'localhost',
 		sumsubApi: 'https://test-api.sumsub.com',
-		OVRContract: '0x128989bd5bac572d8f60c89d6eaa8f6d35f5c25c',
+		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
 	};
 }
