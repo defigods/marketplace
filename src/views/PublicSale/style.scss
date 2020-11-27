@@ -48,15 +48,23 @@
 		background: #ffffff;
 		width: fit-content;
 		text-transform: uppercase;
-		width: 40%;
+		width: 48%;
 		text-align: center;
-		margin-right: 12px;
 		border-radius: 5px;
 		float: left;
 		box-shadow: 8px 8px 16px rgba(217, 217, 217, 0.3), -8px -8px 16px #ffffff;
 		position: relative;
 		transition: 250ms trasform ease-in-out;
 		cursor: pointer;
+		&.--second{
+			margin-left: 4%;
+			&.--selected{
+				background: linear-gradient(to right, rgba(163, 84, 177,1),rgba(#1d0333,1));
+				&::after {
+						background: linear-gradient(to right, rgba(163, 84, 177,1),rgba(#1d0333,1));
+				}
+			}
+		}
 		&:hover{
 			box-shadow: 0px 0px 0px rgba(217, 217, 217, 0);
 			transform: scale(0.96);
@@ -169,6 +177,16 @@
 	.--centered-button-holder{
 		text-align: center;
 	}
+	.--values-holder{
+		.ValueCounter{
+			float: left;
+		}
+		span{
+			float: left;
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+	}
 }
 
 .chart-js{
@@ -177,4 +195,27 @@
 	text-align: center;
 	line-height: 300px;
 }
-
+.i-ibco-input{
+	// & label.Mui-focused{
+	// 		color: 'green'!important;
+	// }
+	// & .MuiInput-underline:after {
+	// 		border-bottom-color: 'green'!important;
+	// }
+	.MuiFormControl-root{
+		width: 100%!important;
+		margin-bottom: 15px;
+	}
+	& .MuiOutlinedInput-root{
+		
+			& fieldset{
+					border-color: $ovr-grey!important;
+			}
+			// &:hover fieldset{
+			// 		border-color: 'yellow'!important;
+			// }
+			// &.Mui-focused fieldset{
+			// 		border-color: 'green'!important;
+			// }
+	}
+}

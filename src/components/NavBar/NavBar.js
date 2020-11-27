@@ -25,7 +25,7 @@ const NavBar = () => {
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State, actions: web3Actions } = useContext(Web3Context);
 	const [langOpen, setLangOpen] = React.useState(false);
-	const [balance, setBalance] = React.useState(userState.user.balance);
+	const [balance, setBalance] = React.useState(0);
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
 	const [isConnecting, setIsConnecting] = React.useState(false);
@@ -96,7 +96,7 @@ const NavBar = () => {
 		if(userState.user != undefined && userState.user.balance != undefined){
 			setBalance(userState.user.balance.toFixed(2))
 		}
-	}, [userState.user.balance]);
+	}, [userState.user]);
 	// END - Profile sub menu
 
 	React.useEffect(() => {

@@ -97,12 +97,12 @@ const LoginHelper = () => {
 							{web3NetworkVersion ? (
 								<div className="o-list">
 									<CheckCircleSharpIcon className="CheckCircleSharpIcon" /> {t('Signup.connect.to')}{' '}
-									{String(config.web3network) === '3' ? 'Ropsten' : 'Mainnet'} {t('Signup.network')}
+									{String(config.web3network) === '4' ? 'Rinkeby' : 'Mainnet'} {t('Signup.network')}
 								</div>
 							) : (
 								<div className="o-list">
 									<CancelIcon className="CancelIcon" /> {t('Signup.connect.to')}{' '}
-									{String(config.web3network) === '3' ? 'Ropsten' : 'Mainnet'} {t('Signup.network')}
+									{String(config.web3network) === '4' ? 'Rinkeby' : 'Mainnet'} {t('Signup.network')}
 								</div>
 							)}
 						</div>

@@ -40,8 +40,22 @@ export class Web3Provider extends Component {
 				amount: 100,
 				status: null}
 			],
-			ibcoMyTransactions: [],
-			ibcoCurveHistory: []
+			ibcoMyTransactions: [
+				{
+				txId: "0xf6c33fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
+				type: "Sell",
+				price: 0.32,
+				amount: 100,
+				status: null}
+			],
+			ibcoCurveHistory: [
+				{
+				txId: "0xf6c33fa82b5c6fc16d4a750a7f00f393a51281c47d555b1d58cc5dca663448188",
+				type: "Sell",
+				price: 0.32,
+				amount: 100,
+				time: "2020/12/12 4:20"}
+			]
     };
   }
 

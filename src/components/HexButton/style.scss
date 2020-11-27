@@ -27,7 +27,13 @@
     border: 2px solid #fff;
     background-color: #fff;
     color: $ovr-purple;
-  }
+	}
+	&.--large{
+		padding:18px 0px;
+		width: -webkit-fill-available;
+		border-radius: 5px;
+		font-size: 13px;
+	}
 }
 
 // .HexButton__text {
