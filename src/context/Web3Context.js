@@ -537,12 +537,9 @@ export class Web3Provider extends Component {
 										break;
 								}
 								case "OpenSellOrder": {
-									console.log('OpenSellOrder', this.state.address)
-									console.log('OpenSellOrder', _logs)
-									console.log('OpenSellOrder args', _logs.args)
 										if (
 												this.state.address.toLowerCase() ==
-												_logs.args.seller.toLowerCase()
+												log.args.seller.toLowerCase()
 										) {
 												log.transactionHash = transactionHash;
 												openSells.push(log);
@@ -564,7 +561,6 @@ export class Web3Provider extends Component {
 												openBuys = filterBuy;
 										}
 										const txInfo = await this.state.provider.getTransaction(transactionHash)
-										console.log('getTransaction - SELL', txInfo)
 										log.transactionHash = transactionHash;
 										claims.push(log);
 										break;
@@ -575,7 +571,6 @@ export class Web3Provider extends Component {
 												log.args.seller.toLowerCase()
 										) {
 												const txInfo = await this.state.provider.getTransaction(transactionHash)
-												console.log('getTransaction - SELL', txInfo)
 												var filterSell = openSells.filter(function (
 														value,
 														index,
