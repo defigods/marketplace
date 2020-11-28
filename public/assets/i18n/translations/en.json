@@ -381,6 +381,7 @@
 	"IBCO.accept.toparticipate": "Accept Terms and Conditions",
 	"IBCO.allowance": "Allowance",
 	"IBCO.pending.transactions": "Pending Transactions",
+	"IBCO.after.claim": "Available after Claim",
 	"IBCO.my.transactions": "My Transactions",
 	"IBCO.curve.history": "Curve History",
 	"IBCO.no.transactions": "There is no transaction to show",
@@ -401,6 +402,7 @@
 	"IBCO.tec.cancel": "Cancel",
 	"IBCO.request.process.title": "Your request is being processed",
 	"IBCO.request.process.desc":"You can check the transaction status in your wallet's activities",
-	"IBCO.transaction.publicaddress": "Public Address"
+	"IBCO.transaction.publicaddress": "Public Address",
+	"Lands.selected.checkout.title": "Total cost estimate"
 
 }

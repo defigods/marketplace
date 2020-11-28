@@ -374,7 +374,7 @@
 	"IBCO.curveissuance": "Curve Issuance",
 	"IBCO.buy": "Buy",
 	"IBCO.sell": "Sell",
-	"IBCO.exchange.buy" : "Buy {{OVRNumber}} OVR for {{DAINumber}} DAI",
+	"IBCO.exchange.buy" : "Buy {{DAINumber}} OVR for {{OVRNumber}} DAI",
 	"IBCO.exchange.sell" : "Sell {{OVRNumber}} OVR for {{DAINumber}} DAI",
 	"IBCO.ur.wallet": "Your Wallet",
 	"IBCO.verify.toparticipate": "Verify Identity to Participate",

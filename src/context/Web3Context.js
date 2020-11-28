@@ -33,7 +33,8 @@ export class Web3Provider extends Component {
 			ovrsOwned: 0,
 			gasLandCost: 0,
       perEth: 0,
-      perUsd: 0,
+			perUsd: 0,
+			ibcoCurrentOvrPrice: 0.6,
 			lastTransaction: "0x0",
 			ibcoOpenBuyOrders: [],
 			ibcoOpenSellOrders: [],
@@ -212,10 +213,15 @@ export class Web3Provider extends Component {
 					config.apis.connectorWeight,
 					BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
 			);
-
 			this.setState({
 				"ibcoPrice1": price1
 			});
+			
+			// priceOVR
+			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(2)
+			this.setState({
+				"ibcoCurrentOvrPrice": priceOvr
+			})
 
 
 			// console.log("SWITCH LOADING");
@@ -321,10 +327,15 @@ export class Web3Provider extends Component {
 					config.apis.connectorWeight,
 					BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
 			);
-
 			this.setState({
 				"ibcoPrice1": price1
 			});
+
+			// priceOVR
+			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(2)
+			this.setState({
+				"ibcoCurrentOvrPrice": priceOvr
+			})
 	};
 
 	ibcoPoll = async () => {
@@ -382,14 +393,17 @@ export class Web3Provider extends Component {
 			// Event: openBuyOrder is successfully called. Updates the state of openBuyOrder
 			this.state.ibcoCurveViewer.on(
 					"OpenBuyOrder",
-					async (buyer, batchId, collateral, fee, value) => {
+					async (buyer, batchId, collateral, fee, value, event) => {
+							let receipt = await event.getTransactionReceipt();
+							// transactionHash
 							let oBuy = [
 									{
-											buyer: buyer,
-											batchId: batchId,
-											collateral: collateral,
-											fee: fee,
-											value: value,
+										buyer: buyer,
+										batchId: batchId,
+										collateral: collateral,
+										fee: fee,
+										value: value,
+										transactionHash: receipt.transactionHash
 									},
 							];
 							this.setOpenBuyOrders(oBuy);
@@ -408,13 +422,15 @@ export class Web3Provider extends Component {
 			// Event: openSellOrder is successfully called. Updates the state of openSellOrder
 			this.state.ibcoCurveViewer.on(
 					"OpenSellOrder",
-					async (seller, batchId, collateral, amount) => {
+					async (seller, batchId, collateral, amount, event) => {
+							let receipt = await event.getTransactionReceipt();
 							let oSell = [
 									{
 											seller: seller,
 											batchId: batchId,
 											collateral: collateral,
 											amount: amount,
+											transactionHash: receipt.transactionHash
 									},
 							];
 							this.setOpenSellOrders(oSell);
@@ -422,8 +438,9 @@ export class Web3Provider extends Component {
 			);
 
 			//  Event: buy order is claimed. Updates balances and nulls openBuyOrder in state
-			this.state.ibcoCurveViewer.on("ClaimBuyOrder", async (a, b, c, d) => {
-					// console.log("BUY ORDER CLAIMED");
+			this.state.ibcoCurveViewer.on("ClaimBuyOrder", async (a, b, c, d, e) => {
+					let receipt = await e.getTransactionReceipt();
+					console.log("BUY ORDER CLAIMED");
 					// console.log(a, b, c, d);
 					let bClaim = [
 							{
@@ -432,6 +449,7 @@ export class Web3Provider extends Component {
 									batchId: b,
 									collateral: c,
 									amount: d,
+									transactionHash: receipt.transactionHash
 							},
 					];
 					this.setClaims(bClaim);
@@ -442,7 +460,8 @@ export class Web3Provider extends Component {
 			this.state.ibcoCurveViewer.on(
 					"ClaimSellOrder",
 					async (a, b, c, d, e) => {
-							// console.log("SELL ORDER CLAIMED");
+							let receipt = await e.getTransactionReceipt();
+							console.log("SELL ORDER CLAIMED");
 							// console.log(a, b, c, d, e);
 							let sClaim = [
 									{
@@ -452,8 +471,13 @@ export class Web3Provider extends Component {
 											collateral: c,
 											fee: d,
 											value: e,
+											transactionHash: receipt.transactionHash
 									},
 							];
+							// TODO 
+							// if seller is matching my public addres 
+							// Look trough openSellOrder and check if there already a match on batchId, from seller, and remove from state
+
 							this.setClaims(sClaim);
 							await this.updateBalances();
 					}
@@ -480,6 +504,7 @@ export class Web3Provider extends Component {
 				],
 		};
 		const _logs = await this.state.provider.getLogs(historicFilter);
+
 		let openBuys = [];
 		let openSells = [];
 		const claims = [];
@@ -494,27 +519,32 @@ export class Web3Provider extends Component {
 				// console.log(y);
 				try {
 						const log = this.state.ibcoCurveViewer.interface.parseLog(_log);
-						console.log("LOG: ", log);
 						// console.log("_LOG: ", _log);
 						const blockNum = _log.blockNumber;
+						console.log('log pre', log)
+						const transactionHash = _log['transactionHash'];
+						console.log('log post', _log)
 						// console.log(log.args.batchId._hex);
-						// console.log(blockNum);
-						console.log(log.name);
 						switch (log.name) {
 								case "OpenBuyOrder": {
 										if (
 												this.state.address.toLowerCase() ==
 												log.args.buyer.toLowerCase()
-										) {
+										) {	
+												log.transactionHash = transactionHash;
 												openBuys.push(log);
 										}
 										break;
 								}
 								case "OpenSellOrder": {
+									console.log('OpenSellOrder', this.state.address)
+									console.log('OpenSellOrder', _logs)
+									console.log('OpenSellOrder args', _logs.args)
 										if (
 												this.state.address.toLowerCase() ==
 												_logs.args.seller.toLowerCase()
 										) {
+												log.transactionHash = transactionHash;
 												openSells.push(log);
 										}
 										break;
@@ -533,6 +563,9 @@ export class Web3Provider extends Component {
 												});
 												openBuys = filterBuy;
 										}
+										const txInfo = await this.state.provider.getTransaction(transactionHash)
+										console.log('getTransaction - SELL', txInfo)
+										log.transactionHash = transactionHash;
 										claims.push(log);
 										break;
 								}
@@ -541,6 +574,8 @@ export class Web3Provider extends Component {
 												this.state.address.toLowerCase() ==
 												log.args.seller.toLowerCase()
 										) {
+												const txInfo = await this.state.provider.getTransaction(transactionHash)
+												console.log('getTransaction - SELL', txInfo)
 												var filterSell = openSells.filter(function (
 														value,
 														index,
@@ -554,6 +589,7 @@ export class Web3Provider extends Component {
 												});
 												openSells = filterSell;
 										}
+										log.transactionHash = transactionHash;
 										claims.push(log);
 										break;
 								}
@@ -576,6 +612,7 @@ export class Web3Provider extends Component {
 						collateral: _val.args.collateral,
 						fee: _val.args.fee,
 						value: _val.args.value,
+						transactionHash: _val.transactionHash,
 				});
 		}
 		// console.log("SOB: ", storeOpenBuys);
@@ -587,6 +624,7 @@ export class Web3Provider extends Component {
 						batchId: _val.args.batchId,
 						collateral: _val.args.collateral,
 						amount: _val.args.amount,
+						transactionHash: _val.transactionHash,
 				});
 		}
 		// console.log("SOS: ", storeOpenSells);
@@ -600,6 +638,7 @@ export class Web3Provider extends Component {
 								batchId: _val.args.batchId,
 								collateral: _val.args.collateral,
 								amount: _val.args.amount,
+								transactionHash: _val.transactionHash,
 						});
 				} else {
 						//store sells
@@ -610,6 +649,7 @@ export class Web3Provider extends Component {
 								collateral: _val.args.collateral,
 								fee: _val.args.fee,
 								value: _val.args.value,
+								transactionHash: _val.transactionHash,
 						});
 				}
 		}
@@ -676,7 +716,10 @@ export class Web3Provider extends Component {
 
 	getUSDValueInOvr = (usd = 1) => {
 		let floorValue = 0.1;
-		// TODO get value of OVR token and if it's more than 0.1 use it as floor
+		// If value OVR token and it's more than 0.1 use it as floor
+		if(this.state.ibcoCurrentOvrPrice > 0.1){
+			floorValue = this.state.ibcoCurrentOvrPrice;
+		}
 		return (usd / floorValue).toFixed(2);
 	}
 
