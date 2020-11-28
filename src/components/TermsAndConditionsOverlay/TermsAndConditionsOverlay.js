@@ -78,7 +78,7 @@ const TermsAndConditionsOverlay = (props) => {
 			>
 				<div className="Overlay__cont">
 					<div className="o-row">
-						<h2>Terms and Conditions</h2>
+				<h2>{t('IBCO.tec')}</h2>
 					</div>
 					<div className="o-row">
 						<div className="c-terms-condition" onScroll={handleScroll}>
@@ -274,14 +274,14 @@ const TermsAndConditionsOverlay = (props) => {
 						<div className="Buttons__section">
 							<HexButton
 								url="#"
-								text={"Agree Terms and Conditions"}  
+								text={t('IBCO.tec.agree')}  
 								target="_blank"
 								onClick={acceptTerms}
 								className={`--orange ${hasReachedBottom ? '' : '--disabled'}`}
 							></HexButton>
 							<HexButton
 								url="#"
-								text={"Cancel"} 
+								text={t('IBCO.tec.cancel')}
 								onClick={disablePanel}
 								className={'--transparent --decline-terms'}
 							></HexButton>

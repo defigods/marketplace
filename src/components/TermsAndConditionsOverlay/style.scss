@@ -59,6 +59,10 @@
 		height: 38vh;
 		display: block;
 		overflow: scroll;
+		::-webkit-scrollbar {
+			-webkit-appearance: none;
+			width: 7px;
+		}
 	}
 	.Overlay__close_button{
 		top: -80px;

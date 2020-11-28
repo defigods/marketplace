@@ -19,6 +19,7 @@ import Translate from '@material-ui/icons/Translate';
 import { removeUser } from '../../lib/auth';
 
 import { useTranslation } from 'react-i18next'
+let isMobile = window.innerWidth < 860;
 
 const NavBar = () => {
 	const { t, i18n } = useTranslation();
@@ -117,11 +118,12 @@ const NavBar = () => {
 					{t('Navbar.profile.label')}
 				</NavLink>
 				<NavLink className="NavBar__link" to="/map/overview">
-					My Assets
+					{t('Navbar.myassets.label')}
 				</NavLink>
 				<NavLink className="NavBar__link" to="/map/discover">
-					Marketplace
+					{t('Navbar.marketplace.label')}
 				</NavLink>
+				
 				</>
 			);
 		}
@@ -179,7 +181,30 @@ const NavBar = () => {
 		</div>)
 		return cont
 	}
-
+	function renderMobileMenuItem(){
+		if(isMobile){
+		return(<>
+		<MenuItem
+			onClick={(e) => {
+				handleClose(e);
+				handleGoTo('/map/overview');
+			}}
+		>
+			{t('Navbar.myassets.label')}
+		</MenuItem>
+		<MenuItem
+			onClick={(e) => {
+				handleClose(e);
+				handleGoTo('/map/discover');
+			}}
+		>
+			{t('Navbar.marketplace.label')}
+		</MenuItem>
+		</>)
+		} else {
+			return (<></>)
+		}
+	}
 	function rightContainer() {
 		let rightContainer = <div></div>; 
 		if (userState.isLoggedIn === true && userState.user !== null) {
@@ -288,8 +313,9 @@ const NavBar = () => {
 														handleGoTo('/activity');
 													}}
 												>
-													Activity
+													{t('Navbar.activity.label')}
 												</MenuItem>
+												{renderMobileMenuItem()}
 												<MenuItem
 													onClick={(e) => {
 														handleClose(e);

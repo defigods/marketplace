@@ -35,11 +35,8 @@ export class Web3Provider extends Component {
       perEth: 0,
       perUsd: 0,
 			lastTransaction: "0x0",
-			ibcoPendingTransactions: [],
-			ibcoMyTransactions: [],
-			ibcoCurveHistory: [],
 			ibcoOpenBuyOrders: [],
-			ibcoSetOpenSellOrders: [],
+			ibcoOpenSellOrders: [],
 			ibcoClaims: []
     };
 	}
@@ -60,7 +57,6 @@ export class Web3Provider extends Component {
   }
 
   setupWeb3 = async (callback, login=true) => {
-		console.log("setupweb3")
 		if (typeof web3 !== "undefined") {
 			await window.ethereum.enable();
 			let provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -86,7 +82,6 @@ export class Web3Provider extends Component {
 				
 				let block = await provider.getBlock();
 				await this.setState({"ibcoBlock": BigNumber.from(block.number)})
-				console.log('block',block);
 				
 				this.setState({
 					"provider": provider,
@@ -108,7 +103,6 @@ export class Web3Provider extends Component {
 						data[6],
 						data[7]
 				);
-				console.log('AAHHHHH')
 				
         // Centralized Login
         if(login == true){
@@ -145,7 +139,6 @@ export class Web3Provider extends Component {
 
 	initializeStore = async () => {
 			// contract data storage initialization
-			console.log('INITIALIZE STORE')
 			// current Batch ID
 			let batchId = await this.state.ibcoCurveViewer.getCurrentBatchId();
 			this.setState({
@@ -157,8 +150,15 @@ export class Web3Provider extends Component {
 					config.apis.DAI
 			);
 			this.setState({
-				"ibcoCollateralDAI": DAI
+					"ibcoCollateralDAI": {
+					"whitelisted": DAI[0],
+					"virtualSupply": DAI[1],
+					"virtualBalance": DAI[2],
+					"reserveRatio": DAI[3],
+					"slippage": DAI[4],
+				},
 			});
+			
 			// Reward token balance
 			let reward = await this.state.ibcoRewardViewer.balanceOf(
 					this.state.address
@@ -203,7 +203,8 @@ export class Web3Provider extends Component {
 			let res = this.state.ibcoDAIReserve.toString() === "0"
 							? BigNumber.from(1)
 							: this.state.ibcoDAIReserve;
-
+			
+				
 			let price1 = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
 					//supply,balance,weight, amount
 					this.state.ibcoOVRSupply,
@@ -313,7 +314,7 @@ export class Web3Provider extends Component {
 			let res = this.state.ibcoDAIReserve.toString() === "0"
 							? BigNumber.from(1)
 							: this.state.ibcoDAIReserve;
-			let price1 = await this.state.ibcoBancorViewer.calculatePurchaseReturn(
+			let price1 = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
 					//supply,balance,weight, amount
 					this.state.ibcoOVRSupply,
 					res,
@@ -327,7 +328,6 @@ export class Web3Provider extends Component {
 	};
 
 	ibcoPoll = async () => {
-			console.log('IBCOPOLL Called')
 			const openBuyOrderFilter = {
 					address: config.apis.curveAddress,
 					topics: [
@@ -341,18 +341,16 @@ export class Web3Provider extends Component {
 			};
 
 			this.state.provider.on(openBuyOrderFilter, (log) => {
-					console.log("FILTER FIRE: ", log);
+					// console.log("FILTER FIRE: ", log);
 			});
 
 			// this function contains all of the event listeners
 
 			// Event: new block is mined - fetches the most current batchId
 			this.state.provider.on("block", async (block) => {
-					console.log('block', block)
 					this.setState({
 						"ibcoBlock": block
 					});
-					console.log('ibcoBlock', this.state.ibcoBlock)
 					let batchId = await this.state.ibcoCurveViewer.getCurrentBatchId();
 					this.setState({
 						"ibcoBatchId": batchId
@@ -365,11 +363,11 @@ export class Web3Provider extends Component {
 			});
 
 			// Event: DAI is approved from transfer
-			console.log("FILL DAI VIEWER: ", this.state.ibcoDAIViewer);
+			// console.log("FILL DAI VIEWER: ", this.state.ibcoDAIViewer);
 			this.state.ibcoDAIViewer.on(
 					"Approval",
 					async (owner, spender, amount) => {
-							console.log("APPROVED DAI", owner, spender, amount);
+							// console.log("APPROVED DAI", owner, spender, amount);
 							// Allowance of DAI spendable by curve contract
 							let allowance = await this.state.ibcoDAIViewer.allowance(
 									this.state.address,
@@ -385,15 +383,6 @@ export class Web3Provider extends Component {
 			this.state.ibcoCurveViewer.on(
 					"OpenBuyOrder",
 					async (buyer, batchId, collateral, fee, value) => {
-							console.log(
-									"NEW BUY ORDER ",
-									buyer,
-									batchId,
-									collateral,
-									fee,
-									value
-							);
-
 							let oBuy = [
 									{
 											buyer: buyer,
@@ -420,7 +409,6 @@ export class Web3Provider extends Component {
 			this.state.ibcoCurveViewer.on(
 					"OpenSellOrder",
 					async (seller, batchId, collateral, amount) => {
-							console.log("NEW SELL ORDER ", seller, batchId, collateral, amount);
 							let oSell = [
 									{
 											seller: seller,
@@ -429,14 +417,14 @@ export class Web3Provider extends Component {
 											amount: amount,
 									},
 							];
-							this.props.store.setOpenSellOrders(oSell);
+							this.setOpenSellOrders(oSell);
 					}
 			);
 
 			//  Event: buy order is claimed. Updates balances and nulls openBuyOrder in state
 			this.state.ibcoCurveViewer.on("ClaimBuyOrder", async (a, b, c, d) => {
-					console.log("BUY ORDER CLAIMED");
-					console.log(a, b, c, d);
+					// console.log("BUY ORDER CLAIMED");
+					// console.log(a, b, c, d);
 					let bClaim = [
 							{
 									type: "ClaimBuyOrder",
@@ -454,8 +442,8 @@ export class Web3Provider extends Component {
 			this.state.ibcoCurveViewer.on(
 					"ClaimSellOrder",
 					async (a, b, c, d, e) => {
-							console.log("SELL ORDER CLAIMED");
-							console.log(a, b, c, d, e);
+							// console.log("SELL ORDER CLAIMED");
+							// console.log(a, b, c, d, e);
 							let sClaim = [
 									{
 											type: "ClaimSellOrder",
@@ -503,14 +491,14 @@ export class Web3Provider extends Component {
 		// should migrate to TheGraph for more stable interaction with historical data
 		for (const _log of _logs) {
 				y++;
-				console.log(y);
+				// console.log(y);
 				try {
 						const log = this.state.ibcoCurveViewer.interface.parseLog(_log);
 						console.log("LOG: ", log);
-						console.log("_LOG: ", _log);
+						// console.log("_LOG: ", _log);
 						const blockNum = _log.blockNumber;
-						console.log(log.args.batchId._hex);
-						console.log(blockNum);
+						// console.log(log.args.batchId._hex);
+						// console.log(blockNum);
 						console.log(log.name);
 						switch (log.name) {
 								case "OpenBuyOrder": {
@@ -551,7 +539,7 @@ export class Web3Provider extends Component {
 								case "ClaimSellOrder": {
 										if (
 												this.state.address.toLowerCase() ==
-												log.args.buyer.toLowerCase()
+												log.args.seller.toLowerCase()
 										) {
 												var filterSell = openSells.filter(function (
 														value,
@@ -590,7 +578,7 @@ export class Web3Provider extends Component {
 						value: _val.args.value,
 				});
 		}
-		console.log("SOB: ", storeOpenBuys);
+		// console.log("SOB: ", storeOpenBuys);
 
 		let storeOpenSells = [];
 		for (const _val of openSells) {
@@ -601,7 +589,7 @@ export class Web3Provider extends Component {
 						amount: _val.args.amount,
 				});
 		}
-		console.log("SOB: ", storeOpenSells);
+		// console.log("SOS: ", storeOpenSells);
 
 		let storeClaims = [];
 		for (const _val of claims) {
@@ -638,8 +626,8 @@ export class Web3Provider extends Component {
 	}
 
 	setOpenSellOrders(input) {
-		var joined = this.state.ibcoSetOpenSellOrders.concat(input);
-		this.setState({ ibcoSetOpenSellOrders: joined })
+		var joined = this.state.ibcoOpenSellOrders.concat(input);
+		this.setState({ ibcoOpenSellOrders: joined })
 	}
 
 	setClaims(input) {
@@ -658,7 +646,9 @@ export class Web3Provider extends Component {
 	refreshGasPrice = async => {
 		getGasPrice().then((response) => {
 				if (response.data.result === true) {
-					this.setState({gasLandCost: (response.data.landGasCost).toFixed(2)}) 
+					if(response.data.landGasCost){
+					this.setState({gasLandCost: (response.data.landGasCost).toFixed(2)})
+				}
 				} 
 		});
 	}
@@ -696,7 +686,12 @@ export class Web3Provider extends Component {
 		const howMuchTokens = ethers.utils.parseUnits(ovr, 18)
 		await contractAsAccount.approve(config.apis.walletApproved, howMuchTokens)
 	}
-
+	
+	setRewardBalance = (reward) => {
+		this.setState({
+			"ibcoRewardBalance": reward
+		});
+	}
   //
   // Centralized authentication with Metamask
   //
@@ -741,7 +736,8 @@ export class Web3Provider extends Component {
           actions: {
 						setupWeb3: this.setupWeb3,
 						authorizeOvrExpense: this.authorizeOvrExpense,
-						getUSDValueInOvr: this.getUSDValueInOvr
+						getUSDValueInOvr: this.getUSDValueInOvr,
+						setRewardBalance: this.setRewardBalance
           },
         }}
       >

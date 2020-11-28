@@ -322,7 +322,7 @@ const Land = (props) => {
 			badge = (
 			<div>
 				<h3 className="o-small-title">{t('Land.status.label')}</h3>
-				<div className="c-status-badge  --open">CLOSING <CircularProgress /></div>
+				<div className="c-status-badge  --open">{t('Land.closing')} <CircularProgress /></div>
 			</div>
 			);
 		} 
@@ -433,17 +433,26 @@ const Land = (props) => {
 						<h3 className="o-small-title"></h3>
 					</div>
 					<div className="c-dialog --centered">
+						{!isUnavailable ? <>
 						<div className="c-dialog-main-title">
-						{t('Land.be.the.one')}{' '}
-							<span role="img" aria-label="fire-emoji">
-								🔥
-							</span>
+							{t('Land.be.the.one')}{' '}
+								<span role="img" aria-label="fire-emoji">
+									🔥
+								</span>
 						</div>
 						<div className="c-dialog-sub-title">
 							<Trans i18nKey="Land.no.active.auction">
 								The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own it.
 							</Trans>
 						</div>
+						</> : <>
+						<div className="c-dialog-main-title">
+						</div>
+						<div className="c-dialog-sub-title">
+						{t('Lands.not.available.liquidity.mining')}{' '}
+						</div>
+						</>
+						}
 					</div>
 				</div>
 			);

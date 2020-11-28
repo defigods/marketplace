@@ -23,12 +23,7 @@
 		margin-top: 8px;
 		color: $ovr-orange;
 	}
-	.s-f-curve{
-		@include column(6/10);
-	}
-	.s-f-panel{
-		@include column(4/10);
-	}
+
 	.o-card-title{
 		margin-top: 0px;
 		margin-bottom: 0px;
@@ -152,8 +147,13 @@
 	}
 	.Table{
 		width: 100%;
+		table-layout: fixed;
+
 		td {
 			width: auto;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		}
 		td.min {
 			width: 5%;
@@ -163,6 +163,9 @@
 			width: 5%;
 			max-width: 20%;
 			white-space: nowrap;
+		}
+		.--addr{
+			padding-right: 20px;
 		}
 		.--trans a{
 			max-width: 20%;
@@ -224,5 +227,64 @@
 			// &.Mui-focused fieldset{
 			// 		border-color: 'green'!important;
 			// }
+	}
+}
+
+@media screen and (max-width: 700px){
+	.s-f-curve{
+		@include column(10/10);
+	}
+	.s-f-panel{
+		margin-top: 40px;
+		@include column(10/10);
+	}
+	.Table__container{
+		padding: 0px;
+	}
+	.Land__heading__1, .Land__heading__2{
+		width: 100%;
+	}
+	.Land__section{
+		table-layout: fixed;
+	}
+	.mapboxgl-ctrl-geocoder--input{
+		padding: 4px 10px!important;
+	}
+	.mapboxgl-ctrl-geocoder--icon-search{
+		display: none!important;
+	}
+	.mapboxgl-ctrl-geocoder{
+		min-width: 180px!important;
+	}
+	.PublicSale .Table{
+		font-size: 14px;
+		svg{
+			display: none;
+		}
+	}
+	.CenterOverlay{
+		width: 100%;
+		left: 0px;
+		max-height: 80vh;
+		.Overlay__cont{
+			margin: 0px 30px;
+		}
+		.Buttons__section{
+			text-align: center;
+		}
+		.--decline-terms{
+			margin-left: 0px!important;
+			margin-top: 5px;
+			text-decoration: underline;
+		}
+	}
+}
+
+@media screen and (min-width: 700px){
+	.s-f-curve{
+		@include column(6/10);
+	}
+	.s-f-panel{		
+		@include column(4/10);
 	}
 }
