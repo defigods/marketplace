@@ -223,14 +223,14 @@ export class Web3Provider extends Component {
 				"ibcoCurrentOvrPrice": priceOvr
 			})
 
-
-			// console.log("SWITCH LOADING");
-			// this.props.store.switchLoading();
+			// Start setting up History and Poll
+ 			this.historicData();
+			this.ibcoPoll()
+			
+			// Swich setup to complete
 			this.setState({
 				"ibcoSetupComplete": true
 			})
-			this.historicData();
-			this.ibcoPoll()
 	};
 	
 	// initialize all contracts as signer and viewer objects, which allow functions to be called from the blockchain
@@ -378,15 +378,7 @@ export class Web3Provider extends Component {
 			this.state.ibcoDAIViewer.on(
 					"Approval",
 					async (owner, spender, amount) => {
-							// console.log("APPROVED DAI", owner, spender, amount);
-							// Allowance of DAI spendable by curve contract
-							let allowance = await this.state.ibcoDAIViewer.allowance(
-									this.state.address,
-									config.apis.curveAddress
-							);
-							this.setState({
-								"ibcoDAIAllowance": allowance
-							});
+							await this.updateBalances();
 					}
 			);
 
@@ -407,15 +399,7 @@ export class Web3Provider extends Component {
 									},
 							];
 							this.setOpenBuyOrders(oBuy);
-
-							// Allowance of DAI spendable by curve contract
-							let allowance = await this.state.ibcoDAIViewer.allowance(
-									this.state.address,
-									config.apis.curveAddress
-							);
-							this.setState({
-								"ibcoDAIAllowance": allowance
-							});
+							await this.updateBalances();
 					}
 			);
 
@@ -433,7 +417,9 @@ export class Web3Provider extends Component {
 											transactionHash: receipt.transactionHash
 									},
 							];
+							console.log("ON OpenSellOrder")
 							this.setOpenSellOrders(oSell);
+							await this.updateBalances();
 					}
 			);
 
@@ -452,6 +438,7 @@ export class Web3Provider extends Component {
 									transactionHash: receipt.transactionHash
 							},
 					];
+					this.removeOpenBuyOrder(bClaim)
 					this.setClaims(bClaim);
 					await this.updateBalances();
 			});
@@ -459,8 +446,8 @@ export class Web3Provider extends Component {
 			// Event: sell order is claimed. Updates balances and nulls openSellOrder in state
 			this.state.ibcoCurveViewer.on(
 					"ClaimSellOrder",
-					async (a, b, c, d, e) => {
-							let receipt = await e.getTransactionReceipt();
+					async (a, b, c, d, e, event) => {
+							let receipt = await event.getTransactionReceipt();
 							console.log("SELL ORDER CLAIMED");
 							// console.log(a, b, c, d, e);
 							let sClaim = [
@@ -474,10 +461,7 @@ export class Web3Provider extends Component {
 											transactionHash: receipt.transactionHash
 									},
 							];
-							// TODO 
-							// if seller is matching my public addres 
-							// Look trough openSellOrder and check if there already a match on batchId, from seller, and remove from state
-
+							this.removeOpenSellOrder(sClaim)
 							this.setClaims(sClaim);
 							await this.updateBalances();
 					}
@@ -521,9 +505,7 @@ export class Web3Provider extends Component {
 						const log = this.state.ibcoCurveViewer.interface.parseLog(_log);
 						// console.log("_LOG: ", _log);
 						const blockNum = _log.blockNumber;
-						console.log('log pre', log)
 						const transactionHash = _log['transactionHash'];
-						console.log('log post', _log)
 						// console.log(log.args.batchId._hex);
 						switch (log.name) {
 								case "OpenBuyOrder": {
@@ -532,6 +514,7 @@ export class Web3Provider extends Component {
 												log.args.buyer.toLowerCase()
 										) {	
 												log.transactionHash = transactionHash;
+												console.log("OPENBuys", openBuys)
 												openBuys.push(log);
 										}
 										break;
@@ -542,6 +525,7 @@ export class Web3Provider extends Component {
 												log.args.seller.toLowerCase()
 										) {
 												log.transactionHash = transactionHash;
+												console.log("OPENSells", openBuys)
 												openSells.push(log);
 										}
 										break;
@@ -653,6 +637,7 @@ export class Web3Provider extends Component {
 		this.setOpenBuyOrders(storeOpenBuys);
 		this.setOpenSellOrders(storeOpenSells);
 		this.setClaims(storeClaims);
+		
 	};
 
 	setOpenBuyOrders(input) {
@@ -669,6 +654,33 @@ export class Web3Provider extends Component {
 		var joined = this.state.ibcoClaims.concat(input);
 		this.setState({ ibcoClaims: joined })
 	}
+
+	removeOpenSellOrder(input) {
+		var newIbcoOpenSellOrder = this.state.ibcoOpenSellOrders.filter((value) => {
+			if (this.state.address.toLowerCase() === input[0].seller.toLowerCase() && value.batchId === input[0].batchId) {
+				return value;
+			} 
+		});
+		this.setState({ ibcoOpenSellOrders: newIbcoOpenSellOrder })
+	}
+
+	removeOpenBuyOrder(input) {
+		var newIbcoOpenBuyOrder = this.state.ibcoOpenBuyOrders.filter((value) => {
+			// console.log("this.state.ibcoOpenBuyOrders",this.state.ibcoOpenBuyOrders)
+			// console.log("this.state.address.toLowerCase()",this.state.address.toLowerCase())
+			// console.log("value",value)
+			// console.log("input",input)
+			// console.log("input.buyer.toLowerCase()",input[0].buyer.toLowerCase())
+			// console.log("value.batchId",value.batchId)
+			// console.log("input[0].batchId",input[0].batchId)
+			// console.log('AAAAAAAA')
+			if (this.state.address.toLowerCase() === input[0].buyer.toLowerCase() && value.batchId === input[0].batchId) {
+				return value;
+			} 
+		});
+		this.setState({ ibcoOpenBuyOrders: newIbcoOpenBuyOrder })
+	}
+
 
 	setBlock(input) {
 		this.setState({ ibcoBlock: input })

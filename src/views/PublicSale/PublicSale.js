@@ -5,7 +5,8 @@ import HexButton from '../../components/HexButton/HexButton';
 import TermsAndConditionsOverlay from '../../components/TermsAndConditionsOverlay/TermsAndConditionsOverlay'
 import { Web3Context } from '../../context/Web3Context';
 import { UserContext } from '../../context/UserContext';
-import { warningNotification } from '../../lib/notifications';
+import { warningNotification, successNotification} from '../../lib/notifications';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { ethers, BigNumber,utils } from 'ethers';
 import bn from "bignumber.js";
@@ -39,6 +40,7 @@ function PublicSale() {
 	const [ibcoAreTermsAccepted, setIbcoAreTermsAccepted] = React.useState(false);
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
 	const [ibcoIsReady, setIbcoIsReady] = React.useState(false);
+	const [ibcoIsChartReady, setIbcoIsChartReady] = React.useState(false);
 	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.0);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
@@ -70,21 +72,27 @@ function PublicSale() {
 	}, [userContext.state, userContext.state.hasLoaded]);
 
 	React.useEffect(() => {
-		renderChart();
-	}, []);
+		if(ibcoIsReady === true){
+			setTimeout(() => {
+				renderChart()
+			}, 1050);
+		}
+	}, [ibcoIsReady]);
 
 	React.useEffect(() => {
 		if(web3Context.state){
 			if(web3Context.state.ibcoSetupComplete){
 				if(web3Context.state.ibcoSetupComplete === true){
 					// web3Context.actions.ibcoPoll()
-					
 					setIbcoIsReady(true);
 					setIbcoOVRDAIPrice(web3Context.state.ibcoCurrentOvrPrice);
 					prepareIbcoCurveHistoryAndMyTrans();
 					prepareIbcoMyOpenTransactions();
-					renderPointsOnChart();
 
+					// Render Point on Chart ( and keep updated )
+					if(ibcoIsChartReady === true){
+						renderPointsOnChart();
+					}
 				}
 			}
 		}
@@ -120,7 +128,7 @@ function PublicSale() {
 			if(tab === 'sell'){
 				setTransactionValueDescription(t('IBCO.exchange.sell', { OVRNumber: transactionValue, DAINumber: (transactionValue * ibcoOVRDAIPrice).toFixed(2) }))
 			} else {
-				setTransactionValueDescription(t('IBCO.exchange.buy', { OVRNumber: transactionValue, DAINumber: (transactionValue * ibcoOVRDAIPrice).toFixed(2) }))
+				setTransactionValueDescription(t('IBCO.exchange.buy', { OVRNumber: (transactionValue / ibcoOVRDAIPrice).toFixed(2), DAINumber: transactionValue }))
 			}
 	};
 
@@ -131,26 +139,28 @@ function PublicSale() {
 					config.apis.curveAddress,
 					new bn(val).times(mantissa).toFixed(0)
 			);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 	};
 
 	const handleBuyOvr = async (valueToBuy) => {
 		// Check approval
-		console.log('AAA')
+		// console.log('AAA')
 		if(web3Context.state.ibcoDAIAllowance < valueToBuy ){
 			await handleApprove(1000000000000)
 		}	
-		console.log('BBB')
+		// console.log('BBB')
 		// Check your balance 
 		if(parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2) < valueToBuy){
-			console.log('CCC')
+			// console.log('CCC')
 			warningNotification(t('Warning.no.token.title'), t('Warning.no.tokens.desc', { message: 'DAI' }));
 		} else {
 			// Open MetaMask
-			console.log('DDD')
+			// console.log('DDD')
 			let open = await web3Context.state.ibcoController.openBuyOrder(
 					config.apis.DAI,
 					new bn(valueToBuy).times(mantissa).toFixed(0)
 			);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}	
 	}
 
@@ -164,6 +174,8 @@ function PublicSale() {
 					config.apis.DAI,
 					new bn(valueToSell).times(mantissa).toFixed(0)
 			);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
+
 		}	
 	}
 
@@ -180,12 +192,12 @@ function PublicSale() {
 							batch,
 							config.apis.DAI
 					);
-					console.log("CLAIM BUY", claim);
+					// let reward = await web3Context.state.ibcoRewardViewer.balanceOf(
+					// 		web3Context.state.address
+					// );
+					// web3Context.actions.setRewardBalance(reward);
+					successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 
-					let reward = await web3Context.state.ibcoRewardViewer.balanceOf(
-							web3Context.state.address
-					);
-					web3Context.actions.setRewardBalance(reward);
 			} else {
 					alert("Please wait one block for batch to mature");
 			}
@@ -203,10 +215,12 @@ function PublicSale() {
 					);
 					console.log("CLAIM SELL", claim);
 
-					let reward = await web3Context.state.ibcoRewardViewer.balanceOf(
-							web3Context.state.address
-					);
-					web3Context.actions.setRewardBalance(reward);
+					// let reward = await web3Context.state.ibcoRewardViewer.balanceOf(
+					// 		web3Context.state.address
+					// );
+					// web3Context.actions.setRewardBalance(reward);
+					successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
+
 			} else {
 					alert("Please wait one block for batch to mature");
 			}
@@ -219,7 +233,8 @@ function PublicSale() {
 		let openPending = [];
 		for (const claim of web3Context.state.ibcoOpenBuyOrders) {
 			let nClaim = {
-				type: 'Buy',
+				type: t("IBCO.buy"),
+				typeUni: 'buy',
 				batchId: claim.batchId,
 				amount: 0,
 				fee: parseFloat(ethers.utils.formatEther(claim.fee).toString()),
@@ -230,7 +245,8 @@ function PublicSale() {
 		}
 		for (const claim of web3Context.state.ibcoOpenSellOrders) {
 			let nClaim = {
-				type: 'Sell',
+				type: t("IBCO.sell"),
+				typeUni: 'sell',
 				batchId: claim.batchId,
 				amount: parseFloat(ethers.utils.formatEther(claim.amount).toString()),
 				fee: 0,
@@ -264,7 +280,7 @@ function PublicSale() {
 							<tr>
 								<th>{t("IBCO.transaction.batchID")}</th>
 								<th>{t('IBCO.transaction.type')}</th>
-								<th>{t('IBCO.transaction.amountDai')}</th>
+								<th>{t('IBCO.transaction.priceDai')}</th>
 								{/* <th>Fee (DAI)</th> */}
 								<th>{t('IBCO.transaction.amountOVR')}</th>
 								<th>{t("IBCO.transaction.status")}</th>
@@ -280,7 +296,13 @@ function PublicSale() {
 										</a> */}
 										{trans.batchId._hex}
 									</td>
-									<td className="">{trans.type}</td>
+									<td className="">
+										<td className="min">
+											<div className={`c-status-badge  --${trans.typeUni}`}>
+												{trans.type}
+											</div>
+										</td>
+									</td>
 									<td className="">
 										{trans.value == 0 ? <></> : <ValueCounter value={trans.value} currency="dai"></ValueCounter>}
 										{trans.value == 0 ? <>{t('IBCO.after.claim')}</> : <></>}
@@ -304,7 +326,7 @@ function PublicSale() {
 												onClick={handleClaimBuy}
 										>{t("IBCO.claim.buy")}</div>}
 									</td>
-									<td><a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="view-on-etherscan-link">{t('ActivityTile.view.ether')}</a></td>
+									<td><a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer" target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a></td>
 								</tr>
 							))}
 						</tbody>
@@ -321,6 +343,7 @@ function PublicSale() {
 				if (claim.type === "ClaimBuyOrder") {
 					let nClaim = {
 						type: t("IBCO.buy"),
+						typeUni: 'buy',
 						batchId: claim.batchId._hex,
 						public_address: claim.buyer,
 						amount: parseFloat(ethers.utils.formatEther(claim.amount).toString()).toFixed(2),
@@ -333,6 +356,7 @@ function PublicSale() {
 				} else {
 					let nClaim = {
 						type:  t("IBCO.sell"),
+						typeUni: 'sell',
 						batchId: claim.batchId._hex,
 						public_address: claim.seller,
 						amount: 0,
@@ -385,18 +409,22 @@ function PublicSale() {
 										</a> */}
 										{trans.batchId}
 									</td>
-									<td className="min">{trans.type}</td>
+									<td className="min">
+										<div className={`c-status-badge  --${trans.typeUni}`}>
+											{trans.type}
+										</div>
+									</td>
 									<td className="min --addr">{trans.public_address}</td>
 									<td className="min">
 										{trans.value == 0 ? <></> : <ValueCounter value={trans.value} currency="dai"></ValueCounter>}
-										{trans.value == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
+										{trans.value == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
 									</td>
 									{/* <td className="min">
 										{trans.fee == 0 ? <></> : <ValueCounter value={trans.fee} currency="dai"></ValueCounter>}
 									</td> */}
 									<td className="min">
 										{trans.amount == 0 ? <></> : <ValueCounter value={trans.amount} currency="ovr"></ValueCounter>}
-										{trans.amount == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
+										{trans.amount == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
 
 									</td>
 								</tr>
@@ -444,10 +472,14 @@ function PublicSale() {
 										</a> */}
 										{trans.batchId}
 									</td>
-									<td className="min">{trans.type}</td>
+									<td className="min">
+										<div className={`c-status-badge  --${trans.typeUni}`}>
+											{trans.type}
+										</div>
+									</td>
 									<td className="min">
 										{trans.value == 0 ? <></> : <ValueCounter value={trans.value} currency="dai"></ValueCounter>}
-										{trans.value == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
+										{trans.value == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer" target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
 
 									</td>
 									{/* <td className="min">
@@ -455,7 +487,7 @@ function PublicSale() {
 									</td> */}
 									<td className="min">
 										{trans.amount == 0 ? <></> : <ValueCounter value={trans.amount} currency="ovr"></ValueCounter>}
-										{trans.amount == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"target="_blank" className="view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
+										{trans.amount == 0 ? <a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer"  target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a> : <></>}
 									</td>
 								</tr>
 							))}
@@ -473,9 +505,9 @@ function PublicSale() {
 	function renderChart(){
 		
 		ctx = document.getElementById("myChart");
-		var initialSupplyToken = 81688155;
-		var connectorBalance = 114363.42;
-		var CW = 0.02;
+		// var initialSupplyToken = 81688155;
+		// var connectorBalance = 114363.42;
+		// var CW = 0.02;
 
 		// var data = ["10000","20000","30000","40000","50000","60000","70000","80000","90000","100000","200000","300000","400000","500000","600000","700000","800000","900000","1000000","1100000","1200000","1300000","1400000","1500000","1600000","1700000","1800000","1900000","2000000","2100000","2200000","2300000","2400000","2500000","2600000","2700000","2800000","2900000","3000000","3100000","3200000","3300000","3400000","3500000","3600000","3700000","3800000","3900000","4000000","4100000","4200000","4300000","4400000","4500000","4600000","4700000","4800000","4900000","5000000","5100000","5200000","5300000","5400000","5500000","5600000","5700000","5800000","5900000","6000000","6100000","6200000","6300000","6400000","6500000","6600000","6700000","6800000","6900000","7000000","7100000","7200000","7300000","7400000","7500000","7600000","7700000","7800000","7900000","8000000","8100000","8200000","8300000","8400000","8500000","8600000","8700000","8800000","8900000","9000000","9100000","9200000","9300000","9400000","9500000","9600000","9700000","9800000","9900000","10000000"]
 
@@ -489,8 +521,8 @@ function PublicSale() {
 		// }
 		// var dataY = data.map((x,i) => getY(x,i));
 
-		var dataX = ["14","141091","278767","413195","544529","672914","798483","921361","1041665","1159504","1274980","2318367","3203228","3972515","4653676","5265341","5820754","6329667","6799480","7235941","7643606","8026149","8386577","8727382","9050654","9358164","9651422","9931731","10200223","10457883","10705578","10944075","11174053","11396119","11610817","11818635","12020014","12215355","12405019","12589339","12768616","12943128","13113131","13278858","13440527","13598337","13752476","13903114","14050413","14194523","14335583","14473724","14609068","14741730","14871817","14999431","15124667","15247616","15368361","15486984","15603559","15718160","15830853","15941703","16050772","16158117","16263795","16367858","16470356","16571338","16670848","16768931","16865628","16960979","17055023","17147796","17239332","17329667","17418831","17506856","17593772","17679606","17764388","17848142","17930894","18012670","18093491","18173382","18252364","18330458","18407685","18484064","18559615","18634355","18708303","18781475","18853889","18925561","18996505","19066737","19136273","19205125","19273308","19340835","19407718","19473972","19539607","19604635","19669068","19732918","19796195","19858909","19921070","19982690","20043777","20104341","20164391","20223935","20282984","20341545","20399626","20457236","20514382","20571072","20627314","20683115","20738481","20793420","20847939","20902044","20955742","21009038","21061940","21114452","21166582","21218334","21269715","21320730","21371383","21421681","21471629","21521231","21570492","21619418","21668012","21716281","21764227","21811856","21859171","21906178","21952880","21999281","22045385","22091196","22136718","22181955","22226911","22271588","22315991","22360122","22403987","22447586","22490925","22534006","22576833","22619408","22661734","22703815","22745653","22787251","22828613","22869740","22910636","22951304","22991745","23031963","23071960","23111738","23151300","23190649","23229786","23268715","23307437","23345955","23384270","23422386","23460304","23498026","23535555","23572892","23610039","23646999","23683773","23720364","23756773","23793002","23829053","23864927","23900627","23936154","23971510","24006697","24041716","24076569","24111257","24145783","24180147","24214352","24248399","24282289","24316023","24349604","24383033","24416311","24449439","24482419","24515253","24547941","24580485","24612887","24645147","24677266","24709247","24741091","24772797","24804369","24835806","24867111","24898283","24929326","24960238","24991023","25021680","25052211","25082617","25112898","25143057","25173094","25203010","25232806","25262483","25292042","25321484","25350809","25380020","25409117","25438100","25466971","25495731","25524379","25552919","25581349","25609671","25637887","25665996","25693999","25721898","25749693","25777385","25804974","25832463","25859850","25887138","25914326","25941416","25968408","25995303","26022102","26048805","26075413","26101928","26128348","26154676","26180912","26207056","26233110","26259073","26284947","26310732","26336429","26362038","26387560","26412996","26438345","26463610","26488790","26513886","26538899","26563828","26588676","26613441","26638126","26662730","26687253","26711697","26736062","26760349","26784558","26808689","26832743","26856721","26880622","26904449","26928200","26951877","26975480","26999009","27022465","27045849","27069161","27092401","27115569","27138667","27161695","27184653","27207541","27230361","27253112","27275794","27298409","27320957","27343438","27365852","27388200","27410483","27432700","27454853","27476941","27498965","27520925","27542821","27564655","27586427","27608136","27629783","27651368","27672893","27694357","27715760","27737104","27758387","27779611","27800777","27821883","27842931","27863921"]
-		var dataY = ["0.070","0.071","0.072","0.073","0.073","0.074","0.075","0.076","0.077","0.078","0.078","0.086","0.094","0.101","0.107","0.114","0.120","0.126","0.132","0.138","0.144","0.150","0.155","0.160","0.166","0.171","0.176","0.181","0.186","0.191","0.196","0.201","0.206","0.211","0.215","0.220","0.225","0.229","0.234","0.238","0.243","0.247","0.252","0.256","0.260","0.265","0.269","0.273","0.278","0.282","0.286","0.290","0.294","0.298","0.303","0.307","0.311","0.315","0.319","0.323","0.327","0.331","0.335","0.339","0.343","0.347","0.350","0.354","0.358","0.362","0.366","0.370","0.374","0.377","0.381","0.385","0.389","0.392","0.396","0.400","0.404","0.407","0.411","0.415","0.418","0.422","0.426","0.429","0.433","0.436","0.440","0.444","0.447","0.451","0.454","0.458","0.461","0.465","0.469","0.472","0.476","0.479","0.483","0.486","0.489","0.493","0.496","0.500","0.503","0.507","0.510","0.514","0.517","0.520","0.524","0.527","0.531","0.534","0.537","0.541","0.544","0.547","0.551","0.554","0.558","0.561","0.564","0.567","0.571","0.574","0.577","0.581","0.584","0.587","0.591","0.594","0.597","0.600","0.604","0.607","0.610","0.613","0.617","0.620","0.623","0.626","0.629","0.633","0.636","0.639","0.642","0.645","0.649","0.652","0.655","0.658","0.661","0.665","0.668","0.671","0.674","0.677","0.680","0.683","0.687","0.690","0.693","0.696","0.699","0.702","0.705","0.708","0.711","0.715","0.718","0.721","0.724","0.727","0.730","0.733","0.736","0.739","0.742","0.745","0.748","0.751","0.754","0.758","0.761","0.764","0.767","0.770","0.773","0.776","0.779","0.782","0.785","0.788","0.791","0.794","0.797","0.800","0.803","0.806","0.809","0.812","0.815","0.818","0.821","0.824","0.827","0.830","0.833","0.836","0.838","0.841","0.844","0.847","0.850","0.853","0.856","0.859","0.862","0.865","0.868","0.871","0.874","0.877","0.880","0.882","0.885","0.888","0.891","0.894","0.897","0.900","0.903","0.906","0.909","0.912","0.914","0.917","0.920","0.923","0.926","0.929","0.932","0.935","0.937","0.940","0.943","0.946","0.949","0.952","0.955","0.957","0.960","0.963","0.966","0.969","0.972","0.974","0.977","0.980","0.983","0.986","0.989","0.991","0.994","0.997","1.000","1.003","1.006","1.008","1.011","1.014","1.017","1.020","1.022","1.025","1.028","1.031","1.034","1.036","1.039","1.042","1.045","1.048","1.050","1.053","1.056","1.059","1.061","1.064","1.067","1.070","1.072","1.075","1.078","1.081","1.084","1.086","1.089","1.092","1.095","1.097","1.100","1.103","1.106","1.108","1.111","1.114","1.116","1.119","1.122","1.125","1.127","1.130","1.133","1.136","1.138","1.141","1.144","1.146","1.149","1.152","1.155","1.157","1.160","1.163","1.165","1.168","1.171","1.174","1.176","1.179","1.182","1.184","1.187","1.190","1.192","1.195","1.198","1.200","1.203","1.206"]
+		var dataX = ["14","141091","278767","413195","544529","672914","798483","921361","1041665","1159504","1274980","2318367","3203228","3972515","4653676","5265341","5820754","6329667","6799480","7235941","7643606","8026149","8386577","8727382","9050654","9358164","9651422","9931731","10200223","10457883","10705578","10944075","11174053","11396119","11610817","11818635","12020014","12215355","12405019","12589339","12768616","12943128","13113131","13278858","13440527","13598337","13752476","13903114","14050413","14194523","14335583","14473724","14609068","14741730","14871817","14999431","15124667","15247616","15368361","15486984","15603559","15718160","15830853","15941703","16050772","16158117","16263795","16367858","16470356","16571338","16670848","16768931","16865628","16960979","17055023","17147796","17239332","17329667","17418831","17506856","17593772","17679606","17764388","17848142","17930894","18012670","18093491","18173382","18252364","18330458","18407685","18484064","18559615","18634355","18708303","18781475","18853889","18925561","18996505","19066737","19136273","19205125","19273308","19340835","19407718","19473972","19539607","19604635","19669068","19732918","19796195","19858909","19921070","19982690","20043777","20104341","20164391","20223935","20282984","20341545","20399626","20457236","20514382","20571072","20627314","20683115","20738481","20793420","20847939","20902044","20955742","21009038","21061940","21114452","21166582","21218334","21269715","21320730","21371383","21421681","21471629","21521231","21570492","21619418","21668012","21716281","21764227","21811856","21859171","21906178","21952880","21999281","22045385","22091196","22136718","22181955","22226911","22271588","22315991","22360122","22403987","22447586","22490925","22534006","22576833","22619408","22661734","22703815","22745653","22787251","22828613","22869740","22910636","22951304","22991745","23031963","23071960","23111738","23151300","23190649","23229786","23268715","23307437","23345955","23384270","23422386","23460304","23498026","23535555","23572892","23610039","23646999","23683773","23720364","23756773","23793002","23829053","23864927","23900627","23936154","23971510","24006697","24041716","24076569","24111257","24145783","24180147","24214352","24248399","24282289","24316023","24349604","24383033","24416311","24449439","24482419","24515253","24547941","24580485","24612887","24645147","24677266","24709247","24741091","24772797","24804369","24835806","24867111","24898283","24929326","24960238","24991023","25021680","25052211","25082617","25112898","25143057","25173094","25203010","25232806","25262483","25292042","25321484","25350809","25380020","25409117","25438100","25466971","25495731","25524379","25552919","25581349","25609671","25637887","25665996","25693999","25721898","25749693","25777385","25804974","25832463","25859850","25887138","25914326","25941416","25968408","25995303","26022102","26048805","26075413","26101928","26128348","26154676","26180912","26207056","26233110","26259073","26284947","26310732","26336429","26362038","26387560","26412996","26438345","26463610","26488790","26513886","26538899","26563828","26588676","26613441","26638126","26662730","26687253","26711697","26736062","26760349","26784558","26808689","26832743","26856721","26880622","26904449","26928200","26951877","26975480","26999009","27022465","27045849","27069161","27092401","27115569","27138667","27161695","27184653","27207541","27230361","27253112","27275794","27298409","27320957","27343438","27365852","27388200","27410483","27432700","27454853","27476941","27498965","27520925","27542821","27564655","27586427","27608136","27629783","27651368","27672893","27694357"]
+		var dataY = ["0.070","0.071","0.072","0.073","0.073","0.074","0.075","0.076","0.077","0.078","0.078","0.086","0.094","0.101","0.107","0.114","0.120","0.126","0.132","0.138","0.144","0.150","0.155","0.160","0.166","0.171","0.176","0.181","0.186","0.191","0.196","0.201","0.206","0.211","0.215","0.220","0.225","0.229","0.234","0.238","0.243","0.247","0.252","0.256","0.260","0.265","0.269","0.273","0.278","0.282","0.286","0.290","0.294","0.298","0.303","0.307","0.311","0.315","0.319","0.323","0.327","0.331","0.335","0.339","0.343","0.347","0.350","0.354","0.358","0.362","0.366","0.370","0.374","0.377","0.381","0.385","0.389","0.392","0.396","0.400","0.404","0.407","0.411","0.415","0.418","0.422","0.426","0.429","0.433","0.436","0.440","0.444","0.447","0.451","0.454","0.458","0.461","0.465","0.469","0.472","0.476","0.479","0.483","0.486","0.489","0.493","0.496","0.500","0.503","0.507","0.510","0.514","0.517","0.520","0.524","0.527","0.531","0.534","0.537","0.541","0.544","0.547","0.551","0.554","0.558","0.561","0.564","0.567","0.571","0.574","0.577","0.581","0.584","0.587","0.591","0.594","0.597","0.600","0.604","0.607","0.610","0.613","0.617","0.620","0.623","0.626","0.629","0.633","0.636","0.639","0.642","0.645","0.649","0.652","0.655","0.658","0.661","0.665","0.668","0.671","0.674","0.677","0.680","0.683","0.687","0.690","0.693","0.696","0.699","0.702","0.705","0.708","0.711","0.715","0.718","0.721","0.724","0.727","0.730","0.733","0.736","0.739","0.742","0.745","0.748","0.751","0.754","0.758","0.761","0.764","0.767","0.770","0.773","0.776","0.779","0.782","0.785","0.788","0.791","0.794","0.797","0.800","0.803","0.806","0.809","0.812","0.815","0.818","0.821","0.824","0.827","0.830","0.833","0.836","0.838","0.841","0.844","0.847","0.850","0.853","0.856","0.859","0.862","0.865","0.868","0.871","0.874","0.877","0.880","0.882","0.885","0.888","0.891","0.894","0.897","0.900","0.903","0.906","0.909","0.912","0.914","0.917","0.920","0.923","0.926","0.929","0.932","0.935","0.937","0.940","0.943","0.946","0.949","0.952","0.955","0.957","0.960","0.963","0.966","0.969","0.972","0.974","0.977","0.980","0.983","0.986","0.989","0.991","0.994","0.997","1.000","1.003","1.006","1.008","1.011","1.014","1.017","1.020","1.022","1.025","1.028","1.031","1.034","1.036","1.039","1.042","1.045","1.048","1.050","1.053","1.056","1.059","1.061","1.064","1.067","1.070","1.072","1.075","1.078","1.081","1.084","1.086","1.089","1.092","1.095","1.097","1.100","1.103","1.106","1.108","1.111","1.114","1.116","1.119","1.122","1.125","1.127","1.130","1.133","1.136","1.138","1.141","1.144","1.146","1.149","1.152","1.155","1.157","1.160","1.163","1.165","1.168","1.171","1.174","1.176","1.179","1.182","1.184"]
 		var dataXY = [];
 		for (var i = 0; i < dataX.length; i++) {
 			let dot = {x: dataX[i],y: dataY[i]}
@@ -522,6 +554,8 @@ function PublicSale() {
 				legend: {
 						display: false
 				},
+				scaleOverride: true,
+				responsive: true,
 				scales: {
 					xAxes: [{
 						type: 'linear',
@@ -531,10 +565,10 @@ function PublicSale() {
 								labelString: 'Supply'
 						},
 						ticks: {
-										// Include a dollar sign in the ticks
-										callback: function(value, index, values) {
-											return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-										}
+							// Include a dollar sign in the ticks
+							callback: function(value, index, values) {
+								return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+							}
 						}
 					}],
 					yAxes: [{
@@ -547,33 +581,19 @@ function PublicSale() {
 					}]
 				}
 			}
-});
+		});
+		setIbcoIsChartReady(true);
 	}
 
 	function renderPointsOnChart(){
-		if(hasPointRendered == false){
+		if(hasPointRendered == false && ibcoOVRDAIPrice > 0.1){
 			var newDataset = {
-				data: [{x: 3000000, y: 0.19}],
+				data: [{x: parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2), y: ibcoOVRDAIPrice}],
 				backgroundColor: gradientStroke,
 				label: "Starting price",
 				borderColor: '#5d509c',
 				pointBackgroundColor:'#5d509c',
-				borderWidth:3,
-				intersect: false,
-				fill: true,
-				borderDash: [0,0],
-				pointRadius: 3,
-				pointHoverRadius: 7,
-			}
-			chartData.datasets.push(newDataset);
-
-			var newDataset = {
-				data: [{x: 6000000, y: 0.64}],
-				backgroundColor: gradientStroke,
-				label: "Starting price",
-				borderColor: '#5d509c',
-				pointBackgroundColor:'#5d509c',
-				borderWidth:3,
+				borderWidth: 3,
 				intersect: false,
 				fill: true,
 				borderDash: [0,0],
@@ -669,6 +689,7 @@ function PublicSale() {
 
 	return (
 		<div className="PublicSale">
+			{ibcoIsReady ? <>
 			<TermsAndConditionsOverlay disableTermsAndConditionsOverlay={()=>toggleTermsAndConditionsOverlay(false)} showOverlay={showTermsAndConditionsOverlay}/>
 			<div className="o-container">
 				<div className="o-section">
@@ -705,7 +726,7 @@ function PublicSale() {
 								</div>
 							</div>
 							<div className="o-row">
-								<div className="chart-js">
+								<div className={`chart-js ${ibcoIsChartReady === false ? '--hidd' : ''}`}>
 									<canvas id="myChart"></canvas>
 								</div> 
 							</div>
@@ -805,6 +826,15 @@ function PublicSale() {
 					</div>
 				</div>
 			</div>
+			</>: <>
+			<div className="PublicSale__loading_interface">
+				<span className="Loader__cont">
+					<CircularProgress />
+					<span>Loading</span>
+				</span>
+			</div>
+			</>}
+			
 		</div>
 	);
 }

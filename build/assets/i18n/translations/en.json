@@ -401,6 +401,7 @@
 	"IBCO.tec.cancel": "Cancel",
 	"IBCO.request.process.title": "Your request is being processed",
 	"IBCO.request.process.desc":"You can check the transaction status in your wallet's activities",
-	"IBCO.transaction.publicaddress": "Public Address"
+	"IBCO.transaction.publicaddress": "Public Address",
+	"IBCO.available.on.etherscan": "Available on Etherscan"
 
 }
