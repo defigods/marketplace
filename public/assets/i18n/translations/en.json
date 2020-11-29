@@ -404,6 +404,8 @@
 	"IBCO.request.process.desc":"You can check the transaction status in your wallet's activities",
 	"IBCO.transaction.publicaddress": "Public Address",
 	"Lands.selected.checkout.title": "Total cost estimate",
-	"IBCO.available.on.etherscan": "Available on Etherscan"
+	"IBCO.available.on.etherscan": "Available on Etherscan",
+	"PublicSale.login.required.title": "You have to log in to visit our IBCO",
+	"PublicSale.login.required.desc": "Check our Public Sale. Connect your wallet."
 
 }

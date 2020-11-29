@@ -33,6 +33,7 @@ function PublicSale() {
 	let history = useHistory();
 	const web3Context = useContext(Web3Context);
 	const userContext = useContext(UserContext);
+	const { isLoggedIn: userAuthenticated } = userContext.state;
 
 	const [ibcoPendingTransactions, setIbcoPendingTransactions] = React.useState([]);
 	const [ibcoMyTransactions, setIbcoMyTransactions] = React.useState([]);
@@ -45,6 +46,7 @@ function PublicSale() {
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.0);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
+	const [classShowPanels, setClassShowPanels] = React.useState(false);
 
 	// Check if anything changed from web3context
 	React.useEffect(() => {
@@ -72,9 +74,10 @@ function PublicSale() {
 	}, [userContext.state, userContext.state.hasLoaded]);
 
 	React.useEffect(() => {
-		if(ibcoIsReady === true){
+		if(ibcoIsReady === true && userAuthenticated){
 			setTimeout(() => {
 				renderChart()
+				setClassShowPanels(true);
 			}, 1050);
 		}
 	}, [ibcoIsReady]);
@@ -102,8 +105,9 @@ function PublicSale() {
 		prepareIbcoCurveHistoryAndMyTrans();
 		prepareIbcoMyOpenTransactions();
 	}, [web3Context.state.ibcoClaims, web3Context.state.ibcoOpenBuyOrders, web3Context.state.ibcoOpenSellOrders]);
-	// Interface helpers
 
+
+	// Interface helpers
 	const handleTabChange = (newValue) => {
 			setTab(newValue);
 			setTransactionValueValid(false);
@@ -521,8 +525,8 @@ function PublicSale() {
 		// }
 		// var dataY = data.map((x,i) => getY(x,i));
 
-		var dataX = ["14","141091","278767","413195","544529","672914","798483","921361","1041665","1159504","1274980","2318367","3203228","3972515","4653676","5265341","5820754","6329667","6799480","7235941","7643606","8026149","8386577","8727382","9050654","9358164","9651422","9931731","10200223","10457883","10705578","10944075","11174053","11396119","11610817","11818635","12020014","12215355","12405019","12589339","12768616","12943128","13113131","13278858","13440527","13598337","13752476","13903114","14050413","14194523","14335583","14473724","14609068","14741730","14871817","14999431","15124667","15247616","15368361","15486984","15603559","15718160","15830853","15941703","16050772","16158117","16263795","16367858","16470356","16571338","16670848","16768931","16865628","16960979","17055023","17147796","17239332","17329667","17418831","17506856","17593772","17679606","17764388","17848142","17930894","18012670","18093491","18173382","18252364","18330458","18407685","18484064","18559615","18634355","18708303","18781475","18853889","18925561","18996505","19066737","19136273","19205125","19273308","19340835","19407718","19473972","19539607","19604635","19669068","19732918","19796195","19858909","19921070","19982690","20043777","20104341","20164391","20223935","20282984","20341545","20399626","20457236","20514382","20571072","20627314","20683115","20738481","20793420","20847939","20902044","20955742","21009038","21061940","21114452","21166582","21218334","21269715","21320730","21371383","21421681","21471629","21521231","21570492","21619418","21668012","21716281","21764227","21811856","21859171","21906178","21952880","21999281","22045385","22091196","22136718","22181955","22226911","22271588","22315991","22360122","22403987","22447586","22490925","22534006","22576833","22619408","22661734","22703815","22745653","22787251","22828613","22869740","22910636","22951304","22991745","23031963","23071960","23111738","23151300","23190649","23229786","23268715","23307437","23345955","23384270","23422386","23460304","23498026","23535555","23572892","23610039","23646999","23683773","23720364","23756773","23793002","23829053","23864927","23900627","23936154","23971510","24006697","24041716","24076569","24111257","24145783","24180147","24214352","24248399","24282289","24316023","24349604","24383033","24416311","24449439","24482419","24515253","24547941","24580485","24612887","24645147","24677266","24709247","24741091","24772797","24804369","24835806","24867111","24898283","24929326","24960238","24991023","25021680","25052211","25082617","25112898","25143057","25173094","25203010","25232806","25262483","25292042","25321484","25350809","25380020","25409117","25438100","25466971","25495731","25524379","25552919","25581349","25609671","25637887","25665996","25693999","25721898","25749693","25777385","25804974","25832463","25859850","25887138","25914326","25941416","25968408","25995303","26022102","26048805","26075413","26101928","26128348","26154676","26180912","26207056","26233110","26259073","26284947","26310732","26336429","26362038","26387560","26412996","26438345","26463610","26488790","26513886","26538899","26563828","26588676","26613441","26638126","26662730","26687253","26711697","26736062","26760349","26784558","26808689","26832743","26856721","26880622","26904449","26928200","26951877","26975480","26999009","27022465","27045849","27069161","27092401","27115569","27138667","27161695","27184653","27207541","27230361","27253112","27275794","27298409","27320957","27343438","27365852","27388200","27410483","27432700","27454853","27476941","27498965","27520925","27542821","27564655","27586427","27608136","27629783","27651368","27672893","27694357"]
-		var dataY = ["0.070","0.071","0.072","0.073","0.073","0.074","0.075","0.076","0.077","0.078","0.078","0.086","0.094","0.101","0.107","0.114","0.120","0.126","0.132","0.138","0.144","0.150","0.155","0.160","0.166","0.171","0.176","0.181","0.186","0.191","0.196","0.201","0.206","0.211","0.215","0.220","0.225","0.229","0.234","0.238","0.243","0.247","0.252","0.256","0.260","0.265","0.269","0.273","0.278","0.282","0.286","0.290","0.294","0.298","0.303","0.307","0.311","0.315","0.319","0.323","0.327","0.331","0.335","0.339","0.343","0.347","0.350","0.354","0.358","0.362","0.366","0.370","0.374","0.377","0.381","0.385","0.389","0.392","0.396","0.400","0.404","0.407","0.411","0.415","0.418","0.422","0.426","0.429","0.433","0.436","0.440","0.444","0.447","0.451","0.454","0.458","0.461","0.465","0.469","0.472","0.476","0.479","0.483","0.486","0.489","0.493","0.496","0.500","0.503","0.507","0.510","0.514","0.517","0.520","0.524","0.527","0.531","0.534","0.537","0.541","0.544","0.547","0.551","0.554","0.558","0.561","0.564","0.567","0.571","0.574","0.577","0.581","0.584","0.587","0.591","0.594","0.597","0.600","0.604","0.607","0.610","0.613","0.617","0.620","0.623","0.626","0.629","0.633","0.636","0.639","0.642","0.645","0.649","0.652","0.655","0.658","0.661","0.665","0.668","0.671","0.674","0.677","0.680","0.683","0.687","0.690","0.693","0.696","0.699","0.702","0.705","0.708","0.711","0.715","0.718","0.721","0.724","0.727","0.730","0.733","0.736","0.739","0.742","0.745","0.748","0.751","0.754","0.758","0.761","0.764","0.767","0.770","0.773","0.776","0.779","0.782","0.785","0.788","0.791","0.794","0.797","0.800","0.803","0.806","0.809","0.812","0.815","0.818","0.821","0.824","0.827","0.830","0.833","0.836","0.838","0.841","0.844","0.847","0.850","0.853","0.856","0.859","0.862","0.865","0.868","0.871","0.874","0.877","0.880","0.882","0.885","0.888","0.891","0.894","0.897","0.900","0.903","0.906","0.909","0.912","0.914","0.917","0.920","0.923","0.926","0.929","0.932","0.935","0.937","0.940","0.943","0.946","0.949","0.952","0.955","0.957","0.960","0.963","0.966","0.969","0.972","0.974","0.977","0.980","0.983","0.986","0.989","0.991","0.994","0.997","1.000","1.003","1.006","1.008","1.011","1.014","1.017","1.020","1.022","1.025","1.028","1.031","1.034","1.036","1.039","1.042","1.045","1.048","1.050","1.053","1.056","1.059","1.061","1.064","1.067","1.070","1.072","1.075","1.078","1.081","1.084","1.086","1.089","1.092","1.095","1.097","1.100","1.103","1.106","1.108","1.111","1.114","1.116","1.119","1.122","1.125","1.127","1.130","1.133","1.136","1.138","1.141","1.144","1.146","1.149","1.152","1.155","1.157","1.160","1.163","1.165","1.168","1.171","1.174","1.176","1.179","1.182","1.184"]
+		var dataX = ["14285","141030","278529","412674","543625","671534","796541","918778","1038366","1155419","1270044","2302147","3172427","3925359","4589220","5183124","5720601","6211585","6663587","7082428","7472708","7838129","8181711","8505957","8812957","9104481","9382036","9646919","9900256","10143024","10376084","10600194","10816026","11024179","11225189","11419539","11607660","11789948","11966757","12138413","12305213","12467427","12625305","12779077","12928954","13075131","13217790","13357098","13493213","13626279","13756431","13883798","14008497","14130641","14250332","14367669","14482745","14595646","14706455","14815248","14922099","15027077","15130248","15231674","15331413","15429523","15526056","15621062","15714591","15806688","15897397","15986760","16074816","16161605","16247163","16331525","16414723"]
+		var dataY = ["0.0700","0.0718","0.0736","0.075","0.077","0.079","0.081","0.083","0.085","0.086","0.088","0.106","0.124","0.142","0.160","0.177","0.195","0.213","0.230","0.248","0.265","0.282","0.300","0.317","0.334","0.352","0.369","0.386","0.403","0.421","0.438","0.455","0.472","0.489","0.506","0.523","0.540","0.557","0.574","0.591","0.608","0.625","0.642","0.659","0.676","0.693","0.709","0.726","0.743","0.760","0.777","0.794","0.810","0.827","0.844","0.861","0.877","0.894","0.911","0.928","0.944","0.961","0.978","0.994","1.011","1.028","1.044","1.061","1.078","1.094","1.111","1.127","1.144","1.161","1.177","1.194","1.210"]
 		var dataXY = [];
 		for (var i = 0; i < dataX.length; i++) {
 			let dot = {x: dataX[i],y: dataY[i]}
@@ -687,156 +691,178 @@ function PublicSale() {
 		}
 	}
 
-	return (
-		<div className="PublicSale">
-			{ibcoIsReady ? <>
-			<TermsAndConditionsOverlay disableTermsAndConditionsOverlay={()=>toggleTermsAndConditionsOverlay(false)} showOverlay={showTermsAndConditionsOverlay}/>
+	const PublicSaleContentLoginRequired = () => {
+		const { t, i18n } = useTranslation();
+		return (
+			<div className="profile">
 			<div className="o-container">
-				<div className="o-section">
-					<div className="s-f-curve">
-						<div className="o-card --chart-js">
-							<div className="o-row">
-								<div className="o-third">
-									<div className="o-label">
-										{t('IBCO.buyprice')}
+				<div className="c-dialog --centered">
+					<div className="c-dialog-main-title">
+						{t('PublicSale.login.required.title')}
+						<span role="img" aria-label="Cool dude">
+							😎
+						</span>
+					</div>
+					<div className="c-dialog-sub-title">{t('PublicSale.login.required.desc')}</div>
+				</div>
+			</div>
+		</div>
+		)	
+	};
+
+	if (!userAuthenticated) {
+		return <PublicSaleContentLoginRequired t={t}/>;
+	} else {
+		return (
+			<div className={`PublicSale ${classShowPanels ? '--js-show' : ''}`}>
+				{ibcoIsReady ? <>
+				<TermsAndConditionsOverlay disableTermsAndConditionsOverlay={()=>toggleTermsAndConditionsOverlay(false)} showOverlay={showTermsAndConditionsOverlay}/>
+				<div className="o-container">
+					<div className="--flex">
+						<div className="s-f-curve">
+							<div className="o-card --chart-js">
+								<div className="o-row --chart-header">
+									<div className="o-one-label">
+										<div className="o-label">
+											{t('IBCO.buyprice')}
+										</div>
+										<div className="o-value">
+											<ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
+										</div>
 									</div>
-									<div className="o-value">
-										<ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
+									<div className="o-one-label">
+										<div className="o-label">
+											{t('IBCO.reserve')}
+										</div>
+										<div className="o-value">
+											<ValueCounter value={ibcoIsReady ? <>
+												{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2)}
+											</> : '0.0'} currency="dai"></ValueCounter>
+										</div>
+									</div>
+									<div className="o-one-label">
+										<div className="o-label">
+											{t('IBCO.curveissuance')}
+										</div>
+										<div className="o-value">
+											<ValueCounter value={ibcoIsReady ? <>
+												{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2)}
+											</> : '0.0'}></ValueCounter>
+										</div>
 									</div>
 								</div>
-								<div className="o-third">
-									<div className="o-label">
-										{t('IBCO.reserve')}
-									</div>
-									<div className="o-value">
-										<ValueCounter value={ibcoIsReady ? <>
-											{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2)}
-										</> : '0.0'} currency="dai"></ValueCounter>
-									</div>
+								<div className="o-row">
+									<div className={`chart-js ${ibcoIsChartReady === false ? '--hidd' : ''}`}>
+										<canvas id="myChart"></canvas>
+									</div> 
 								</div>
-								<div className="o-third">
-									<div className="o-label">
-										{t('IBCO.curveissuance')}
-									</div>
-									<div className="o-value">
-										<ValueCounter value={ibcoIsReady ? <>
-											{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2)}
-										</> : '0.0'}></ValueCounter>
-									</div>
-								</div>
-							</div>
-							<div className="o-row">
-								<div className={`chart-js ${ibcoIsChartReady === false ? '--hidd' : ''}`}>
-									<canvas id="myChart"></canvas>
-								</div> 
 							</div>
 						</div>
+						<div className="s-f-panel">
+							<div className="o-card">
+								<div className="o-row">
+									<div className="c-transaction-selector_cont">
+										<div
+											className={`c-transaction-selector ${tab == 'buy' ? '--selected' : ''}`}
+											onClick={() => handleTabChange('buy')}
+										>
+											{t('IBCO.buy')}
+										</div>
+										<div
+											className={`c-transaction-selector --second ${tab == 'sell' ? '--selected' : ''}`}
+											onClick={() => {handleTabChange('sell')}}
+										>
+											{t('IBCO.sell')}
+										</div>
+									</div>
+								</div>
+								<div className="o-row o-row__your_wallet">
+									<h3 className="p-section-title">{t('IBCO.ur.wallet')}</h3>
+									<ValueCounter value={ibcoIsReady ? <>
+										{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)}
+									</> : '0.00'} currency="dai"></ValueCounter>
+
+									<ValueCounter value={ibcoIsReady ? <>
+										{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2)}
+									</> : '0.00'}></ValueCounter>
+								</div>
+								<br></br>
+								<div className="o-row">{t('IBCO.allowance')} {ibcoIsReady ? <>
+									{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIAllowance).toString()).toFixed(0)}
+								</> : '0.00'}</div>
+								<div className="o-line"></div>
+								<div className="o-row o-info-row">
+									<div className="o-half"><h3 className="o-info-title">Price</h3></div>
+									<div className="o-half --values-holder">
+										<ValueCounter value={"1"} currency="ovr"></ValueCounter><span>=</span><ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
+									</div>
+								</div>
+								<div className="o-row o-info-row">
+									<div className="o-half"><h3 className="o-info-title">{t('IBCO.receive.amount')}</h3></div>
+									<div className="o-half">
+
+										{tab === "buy" ? <ValueCounter value={(transactionValue / ibcoOVRDAIPrice).toFixed(2)} currency="ovr"></ValueCounter>
+											: <ValueCounter value={(transactionValue * ibcoOVRDAIPrice).toFixed(2)} currency="dai"></ValueCounter>}
+									</div>
+								</div>
+								<div className="o-row o-info-row">
+									<div className="o-half"><h3 className="o-info-title">{t('IBCO.slippage')}</h3></div>
+									<div className="o-half">{(ibcoIsReady) ? <>
+										{ethers.utils.formatEther(web3Context.state.ibcoCollateralDAI.slippage).toString()}
+									</> : '0'} %</div>
+								</div>
+								<div className="o-row o-field-row">
+									{renderActionButtonSection()}
+								</div>
+							</div>
+						</div>	
 					</div>
-					<div className="s-f-panel">
+					<div className="o-section">
 						<div className="o-card">
 							<div className="o-row">
-								<div className="c-transaction-selector_cont">
-									<div
-										className={`c-transaction-selector ${tab == 'buy' ? '--selected' : ''}`}
-										onClick={() => handleTabChange('buy')}
-									>
-										{t('IBCO.buy')}
-									</div>
-									<div
-										className={`c-transaction-selector --second ${tab == 'sell' ? '--selected' : ''}`}
-										onClick={() => {handleTabChange('sell')}}
-									>
-										{t('IBCO.sell')}
-									</div>
-								</div>
+								<h3 className="o-card-title">{t('IBCO.pending.transactions')}</h3>
 							</div>
-							<div className="o-row o-row__your_wallet">
-								<h3 className="p-section-title">{t('IBCO.ur.wallet')}</h3>
-								<ValueCounter value={ibcoIsReady ? <>
-									{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)}
-								</> : '0.00'} currency="dai"></ValueCounter>
+							<div className="o-line --venti"></div>
+							<div className="o-row">
+								{renderIbcoPendingTransactions()}
+							</div>
+						</div>
+					</div>
+					<div className="o-section">
+						<div className="o-card">
+							<div className="o-row">
+								<h3 className="o-card-title">{t('IBCO.my.transactions')}</h3>
+							</div>
+							<div className="o-line --venti"></div>
+							<div className="o-row">
+								{renderIbcoMyTransactions()}
+							</div>
+						</div>
+					</div>
+					<div className="o-section">
+						<div className="o-card">
+							<div className="o-row">
+								<h3 className="o-card-title">{t('IBCO.curve.history')}</h3>
+							</div>
+							<div className="o-line --venti"></div>
+							<div className="o-row">
+								{renderIbcoCurveHistory()}
+							</div>
+						</div>
+					</div>
+				</div>
+				</>: <>
+				<div className="PublicSale__loading_interface">
+					<span className="Loader__cont">
+						<CircularProgress />
+						<span>Loading</span>
+					</span>
+				</div>
+				</>}
 
-								<ValueCounter value={ibcoIsReady ? <>
-									{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2)}
-								</> : '0.00'}></ValueCounter>
-							</div>
-							<br></br>
-							<div className="o-row">{t('IBCO.allowance')} {ibcoIsReady ? <>
-								{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIAllowance).toString()).toFixed(0)}
-							</> : '0.00'}</div>
-							<div className="o-line"></div>
-							<div className="o-row o-info-row">
-								<div className="o-half"><h3 className="o-info-title">Price</h3></div>
-								<div className="o-half --values-holder">
-									<ValueCounter value={"1"} currency="ovr"></ValueCounter><span>=</span><ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
-								</div>
-							</div>
-							<div className="o-row o-info-row">
-								<div className="o-half"><h3 className="o-info-title">{t('IBCO.receive.amount')}</h3></div>
-								<div className="o-half">
-
-									{tab === "buy" ? <ValueCounter value={(transactionValue / ibcoOVRDAIPrice).toFixed(2)} currency="ovr"></ValueCounter>
-										: <ValueCounter value={(transactionValue * ibcoOVRDAIPrice).toFixed(2)} currency="dai"></ValueCounter>}
-								</div>
-							</div>
-							<div className="o-row o-info-row">
-								<div className="o-half"><h3 className="o-info-title">{t('IBCO.slippage')}</h3></div>
-								<div className="o-half">{(ibcoIsReady) ? <>
-									{ethers.utils.formatEther(web3Context.state.ibcoCollateralDAI.slippage).toString()}
-								</> : '0'} %</div>
-							</div>
-							<div className="o-line"></div>
-							<div className="o-row o-field-row">
-								{renderActionButtonSection()}
-							</div>
-						</div>
-					</div>	
-				</div>
-				<div className="o-section">
-					<div className="o-card">
-						<div className="o-row">
-							<h3 className="o-card-title">{t('IBCO.pending.transactions')}</h3>
-						</div>
-						<div className="o-line --venti"></div>
-						<div className="o-row">
-							{renderIbcoPendingTransactions()}
-						</div>
-					</div>
-				</div>
-				<div className="o-section">
-					<div className="o-card">
-						<div className="o-row">
-							<h3 className="o-card-title">{t('IBCO.my.transactions')}</h3>
-						</div>
-						<div className="o-line --venti"></div>
-						<div className="o-row">
-							{renderIbcoMyTransactions()}
-						</div>
-					</div>
-				</div>
-				<div className="o-section">
-					<div className="o-card">
-						<div className="o-row">
-							<h3 className="o-card-title">{t('IBCO.curve.history')}</h3>
-						</div>
-						<div className="o-line --venti"></div>
-						<div className="o-row">
-							{renderIbcoCurveHistory()}
-						</div>
-					</div>
-				</div>
 			</div>
-			</>: <>
-			<div className="PublicSale__loading_interface">
-				<span className="Loader__cont">
-					<CircularProgress />
-					<span>Loading</span>
-				</span>
-			</div>
-			</>}
-			
-		</div>
-	);
+		);
+	}
 }
 
 export default PublicSale;
