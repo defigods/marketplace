@@ -545,7 +545,7 @@ export class Web3Provider extends Component {
 									transactionHash: receipt.transactionHash
 							},
 					];
-					this.removeOpenBuyOrder(bClaim)
+					// this.removeOpenBuyOrder(bClaim)
 					this.setClaims(bClaim);
 					await this.updateBalances();
 			});
@@ -568,7 +568,7 @@ export class Web3Provider extends Component {
 											transactionHash: receipt.transactionHash
 									},
 							];
-							this.removeOpenSellOrder(sClaim)
+							// this.removeOpenSellOrder(sClaim)
 							this.setClaims(sClaim);
 							await this.updateBalances();
 					}

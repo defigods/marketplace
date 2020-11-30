@@ -457,7 +457,7 @@ function PublicSale() {
 							</tr>
 						</thead>
 						<tbody>
-							{ibcoCurveHistory.map((trans) => (
+							{ibcoCurveHistory.reverse().map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="max --trans">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">
