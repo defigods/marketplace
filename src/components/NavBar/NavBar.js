@@ -36,17 +36,7 @@ const NavBar = () => {
 	const changeLanguage = (string) => {
 		i18n.changeLanguage(string)
 	}
-	
-	function boolCountdownCheck() {
-		let utcSeconds = 1606737600;
-		let d = new Date(0); 
-		const difference = +d.setUTCSeconds(utcSeconds) - +new Date();
-		if (difference > 0) {
-			return false
-		} else {
-			return true
-		}
-	}
+
 	// START - Profile sub menu
 
 
@@ -83,19 +73,15 @@ const NavBar = () => {
 	const renderPublicSaleButton = () => {
 		let button = <></>;
 		if(!isMobile){
-			if(boolCountdownCheck() === true){
-				button = <Link to="/public-sale" className="Funds__buy HexButton --orange">
-					{t("Profile.buy.ovr")}
-				</Link>
-			}
+			button = <Link to="/public-sale" className="Funds__buy HexButton --orange">
+				{t("Profile.buy.ovr")}
+			</Link>
 		}
 		return button;
 	}
 
 	const renderPublicSaleButtonMobile = () => {
-		let button = <></>;
-		if(boolCountdownCheck() === true){
-			button = <MenuItem
+		let button = <MenuItem
 				onClick={(e) => {
 					handleClose(e);
 					handleGoTo('/public-sale');
@@ -103,7 +89,6 @@ const NavBar = () => {
 			>
 				{t('BuyTokens.buy.ovr')}
 			</MenuItem>
-		}
 		return button;
 	}
 
