@@ -176,8 +176,10 @@ function PublicSale() {
 			if((slip*100).toFixed(2) >= 0){
 				setIbcoSlippage((slip*100).toFixed(2));
 			}
-			if((slip*100).toFixed(2) >= maxSlip && tab === 'buy'){
-				setHasMaxSlippageReached(true);
+			if((slip*100).toFixed(2) >= maxSlip ){
+				if(tab === 'buy'){
+					setHasMaxSlippageReached(true);
+				}
 			} else {
 				setHasMaxSlippageReached(false);
 			}
