@@ -13,6 +13,7 @@ import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
 import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { warningNotification } from '../../lib/notifications';
 
 import { getLand, sendAuctionCheckClose } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
@@ -200,11 +201,19 @@ const Land = (props) => {
 	};
 
 	function setActiveBidOverlay(e) {
+		if(!isLoggedIn){
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
+			return false;
+		}
 		e.preventDefault();
 		changeActiveBidOverlay(true);
 	}
 
 	function setActiveMintOverlay(e) {
+		if(!isLoggedIn){
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
+			return false;
+		}
 		e.preventDefault();
 		changeActiveMintOverlay(true);
 	}
@@ -411,15 +420,13 @@ const Land = (props) => {
 			case 2:
 				return (
 					<>
-						<h3 className="o-small-title">{t('Land.closing.price')}</h3>
-						<ValueCounter value={value}></ValueCounter>
+						{isLoggedIn ? <><h3 className="o-small-title">{t('Land.closing.price')}</h3><ValueCounter value={value}></ValueCounter></> : <></>}
 					</>
 				);
 			default:
 				return (
 					<>
-						<h3 className="o-small-title">{t('Land.price.label')}</h3>
-						<ValueCounter value={value}></ValueCounter>
+						{isLoggedIn ? <><h3 className="o-small-title">{t('Land.price.label')}</h3><ValueCounter value={value}></ValueCounter></> : <></>}
 					</>
 				);
 		}

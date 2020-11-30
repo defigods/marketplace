@@ -16,6 +16,7 @@ import { useHistory,Link } from 'react-router-dom';
 
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import TextField from '@material-ui/core/TextField';
+
 import {Chart} from 'chart.js'
 const mantissa = new bn(1e18);
 let ctx;
@@ -47,6 +48,7 @@ function PublicSale() {
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.00);
 	const [hasMaxSlippageReached, setHasMaxSlippageReached] = React.useState(false);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
+	const [shakeInput, setShakeInput] = React.useState(false);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
 	const [classShowPanels, setClassShowPanels] = React.useState(false);
 
@@ -131,7 +133,25 @@ function PublicSale() {
 	};
 
 	const handleTransactionValueChange = async (transactionValue) => {
-			setTransactionValue(transactionValue);
+			let balance = 0;
+			if(tab === 'sell'){
+				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)
+			} else {
+				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2)
+			}
+			if (balance <= transactionValue){
+				setTransactionValue(balance);
+				setShakeInput(true);
+				setTransactionValueDescription(t("Warning.no.token.title"));
+				setTimeout(() =>{
+					setShakeInput(false);
+				}, 400)
+				return false;
+			} else {
+				setTransactionValue(transactionValue);
+			}
+
+		
 			if( transactionValue > 0){
 				setTransactionValueValid(true)
 			} else {
@@ -144,21 +164,22 @@ function PublicSale() {
 				let ret = await web3Context.actions.calculateCustomSellPrice(transactionValue);
 				slip = await web3Context.actions.calculateCustomSellSlippage(transactionValue);
 				setTransactionValueExtimate(ret);
-				//
-				setIbcoSlippage((slip*100).toFixed(2));
 				setTransactionValueDescription(t('IBCO.exchange.sell', { OVRNumber: transactionValue, DAINumber: ret }))
 			} else {
 				let ret = await web3Context.actions.calculateCustomBuyPrice(transactionValue);
 				slip = await web3Context.actions.calculateCustomBuySlippage(transactionValue);
 				setTransactionValueExtimate(ret);
-				setIbcoSlippage((slip*100).toFixed(2));
 				setTransactionValueDescription(t('IBCO.exchange.buy', { OVRNumber: ret, DAINumber: transactionValue }))
 			}
+
 			// Slippage
+			if((slip*100).toFixed(2) >= 0){
+				setIbcoSlippage((slip*100).toFixed(2));
+			}
 			if((slip*100).toFixed(2) >= maxSlip){
-				setHasMaxSlippageReached(true)
+				setHasMaxSlippageReached(true);
 			} else {
-				setHasMaxSlippageReached(false)
+				setHasMaxSlippageReached(false);
 			}
 	};
 
@@ -669,6 +690,7 @@ function PublicSale() {
 				value={transactionValue}
 				currencySymbol="DAI"
 				minimumValue={"0"}
+				className={`${shakeInput ? "--shake":""}`}
 				decimalCharacter="."
 				digitGroupSeparator=","
 				onChange={(event, value)=> {
@@ -702,6 +724,7 @@ function PublicSale() {
 						value={transactionValue}
 						currencySymbol="OVR"
 						minimumValue={"0"}
+						className={`${shakeInput ? "--shake":""}`}
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(event, value)=> {

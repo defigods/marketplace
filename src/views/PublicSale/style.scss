@@ -430,6 +430,10 @@
 	animation: pulse-dot 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -.4s infinite;
 }
 
+.--shake{
+	animation: shake 0.400s cubic-bezier(.36,.07,.19,.97) both;
+}
+
 @keyframes pulse-ring {
   0% {
     transform: scale(.33);
@@ -449,4 +453,23 @@
 	100% {
 			opacity:0.6;
 	}
+}
+
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }

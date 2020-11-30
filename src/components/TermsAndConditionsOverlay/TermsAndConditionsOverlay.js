@@ -277,7 +277,7 @@ const TermsAndConditionsOverlay = (props) => {
 								text={t('IBCO.tec.agree')}  
 								target="_blank"
 								onClick={acceptTerms}
-								className={`--orange ${hasReachedBottom ? '' : '--disabled'}`}
+								className={`--orange`} //${hasReachedBottom ? '' : '--disabled'}
 							></HexButton>
 							<HexButton
 								url="#"
