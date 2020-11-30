@@ -319,7 +319,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{hasPointRendered === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
+							{web3Context.ibcoLoadedHistory === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -422,6 +422,7 @@ function PublicSale() {
 		}
 		setIbcoCurveHistory(hClaim)
 		setIbcoMyTransactions(myClaim)
+		console.log('prepareIbcoCurveHistoryAndMyTrans - myClaim', myClaim)
 	}
 
 	function renderIbcoCurveHistory() {
@@ -433,7 +434,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{hasPointRendered === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
+							{web3Context.ibcoLoadedHistory === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -497,7 +498,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{hasPointRendered === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
+							{web3Context.ibcoLoadedHistory === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>

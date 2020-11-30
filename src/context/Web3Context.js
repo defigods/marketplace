@@ -33,6 +33,7 @@ export class Web3Provider extends Component {
     this.state = {
 			setupComplete: false,
 			ibcoSetupComplete: false,
+			ibcoLoadedHistory: false,
 			provider: null,
 			signer: null,
       address: null,
@@ -744,7 +745,9 @@ export class Web3Provider extends Component {
 		this.setOpenBuyOrders(storeOpenBuys);
 		this.setOpenSellOrders(storeOpenSells);
 		this.setClaims(storeClaims);
-		
+		this.setState({
+			ibcoLoadedHistory: true
+		})
 	};
 
 	setOpenBuyOrders(input) {
