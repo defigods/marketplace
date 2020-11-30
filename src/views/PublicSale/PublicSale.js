@@ -114,7 +114,8 @@ function PublicSale() {
 	}, [web3Context]);
 
 	React.useEffect(() => {
-		prepareIbcoCurveHistoryAndMyTrans();
+		prepareIbcoCurveHistory();
+		prepareIbcoCurveMyTransactions();
 		prepareIbcoMyOpenTransactions();
 	}, [web3Context.state.ibcoClaims, web3Context.state.ibcoOpenBuyOrders, web3Context.state.ibcoOpenSellOrders]);
 
@@ -399,9 +400,8 @@ function PublicSale() {
 		}
 	}
 
-	function prepareIbcoCurveHistoryAndMyTrans(){
+	function prepareIbcoCurveHistory(){
 		let hClaim = [];
-		let myClaim = [];
 		for (const claim of web3Context.state.ibcoClaims) {
 				if (claim.type === "ClaimBuyOrder") {
 					let nClaim = {
@@ -415,7 +415,6 @@ function PublicSale() {
 						transactionHash: claim.transactionHash
 					}
 					hClaim.push(nClaim);
-					if(claim.buyer.toLowerCase() === web3Context.state.address.toLowerCase()){ myClaim.push(nClaim) }
 				} else {
 					let nClaim = {
 						type:  t("IBCO.sell"),
@@ -428,12 +427,41 @@ function PublicSale() {
 						transactionHash: claim.transactionHash
 					}
 					hClaim.push(nClaim);
-					if(claim.seller.toLowerCase() === web3Context.state.address.toLowerCase()){ myClaim.push(nClaim) }
 				}
 		}
 		setIbcoCurveHistory(hClaim)
+	}
+
+	function prepareIbcoCurveMyTransactions(){
+		let myClaim = [];
+		for (const claim of web3Context.state.ibcoMyClaims) {
+				if (claim.type === "ClaimBuyOrder") {
+					let nClaim = {
+						type: t("IBCO.buy"),
+						typeUni: 'buy',
+						batchId: claim.batchId._hex,
+						public_address: claim.buyer,
+						amount: parseFloat(ethers.utils.formatEther(claim.amount).toString()).toFixed(2),
+						fee: 0,
+						value: 0,
+						transactionHash: claim.transactionHash
+					}
+					myClaim.push(nClaim);
+				} else {
+					let nClaim = {
+						type:  t("IBCO.sell"),
+						typeUni: 'sell',
+						batchId: claim.batchId._hex,
+						public_address: claim.seller,
+						amount: 0,
+						fee: parseFloat(ethers.utils.formatEther(claim.fee).toString()).toFixed(2),
+						value: parseFloat(ethers.utils.formatEther(claim.value).toString()).toFixed(2),
+						transactionHash: claim.transactionHash
+					}
+					myClaim.push(nClaim);
+				}
+		}
 		setIbcoMyTransactions(myClaim)
-		console.log('prepareIbcoCurveHistoryAndMyTrans - myClaim', myClaim)
 	}
 
 	function renderIbcoCurveHistory() {

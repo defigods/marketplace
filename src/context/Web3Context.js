@@ -45,7 +45,8 @@ export class Web3Provider extends Component {
 			lastTransaction: "0x0",
 			ibcoOpenBuyOrders: [],
 			ibcoOpenSellOrders: [],
-			ibcoClaims: []
+			ibcoClaims: [],
+			ibcoMyClaims: [],
     };
 	}
 
@@ -751,18 +752,32 @@ export class Web3Provider extends Component {
 	};
 
 	setOpenBuyOrders(input) {
-		var joined = this.state.ibcoOpenBuyOrders.concat(input);
-		this.setState({ ibcoOpenBuyOrders: joined.reverse() })
+		this.setState({ ibcoOpenBuyOrders: input.reverse() })
 	}
 
 	setOpenSellOrders(input) {
-		var joined = this.state.ibcoOpenSellOrders.concat(input);
-		this.setState({ ibcoOpenSellOrders: joined.reverse() })
+		this.setState({ ibcoOpenSellOrders: input.reverse() })
 	}
 
 	setClaims(input) {
-		var joined = this.state.ibcoClaims.concat(input);
-		this.setState({ ibcoClaims: joined.reverse().slice(0, 15) })
+		// My Claims Detect
+		let myClaims = []
+		for (const claim of input) {
+			if (claim.type === "ClaimBuyOrder") {
+				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){ 
+					myClaims.push(claim) 
+				}
+			} else {
+				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){ 
+					myClaims.push(claim) 
+				}
+			}
+		}
+		// var joined = this.state.ibcoClaims.concat(input);
+		this.setState({ 
+			ibcoClaims: input.reverse().slice(0, 15),
+			ibcoMyClaims: myClaims
+		})
 	}
 
 	removeOpenSellOrder(input) {
