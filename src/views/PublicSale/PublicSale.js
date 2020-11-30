@@ -135,11 +135,11 @@ function PublicSale() {
 	const handleTransactionValueChange = async (transactionValue) => {
 			let balance = 0;
 			if(tab === 'sell'){
-				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)
-			} else {
 				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2)
+			} else {
+				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)
 			}
-			if (balance <= transactionValue){
+			if (parseFloat(transactionValue) >= balance){
 				setTransactionValue(balance);
 				setShakeInput(true);
 				setTransactionValueDescription(t("Warning.no.token.title"));
