@@ -46,6 +46,8 @@ function PublicSale() {
 	const [ibcoIsChartReady, setIbcoIsChartReady] = React.useState(false);
 	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.00);
+	const [ibcoHasHistoryLoaded, setIbcoHasHistoryLoaded] = React.useState(false);
+	
 	const [hasMaxSlippageReached, setHasMaxSlippageReached] = React.useState(false);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
 	const [shakeInput, setShakeInput] = React.useState(false);
@@ -65,6 +67,15 @@ function PublicSale() {
 			setIbcoIsKYCPassed(true)
 		}
 	}, [userContext.state.user.kycReviewAnswer]);
+
+	React.useEffect(() => {
+		if(web3Context.state.ibcoLoadedHistory === true){
+			setIbcoHasHistoryLoaded(true)
+		} else {
+			setIbcoHasHistoryLoaded(false)
+		}
+	}, [web3Context.state.ibcoLoadedHistory]);
+
 
 	React.useEffect(() => {
 		if(Boolean(userContext.state.user.ibcoAcceptedTerms) == true){
@@ -319,7 +330,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{web3Context.ibcoLoadedHistory === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
+							{ibcoHasHistoryLoaded === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -434,7 +445,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{web3Context.ibcoLoadedHistory === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
+							{ibcoHasHistoryLoaded === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -498,7 +509,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{web3Context.ibcoLoadedHistory === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
+							{ibcoHasHistoryLoaded === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
