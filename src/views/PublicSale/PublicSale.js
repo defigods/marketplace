@@ -291,7 +291,9 @@ function PublicSale() {
 				value: parseFloat(ethers.utils.formatEther(claim.value).toString()),
 				transactionHash: claim.transactionHash,
 			}
-			openPending.push(nClaim);
+			if(claim.buyer.toLowerCase() === web3Context.state.address.toLowerCase()){ 
+				openPending.push(nClaim) 
+			}
 		}
 		for (const claim of web3Context.state.ibcoOpenSellOrders) {
 			let nClaim = {
@@ -303,7 +305,9 @@ function PublicSale() {
 				value: 0,
 				transactionHash: claim.transactionHash,
 			}
-			openPending.push(nClaim);
+			if(claim.seller.toLowerCase() === web3Context.state.address.toLowerCase()){ 
+				openPending.push(nClaim) 
+			}
 		}
 		setIbcoPendingTransactions(openPending)
 	}
