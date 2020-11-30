@@ -44,12 +44,13 @@ const ActivityLayout = () => {
 	);
 };
 
-const ActivityContent = (t) => {
+const ActivityContent = () => {
 	const { state: userState } = useContext(UserContext);
 	const { actions: userActions } = useContext(UserContext);
 	const [activityList, setActivityList] = useState(false);
 	const web3Context = useContext(Web3Context);
 	const { user } = userState;
+	const { t, i18n } = useTranslation();
 
 	// Update activities when componenet is loaded
 	useEffect(() => {
@@ -78,7 +79,7 @@ const ActivityContent = (t) => {
 					}}
 				></ActivityTile>
 			));
-			if (activities.length === 0) {
+			if (activities.length === 0 || activities === undefined) {
 				activities = (
 					<div className="profile">
 						<div className="o-container">
