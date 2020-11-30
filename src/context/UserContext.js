@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react';
-import { removeToken, saveToken, isLogged, getToken, removeUser } from '../lib/auth';
+import { removeToken, saveToken, isLogged, getToken, removeUser, getUser} from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn,getUserBalanceAndAllowance } from '../lib/api';
 import config, { camelCaseKeys } from '../lib/config';
 import { useTranslation } from 'react-i18next'
 
@@ -15,23 +15,26 @@ export class UserProvider extends Component {
 		super(props);
 
 		this.state = {
+			hasLoaded: false,
 			isLoggedIn: false,
 			subscribedToLiveSockets: false,
 			showNotificationCenter: false,
 			token: null,
 			user: {
 				uuid: null,
+				allowance: 0,
+				balance: 0
 			}
 		};
 	}
 
 	componentDidMount() {
 		if (isLogged()) {
+			// Check
 			userProfile()
 			.then((response) => {
 				if (response.data.result === true) {
-					// console.log('userState', response.data.user)
-					this.setState({ user: response.data.user });
+					this.setState({ hasLoaded: true, user: response.data.user });
 					this.liveSocket();
 				} else {
 						dangerNotification(this.props.t('Danger.session.expired.title'), this.props.t('Danger.session.expired.desc'));
@@ -40,6 +43,7 @@ export class UserProvider extends Component {
 				})
 				.catch(() => {
 					// Notify user if network error
+					console.log("isLogged")
 					networkError();
 				});
 
@@ -49,6 +53,13 @@ export class UserProvider extends Component {
 
 	setUserState = (user) => {
 		this.setState({ user: user });
+	}
+
+	setUserBalance = (balance) => {
+		this.setState({ user: {
+			...this.state.user,
+			balance: balance
+		} });
 	}
 
 	setUserEmail = (email) => {
@@ -79,11 +90,38 @@ export class UserProvider extends Component {
 		removeToken('userToken');
 		removeToken('userUuid');
 	};
+
+	refreshBalanceAndAllowance = () => {
+		console.log("refreshBalanceAndAllowance")
+		getUserBalanceAndAllowance()
+		.then((response) => {
+			if (response.data.result === true) {
+				console.log("refreshBalanceAndAllowance", response.data)
+				this.setState({ user: { ...this.state.user,
+					allowance: response.data.allowance,
+				}});
+			} 
+			})
+			.catch((err) => {
+				// Notify user if network error
+				console.log("NetworkErrorCode: 1")
+				networkError();
+			});
+	}
 	
 	// Centralized Notifications
 
 	toggleShowNotificationCenter = () => {
 		this.setState({ showNotificationCenter: !this.state.showNotificationCenter });
+	};
+
+	acceptIbcoTermsAndConditions = () => {
+	this.setState({
+		user: {
+			...this.state.user,
+			ibcoAcceptedTerms: true
+		},
+	});
 	};
 
 	closeNotificationCenter = () => {
@@ -139,6 +177,7 @@ export class UserProvider extends Component {
 							const { kyc_review_answer } = data;
 							// Update KYC Status
 							this.setState({
+								hasLoaded: true,
 								user: {
 									...this.state.user,
 									kycReviewAnswer: kyc_review_answer
@@ -146,13 +185,12 @@ export class UserProvider extends Component {
 							});
 						} else {
 							const { notification } = data;
-							const { balance } = data;
 							const { unreaded_count } = data;
 							// Update state on new notification
 							this.setState({
+								hasLoaded: true,
 								user: {
 									...this.state.user,
-									balance: balance,
 									notifications: {
 										...this.state.user.notifications,
 										unreadedCount: unreaded_count,
@@ -213,6 +251,9 @@ export class UserProvider extends Component {
 						setUserEmail: this.setUserEmail,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
+						refreshBalanceAndAllowance: this.refreshBalanceAndAllowance,
+						acceptIbcoTermsAndConditions: this.acceptIbcoTermsAndConditions,
+						setUserBalance: this.setUserBalance,
 						notification: {
 							setAsReaded: this.setNotificationAsReaded,
 							setAllAsReaded: this.setAllNotificationsAsReaded,

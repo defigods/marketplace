@@ -9,6 +9,7 @@ import { indexOpenAuctions, indexLands } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 import Pagination from '@material-ui/lab/Pagination';
 import { Trans, useTranslation } from 'react-i18next'
+import { HashRouter as Router, Route, Link } from 'react-router-dom';
 
 
 const Discover = () => {
@@ -67,6 +68,7 @@ const Discover = () => {
 			})
 			.catch(() => {
 				// Notify user if network error
+				console.log("NetworkErrorCode: 1232")
 				networkError();
 			});
 	}
@@ -103,8 +105,9 @@ const Discover = () => {
 				}
 			})
 			.catch((error) => {
-				// console.log(error);
+				 console.log(error);
 				// Notify user if network error
+				console.log("NetworkErrorCode: 12326")
 				networkError();
 			});
 	}
@@ -128,7 +131,7 @@ const Discover = () => {
 	return (
 		<div className="Overview">
 			<div className="o-container">
-				<h2 className="o-section-title">{t('Discover.auctions.label')}</h2>
+				<h2 className="o-section-title  --w-link"><span>{t('Discover.auctions.label')}</span><Link to="/map/lands" className="o-select-multiple-land-link">{t('Lands.select.multiple.lands')}</Link></h2>
 			</div>
 			<div className="o-container">
 				<div className="o-auction-list">{listAuctions}</div>

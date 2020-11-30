@@ -76,7 +76,7 @@ const BuyOfferOverlay = (props) => {
 
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
-			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+			return false;
 		}
 	};
 

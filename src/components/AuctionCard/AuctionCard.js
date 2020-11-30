@@ -5,7 +5,7 @@ import TimeCounter from '../TimeCounter/TimeCounter';
 import { Link } from 'react-router-dom';
 
 const AuctionCard = (props) => {
-	const { user_perspective, background_image, name, value, location, date_end } = props;
+	const { user_perspective, background_image, name, value, location, date_end,market_status } = props;
 	const { sentence, hex } = name;
 	let statusClassName = '--open';
 	let statusText = 'OPEN';
@@ -26,6 +26,15 @@ const AuctionCard = (props) => {
 		default:
 			statusClassName = '--open';
 			statusText = 'OPEN';
+			break;
+	}
+
+	switch (market_status) {
+		case 10:
+			statusClassName = '--open';
+			statusText = 'CLOSING';
+			break;
+		default:
 			break;
 	}
 

@@ -1,0 +1,78 @@
+
+.OverlayContainer{
+	z-index: 1200;
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	.CenterOverlay__backpanel{
+		opacity: 0;
+		transition: all 350ms ease-in-out;
+		width: 100vw;
+		height: 100vh;
+		position: fixed;
+		background-color: rgba(30, 30, 30, 0.5);
+	}
+	.CenterOverlay{
+	 transform: scale(0.95);
+	 opacity: 0;
+	 transition: all 300ms ease-in-out;
+	}
+	&.--js-show{
+		.CenterOverlay__backpanel{
+			opacity: 1;
+		}
+		.CenterOverlay{
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+}
+
+.CenterOverlay{
+	position: fixed;
+	width: auto;
+	width: 40%;
+	left: 30%;
+	max-height: 60vh;
+	top: 20vh;
+	z-index: 9;
+	display: flex;
+	align-items: center;
+	float: right;
+	right: 0px;
+	background: #fff;
+	box-shadow: -20px 10px 20px 0 rgba(30, 30, 30, 0.05);
+	border-radius: 10px;
+	// transform: translateX(380px);
+	.Overlay__cont{
+		width: auto;
+		color: #000;
+		width: 100%;
+		height: 100%;
+		padding-top: 20px;
+		margin: 0px 50px;
+		position: relative;
+	}
+	.c-terms-condition{
+		position: relative;
+		font-size: 12px;
+		height: 38vh;
+		display: block;
+		overflow: scroll;
+		::-webkit-scrollbar {
+			-webkit-appearance: none;
+			width: 7px;
+		}
+	}
+	.Overlay__close_button{
+		top: -80px;
+	}
+	.Buttons__section{
+		margin-top: 20px;
+		margin-bottom: 40px;
+		.--decline-terms{
+			margin-left: 20px;
+			color: $ovr-sideral-grey;
+		}
+	}
+}

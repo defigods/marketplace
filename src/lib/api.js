@@ -38,6 +38,16 @@ export function userProfile(userToken) {
 	return request({ url: '/user/profile', method: 'GET' }, {}, null);
 }
 
+export function getUserBalanceAndAllowance() {
+	return request({ url: '/user/balance_and_allowance', method: 'GET' }, {}, null);
+}
+
+export function postAcceptIBCOTerms() {
+	return request({ url: '/user/ibco/accept_terms', method: 'POST' }, {}, null);
+}
+
+
+
 // USER REGISTRATION
 // ----------------------------------------------------------------------------------------
 
@@ -109,61 +119,105 @@ export function indexMyOpenAuctions(sort = null, page = 1) {
 	);
 }
 
-export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
+export function auctionCreate(landUuid = null, worth = 10, gas = 10) {
 	return request(
-		{ url: '/auction/bid/pre', method: 'POST' },
+		{ url: '/auction/start', method: 'POST' },
 		{
 			hex_id: landUuid,
 			worth: worth,
-			tx_hash: txHash,
+			gas: gas
 		},
 		null,
 	);
 }
 
-export function auctionBidConfirm(landUuid = null, worth = 10) {
+export function auctionBid(hexId = null, worth = 10, gas = 10) {
 	return request(
-		{ url: '/auction/bid/confirm', method: 'POST' },
+		{ url: '/auction/bid', method: 'POST' },
 		{
-			hex_id: landUuid,
+			hex_id: hexId,
 			worth: worth,
+			gas: gas
 		},
 		null,
 	);
 }
 
-export function auctionPreStart(landUuid = null, worth = 10, txHash = null) {
+export function getGasPrice() {
 	return request(
-		{ url: '/auction/start/pre', method: 'POST' },
+		{ url: '/auctions/lands_gas_cost', method: 'GET' },
+		{},
+		null,
+	);
+}
+
+export function participateMultipleAuctions(hexIds, singleMintWorth) {
+	return request(
+		{ url: '/auctions/multi/participate', method: 'POST' },
 		{
-			hex_id: landUuid,
-			worth: worth,
-			tx_hash: txHash,
+			hex_ids: hexIds,
+			single_mint_worth: singleMintWorth
 		},
 		null,
 	);
 }
 
-export function auctionConfirmStart(landUuid = null, txHash = null) {
-	return request(
-		{ url: '/auction/start/confirm', method: 'POST' },
-		{
-			hex_id: landUuid,
-			tx_hash: txHash,
-		},
-		null,
-	);
-}
 
-export function auctionCheckClose(landUuid = null) {
-	return request(
-		{ url: '/infura/auction/close', method: 'POST' },
-		{
-			hex_id: landUuid,
-		},
-		null,
-	);
-}
+// export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
+// 	return request(
+// 		{ url: '/auction/bid/pre', method: 'POST' },
+// 		{
+// 			hex_id: landUuid,
+// 			worth: worth,
+// 			tx_hash: txHash,
+// 		},
+// 		null,
+// 	);
+// }
+
+// export function auctionBidConfirm(landUuid = null, worth = 10) {
+// 	return request(
+// 		{ url: '/auction/bid/confirm', method: 'POST' },
+// 		{
+// 			hex_id: landUuid,
+// 			worth: worth,
+// 		},
+// 		null,
+// 	);
+// }
+
+// export function auctionPreStart(landUuid = null, worth = 10, txHash = null) {
+// 	return request(
+// 		{ url: '/auction/start/pre', method: 'POST' },
+// 		{
+// 			hex_id: landUuid,
+// 			worth: worth,
+// 			tx_hash: txHash,
+// 		},
+// 		null,
+// 	);
+// }
+
+// export function auctionConfirmStart(landUuid = null, txHash = null) {
+// 	return request(
+// 		{ url: '/auction/start/confirm', method: 'POST' },
+// 		{
+// 			hex_id: landUuid,
+// 			tx_hash: txHash,
+// 		},
+// 		null,
+// 	);
+// }
+
+// export function auctionCheckClose(landUuid = null) {
+// 	return request(
+// 		{ url: '/infura/auction/close', method: 'POST' },
+// 		{
+// 			hex_id: landUuid,
+// 		},
+// 		null,
+// 	);
+// }
 
 // LANDS
 export function getLand(hex_id = null) {
@@ -302,63 +356,63 @@ export function hideNotification(notificationUuid = null) {
 // Centralized helpers
 
 export function sendPreAuctionStart(landId, bid, txHash) {
-	auctionPreStart(landId, bid, txHash)
-		.then((response) => {
-			// console.log('response', response.data);
-		})
-		.catch((error) => {
-			// Notify user if network error
-			// console.log(error);
-		});
+	// auctionPreStart(landId, bid, txHash)
+	// 	.then((response) => {
+	// 		// console.log('response', response.data);
+	// 	})
+	// 	.catch((error) => {
+	// 		// Notify user if network error
+	// 		// console.log(error);
+	// 	});
 }
 
 export function sendConfirmAuctionStart(landId, txHash) {
-	auctionConfirmStart(landId, txHash)
-		.then((response) => {
-			if (response.data.result === true) {
-				// console.log('sendConfirmAuctionStart - response true', response.data);
-			} else {
-			  // console.log('responseFalse');
-				// console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
-				// setActiveStep(0);
-			}
-		})
-		.catch((error) => {
-			// Notify user if network error
-			// console.log(error);
-		});
+	// auctionConfirmStart(landId, txHash)
+	// 	.then((response) => {
+	// 		if (response.data.result === true) {
+	// 			// console.log('sendConfirmAuctionStart - response true', response.data);
+	// 		} else {
+	// 		  // console.log('responseFalse');
+	// 			// console.log('sendConfirmAuctionStart - response false', response.data.errors[0].message);
+	// 			// setActiveStep(0);
+	// 		}
+	// 	})
+	// 	.catch((error) => {
+	// 		// Notify user if network error
+	// 		// console.log(error);
+	// 	});
 }
 
 export function sendPreAuctionBid(landId, nextBid, txHash) {
-	auctionBidPre(landId, nextBid, txHash)
-		.then((response) => {
-		  // console.log(response)
-		})
-		.catch((error) => {
-			// Notify user if network error
-			// console.log(error);
-		});
+	// auctionBidPre(landId, nextBid, txHash)
+	// 	.then((response) => {
+	// 	  // console.log(response)
+	// 	})
+	// 	.catch((error) => {
+	// 		// Notify user if network error
+	// 		// console.log(error);
+	// 	});
 }
 export function sendAuctionBidConfirm(landId, nextBid) {
-	auctionBidConfirm(landId, nextBid)
-		.then((response) => {
-		  // console.log(response)
-		})
-		.catch((error) => {
-			// Notify user if network error
-			// console.log(error);
-		});
+	// auctionBidConfirm(landId, nextBid)
+	// 	.then((response) => {
+	// 	  // console.log(response)
+	// 	})
+	// 	.catch((error) => {
+	// 		// Notify user if network error
+	// 		// console.log(error);
+	// 	});
 }
 
 export function sendAuctionCheckClose(landId) {
-	auctionCheckClose(landId)
-		.then((response) => {
-			// console.log(response);
-		})
-		.catch((error) => {
-			// Notify user if network error
-			// console.log(error);
-		});
+// 	auctionCheckClose(landId)
+// 		.then((response) => {
+// 			// console.log(response);
+// 		})
+// 		.catch((error) => {
+// 			// Notify user if network error
+// 			// console.log(error);
+// 		});
 }
 
 // Activities

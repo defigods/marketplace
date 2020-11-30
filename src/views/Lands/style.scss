@@ -16,3 +16,60 @@
     margin-top: 50px;
     float: right;
 }
+
+.lands__button_holder{
+	margin-top: 20px;
+}
+
+.ls-land__total{
+	.ValueCounter, .o-para-value{
+		float: right;
+		margin-left: 15px;
+	}
+	.o-para-value{
+		font-size: 16px;
+	}
+	span{
+		float: left;
+		font-size: 20px;
+	}
+	.o-row{
+		width: 100%;
+		clear: both;
+	}
+	.HexButton{
+		float: right;
+		margin-top: 10px;
+	}
+}
+
+@media screen and (min-width: 790px){
+	.ls-land__total{
+		@include column(2/6);
+	}
+	.ls-land__display{
+		@include column(4/6);
+	}
+}
+
+
+@media screen and (max-width: 790px){
+	.ls-land__total{
+		@include column(6/6);
+	}
+	.ls-land__display{
+		@include column(6/6);
+	}
+	.ls-container{
+		margin-top:20px;
+	}
+	.Lands{
+		.o-fourth{
+			@include column(6/6);
+		}
+	}
+	.Land__heading__2{
+		display: none;
+	}
+}
+

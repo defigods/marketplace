@@ -185,6 +185,20 @@
   color: #8851b4;
 }
 
+.c-status-badge.--buy{
+	color: $ovr-orange;
+	background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	box-shadow: 0 0 5px 0 rgba(0,0,0,0);
+}
+.c-status-badge.--sell{
+	color: #5e509d;
+	background: linear-gradient(90deg, #5e509d 0%, #724a93 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	box-shadow: 0 0 5px 0 rgba(0,0,0,0);
+}
 .AuctionCard.--bestbid, .Map__ping_container.--bestbid{
   .c-status-badge{
     color: $ovr_green;

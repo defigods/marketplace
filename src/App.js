@@ -73,6 +73,10 @@ function App() {
 		ReactGA.set({ page: location.pathname }); // Update the user's current page
 		ReactGA.pageview(location.pathname); // Record a pageview for the given page
 	});
+	function historyPush(route){
+		history.push(route)
+	}
+	window.historyPush = historyPush;
 
 	return (
 		<Suspense fallback="loading">
@@ -96,7 +100,7 @@ function App() {
 																		<NavBar></NavBar>
 																		<BannerNotification></BannerNotification>
 																		<div className="o-container">
-																			{/* <Route path="/map/" component={Map}></Route>  TODO: KYC - Remove comment */}
+																		<Route path="/map/" component={Map}></Route>
 																		</div>
 																		<Switch>
 																			{/* <Route path="/" exact component={Home}></Route> */}
@@ -108,16 +112,16 @@ function App() {
 																				)}
 																				{/* TODO: KYC - Redirect to Redirect to="/map/discover" */}
 																			</Route>
-																			{/* <Route path="/map/discover" component={Discover}></Route>
+																			<Route path="/map/discover" component={Discover}></Route>
 																			<Route path="/map/overview" component={Overview}></Route>
 																			<Route path="/map/lands" component={Lands}></Route>
-																			<Route path="/map/land/:id" component={Land}></Route>  TODO: KYC - Remove comment */}
+																			<Route path="/map/land/:id" component={Land}></Route> 
 																			<Route path="/profile" component={Profile}></Route>
-																			{/* <Route path="/activity" component={Activity}></Route>  TODO: KYC - Remove comment */}
+																			<Route path="/activity" component={Activity}></Route>
 																			<Route path="/login" component={Login}></Route>
-																			<Route path="/signup" component={Signup}></Route>
-																			<Route path="/public-sale" component={PublicSale}></Route>
 																			<Route path="/login-helper" component={LoginHelper}></Route>
+																			<Route path="/public-sale" component={PublicSale}></Route>
+
 																			{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
 																			<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}
 																		</Switch>

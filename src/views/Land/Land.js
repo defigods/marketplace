@@ -12,6 +12,7 @@ import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay';
 // import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
 import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { getLand, sendAuctionCheckClose } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
@@ -37,7 +38,7 @@ const Land = (props) => {
 		changeActiveBuyOverlay,
 		changeActiveBuyOfferOverlay,
 	} = props.mapProvider.actions;
-	const { redeemSingleLand, getOffersToBuyLand } = props.web3Provider.actions;
+	const { redeemSingleLand, getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 	const { isLoggedIn } = props.userProvider.state;
 
@@ -50,8 +51,11 @@ const Land = (props) => {
 	const [auction, setAuction] = useState(null);
 	// const [openSellOrder, setOpenSellOrder] = useState(null);
 	const [openBuyOffers, setOpenBuyOffers] = useState([]);
+	const [mintTxHash, setMintTxHash] = useState(undefined);
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 	const [isNotValidH3, setIsNotValidH3] = useState(false);
+	const [isUnavailable, setIsUnavailable] = useState(false);
+	
 
 	// First load
 	useEffect(() => {
@@ -97,8 +101,8 @@ const Land = (props) => {
 			return false;
 		}
 		getBuyOffers();
-		updateMarketStatusFromSmartContract(hexId);
-		setContractPrice(hexId);
+		// updateMarketStatusFromSmartContract(hexId);
+		// setContractPrice(hexId);
 	};
 
 	// Call API function
@@ -117,8 +121,17 @@ const Land = (props) => {
 					setName({ sentence: data.sentenceId, hex: data.hexId });
 					setLocation(data.address.full);
 					setUserPerspective(data.userPerspective);
-					setUserPerspective(data.userPerspective);
 					setAuction(data.auction);
+					setIsUnavailable(data.isUnavailable);
+					setMintTxHash(data.mintTxHash);
+					// Centralized
+					setValue(data.value);
+					// If it's unminted take 10
+					if(data.value < 100){
+						let val = getUSDValueInOvr(10);
+						setValue(val);
+					}
+					setMarketStatus(data.marketStatus)
 
 					// Update state for MapContext
 					let state = {
@@ -228,8 +241,24 @@ const Land = (props) => {
 		}
 	}
 
+	const handleEtherscan = (e) => {
+		e.preventDefault()
+		let etherscanLink = config.apis.etherscan + '/tx/' + mintTxHash;
+		window.open(etherscanLink, "_blank")
+	};
+	
+	function renderVisitOnEtherscan () {
+		let rend = <></>
+		if(mintTxHash !== undefined && mintTxHash !== "" && mintTxHash !== null){
+			rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.view.ether')}</a>
+		}
+		return rend
+	}
+
 	function renderBadge() {
 		let badge = <div>&nbsp;</div>;
+
+		
 		switch (marketStatus) {
 			case 1:
 				badge = (
@@ -280,6 +309,24 @@ const Land = (props) => {
 				break;
 		}
 
+		if(isUnavailable == true){
+			badge = (
+			<div>
+				<h3 className="o-small-title">{t('Land.status.label')}</h3>
+				<div className="c-status-badge  --outbidded">{t('Land.unvabilable')}</div>
+			</div>
+			);
+		} 
+
+		if(marketStatus == 10){
+			badge = (
+			<div>
+				<h3 className="o-small-title">{t('Land.status.label')}</h3>
+				<div className="c-status-badge  --open">{t('Land.closing')} <CircularProgress /></div>
+			</div>
+			);
+		} 
+
 		return badge;
 	}
 
@@ -287,6 +334,7 @@ const Land = (props) => {
 		let button = <div>&nbsp;</div>;
 		switch (marketStatus) {
 			case 0:
+				if(isUnavailable == false){
 				button = (
 					<HexButton
 						url="/"
@@ -294,49 +342,51 @@ const Land = (props) => {
 						className="--blue"
 						onClick={(e) => setActiveMintOverlay(e)}
 					></HexButton>
-				);
+				);} else {
+					button = (<HexButton
+						url={`mailto:info@ovr.ai?subject=Interested in ${hexId}`}
+						target="_blank"
+						text={t('Generic.contactus.interested')}
+						className="--blue"
+					></HexButton>)
+				}
 				break;
 			case 1:
 				button = (
 					<HexButton url="/" text={t('Land.place.bid')} className="--purple" onClick={(e) => setActiveBidOverlay(e)}></HexButton>
 				);
 				break;
-			case 2:
-				button = (
-					<HexButton
-						url="/"
-						text={t('Land.buy.offer')}
-						className="--blue"
-						onClick={(e) => setActiveBuyOfferOverlay(e)}
-					></HexButton>
-				);
+			case 10:
+				button = <div></div>
 				break;
-			case 3:
-				button = (
-					<HexButton url="/" text={t('Land.sell.land')} className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
-				);
-				break;
-			case 4:
-				button = (
-					<HexButton url="/" text={t('Land.buy.now')} className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
-				);
-				break;
-			case 5:
-				button = <></>;
-				if (userPerspective != 0) {
-					button = (
-						<div className="redeem-land-map-button">
-							<HexButton
-								url="/"
-								text={t('Land.redeem.land')}
-								className={isRedeemingLand ? '--purple --disabled' : '--purple'}
-								onClick={(e) => redeemLand(e)}
-							></HexButton>
-							{!isRedeemingLand ? null : <p className="Overlay__message__container">{t('Land.redeeming.land')}</p>}
-						</div>
-					);
-				}
-				break;
+			// case 2:
+			// 	button = <></>;
+			// 	if (userPerspective == 0) {
+			// 		button = (
+			// 			<HexButton
+			// 				url="/"
+			// 				text={t('Land.buy.offer')}
+			// 				className="--blue"
+			// 				onClick={(e) => setActiveBuyOfferOverlay(e)}
+			// 			></HexButton>
+			// 		);
+			// 	} else if (userPerspective == 1) {
+			// 		button = (
+			// 			<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+			// 		);
+			// 	}
+				
+			// 	break;
+			// case 3:
+			// 	button = (
+			// 		<HexButton url="/" text={t('Land.sell.land')} className="--purple" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+			// 	);
+			// 	break;
+			// case 4:
+			// 	button = (
+			// 		<HexButton url="/" text={t('Land.buy.now')} className="--purple" onClick={(e) => setActiveBuyOverlay(e)}></HexButton>
+			// 	);
+			// 	break;
 			default:
 				button = <div>&nbsp;</div>;
 				break;
@@ -380,21 +430,29 @@ const Land = (props) => {
 			return (
 				<div className="o-container">
 					<div className="Title__container">
-						{' '}
-						<h3 className="o-small-title">{t('Land.history.label')}</h3>
+						<h3 className="o-small-title"></h3>
 					</div>
 					<div className="c-dialog --centered">
+						{!isUnavailable ? <>
 						<div className="c-dialog-main-title">
-						{t('Land.be.the.one')}{' '}
-							<span role="img" aria-label="fire-emoji">
-								🔥
-							</span>
+							{t('Land.be.the.one')}{' '}
+								<span role="img" aria-label="fire-emoji">
+									🔥
+								</span>
 						</div>
 						<div className="c-dialog-sub-title">
 							<Trans i18nKey="Land.no.active.auction">
 								The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own it.
 							</Trans>
 						</div>
+						</> : <>
+						<div className="c-dialog-main-title">
+						</div>
+						<div className="c-dialog-sub-title">
+						{t('Lands.not.available.liquidity.mining')}{' '}
+						</div>
+						</>
+						}
 					</div>
 				</div>
 			);
@@ -402,7 +460,6 @@ const Land = (props) => {
 			return (
 				<div className="o-container">
 					<div className="Title__container">
-						{' '}
 						<h3 className="o-small-title">{t('Land.bid.history')}</h3>
 					</div>
 					<div className="Table__container">
@@ -424,6 +481,10 @@ const Land = (props) => {
 											<TimeCounter date_end={bid.when}></TimeCounter>
 										</td>
 										<td>{bid.from}</td>
+										{console.log('bid.status',bid)}
+										{bid.status === "-99" ? <td>
+											<div class="c-status-badge  --outbidded">FAILED</div>
+										</td> : <></>}
 									</tr>
 								))}
 							</tbody>
@@ -528,11 +589,14 @@ const Land = (props) => {
 						<div className="Land__heading__2">
 							<div className="o-fourth">{renderPrice()}</div>
 							<div className="o-fourth">{renderTimer()}</div>
-							<div className="o-fourth">{renderBadge()}</div>
-							<div className="o-fourth">{renderOverlayButton()}</div>
+							<div className="o-fourth">
+								{renderBadge()} 
+							</div>
+							<div className="o-fourth">{renderOverlayButton()}
+							{renderVisitOnEtherscan()}</div>
 						</div>
 					</div>
-					{renderActiveOpenOrders()}
+					{/* {renderActiveOpenOrders()} */}
 					<div className="Land__section">{renderBidHistory()}</div>
 				</div>
 			);

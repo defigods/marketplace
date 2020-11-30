@@ -72,6 +72,7 @@ const Overview = () => {
 			.catch((error) => {
 				// Notify user if network error
 				console.error(error);
+				console.log("NetworkErrorCode: 1232555")
 				networkError();
 			});
 	}
@@ -112,6 +113,7 @@ const Overview = () => {
 			.catch((error) => {
 				// Notify user if network error
 				console.error(error);
+				console.log("NetworkErrorCode: 1232232")
 				networkError();
 			});
 	}

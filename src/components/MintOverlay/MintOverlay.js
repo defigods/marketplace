@@ -8,18 +8,26 @@ import HexButton from '../HexButton/HexButton';
 import config from '../../lib/config';
 import { warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
+import { auctionCreate } from '../../lib/api';
+
+
 
 import Tooltip from '@material-ui/core/Tooltip';
 
 import Help from '@material-ui/icons/Help';
 import { useTranslation } from 'react-i18next'
+import { parse } from 'date-fns';
 
 
 const MintOverlay = (props) => {
 	const { t, i18n } = useTranslation()
 
-	const { participateMint, approveOvrTokens } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
+	const userState = props.userProvider.state.user;
+	const { balance, allowance } = userState;
+	const { refreshBalanceAndAllowance } = props.userProvider.actions;
+
+	const { authorizeOvrExpense, getUSDValueInOvr } = props.web3Provider.actions;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -27,11 +35,16 @@ const MintOverlay = (props) => {
 	const [nextBid, setNextBid] = useState(10);
 	const [activeStep, setActiveStep] = useState(0);
 	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
+	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const [bid, setBid] = useState(0);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
+	const [gasProjection, setGasProjection]  = useState(0);
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
+
+	const [userBalance, setUserBalance] = useState(0);
+	const [userAllowance, setUserAllowance] = useState(0);
 
 	const anchorRef = React.useRef(null);
 	const [open, setOpen] = React.useState(false);
@@ -47,6 +60,11 @@ const MintOverlay = (props) => {
 			setBidValid(false);
 		}, 500);
 	}
+
+	const getUserExpenseProjection = () => {
+		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
+		return projection
+	} 
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
@@ -67,18 +85,26 @@ const MintOverlay = (props) => {
 		updateBidProjectionCurrency(bidProjectionCurrency);
 	}, [bid]);
 
+	useEffect(() => {
+		setUserBalance(balance)
+		setUserAllowance(allowance)
+	}, [balance, allowance]);
+
+	useEffect(() => {
+		setGasProjection(gasLandCost)
+	}, [gasLandCost]);
+
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
-	}, [setupComplete, ico, ovr, hexId, marketStatus]);
+	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
 
 	const setNextBidSelectedLand = async () => {
-		if (!setupComplete || !ico || !ovr) {
-			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+		if (!setupComplete) {
+			return false;
 		}
-		const initialBid = String(await ico.initialLandBidAsync());
-		let nextPayment = window.web3.fromWei(initialBid);
-		setNextBid(nextPayment);
+		setNextBid(parseFloat(props.currentBid));
+		setCurrentBid(props.currentBid);
 	};
 
 	// Toggle bidding menu of selection currencies
@@ -94,7 +120,7 @@ const MintOverlay = (props) => {
 
 	// Update bid value in state
 	const updateNewBidValue = (myBid) => {
-		if (myBid >= nextBid && myBid >= 10) {
+		if (myBid >= nextBid) {
 			setBidValid(true);
 		} else {
 			setBidValid(false);
@@ -138,48 +164,87 @@ const MintOverlay = (props) => {
 		}
 	};
 
+	const ensureBalanceAndAllowance = async (cost) => {
+		let floatCost = parseFloat(cost)
+		// Check balance
+		if( floatCost > balance){
+			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
+			return false;
+		}
+		// Check Allowance
+		if( floatCost > allowance){
+			await authorizeOvrExpense(String(floatCost * 3));
+		}
+		return true;
+	}
+
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
+		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		try {
-			switch (type) {
-				case 'ovr':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
-					await approveOvrTokens(true, ovr);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
-					await participateMint(4, bid, hexId);
-					break;
-				case 'eth':
-					setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
-					await participateMint(0, bid, hexId);
-					break;
-				case 'usdt':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
-					await approveOvrTokens(true, tether);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
-					await participateMint(2, bid, hexId);
-					break;
-				case 'usdc':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
-					await approveOvrTokens(true, usdc);
-					setMetamaskMessage(t('"MetamaskMessage.set.participate.usdc'));
-					await participateMint(3, bid, hexId);
-					break;
-				case 'dai':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
-					await approveOvrTokens(true, dai);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
-					await participateMint(1, bid, hexId);
-					break;
+		// Refresh balance and allowance
+		refreshBalanceAndAllowance();
+		// Ensure balance and allowance
+		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
+		if( !checkOnBal ) return;
+
+		// Start centralized auction
+		auctionCreate(hexId, bid, gasProjection)
+		.then((response) => {
+			if (response.data.result === true) {
+				setActiveStep(2);
+			} else {
+				// console.log('responseFalse');
+				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+				setActiveStep(0);
 			}
-		} catch (e) {
-			setOpen(false);
-			setActiveStep(0);
-			return dangerNotification(t('Danger.error.processing.title'), e.message);
-		}
-		setActiveStep(2);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+
+		
+		// Decentralized
+
+		// setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		// try {
+		// 	switch (type) {
+		// 		case 'ovr':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
+		// 			await approveOvrTokens(true, ovr);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
+		// 			await participateMint(4, bid, hexId);
+		// 			break;
+		// 		case 'eth':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
+		// 			await participateMint(0, bid, hexId);
+		// 			break;
+		// 		case 'usdt':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
+		// 			await approveOvrTokens(true, tether);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
+		// 			await participateMint(2, bid, hexId);
+		// 			break;
+		// 		case 'usdc':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
+		// 			await approveOvrTokens(true, usdc);
+		// 			setMetamaskMessage(t('"MetamaskMessage.set.participate.usdc'));
+		// 			await participateMint(3, bid, hexId);
+		// 			break;
+		// 		case 'dai':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
+		// 			await approveOvrTokens(true, dai);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
+		// 			await participateMint(1, bid, hexId);
+		// 			break;
+		// 	}
+		// } catch (e) {
+		// 	setOpen(false);
+		// 	setActiveStep(0);
+		// 	return dangerNotification(t('Danger.error.processing.title'), e.message);
+		// }
+		// setActiveStep(2);
 	};
 
 	function getStepContent(step) {
@@ -193,7 +258,7 @@ const MintOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__currency_cont">
+							{/* {<div className="Overlay__currency_cont">
 								<div className="c-currency-selector_cont">
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
@@ -226,13 +291,13 @@ const MintOverlay = (props) => {
 										{t('Currency.usdc.label')}
 									</div>
 								</div>
-							</div>
+							</div>} */}
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__minimum_bid">
 										<div className="Overlay__bid_title">{t('MintOverlay.min.bid')}</div>
 										<div className="Overlay__bid_cont">
-											<ValueCounter value={10}></ValueCounter>
+											<ValueCounter value={currentBid}></ValueCounter>
 										</div>
 									</div>
 								</div>
@@ -249,24 +314,20 @@ const MintOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__expense_projection">
-									{bid >= 10 &&
+									{bidValid &&
 										props.userProvider.state.isLoggedIn &&
-										'Bid using ' + bidProjection + ' ' + bidProjectionCurrency.toUpperCase()}
-									{bid >= 10 && props.userProvider.state.isLoggedIn && (
+									  getUserExpenseProjection()}
+									{bidValid && props.userProvider.state.isLoggedIn && (
 										<Tooltip
 											title={
 												<React.Fragment>
-													{t('MintOverlay.use.direct')}
-													<br></br>
-													{t('MintOverlay.click.to.buy')}
+													{t('Generic.bid.tooltip')}
 												</React.Fragment>
 											}
 											aria-label="info"
 											placement="bottom"
 										>
-											<a href={'/buy-tokens'} rel="noopener noreferrer" target={'_blank'}>
-												<Help className="Help" />
-											</a>
+											<Help className="Help" />
 										</Tooltip>
 									)}
 								</div>
@@ -315,11 +376,11 @@ const MintOverlay = (props) => {
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
 								<br></br>{t('MintOverlay.about.to.start')}
-								<div className="Overlay__etherscan_link">
+								{/* <div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('MintOverlay.view.status')}
 									</a>
-								</div>
+								</div> */}
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>

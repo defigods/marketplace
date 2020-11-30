@@ -8,6 +8,7 @@ import HexButton from '../HexButton/HexButton';
 import config from '../../lib/config';
 import { warningNotification, dangerNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
+import { auctionBid } from '../../lib/api';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
@@ -16,8 +17,13 @@ import { useTranslation } from 'react-i18next'
 
 const BidOverlay = (props) => {
 	const { t, i18n } = useTranslation()
-	const { participateBid, approveOvrTokens } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete } = props.web3Provider.state;
+	
+	const userState = props.userProvider.state.user;
+	const { balance, allowance } = userState;
+	const { refreshBalanceAndAllowance } = props.userProvider.actions;
+	
+	const { participateBid, approveOvrTokens,authorizeOvrExpense,getUSDValueInOvr } = props.web3Provider.actions;
+	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -29,6 +35,7 @@ const BidOverlay = (props) => {
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
+	const [gasProjection, setGasProjection]  = useState(0);
 
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
@@ -49,6 +56,11 @@ const BidOverlay = (props) => {
 		}, 500);
 	}
 
+	const getUserExpenseProjection = () => {
+		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
+		return projection
+	} 
+
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
 		if (props.mapProvider.state.activeBidOverlay) {
@@ -68,20 +80,26 @@ const BidOverlay = (props) => {
 		updateBidProjectionCurrency(bidProjectionCurrency);
 	}, [bid]);
 
+	useEffect(() => {
+		setGasProjection(gasLandCost)
+	}, [gasLandCost]);
+	
+
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
 	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
 
 	const setNextBidSelectedLand = async () => {
-		if (!setupComplete || !ico || !ovr) {
-			return warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+		if (!setupComplete) {
+			return false;
 		}
-		const landId = parseInt(hexId, 16);
-		const land = await ico.landsAsync(landId);
-		const currentBid = String(window.web3.fromWei(land[2]));
-		setCurrentBid(currentBid);
-		setNextBid(currentBid * 2);
+		// const landId = parseInt(hexId, 16);
+		// const land = await ico.landsAsync(landId);
+		// const currentBid = String(window.web3.fromWei(land[2]));
+
+		setCurrentBid(parseFloat(props.currentBid));
+		setNextBid(props.currentBid * 2);
 	};
 
 	// Toggle bidding menu of selection currencies
@@ -118,72 +136,114 @@ const BidOverlay = (props) => {
 
 	// Change the bid projection on selection
 	const updateBidProjectionCurrency = (type) => {
-		switch (type) {
-			case 'ovr':
-				setBidProjection(bid);
-				setBidProjectionCurrency('ovr');
-				break;
-			case 'eth':
-				setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
-				setBidProjectionCurrency('eth');
-				break;
-			case 'usdt':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('usdt');
-				break;
-			case 'usdc':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('usdc');
-				break;
-			case 'dai':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('dai');
-				break;
-		}
+		setBidProjection(bid);
+		setBidProjectionCurrency('ovr');
+		// switch (type) {
+		// 	case 'ovr':
+		// 		setBidProjection(bid);
+		// 		setBidProjectionCurrency('ovr');
+		// 		break;
+		// 	case 'eth':
+		// 		setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
+		// 		setBidProjectionCurrency('eth');
+		// 		break;
+		// 	case 'usdt':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('usdt');
+		// 		break;
+		// 	case 'usdc':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('usdc');
+		// 		break;
+		// 	case 'dai':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('dai');
+		// 		break;
+		// }
 	};
+
+	const ensureBalanceAndAllowance = async (cost) => {
+		let floatCost = parseFloat(cost)
+		// Check balance
+		if( floatCost > balance){
+			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
+			return false;
+		}
+		// Check Allowance
+		if( floatCost > allowance){
+			await authorizeOvrExpense(String(floatCost * 3));
+		}
+		return true;
+	}
 
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		if (!checkUserLoggedIn()) return;
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		try {
-			switch (type) {
-				case 'eth':
-					setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
-					await participateBid(0, bid, hexId);
-					break;
-				case 'dai':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
-					await approveOvrTokens(true, dai);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
-					await participateBid(1, bid, hexId);
-					break;
-				case 'usdt':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
-					await approveOvrTokens(true, tether);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
-					await participateBid(2, bid, hexId);
-					break;
-				case 'usdc':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
-					await approveOvrTokens(true, usdc);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.usdc'));
-					await participateBid(3, bid, hexId);
-					break;
-				case 'ovr':
-					setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
-					await approveOvrTokens(true, ovr);
-					setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
-					await participateBid(4, bid, hexId);
-					break;
+
+		// Ensure user is logged in
+		if (!checkUserLoggedIn()) return;
+		// Refresh balance and allowance
+		refreshBalanceAndAllowance();
+		// Ensure balance and allowance
+		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
+		if( !checkOnBal ) return;
+
+		// Centralized
+		auctionBid(hexId, bid, gasProjection)
+		.then((response) => {
+			if (response.data.result === true) {
+				setActiveStep(2);
+				console.log('sendConfirmAuctionStart - response true', response.data);
+			} else {
+				// setActiveStep(0);
+				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+				setActiveStep(0);
 			}
-		} catch (e) {
-			setOpen(false);
-			setActiveStep(0);
-			return dangerNotification(t('Danger.error.processing.title'), e.message);
-		}
-		setActiveStep(2);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+
+		// Decentralized
+		// setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		// try {
+		// 	switch (type) {
+		// 		case 'eth':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.eth'));
+		// 			await participateBid(0, bid, hexId);
+		// 			break;
+		// 		case 'dai':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.dai'));
+		// 			await approveOvrTokens(true, dai);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.dai'));
+		// 			await participateBid(1, bid, hexId);
+		// 			break;
+		// 		case 'usdt':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.usdt'));
+		// 			await approveOvrTokens(true, tether);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.usdt'));
+		// 			await participateBid(2, bid, hexId);
+		// 			break;
+		// 		case 'usdc':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.usdc'));
+		// 			await approveOvrTokens(true, usdc);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.usdc'));
+		// 			await participateBid(3, bid, hexId);
+		// 			break;
+		// 		case 'ovr':
+		// 			setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
+		// 			await approveOvrTokens(true, ovr);
+		// 			setMetamaskMessage(t('MetamaskMessage.set.participate.ovr'));
+		// 			await participateBid(4, bid, hexId);
+		// 			break;
+		// 	}
+		// } catch (e) {
+		// 	setOpen(false);
+		// 	setActiveStep(0);
+		// 	return dangerNotification(t('Danger.error.processing.title'), e.message);
+		// }
+		// setActiveStep(2);
 	};
 
 	function getStepContent(step) {
@@ -197,7 +257,7 @@ const BidOverlay = (props) => {
 							<div className="Overlay__land_hex">{props.land.location}</div>
 						</div>
 						<div className="Overlay__lower">
-							<div className="Overlay__currency_cont">
+							{/* <div className="Overlay__currency_cont">
 								<div className="c-currency-selector_cont">
 									<div
 										className={`c-currency-selector ${bidProjectionCurrency == 'ovr' ? '--selected' : ' '}`}
@@ -230,7 +290,7 @@ const BidOverlay = (props) => {
 										{t('Currency.usdc.label')}
 									</div>
 								</div>
-							</div>
+							</div> */}
 							<div className="Overlay__bids_container">
 								<div className="Overlay__bid_container">
 									<div className="Overlay__current_bid">
@@ -285,24 +345,19 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__expense_projection">
-								{bid >= 10 &&
-									props.userProvider.state.isLoggedIn &&
-									'Bid using ' + bidProjection + ' ' + bidProjectionCurrency}
-								{bid >= 10 && props.userProvider.state.isLoggedIn && (
+								{bidValid &&
+									props.userProvider.state.isLoggedIn && getUserExpenseProjection()}
+								{bidValid && props.userProvider.state.isLoggedIn && (
 									<Tooltip
 										title={
 											<React.Fragment>
-												{t('BidOverlay.use.direct')}
-												<br></br>
-												{t('BidOverlay.click.to.buy')}
+												{t('Generic.bid.tooltip')}
 											</React.Fragment>
 										}
 										aria-label="info"
 										placement="bottom"
 									>
-										<a href={'https://www.ovr.ai'} rel="noopener noreferrer" target={'_blank'}>
-											<Help className="Help" />
-										</a>
+										<Help className="Help" />
 									</Tooltip>
 								)}
 							</div>
@@ -380,12 +435,12 @@ const BidOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>BidOverlay.request.sent
-								<div className="Overlay__etherscan_link">
+								<br></br>{t('BidOverlay.request.sent')}
+								{/* <div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('BidOverlay.view.status')}
 									</a>
-								</div>
+								</div> */}
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>

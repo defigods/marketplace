@@ -16,14 +16,17 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
 import Translate from '@material-ui/icons/Translate';
+import { removeUser } from '../../lib/auth';
 
 import { useTranslation } from 'react-i18next'
+let isMobile = window.innerWidth < 860;
 
 const NavBar = () => {
 	const { t, i18n } = useTranslation();
 	const { state: userState, actions: userActions } = useContext(UserContext);
 	const { state: web3State, actions: web3Actions } = useContext(Web3Context);
-	const [langOpen, setLangOpen] = React.useState(0);
+	const [langOpen, setLangOpen] = React.useState(false);
+	const [balance, setBalance] = React.useState(0);
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
 	const [isConnecting, setIsConnecting] = React.useState(false);
@@ -32,8 +35,18 @@ const NavBar = () => {
 	
 	const changeLanguage = (string) => {
 		i18n.changeLanguage(string)
-	  }
-
+	}
+	
+	function boolCountdownCheck() {
+		let utcSeconds = 1606737600;
+		let d = new Date(0); 
+		const difference = +d.setUTCSeconds(utcSeconds) - +new Date();
+		if (difference > 0) {
+			return false
+		} else {
+			return true
+		}
+	}
 	// START - Profile sub menu
 
 
@@ -67,6 +80,33 @@ const NavBar = () => {
 		setLangOpen(false);
 	};
 
+	const renderPublicSaleButton = () => {
+		let button = <></>;
+		if(!isMobile){
+			if(boolCountdownCheck() === true){
+				button = <Link to="/public-sale" className="Funds__buy HexButton --orange">
+					{t("Profile.buy.ovr")}
+				</Link>
+			}
+		}
+		return button;
+	}
+
+	const renderPublicSaleButtonMobile = () => {
+		let button = <></>;
+		if(boolCountdownCheck() === true){
+			button = <MenuItem
+				onClick={(e) => {
+					handleClose(e);
+					handleGoTo('/public-sale');
+				}}
+			>
+				{t('BuyTokens.buy.ovr')}
+			</MenuItem>
+		}
+		return button;
+	}
+
 	const handleMetamaskAuthentication = () => {
 		setIsConnecting(true);
 		window.gtag_report_metamask_conversion();
@@ -80,7 +120,7 @@ const NavBar = () => {
 			setIsConnecting(false);
 		})
 	}
-
+	
 	React.useEffect(() => {
 		if (userState.isLoggedIn) {
 			if (prevOpen.current === true && open === false) {
@@ -89,6 +129,16 @@ const NavBar = () => {
 			prevOpen.current = open;
 		}
 	}, [open]);
+
+	React.useEffect(() => {
+		if(userState.user != undefined && userState.user.balance != undefined){
+			// console.log("userState.user.balanceAAA",userState.user.balance)
+			// TODO Perchè cazzo arriva 0 qua ogni tanto
+			if(userState.user.balance.toFixed(2) > 0){
+				setBalance(userState.user.balance.toFixed(2))
+			}
+		}
+	}, [userState.user, userState.user.balance]);
 	// END - Profile sub menu
 
 	React.useEffect(() => {
@@ -104,9 +154,18 @@ const NavBar = () => {
 		let cont = <div></div>;
 		if (userState.isLoggedIn === true && userState.user !== null) {
 			cont = (
+				<>
 				<NavLink className="NavBar__link" to="/profile">
 					{t('Navbar.profile.label')}
 				</NavLink>
+				<NavLink className="NavBar__link" to="/map/overview">
+					{t('Navbar.myassets.label')}
+				</NavLink>
+				<NavLink className="NavBar__link" to="/map/discover">
+					{t('Navbar.marketplace.label')}
+				</NavLink>
+				
+				</>
 			);
 		}
 		return cont;
@@ -163,7 +222,86 @@ const NavBar = () => {
 		</div>)
 		return cont
 	}
-
+	function renderMobileMenuItem(){
+		if(isMobile){
+		return(<>
+		<ClickAwayListener onClickAway={handleClose}>										
+			<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/profile');
+					}}
+				>
+					{t('Navbar.profile.label')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/activity');
+					}}
+				>
+					{t('Navbar.activity.label')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/map/overview');
+					}}
+				>
+					{t('Navbar.myassets.label')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/map/discover');
+					}}
+				>
+					{t('Navbar.marketplace.label')}
+				</MenuItem>
+				{renderPublicSaleButtonMobile()}
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						userActions.logoutUser();
+					}}
+				>
+					{t('Navbar.Logout.label')}
+				</MenuItem>
+			</MenuList>
+		</ClickAwayListener>
+		</>)
+		} else {
+			return (<ClickAwayListener onClickAway={handleClose}>										
+				<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+					<MenuItem
+						onClick={(e) => {
+							handleClose(e);
+							handleGoTo('/profile');
+						}}
+					>
+						{t('Navbar.profile.label')}
+					</MenuItem>
+					<MenuItem
+						onClick={(e) => {
+							handleClose(e);
+							handleGoTo('/activity');
+						}}
+					>
+						{t('Navbar.activity.label')}
+					</MenuItem>
+					<MenuItem
+						onClick={(e) => {
+							handleClose(e);
+							userActions.logoutUser();
+						}}
+					>
+						{t('Navbar.Logout.label')}
+					</MenuItem>
+				</MenuList>
+			</ClickAwayListener>)
+		}
+	}
 	function rightContainer() {
 		let rightContainer = <div></div>; 
 		if (userState.isLoggedIn === true && userState.user !== null) {
@@ -171,7 +309,7 @@ const NavBar = () => {
 				<>
 					<div className="Navbar__right_container">
 					
-						{/* <Link
+						<Link
 							to="/"
 							id="js-open-notification-link"
 							className="Notifications__link"
@@ -203,23 +341,24 @@ const NavBar = () => {
 									? userState.user.notifications.unreadedCount
 									: 0}
 							</div>
-						</Link>  // TODO: KYC - Remove comment */}
-
+						</Link> 
+						
 						<div className="Funds__container">
 							{/* <Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
 							</Link> // TODO: KYC - Remove comment */}
-							<ValueCounter value={web3State.ovrsOwned}></ValueCounter>
+							{renderPublicSaleButton(t)}
+							<ValueCounter value={balance}></ValueCounter>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
 							}}>
 								Redeem Lands
 							</Link>
-							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
+							<Link to="/public-sale" className="Funds__buy HexButton --orange">
 								Buy OVR
 							</Link> */}
 						</div>
-
+						
 						<Link
 							ref={anchorRef}
 							aria-controls={open ? 'menu-list-grow' : undefined}
@@ -253,37 +392,7 @@ const NavBar = () => {
 									style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
 								>
 									<Paper>
-										<ClickAwayListener onClickAway={handleClose}>
-										
-
-											<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
-												
-												<MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														handleGoTo('/profile');
-													}}
-												>
-													{t('Navbar.profile.label')}
-												</MenuItem>
-												{/* <MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														handleGoTo('/activity');
-													}}
-												>
-													Activity
-												</MenuItem>   // TODO: KYC - Remove comment*/}
-												<MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														userActions.logoutUser();
-													}}
-												>
-													{t('Navbar.Logout.label')}
-												</MenuItem>
-											</MenuList>
-										</ClickAwayListener>
+										{renderMobileMenuItem()}
 									</Paper>
 								</Grow>
 							)}
@@ -325,12 +434,6 @@ const NavBar = () => {
 			</Link>
 			<div className="Navbar__link_container">
 				{leftContainer()}
-				{/* <NavLink className="NavBar__link" to="/map/overview">
-					My Assets
-				</NavLink>
-				<NavLink className="NavBar__link" to="/map/discover">
-					Marketplace
-				</NavLink> // TODO: KYC - Remove comment */}
 				{centerContainer()}
 				{rightContainer()}
 			</div>
