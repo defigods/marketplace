@@ -297,5 +297,7 @@
 	"IBCO.tec": "条款和条件",
 	"IBCO.tec.agree": "同意条款和条件",
 	"IBCO.tec.cancel": "取消",
-	"IBCO.transaction.fee.dai": "费用 (DAI)"
+	"IBCO.transaction.fee.dai": "费用 (DAI)",
+	"IBCO.after.claim": "Available after Claim"
+
 }
