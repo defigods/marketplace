@@ -749,17 +749,17 @@ export class Web3Provider extends Component {
 
 	setOpenBuyOrders(input) {
 		var joined = this.state.ibcoOpenBuyOrders.concat(input);
-		this.setState({ ibcoOpenBuyOrders: joined })
+		this.setState({ ibcoOpenBuyOrders: joined.reverse() })
 	}
 
 	setOpenSellOrders(input) {
 		var joined = this.state.ibcoOpenSellOrders.concat(input);
-		this.setState({ ibcoOpenSellOrders: joined })
+		this.setState({ ibcoOpenSellOrders: joined.reverse() })
 	}
 
 	setClaims(input) {
 		var joined = this.state.ibcoClaims.concat(input);
-		this.setState({ ibcoClaims: joined })
+		this.setState({ ibcoClaims: joined.reverse().slice(0, 15) })
 	}
 
 	removeOpenSellOrder(input) {

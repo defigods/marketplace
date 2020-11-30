@@ -61,21 +61,19 @@ function PublicSale() {
 
 	// Check if terms condition changed from userstate and kyc passed
 	React.useEffect(() => {
-		if(userContext.state !== undefined && userContext.state.hasLoaded == true){
-			// Terms and conditions
-			if(Boolean(userContext.state.user.ibcoAcceptedTerms) == true){
-				setIbcoAreTermsAccepted(true)
-			} else {
-				setIbcoAreTermsAccepted(false)
-			}
-			// Kyc
-			if(userContext.state.user.kycReviewAnswer === 1){
-				setIbcoIsKYCPassed(true)
-			}
+		if(userContext.state.user.kycReviewAnswer === 1){
+			setIbcoIsKYCPassed(true)
+		}
+	}, [userContext.state.user.kycReviewAnswer]);
+
+	React.useEffect(() => {
+		if(Boolean(userContext.state.user.ibcoAcceptedTerms) == true){
+			setIbcoAreTermsAccepted(true)
 		} else {
 			setIbcoAreTermsAccepted(false)
-		}
-	}, [userContext.state, userContext.state.hasLoaded]);
+		}			
+	}, [userContext.state.user.kycReviewAnswer]);
+	
 
 	React.useEffect(() => {
 		if(ibcoIsReady === true && userAuthenticated){
@@ -94,8 +92,6 @@ function PublicSale() {
 					// web3Context.actions.ibcoPoll()
 					setIbcoIsReady(true);
 					setIbcoOVRDAIPrice(web3Context.state.ibcoCurrentOvrPrice);
-					prepareIbcoCurveHistoryAndMyTrans();
-					prepareIbcoMyOpenTransactions();
 
 					// Render Point on Chart ( and keep updated )
 					if(ibcoIsChartReady === true){
@@ -344,7 +340,7 @@ function PublicSale() {
 							</tr>
 						</thead>
 						<tbody>
-							{ibcoPendingTransactions.reverse().map((trans) => (
+							{ibcoPendingTransactions.map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">
@@ -457,7 +453,7 @@ function PublicSale() {
 							</tr>
 						</thead>
 						<tbody>
-							{ibcoCurveHistory.reverse().map((trans) => (
+							{ibcoCurveHistory.map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="max --trans">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">
@@ -520,7 +516,7 @@ function PublicSale() {
 							</tr>
 						</thead>
 						<tbody>
-							{ibcoMyTransactions.reverse().map((trans) => (
+							{ibcoMyTransactions.map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="max --trans">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">

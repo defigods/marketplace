@@ -292,7 +292,7 @@
 	"IBCO.transaction.time": "时间",
 	"IBCO.transaction.fee": "费用",
 	"IBCO.transaction.status": "状态",
-	"IBCO.claim.buy": "要求下达购买订单",
+	"IBCO.claim.buy": "申领购买的token",
 	"IBCO.claim.sell": "要求下达出售订单",
 	"IBCO.tec": "条款和条件",
 	"IBCO.tec.agree": "同意条款和条件",

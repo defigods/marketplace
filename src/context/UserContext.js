@@ -24,7 +24,8 @@ export class UserProvider extends Component {
 				uuid: null,
 				allowance: 0,
 				balance: 0,
-				kycReviewAnswer: -1
+				kycReviewAnswer: -1,
+				ibcoAcceptedTerms: false
 			}
 		};
 	}
