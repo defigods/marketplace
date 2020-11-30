@@ -23,7 +23,8 @@ export class UserProvider extends Component {
 			user: {
 				uuid: null,
 				allowance: 0,
-				balance: 0
+				balance: 0,
+				kycReviewAnswer: -1
 			}
 		};
 	}

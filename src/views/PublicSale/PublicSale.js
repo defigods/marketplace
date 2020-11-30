@@ -67,7 +67,7 @@ function PublicSale() {
 				setIbcoAreTermsAccepted(false)
 			}
 			// Kyc
-			if(Boolean(userContext.state.user.kycReviewAnswer) == true){
+			if(userContext.state.user.kycReviewAnswer === 1){
 				setIbcoIsKYCPassed(true)
 			}
 		} else {
@@ -144,6 +144,7 @@ function PublicSale() {
 				let ret = await web3Context.actions.calculateCustomSellPrice(transactionValue);
 				slip = await web3Context.actions.calculateCustomSellSlippage(transactionValue);
 				setTransactionValueExtimate(ret);
+				//
 				setIbcoSlippage((slip*100).toFixed(2));
 				setTransactionValueDescription(t('IBCO.exchange.sell', { OVRNumber: transactionValue, DAINumber: ret }))
 			} else {
@@ -629,7 +630,6 @@ function PublicSale() {
 				pointHoverRadius: 9,
 			}
 			chartData.datasets.push(newDataset);
-
 			scatterChart.update();
 			setHasPointRendered(true)
 		}
@@ -641,7 +641,7 @@ function PublicSale() {
 				<HexButton
 					url="#"
 					text={t('IBCO.verify.toparticipate')}
-					className={`--orange --large --kyc-button`}
+					className={`--orange --large --kyc-button --only-butt`}
 					// ${bidValid ? '' : '--disabled'}
 					onClick={() => {history.push('/profile')}}
 				></HexButton>
@@ -652,7 +652,7 @@ function PublicSale() {
 				<HexButton
 					url="#"
 					text={t('IBCO.accept.toparticipate')}
-					className={`--orange --large --kyc-button`}
+					className={`--orange --large --kyc-button --only-butt`}
 					// ${bidValid ? '' : '--disabled'}
 					onClick={() => toggleTermsAndConditionsOverlay(true)}
 				></HexButton>
