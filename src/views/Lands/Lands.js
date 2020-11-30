@@ -4,11 +4,13 @@ import { withUserContext } from '../../context/UserContext';
 import { withWeb3Context } from '../../context/Web3Context';
 import HexButton from '../../components/HexButton/HexButton';
 import ValueCounter from '../../components/ValueCounter/ValueCounter';
+import { warningNotification, dangerNotification, successNotification} from '../../lib/notifications';
 
 // import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
 // import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
 // import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 
+import { participateMultipleAuctions } from '../../lib/api';
 import { getLands } from '../../lib/api';
 import PropTypes from 'prop-types';
 import LandCard from '../../components/LandCard/LandCard';
@@ -22,11 +24,18 @@ import { useTranslation } from 'react-i18next'
 const Lands = (props) => {
 	const { t, i18n } = useTranslation();
 	const { enableMultipleLandSelection, disableMultipleLandSelection } = props.mapProvider.actions;
-	const { multipleLandSelectionList, gasLandCost } = props.mapProvider.state;
+	const { multipleLandSelectionList } = props.mapProvider.state;
+	const { refreshBalanceAndAllowance } = props.userProvider.actions;
+
+
 	const [listLands, setListLands] = useState('');
 	const [gasProjection, setGasProjection] = useState(0);
 	const [listLandsObj, setListLandsObj] = useState([]);
-	const { getUSDValueInOvr } = props.web3Provider.actions;
+	const { getUSDValueInOvr, authorizeOvrExpense } = props.web3Provider.actions;
+	const { gasLandCost } = props.web3Provider.state;
+
+	const userState = props.userProvider.state.user;
+	const { balance, allowance } = userState;
 
 	// First load
 	useEffect(() => {
@@ -77,6 +86,66 @@ const Lands = (props) => {
 		return <ValueCounter value={total} currency="ovr"></ValueCounter>
 	}
 
+	function calculateTotal() {
+		let total = 0;
+		listLandsObj.map((land) =>{
+			console.log('land',land)
+			let value = land.value < 100 ? parseFloat(getUSDValueInOvr(10)) : parseFloat(land.value)
+			total = total + value
+		});
+		total = total + (gasLandCost * listLandsObj.length)
+		return total.toFixed(2)
+	}
+
+	const ensureBalanceAndAllowance = async (cost) => {
+		let floatCost = parseFloat(cost)
+		// Check balance
+		if( floatCost > balance){
+			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
+			return false;
+		}
+		// Check Allowance
+		if( floatCost > allowance){
+			await authorizeOvrExpense(String(floatCost * 3));
+		}
+		return true;
+	}
+
+	// Helper used to check if the user is logged in
+	const checkUserLoggedIn = () => {
+		if (!props.userProvider.state.isLoggedIn) {
+			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
+			return false;
+		}
+		return true;
+	};
+
+	const participateInAuctions = async (type) => {
+		// Ensure user is logged in
+		if (!checkUserLoggedIn()) return;
+		// Refresh balance and allowance
+		refreshBalanceAndAllowance();
+		// Ensure balance and allowance 
+		let checkOnBal = await ensureBalanceAndAllowance(calculateTotal());
+		if( !checkOnBal ) return;
+
+		let hexIds = listLandsObj.map(a => a.hexId);
+
+		// Start centralized auction
+		participateMultipleAuctions(hexIds, parseFloat(getUSDValueInOvr(10)))
+		.then((response) => {
+			if (response.data.result === true) {
+				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+			} else {
+				// console.log('responseFalse');
+				return successNotification(t('Generic.congrats.label'), t('Success.request.processing'));
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+	}
+
 
 	function renderLand() {
 		let custom_return;
@@ -100,15 +169,43 @@ const Lands = (props) => {
 							</div>
 						</div>
 					</div>
-					<div className="o-container o-land-list__cont">
-						<div className="o-land-list">{listLands}</div>
-					</div>
-					<div className="o-container o-land-list__total__title">
-						<h2>{t('Lands.selected.checkout.title')}</h2>
-					</div>
-					<div className="o-container o-land-list__total">
-						<div className="o-row"><span>Bidding Expense:</span> {renderTotalEstimate()}</div> <br/>
-						<div className="o-row"><span>Estimated Gas Expense:</span> <ValueCounter value={gasProjection} currency="ovr"></ValueCounter> x {multipleLandSelectionList.length} = <ValueCounter value={gasProjection*multipleLandSelectionList.length} currency="ovr"></ValueCounter></div>
+					
+					<div className="o-container ls-container">
+						<div className="ls-land__display">
+							<div className="o-land-list__cont">
+								<div className="o-land-list">{listLands}</div>
+							</div>
+						</div>
+						<div className="ls-land__total">
+							<div className="o-land-list__total__title">
+								<h2>{t('Lands.selected.checkout.title')}</h2>
+							</div>
+							<div className="o-row">
+								<span>{t('Lands.number.of')}</span> 
+								<span className="o-para-value">{multipleLandSelectionList.length}</span>
+							</div><br/>
+							<div className="o-row">
+								<span>{t('Lands.total.bidding')}</span> 
+								{renderTotalEstimate()}
+							</div> <br/>
+							<div className="o-row">
+								<span>{t('Lands.estimated.gas.expense')}</span> 
+								<ValueCounter value={(gasProjection*multipleLandSelectionList.length).toFixed(2)} currency="ovr"></ValueCounter>
+							</div><br/><br/><br/>
+							<div className="o-row">
+								<span>{t('Lands.total.expense')}</span> 
+								<ValueCounter value={calculateTotal()} currency="ovr"></ValueCounter>
+							</div><br/>
+							<div className="o-row lands__button_holder">
+								<HexButton
+									url="#"
+									text={t('Success.order.confirm')}
+									className={`--orange`}
+									ariaHaspopup="true"
+									onClick={() => participateInAuctions()}
+								></HexButton>
+							</div><br/>
+						</div>
 					</div>
 				</div>
 			);

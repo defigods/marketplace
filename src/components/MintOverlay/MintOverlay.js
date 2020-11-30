@@ -168,7 +168,7 @@ const MintOverlay = (props) => {
 		let floatCost = parseFloat(cost)
 		// Check balance
 		if( floatCost > balance){
-			warningNotification(t('Warning.no.token.title'), t('Warning.no.tokens.desc'));
+			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
 			return false;
 		}
 		// Check Allowance

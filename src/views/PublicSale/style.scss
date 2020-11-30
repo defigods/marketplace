@@ -208,6 +208,27 @@
 			text-transform: uppercase;
 		}
 	}
+	
+	.o-card{
+		opacity: 0;
+		transform: scale(0.97);
+		transition: all 450ms ease-in-out;
+	}
+	.--card-2{
+		transition-delay: 100ms;
+	}
+	.--card-3{
+		transition-delay: 200ms;
+	}
+	.--card-4{
+		transition-delay: 300ms;
+	}
+	&.--js-show{
+		.o-card{
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
 }
 
 .chart-js{
@@ -262,18 +283,11 @@
 	height: 80vh;
 }
 
-@media screen and (max-width: 700px){
+@media screen and (max-width: 769px){
 	.PublicSale .Table{
 		overflow: scroll;
 		display: block;
 	}
-	// .s-f-curve{
-	// 	@include column(10/10);
-	// }
-	// .s-f-panel{
-	// 	margin-top: 40px;
-	// 	@include column(10/10);
-	// }
 	.Table__container{
 		padding: 0px;
 	}
@@ -345,18 +359,25 @@
 	}
 }
 
-@media screen and (min-width: 700px){
+@media screen and (min-width: 769px){
 	.--chart-header{
 		display: flex;
 		justify-content: space-around;
 		padding-bottom: 15px;
 		padding-top: 20px;
 	}
+	.s-f-curve{
+		width: 52%;
+		display: flex;
+	}
+	.s-f-panel{
+		width: 44%;
+	}
 }
 
 
 
-@media screen and (min-width: 1200px){
+@media screen and (min-width: 1000px){
 	.s-f-curve{
 		width: 62%;
 		display: flex;
@@ -365,6 +386,7 @@
 		width: 34%;
 	}
 }
+
 .view-on-etherscan-link{
 	padding: 0px 0px;
 	text-decoration: underline;
@@ -400,6 +422,9 @@
 		margin: 0 auto;
 		margin-left: 5%;
 	}
+}
+.--pulse{
+	animation: pulse-dot 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -.4s infinite;
 }
 
 @keyframes pulse-ring {

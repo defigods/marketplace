@@ -106,7 +106,7 @@
 	"Land.when.label" : "When",
 	"Land.from.label" : "From",
 
-	"Lands.selected.lands" : "Selected Lands",
+	"Lands.selected.lands" : "Select Lands",
 	"Lands.click.to.remove" : "Click again on a selected land to remove",
 	"Lands.selected.label" : "Selected",
 	"Lands.bid.selection" : "Bid selection",
@@ -403,9 +403,17 @@
 	"IBCO.request.process.title": "Your request is being processed",
 	"IBCO.request.process.desc":"You can check the transaction status in your wallet's activities",
 	"IBCO.transaction.publicaddress": "Public Address",
-	"Lands.selected.checkout.title": "Total cost estimate",
+	"Lands.selected.checkout.title": "Order Recap",
+  "Lands.number.of": "Number of OVRLands",
+  "Lands.total.bidding": "Total Bidding",
+  "Lands.estimated.gas.expense": "Estimated Gas Expense",
+  "Lands.total.expense": "Total Expense",
+	"Success.order.confirm": "Confirm Order",
 	"IBCO.available.on.etherscan": "Available on Etherscan",
 	"PublicSale.login.required.title": "You have to log in to visit our IBCO",
-	"PublicSale.login.required.desc": "Check our Public Sale. Connect your wallet."
-
+	"PublicSale.login.required.desc": "Check our Public Sale. Connect your wallet.",
+	"Profile.ovr.sale.started": "OVR Token Sale started. Click on Buy OVR to participite the Public Sale",
+	"Success.request.processing": "Your order request is being processed",
+	"Lands.select.multiple.lands": "Multiple land selection",
+	"IBCO.max.slippage.reached": "Maximum slippage reached"
 }

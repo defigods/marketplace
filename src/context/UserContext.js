@@ -34,7 +34,6 @@ export class UserProvider extends Component {
 			userProfile()
 			.then((response) => {
 				if (response.data.result === true) {
-					console.log('userState', response.data.user)
 					this.setState({ hasLoaded: true, user: response.data.user });
 					this.liveSocket();
 				} else {
@@ -54,6 +53,13 @@ export class UserProvider extends Component {
 
 	setUserState = (user) => {
 		this.setState({ user: user });
+	}
+
+	setUserBalance = (balance) => {
+		this.setState({ user: {
+			...this.state.user,
+			balance: balance
+		} });
 	}
 
 	setUserEmail = (email) => {
@@ -93,7 +99,6 @@ export class UserProvider extends Component {
 				console.log("refreshBalanceAndAllowance", response.data)
 				this.setState({ user: { ...this.state.user,
 					allowance: response.data.allowance,
-					balance: response.data.balance,
 				}});
 			} 
 			})
@@ -180,14 +185,12 @@ export class UserProvider extends Component {
 							});
 						} else {
 							const { notification } = data;
-							const { balance } = data;
 							const { unreaded_count } = data;
 							// Update state on new notification
 							this.setState({
 								hasLoaded: true,
 								user: {
 									...this.state.user,
-									balance: balance,
 									notifications: {
 										...this.state.user.notifications,
 										unreadedCount: unreaded_count,
@@ -250,6 +253,7 @@ export class UserProvider extends Component {
 						closeNotificationCenter: this.closeNotificationCenter,
 						refreshBalanceAndAllowance: this.refreshBalanceAndAllowance,
 						acceptIbcoTermsAndConditions: this.acceptIbcoTermsAndConditions,
+						setUserBalance: this.setUserBalance,
 						notification: {
 							setAsReaded: this.setNotificationAsReaded,
 							setAllAsReaded: this.setAllNotificationsAsReaded,

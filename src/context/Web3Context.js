@@ -10,12 +10,18 @@ import { UserContext } from './UserContext';
 import { useHistory } from 'react-router-dom';
 import {abi} from '../contract/abi';
 import ovrAbi from '../contract/ovrAbi';
+import bn from "bignumber.js";
 
 const controllerABI = require("../contract/controllerABI");
 const curveABI = require("../contract/curveABI");
 const DAIABI = require("../contract/DAIABI");
 const rewardABI = require("../contract/rewardABI");
 const bancorFormulaABI = require("../contract/bancorFormulaABI");
+const premine = BigNumber.from(81688155);
+const initialVirtualBalance = BigNumber.from(371681).mul(
+		BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
+);
+const mantissa = new bn(1e18);
 
 
 export const Web3Context = createContext();
@@ -34,7 +40,7 @@ export class Web3Provider extends Component {
 			gasLandCost: 0,
       perEth: 0,
 			perUsd: 0,
-			ibcoCurrentOvrPrice: 0.6,
+			ibcoCurrentOvrPrice: 0.06,
 			lastTransaction: "0x0",
 			ibcoOpenBuyOrders: [],
 			ibcoOpenSellOrders: [],
@@ -167,6 +173,8 @@ export class Web3Provider extends Component {
 			this.setState({
 				"ibcoRewardBalance": reward
 			});
+			// console.log('parseFloat(ethers.utils.formatEther(reward).toString())',parseFloat(ethers.utils.formatEther(reward).toString()))
+			this.context.actions.setUserBalance(parseFloat(ethers.utils.formatEther(reward).toString()))
 
 			// DAI balance of user
 			let balance = await this.state.ibcoDAIViewer.balanceOf(
@@ -185,9 +193,21 @@ export class Web3Provider extends Component {
 			});
 
 			// Total supply of OVR Token
-			let OVRSupply = await this.state.ibcoRewardViewer.totalSupply();
+			let TotalOVRSupply = await this.state.ibcoRewardViewer.totalSupply();
+			let CurveOVRSupply = TotalOVRSupply.sub(
+							premine.mul(
+									BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
+							)
+					)
+
+			let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))			
+			let vsBancorFormula = doublePremine.add(CurveOVRSupply)
+
 			this.setState({
-				"ibcoOVRSupply": OVRSupply
+				"ibcoOVRSupply": CurveOVRSupply,
+				"ibcoTotalOVRSupply": TotalOVRSupply,
+				"ibcoDoublePremine": doublePremine,
+				"ibcoVsBancorFormula": vsBancorFormula
 			});
 
 			// Allowance of DAI spendable by curve contract
@@ -200,16 +220,18 @@ export class Web3Provider extends Component {
 			});
 
 			// price of next Token
-			//check if Reserve is zero. It it's zero, add 1
 			let res = this.state.ibcoDAIReserve.toString() === "0"
 							? BigNumber.from(1)
 							: this.state.ibcoDAIReserve;
-			
-				
+						
+			let virtualResBancorFormula = res.add(initialVirtualBalance);
+			this.setState({
+				"ibcoVirtualResBancorFormula": virtualResBancorFormula,
+			});
+
 			let price1 = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
-					//supply,balance,weight, amount
-					this.state.ibcoOVRSupply,
-					res,
+					vsBancorFormula,
+					virtualResBancorFormula,
 					config.apis.connectorWeight,
 					BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
 			);
@@ -218,7 +240,7 @@ export class Web3Provider extends Component {
 			});
 			
 			// priceOVR
-			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(2)
+			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(3)
 			this.setState({
 				"ibcoCurrentOvrPrice": priceOvr
 			})
@@ -233,6 +255,78 @@ export class Web3Provider extends Component {
 			})
 	};
 	
+	// Calculate adapted price
+	calculateCustomBuyPrice = async (val) => {
+		let amountInput =
+				val.toString() === "0"
+						? mantissa.toFixed(0)
+						: new bn(val).times(mantissa).toFixed(0);
+
+		let newPrice = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
+				this.state.ibcoVsBancorFormula,
+				this.state.ibcoVirtualResBancorFormula,
+				config.apis.connectorWeight,
+				amountInput
+		);
+		return parseFloat(ethers.utils.formatEther(newPrice).toString()).toFixed(3)
+	}
+
+	calculateCustomSellPrice = async (val) => {
+		let amountInput =
+				val.toString() === "0"
+						? mantissa.toFixed(0)
+						: new bn(val).times(mantissa).toFixed(0);
+
+		let newPrice = await this.state.ibcoBancorFormulaViewer.calculateSaleReturn(
+				this.state.ibcoVsBancorFormula,
+				this.state.ibcoVirtualResBancorFormula,
+				config.apis.connectorWeight,
+				amountInput
+		);
+		return parseFloat(ethers.utils.formatEther(newPrice).toString()).toFixed(3)
+	}
+
+	calculateCustomSellSlippage = async (val) => {
+		let amountInput =
+				val.toString() === "0"
+						? mantissa.toFixed(0)
+						: new bn(val).times(mantissa).toFixed(0);
+
+		let newPrice = await this.state.ibcoBancorFormulaViewer.calculateSaleReturn(
+				this.state.ibcoVsBancorFormula,
+				this.state.ibcoVirtualResBancorFormula,
+				config.apis.connectorWeight,
+				amountInput
+		);
+		let pricePerToken = (parseFloat(ethers.utils.formatEther(newPrice).toString())) / val
+		// console.log('pricePerToken STIMATO', pricePerToken)
+		// console.log('pricePerToken CURRENT', (1/this.state.ibcoCurrentOvrPrice))
+		let slippage = ((((parseFloat((1/this.state.ibcoCurrentOvrPrice))-(pricePerToken))) / (parseFloat((1/this.state.ibcoCurrentOvrPrice)))) *100)
+		// console.log('slippage', slippage)
+		return slippage
+	}
+
+	calculateCustomBuySlippage = async (val) => {
+		let amountInput =
+				val.toString() === "0"
+						? mantissa.toFixed(0)
+						: new bn(val).times(mantissa).toFixed(0);
+
+		let newPrice = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
+				this.state.ibcoVsBancorFormula,
+				this.state.ibcoVirtualResBancorFormula,
+				config.apis.connectorWeight,
+				amountInput
+		);
+		let pricePerToken = (parseFloat(ethers.utils.formatEther(newPrice).toString()).toFixed(3)) / val
+
+		// console.log('pricePerToken STIMATO', pricePerToken)
+		// console.log('pricePerToken CURRENT', (this.state.ibcoCurrentOvrPrice))
+		let slippage = ((((parseFloat(this.state.ibcoCurrentOvrPrice)-(pricePerToken))) / (parseFloat(this.state.ibcoCurrentOvrPrice))) *100)
+		// console.log('slippage', slippage)
+		return slippage
+	}
+
 	// initialize all contracts as signer and viewer objects, which allow functions to be called from the blockchain
 	// signers call functions which mutate chain state and cost gas
 	// viewers call public view functions to retreive data without costing gas
@@ -306,6 +400,8 @@ export class Web3Provider extends Component {
 			this.setState({
 				"ibcoRewardBalance": reward
 			});
+			// console.log('parseFloat(ethers.utils.formatEther(reward).toString())',parseFloat(ethers.utils.formatEther(reward).toString()))
+			this.context.actions.setUserBalance(parseFloat(ethers.utils.formatEther(reward).toString()))
 
 			// current DAI balance reserve
 			let reserve = await this.state.ibcoDAIViewer.balanceOf(
@@ -320,10 +416,12 @@ export class Web3Provider extends Component {
 			let res = this.state.ibcoDAIReserve.toString() === "0"
 							? BigNumber.from(1)
 							: this.state.ibcoDAIReserve;
+			let virtualResBancorFormula = res.add(initialVirtualBalance);
+
 			let price1 = await this.state.ibcoBancorFormulaViewer.calculatePurchaseReturn(
 					//supply,balance,weight, amount
-					this.state.ibcoOVRSupply,
-					res,
+					this.state.ibcoVsBancorFormula,
+					virtualResBancorFormula,
 					config.apis.connectorWeight,
 					BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
 			);
@@ -332,10 +430,19 @@ export class Web3Provider extends Component {
 			});
 
 			// priceOVR
-			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(2)
+			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(3)
 			this.setState({
 				"ibcoCurrentOvrPrice": priceOvr
 			})
+
+			// Allowance of DAI spendable by curve contract
+			let allowance = await this.state.ibcoDAIViewer.allowance(
+					this.state.address,
+					config.apis.curveAddress
+			);
+			this.setState({
+				"ibcoDAIAllowance": allowance
+			});
 	};
 
 	ibcoPoll = async () => {
@@ -417,7 +524,7 @@ export class Web3Provider extends Component {
 											transactionHash: receipt.transactionHash
 									},
 							];
-							console.log("ON OpenSellOrder")
+							// console.log("ON OpenSellOrder")
 							this.setOpenSellOrders(oSell);
 							await this.updateBalances();
 					}
@@ -426,7 +533,7 @@ export class Web3Provider extends Component {
 			//  Event: buy order is claimed. Updates balances and nulls openBuyOrder in state
 			this.state.ibcoCurveViewer.on("ClaimBuyOrder", async (a, b, c, d, e) => {
 					let receipt = await e.getTransactionReceipt();
-					console.log("BUY ORDER CLAIMED");
+					// console.log("BUY ORDER CLAIMED");
 					// console.log(a, b, c, d);
 					let bClaim = [
 							{
@@ -448,7 +555,7 @@ export class Web3Provider extends Component {
 					"ClaimSellOrder",
 					async (a, b, c, d, e, event) => {
 							let receipt = await event.getTransactionReceipt();
-							console.log("SELL ORDER CLAIMED");
+							// console.log("SELL ORDER CLAIMED");
 							// console.log(a, b, c, d, e);
 							let sClaim = [
 									{
@@ -514,7 +621,7 @@ export class Web3Provider extends Component {
 												log.args.buyer.toLowerCase()
 										) {	
 												log.transactionHash = transactionHash;
-												console.log("OPENBuys", openBuys)
+												// console.log("OPENBuys", openBuys)
 												openBuys.push(log);
 										}
 										break;
@@ -525,7 +632,7 @@ export class Web3Provider extends Component {
 												log.args.seller.toLowerCase()
 										) {
 												log.transactionHash = transactionHash;
-												console.log("OPENSells", openBuys)
+												// console.log("OPENSells", openBuys)
 												openSells.push(log);
 										}
 										break;
@@ -539,7 +646,7 @@ export class Web3Provider extends Component {
 														if (value.args.batchId._hex !== log.args.batchId._hex) {
 																return value;
 														} else {
-																console.log("MATCH", value.args.batchId._hex);
+																// console.log("MATCH", value.args.batchId._hex);
 														}
 												});
 												openBuys = filterBuy;
@@ -563,7 +670,7 @@ export class Web3Provider extends Component {
 														if (value.args.batchId._hex !== log.args.batchId._hex) {
 																return value;
 														} else {
-																console.log("MATCH", value.args.batchId._hex);
+																// console.log("MATCH", value.args.batchId._hex);
 														}
 												});
 												openSells = filterSell;
@@ -666,14 +773,6 @@ export class Web3Provider extends Component {
 
 	removeOpenBuyOrder(input) {
 		var newIbcoOpenBuyOrder = this.state.ibcoOpenBuyOrders.filter((value) => {
-			// console.log("this.state.ibcoOpenBuyOrders",this.state.ibcoOpenBuyOrders)
-			// console.log("this.state.address.toLowerCase()",this.state.address.toLowerCase())
-			// console.log("value",value)
-			// console.log("input",input)
-			// console.log("input.buyer.toLowerCase()",input[0].buyer.toLowerCase())
-			// console.log("value.batchId",value.batchId)
-			// console.log("input[0].batchId",input[0].batchId)
-			// console.log('AAAAAAAA')
 			if (this.state.address.toLowerCase() === input[0].buyer.toLowerCase() && value.batchId === input[0].batchId) {
 				return value;
 			} 
@@ -685,6 +784,8 @@ export class Web3Provider extends Component {
 	setBlock(input) {
 		this.setState({ ibcoBlock: input })
 	}
+
+	///
 	
 	//
 	// Transactions helper
@@ -723,14 +824,20 @@ export class Web3Provider extends Component {
 
 	getUSDValueInOvr = (usd = 1) => {
 		let floorValue = 0.1;
+		let ibcoOVRCurrentPrice;
+		if(this.state.ibcoCurrentOvrPrice !== 0.06){
+			ibcoOVRCurrentPrice = 1/(parseFloat(this.state.ibcoCurrentOvrPrice))
+		} else {
+			ibcoOVRCurrentPrice = this.state.ibcoCurrentOvrPrice
+		}
 		// If value OVR token and it's more than 0.1 use it as floor
-		if(this.state.ibcoCurrentOvrPrice > 0.1){
-			floorValue = this.state.ibcoCurrentOvrPrice;
+		if(ibcoOVRCurrentPrice > 0.1){
+			floorValue = ibcoOVRCurrentPrice;
 		}
 		return (usd / floorValue).toFixed(2);
 	}
 
-	authorizeOvrExpense = async ( ovr = "10000" ) => {
+	authorizeOvrExpense = async ( ovr = "100000" ) => {
 		window.ethereum.enable() 
 		let contractAsAccount = new ethers.Contract(config.apis.OVRContract, ovrAbi, this.state.signer)
 		const howMuchTokens = ethers.utils.parseUnits(ovr, 18)
@@ -787,7 +894,11 @@ export class Web3Provider extends Component {
 						setupWeb3: this.setupWeb3,
 						authorizeOvrExpense: this.authorizeOvrExpense,
 						getUSDValueInOvr: this.getUSDValueInOvr,
-						setRewardBalance: this.setRewardBalance
+						setRewardBalance: this.setRewardBalance,
+						calculateCustomBuyPrice: this.calculateCustomBuyPrice,
+						calculateCustomSellPrice: this.calculateCustomSellPrice,
+						calculateCustomBuySlippage: this.calculateCustomBuySlippage,
+						calculateCustomSellSlippage: this.calculateCustomSellSlippage
           },
         }}
       >

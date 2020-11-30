@@ -151,6 +151,17 @@ export function getGasPrice() {
 	);
 }
 
+export function participateMultipleAuctions(hexIds, singleMintWorth) {
+	return request(
+		{ url: '/auctions/multi/participate', method: 'POST' },
+		{
+			hex_ids: hexIds,
+			single_mint_worth: singleMintWorth
+		},
+		null,
+	);
+}
+
 
 // export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
 // 	return request(

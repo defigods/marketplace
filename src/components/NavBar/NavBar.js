@@ -35,8 +35,18 @@ const NavBar = () => {
 	
 	const changeLanguage = (string) => {
 		i18n.changeLanguage(string)
-	  }
-
+	}
+	
+	function boolCountdownCheck() {
+		let utcSeconds = 1606737600;
+		let d = new Date(0); 
+		const difference = +d.setUTCSeconds(utcSeconds) - +new Date();
+		if (difference > 0) {
+			return false
+		} else {
+			return true
+		}
+	}
 	// START - Profile sub menu
 
 
@@ -70,6 +80,33 @@ const NavBar = () => {
 		setLangOpen(false);
 	};
 
+	const renderPublicSaleButton = () => {
+		let button = <></>;
+		if(!isMobile){
+			if(boolCountdownCheck() === true){
+				button = <Link to="/public-sale" className="Funds__buy HexButton --orange">
+					{t("Profile.buy.ovr")}
+				</Link>
+			}
+		}
+		return button;
+	}
+
+	const renderPublicSaleButtonMobile = () => {
+		let button = <></>;
+		if(boolCountdownCheck() === true){
+			button = <MenuItem
+				onClick={(e) => {
+					handleClose(e);
+					handleGoTo('/public-sale');
+				}}
+			>
+				{t('BuyTokens.buy.ovr')}
+			</MenuItem>
+		}
+		return button;
+	}
+
 	const handleMetamaskAuthentication = () => {
 		setIsConnecting(true);
 		window.gtag_report_metamask_conversion();
@@ -95,9 +132,13 @@ const NavBar = () => {
 
 	React.useEffect(() => {
 		if(userState.user != undefined && userState.user.balance != undefined){
-			setBalance(userState.user.balance.toFixed(2))
+			// console.log("userState.user.balanceAAA",userState.user.balance)
+			// TODO Perchè cazzo arriva 0 qua ogni tanto
+			if(userState.user.balance.toFixed(2) > 0){
+				setBalance(userState.user.balance.toFixed(2))
+			}
 		}
-	}, [userState.user]);
+	}, [userState.user, userState.user.balance]);
 	// END - Profile sub menu
 
 	React.useEffect(() => {
@@ -184,25 +225,81 @@ const NavBar = () => {
 	function renderMobileMenuItem(){
 		if(isMobile){
 		return(<>
-		<MenuItem
-			onClick={(e) => {
-				handleClose(e);
-				handleGoTo('/map/overview');
-			}}
-		>
-			{t('Navbar.myassets.label')}
-		</MenuItem>
-		<MenuItem
-			onClick={(e) => {
-				handleClose(e);
-				handleGoTo('/map/discover');
-			}}
-		>
-			{t('Navbar.marketplace.label')}
-		</MenuItem>
+		<ClickAwayListener onClickAway={handleClose}>										
+			<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/profile');
+					}}
+				>
+					{t('Navbar.profile.label')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/activity');
+					}}
+				>
+					{t('Navbar.activity.label')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/map/overview');
+					}}
+				>
+					{t('Navbar.myassets.label')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/map/discover');
+					}}
+				>
+					{t('Navbar.marketplace.label')}
+				</MenuItem>
+				{renderPublicSaleButtonMobile()}
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						userActions.logoutUser();
+					}}
+				>
+					{t('Navbar.Logout.label')}
+				</MenuItem>
+			</MenuList>
+		</ClickAwayListener>
 		</>)
 		} else {
-			return (<></>)
+			return (<ClickAwayListener onClickAway={handleClose}>										
+				<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+					<MenuItem
+						onClick={(e) => {
+							handleClose(e);
+							handleGoTo('/profile');
+						}}
+					>
+						{t('Navbar.profile.label')}
+					</MenuItem>
+					<MenuItem
+						onClick={(e) => {
+							handleClose(e);
+							handleGoTo('/activity');
+						}}
+					>
+						{t('Navbar.activity.label')}
+					</MenuItem>
+					<MenuItem
+						onClick={(e) => {
+							handleClose(e);
+							userActions.logoutUser();
+						}}
+					>
+						{t('Navbar.Logout.label')}
+					</MenuItem>
+				</MenuList>
+			</ClickAwayListener>)
 		}
 	}
 	function rightContainer() {
@@ -245,22 +342,23 @@ const NavBar = () => {
 									: 0}
 							</div>
 						</Link> 
-
+						
 						<div className="Funds__container">
 							{/* <Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
 							</Link> // TODO: KYC - Remove comment */}
+							{renderPublicSaleButton(t)}
 							<ValueCounter value={balance}></ValueCounter>
 							{/*<Link to="#" className="Funds__buy HexButton --blue redeem-button" onClick={() => {
 								this.context.actions.redeemLands()
 							}}>
 								Redeem Lands
 							</Link>
-							<Link to="/buy-tokens" className="Funds__buy HexButton --blue">
+							<Link to="/public-sale" className="Funds__buy HexButton --orange">
 								Buy OVR
 							</Link> */}
 						</div>
-
+						
 						<Link
 							ref={anchorRef}
 							aria-controls={open ? 'menu-list-grow' : undefined}
@@ -294,38 +392,7 @@ const NavBar = () => {
 									style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
 								>
 									<Paper>
-										<ClickAwayListener onClickAway={handleClose}>
-										
-
-											<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
-												
-												<MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														handleGoTo('/profile');
-													}}
-												>
-													{t('Navbar.profile.label')}
-												</MenuItem>
-												<MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														handleGoTo('/activity');
-													}}
-												>
-													{t('Navbar.activity.label')}
-												</MenuItem>
-												{renderMobileMenuItem()}
-												<MenuItem
-													onClick={(e) => {
-														handleClose(e);
-														userActions.logoutUser();
-													}}
-												>
-													{t('Navbar.Logout.label')}
-												</MenuItem>
-											</MenuList>
-										</ClickAwayListener>
+										{renderMobileMenuItem()}
 									</Paper>
 								</Grow>
 							)}

@@ -241,9 +241,13 @@
 
 		.Funds__buy {
 			display: inline;
+			position: relative;
+			top: -2px;
 		}
-
-		.redeem-button {
+		.ValueCounter{
+			float: left;
+		}
+		.Funds__buy {
 			margin-right: 10px;
 		}
 	}

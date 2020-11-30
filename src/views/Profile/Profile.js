@@ -61,12 +61,33 @@ const ProfileLayout = () => {
 	const [urlKyc, setUrlKyc] = useState("#");
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 	const [isIMWallet, setIsIMWallet] = useState(false);
+	const [boolCountdownExpired, setBoolCountdownExpired] = useState(false);
+	const [hasMounted, setHasMounted] = useState(false);
+
+	function boolCountdownCheck() {
+		let utcSeconds = 1606737600;
+		let d = new Date(0); 
+		const difference = +d.setUTCSeconds(utcSeconds) - +new Date();
+		if (difference > 0) {
+			return false
+		} else {
+			return true
+		}
+	}
 
 	React.useEffect(() => {
 		if(user != undefined && user.balance != undefined){
 			setBalance(user.balance.toFixed(2))
 		}
 	}, [user.balance]);
+
+	React.useEffect(() => {
+		setInterval(() => {
+			if(boolCountdownCheck()===true){
+				setBoolCountdownExpired(true)
+			}
+		}, 1000);
+	}, []);
 
 	React.useEffect(() => {
 		setAddress(user.publicAddress)
@@ -168,6 +189,33 @@ const ProfileLayout = () => {
 		}
 	};
 
+	const countdownTimer = (t) => {
+		let utcSeconds = 1606737600;
+		let d = new Date(0); 
+		const difference = +d.setUTCSeconds(utcSeconds) - +new Date();
+		let custom_return = '';
+
+		if (difference > 0) {
+			const parts = {
+				days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+				hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+				minutes: Math.floor((difference / 1000 / 60) % 60),
+				seconds: Math.floor((difference / 1000) % 60),
+			};
+
+			custom_return =
+			t('Profile.ovr.sale.start')+' ' +
+				parts.days +
+				' '+t('Profile.days')+' ' +
+				parts.hours +
+				' '+t('Profile.hours')+' ' +
+				parts.minutes +
+				' '+t('Profile.mins')+' ' +
+				parts.seconds + ' '+t('Profile.secs')+'.';
+		}
+		return custom_return;
+	};
+
 	return (
 		<div className="profile">
 			<div className="o-container">
@@ -200,7 +248,7 @@ const ProfileLayout = () => {
 									<div className="p-balance-value">
 										<ValueCounter value={balance} />
 										<div>
-											<HexButton url="/buy-tokens" className="--orange --disabled" text={t('Profile.buy.ovr')}></HexButton>
+											<HexButton url="/public-sale" className={`--orange ${boolCountdownExpired ? '' : '--disabled'}`} text={t('Profile.buy.ovr')}></HexButton>
 											{/* history.push('/profile');
 											// TODO: KYC -  */}
 										</div>
@@ -210,7 +258,12 @@ const ProfileLayout = () => {
 							<div key="KYC" className="p-section --m-t">
 								<h3 className="p-section-title">{t('Profile.identify.verification')}</h3>
 								<div className="p-tiny-message">
-									{countdownTimer(t)} <br></br>
+									
+									{boolCountdownExpired === false ? <>{countdownTimer(t)}<br></br></> : <></>} 
+
+									{boolCountdownExpired == true ? <div className="p-tiny-message">
+									{t('Profile.ovr.sale.started')} <br></br></div> : <></>}
+
 									{user.kycReviewAnswer == 1
 										? t('Profile.whitelisted.ok')
 										: t('Profile.whitelisted.no.ok')}
@@ -404,33 +457,6 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 		warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
 	}
 	
-};
-
-const countdownTimer = (t) => {
-	let utcSeconds = 1606737600;
-	let d = new Date(0); 
-	const difference = +d.setUTCSeconds(utcSeconds) - +new Date();
-	let custom_return = '';
-		
-	if (difference > 0) {
-		const parts = {
-			days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-			hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-			minutes: Math.floor((difference / 1000 / 60) % 60),
-			seconds: Math.floor((difference / 1000) % 60),
-		};
-		
-		custom_return =
-		t('Profile.ovr.sale.start')+' ' +
-			parts.days +
-			' '+t('Profile.days')+' ' +
-			parts.hours +
-			' '+t('Profile.hours')+' ' +
-			parts.minutes +
-			' '+t('Profile.mins')+' ' +
-			parts.seconds + ' '+t('Profile.secs')+'.';
-	}
-	return custom_return;
 };
 
 const Profile = () => {

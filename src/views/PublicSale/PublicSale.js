@@ -27,6 +27,7 @@ function PublicSale() {
 	const { t, i18n } = useTranslation();
 	const [tab, setTab] = React.useState('buy');
 	const [transactionValue, setTransactionValue] = React.useState(0.00);
+	const [transactionValueExtimate, setTransactionValueExtimate] = React.useState(0.00);
 	const [transactionValueDescription, setTransactionValueDescription] = React.useState(t('IBCO.exchange.buy', { OVRNumber: '0', DAINumber: '0' }));
 	const [transactionValueValid, setTransactionValueValid] = React.useState(false);
 
@@ -43,7 +44,8 @@ function PublicSale() {
 	const [ibcoIsReady, setIbcoIsReady] = React.useState(false);
 	const [ibcoIsChartReady, setIbcoIsChartReady] = React.useState(false);
 	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
-	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.0);
+	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.00);
+	const [hasMaxSlippageReached, setHasMaxSlippageReached] = React.useState(false);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
 	const [classShowPanels, setClassShowPanels] = React.useState(false);
@@ -78,7 +80,8 @@ function PublicSale() {
 			setTimeout(() => {
 				renderChart()
 				setClassShowPanels(true);
-			}, 1050);
+			}, 200);
+			
 		}
 	}, [ibcoIsReady]);
 
@@ -113,15 +116,21 @@ function PublicSale() {
 			setTransactionValueValid(false);
 			if(newValue === 'sell'){
 				setTransactionValue(0.0)
+				setTransactionValueExtimate(0.0)
+				setIbcoSlippage(0.00)
+				setHasMaxSlippageReached(false)
 				setTransactionValueDescription(t('IBCO.exchange.sell', { OVRNumber: 0, DAINumber: 0 }))
 			} else {
 				setTransactionValue(0.0)
+				setTransactionValueExtimate(0.0)
+				setIbcoSlippage(0.00)
+				setHasMaxSlippageReached(false)
 				setTransactionValueDescription(t('IBCO.exchange.buy', { OVRNumber: 0, DAINumber: 0 }))
 			}
 			
 	};
 
-	const handleTransactionValueChange = (transactionValue) => {
+	const handleTransactionValueChange = async (transactionValue) => {
 			setTransactionValue(transactionValue);
 			if( transactionValue > 0){
 				setTransactionValueValid(true)
@@ -129,10 +138,26 @@ function PublicSale() {
 				// To do allowance limit
 				setTransactionValueValid(false)
 			}
+			let slip = 0;
+			let maxSlip = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoCollateralDAI.slippage).toString())*100;
 			if(tab === 'sell'){
-				setTransactionValueDescription(t('IBCO.exchange.sell', { OVRNumber: transactionValue, DAINumber: (transactionValue * ibcoOVRDAIPrice).toFixed(2) }))
+				let ret = await web3Context.actions.calculateCustomSellPrice(transactionValue);
+				slip = await web3Context.actions.calculateCustomSellSlippage(transactionValue);
+				setTransactionValueExtimate(ret);
+				setIbcoSlippage((slip*100).toFixed(2));
+				setTransactionValueDescription(t('IBCO.exchange.sell', { OVRNumber: transactionValue, DAINumber: ret }))
 			} else {
-				setTransactionValueDescription(t('IBCO.exchange.buy', { OVRNumber: (transactionValue / ibcoOVRDAIPrice).toFixed(2), DAINumber: transactionValue }))
+				let ret = await web3Context.actions.calculateCustomBuyPrice(transactionValue);
+				slip = await web3Context.actions.calculateCustomBuySlippage(transactionValue);
+				setTransactionValueExtimate(ret);
+				setIbcoSlippage((slip*100).toFixed(2));
+				setTransactionValueDescription(t('IBCO.exchange.buy', { OVRNumber: ret, DAINumber: transactionValue }))
+			}
+			// Slippage
+			if((slip*100).toFixed(2) >= maxSlip){
+				setHasMaxSlippageReached(true)
+			} else {
+				setHasMaxSlippageReached(false)
 			}
 	};
 
@@ -217,7 +242,6 @@ function PublicSale() {
 							batch,
 							config.apis.DAI
 					);
-					console.log("CLAIM SELL", claim);
 
 					// let reward = await web3Context.state.ibcoRewardViewer.balanceOf(
 					// 		web3Context.state.address
@@ -271,7 +295,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{t('IBCO.no.transactions')}
+							{hasPointRendered === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -292,7 +316,7 @@ function PublicSale() {
 							</tr>
 						</thead>
 						<tbody>
-							{ibcoPendingTransactions.map((trans) => (
+							{ibcoPendingTransactions.reverse().map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">
@@ -356,7 +380,7 @@ function PublicSale() {
 						transactionHash: claim.transactionHash
 					}
 					hClaim.push(nClaim);
-					if(claim.buyer === web3Context.state.address){ myClaim.push(nClaim) }
+					if(claim.buyer.toLowerCase() === web3Context.state.address.toLowerCase()){ myClaim.push(nClaim) }
 				} else {
 					let nClaim = {
 						type:  t("IBCO.sell"),
@@ -369,7 +393,7 @@ function PublicSale() {
 						transactionHash: claim.transactionHash
 					}
 					hClaim.push(nClaim);
-					if(claim.seller === web3Context.state.address){ myClaim.push(nClaim) }
+					if(claim.seller.toLowerCase() === web3Context.state.address.toLowerCase()){ myClaim.push(nClaim) }
 				}
 		}
 		setIbcoCurveHistory(hClaim)
@@ -385,7 +409,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{t('IBCO.no.transactions')}
+							{hasPointRendered === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -449,7 +473,7 @@ function PublicSale() {
 					</div>
 					<div className="c-dialog --centered">
 						<div className="c-dialog-main-title">
-							{t('IBCO.no.transactions')}
+							{hasPointRendered === false ? <div className="--pulse">Loading...</div> : t('IBCO.no.transactions')}
 						</div>
 					</div>
 				</div>
@@ -468,7 +492,7 @@ function PublicSale() {
 							</tr>
 						</thead>
 						<tbody>
-							{ibcoCurveHistory.map((trans) => (
+							{ibcoMyTransactions.reverse().map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="max --trans">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">
@@ -592,9 +616,9 @@ function PublicSale() {
 	function renderPointsOnChart(){
 		if(hasPointRendered == false && ibcoOVRDAIPrice > 0.1){
 			var newDataset = {
-				data: [{x: parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2), y: ibcoOVRDAIPrice}],
+				data: [{x: parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2), y: (1/ibcoOVRDAIPrice).toFixed(4)}],
 				backgroundColor: gradientStroke,
-				label: "Starting price",
+				label: "Buy Price",
 				borderColor: '#5d509c',
 				pointBackgroundColor:'#5d509c',
 				borderWidth: 3,
@@ -652,13 +676,20 @@ function PublicSale() {
 				}}
 					/>
 				<div className="--centered-button-holder">
-					<HexButton
-						url="#"
-						text={transactionValueDescription}
-						className={`--orange --large --kyc-button ${transactionValueValid == false ? '--disabled' : ''}`}
-						// ${bidValid ? '' : '--disabled'}
-						onClick={() => handleBuyOvr(transactionValue)}
-					></HexButton>
+
+					{hasMaxSlippageReached === true ? 
+						<HexButton
+							url="#"
+							text={t('IBCO.max.slippage.reached')}
+							className={`--orange --large --kyc-button --warning`}
+						></HexButton>
+						: <HexButton
+							url="#"
+							text={transactionValueDescription}
+							className={`--orange --large --kyc-button ${transactionValueValid == false ? '--disabled' : ''}`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => handleBuyOvr(transactionValue)}
+						></HexButton>}
 				</div>
 			</div>
 		</div>)
@@ -678,13 +709,19 @@ function PublicSale() {
 						}}
 						/>
 					<div className="--centered-button-holder">
-						<HexButton
-							url="#"
-							text={transactionValueDescription}
-							className={`--purple --large --kyc-button ${transactionValueValid == false ? '--disabled' : ''}`}
-							// ${bidValid ? '' : '--disabled'}
-							onClick={() => handleSellOvr(transactionValue)}
-						></HexButton>
+						{hasMaxSlippageReached === true ? 
+							<HexButton
+								url="#"
+								text={t('IBCO.max.slippage.reached')}
+								className={`--orange --large --kyc-button --warning`}
+							></HexButton>
+							: <HexButton
+								url="#"
+								text={transactionValueDescription}
+								className={`--purple --large --kyc-button ${transactionValueValid == false ? '--disabled' : ''}`}
+								// ${bidValid ? '' : '--disabled'}
+								onClick={() => handleSellOvr(transactionValue)}
+							></HexButton>}
 					</div>
 				</div>
 			</div>)
@@ -720,14 +757,14 @@ function PublicSale() {
 				<div className="o-container">
 					<div className="--flex">
 						<div className="s-f-curve">
-							<div className="o-card --chart-js">
+							<div className="o-card --chart-js --card-1">
 								<div className="o-row --chart-header">
 									<div className="o-one-label">
 										<div className="o-label">
 											{t('IBCO.buyprice')}
 										</div>
 										<div className="o-value">
-											<ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
+											<ValueCounter value={(1/ibcoOVRDAIPrice).toFixed(4)} currency="dai"></ValueCounter>
 										</div>
 									</div>
 									<div className="o-one-label">
@@ -736,7 +773,7 @@ function PublicSale() {
 										</div>
 										<div className="o-value">
 											<ValueCounter value={ibcoIsReady ? <>
-												{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2)}
+												{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2).toString()}
 											</> : '0.0'} currency="dai"></ValueCounter>
 										</div>
 									</div>
@@ -759,7 +796,7 @@ function PublicSale() {
 							</div>
 						</div>
 						<div className="s-f-panel">
-							<div className="o-card">
+							<div className="o-card --card-2">
 								<div className="o-row">
 									<div className="c-transaction-selector_cont">
 										<div
@@ -794,22 +831,22 @@ function PublicSale() {
 								<div className="o-row o-info-row">
 									<div className="o-half"><h3 className="o-info-title">Price</h3></div>
 									<div className="o-half --values-holder">
-										<ValueCounter value={"1"} currency="ovr"></ValueCounter><span>=</span><ValueCounter value={ibcoOVRDAIPrice} currency="dai"></ValueCounter>
+										<ValueCounter value={"1"} currency="dai"></ValueCounter><span>=</span><ValueCounter value={ibcoOVRDAIPrice} currency="ovr"></ValueCounter>
 									</div>
 								</div>
 								<div className="o-row o-info-row">
 									<div className="o-half"><h3 className="o-info-title">{t('IBCO.receive.amount')}</h3></div>
 									<div className="o-half">
 
-										{tab === "buy" ? <ValueCounter value={(transactionValue / ibcoOVRDAIPrice).toFixed(2)} currency="ovr"></ValueCounter>
-											: <ValueCounter value={(transactionValue * ibcoOVRDAIPrice).toFixed(2)} currency="dai"></ValueCounter>}
+										{tab === "buy" ? <ValueCounter value={transactionValueExtimate} currency="ovr"></ValueCounter>
+											: <ValueCounter value={transactionValueExtimate} currency="dai"></ValueCounter>}
 									</div>
 								</div>
 								<div className="o-row o-info-row">
 									<div className="o-half"><h3 className="o-info-title">{t('IBCO.slippage')}</h3></div>
 									<div className="o-half">{(ibcoIsReady) ? <>
-										{ethers.utils.formatEther(web3Context.state.ibcoCollateralDAI.slippage).toString()}
-									</> : '0'} %</div>
+										{ibcoSlippage}
+									</> : '0.00'}%</div>
 								</div>
 								<div className="o-row o-field-row">
 									{renderActionButtonSection()}
@@ -818,7 +855,7 @@ function PublicSale() {
 						</div>	
 					</div>
 					<div className="o-section">
-						<div className="o-card">
+						<div className="o-card --card-3">
 							<div className="o-row">
 								<h3 className="o-card-title">{t('IBCO.pending.transactions')}</h3>
 							</div>
@@ -829,7 +866,7 @@ function PublicSale() {
 						</div>
 					</div>
 					<div className="o-section">
-						<div className="o-card">
+						<div className="o-card --card-4">
 							<div className="o-row">
 								<h3 className="o-card-title">{t('IBCO.my.transactions')}</h3>
 							</div>

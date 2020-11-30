@@ -108,6 +108,13 @@
 	filter: grayscale(100%);
 }
 
+.HexButton.--warning {
+	opacity:1;
+	pointer-events: none;
+	cursor: not-allowed;
+	background: linear-gradient(-141deg, #F5515F 0%, #9F041B 100%);
+}
+
 .Overlay__buttons_container{
 	margin-top: 10px;
 	// display: grid;
