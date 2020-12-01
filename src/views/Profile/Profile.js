@@ -219,7 +219,7 @@ const ProfileLayout = () => {
 									</div>
 
 									{user.kycReviewAnswer == 1
-										? t('Profile.whitelisted.ok')
+										? ''
 										: t('Profile.whitelisted.no.ok')}
 									<br></br>
 									<br></br>

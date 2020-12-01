@@ -119,8 +119,10 @@ const NavBar = () => {
 		if(userState.user != undefined && userState.user.balance != undefined){
 			// console.log("userState.user.balanceAAA",userState.user.balance)
 			// TODO Perchè cazzo arriva 0 qua ogni tanto
-			if(userState.user.balance.toFixed(2) > 0){
-				setBalance(userState.user.balance.toFixed(2))
+			if(userState.user.balance !== undefined){
+				if(userState.user.balance.toFixed(2) > 0){
+					setBalance(userState.user.balance.toFixed(2))
+				}
 			}
 		}
 	}, [userState.user, userState.user.balance]);
