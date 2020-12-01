@@ -25,6 +25,10 @@ let ctx;
 let scatterChart;
 let chartData;
 let gradientStroke;
+let lang = "en";
+if(getCurrentLocale().includes('zh')){
+	lang = "zh";
+} 
 
 function PublicSale() {
 	const { t, i18n } = useTranslation();
@@ -142,18 +146,15 @@ function PublicSale() {
 			
 	};
 
-	const handleTransactionValueChange = async (transactionValue) => {
+	const handleTransactionValueChange = async (transaction) => {
 			let balance = 0;
+			let transactionValue = parseFloat(transaction);
 			if(tab === 'sell'){
 				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2)
 			} else {
 				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)
 			}
 
-			let lang = "en";
-			if(getCurrentLocale().includes('zh')){
-				lang = "zh";
-			} 
 			if(lang == "en"){
 				if (parseFloat(transactionValue) >= balance){
 					setTransactionValue(balance);
@@ -739,6 +740,15 @@ function PublicSale() {
 		return (
 		<div className="i-ibco-input">
 			<div>
+				{lang == 'zh' ? <TextField
+					type="number"
+					className={`${shakeInput ? "--shake":""}`}
+					placeholder={"0.00"}
+					onChange={(e) => {
+						const eventBid = e.target.value;
+						handleTransactionValueChange(eventBid);
+					}}
+				/> :
 				<CurrencyTextField
 				variant="outlined"
 				currencySymbol="DAI"
@@ -749,7 +759,9 @@ function PublicSale() {
 				onChange={(event, value)=> {
 					if(value>0){handleTransactionValueChange(value)};
 				}}
-					/>
+					/>}
+				
+
 				<div className="--centered-button-holder">
 
 					{hasMaxSlippageReached === true ? 
@@ -772,18 +784,26 @@ function PublicSale() {
 			return (
 			<div className="i-ibco-input">
 				<div>
-					<CurrencyTextField
-						variant="outlined"
-						value={transactionValue}
-						currencySymbol="OVR"
-						minimumValue={"0"}
+					{lang == 'zh' ? <TextField
+						type="number"
 						className={`${shakeInput ? "--shake":""}`}
-						decimalCharacter="."
-						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						placeholder={"0.00"}
+						onChange={(e) => {
+							const eventBid = e.target.value;
+							handleTransactionValueChange(eventBid);
 						}}
-						/>
+					/> :
+					<CurrencyTextField
+					variant="outlined"
+					currencySymbol="OVR"
+					minimumValue={"0"}
+					className={`${shakeInput ? "--shake":""}`}
+					decimalCharacter="."
+					digitGroupSeparator=","
+					onChange={(event, value)=> {
+						if(value>0){handleTransactionValueChange(value)};
+					}}
+						/>}
 					<div className="--centered-button-holder">
 						{hasMaxSlippageReached === true ? 
 							<HexButton
