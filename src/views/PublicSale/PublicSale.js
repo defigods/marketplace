@@ -17,6 +17,8 @@ import { useHistory,Link } from 'react-router-dom';
 import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import TextField from '@material-ui/core/TextField';
 
+import {getCurrentLocale} from '../../i18n';
+
 import {Chart} from 'chart.js'
 const mantissa = new bn(1e18);
 let ctx;
@@ -147,25 +149,35 @@ function PublicSale() {
 			} else {
 				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)
 			}
-			if (parseFloat(transactionValue) >= balance){
-				setTransactionValue(balance);
-				setShakeInput(true);
-				setTransactionValueDescription(t("Warning.no.token.title"));
-				setTimeout(() =>{
-					setShakeInput(false);
-				}, 400)
-				return false;
+
+			let lang = "en";
+			if(getCurrentLocale().includes('zh')){
+				lang = "zh";
+			} 
+			if(lang == "en"){
+				if (parseFloat(transactionValue) >= balance){
+					setTransactionValue(balance);
+					setShakeInput(true);
+					setTransactionValueDescription(t("Warning.no.token.title"));
+					setTimeout(() =>{
+						setShakeInput(false);
+					}, 400)
+					return false;
+				} else {
+					setTransactionValue(transactionValue);
+				}
+				if( transactionValue > 0){
+					setTransactionValueValid(true)
+				} else {
+					// To do allowance limit
+					setTransactionValueValid(false)
+				}
 			} else {
+				setTransactionValueValid(true)
 				setTransactionValue(transactionValue);
 			}
 
-		
-			if( transactionValue > 0){
-				setTransactionValueValid(true)
-			} else {
-				// To do allowance limit
-				setTransactionValueValid(false)
-			}
+
 			let slip = 0;
 			let maxSlip = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoCollateralDAI.slippage).toString())*100;
 			if(tab === 'sell'){
