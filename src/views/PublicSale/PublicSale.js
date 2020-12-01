@@ -741,7 +741,6 @@ function PublicSale() {
 			<div>
 				<CurrencyTextField
 				variant="outlined"
-				value={transactionValue}
 				currencySymbol="DAI"
 				minimumValue={"0"}
 				className={`${shakeInput ? "--shake":""}`}
