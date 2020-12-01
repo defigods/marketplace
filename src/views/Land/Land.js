@@ -128,7 +128,7 @@ const Land = (props) => {
 					// Centralized
 					setValue(data.value);
 					// If it's unminted take 10
-					if(data.value < 100){
+					if(data.value < 50){
 						let val = getUSDValueInOvr(10);
 						setValue(val);
 					}
