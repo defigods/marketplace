@@ -743,7 +743,7 @@ function PublicSale() {
 		return (
 		<div className="i-ibco-input">
 			<div>
-				{true ? <TextField
+				{lang == 'zh' ? <TextField
 					type="number"
 					className={`${shakeInput ? "--shake":""}`}
 					placeholder={"0.00"}
@@ -787,7 +787,7 @@ function PublicSale() {
 			return (
 			<div className="i-ibco-input">
 				<div>
-					{true ? <TextField
+					{lang == 'zh' ? <TextField
 						type="number"
 						className={`${shakeInput ? "--shake":""}`}
 						placeholder={"0.00"}
