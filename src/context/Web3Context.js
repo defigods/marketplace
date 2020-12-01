@@ -615,6 +615,7 @@ export class Web3Provider extends Component {
 						// console.log("_LOG: ", _log);
 						const blockNum = _log.blockNumber;
 						const transactionHash = _log['transactionHash'];
+						console.log("blockNum",blockNum)
 						// console.log(log.args.batchId._hex);
 						switch (log.name) {
 								case "OpenBuyOrder": {
@@ -623,7 +624,6 @@ export class Web3Provider extends Component {
 												log.args.buyer.toLowerCase()
 										) {	
 												log.transactionHash = transactionHash;
-												// console.log("OPENBuys", openBuys)
 												openBuys.push(log);
 										}
 										break;
@@ -634,7 +634,6 @@ export class Web3Provider extends Component {
 												log.args.seller.toLowerCase()
 										) {
 												log.transactionHash = transactionHash;
-												// console.log("OPENSells", openBuys)
 												openSells.push(log);
 										}
 										break;
@@ -653,7 +652,6 @@ export class Web3Provider extends Component {
 												});
 												openBuys = filterBuy;
 										}
-										const txInfo = await this.state.provider.getTransaction(transactionHash)
 										log.transactionHash = transactionHash;
 										claims.push(log);
 										break;
@@ -663,7 +661,6 @@ export class Web3Provider extends Component {
 												this.state.address.toLowerCase() ==
 												log.args.seller.toLowerCase()
 										) {
-												const txInfo = await this.state.provider.getTransaction(transactionHash)
 												var filterSell = openSells.filter(function (
 														value,
 														index,
@@ -690,6 +687,8 @@ export class Web3Provider extends Component {
 						continue;
 				}
 		}
+
+		console.log('FINITO IL LOOOP')
 
 		// format data for store
 		let storeOpenBuys = [];
@@ -749,6 +748,7 @@ export class Web3Provider extends Component {
 		this.setState({
 			ibcoLoadedHistory: true
 		})
+		
 	};
 
 	setOpenBuyOrders(input) {
@@ -775,7 +775,7 @@ export class Web3Provider extends Component {
 		}
 		// var joined = this.state.ibcoClaims.concat(input);
 		this.setState({ 
-			ibcoClaims: input.reverse().slice(0, 15),
+			ibcoClaims: input.reverse().slice(0, 15), 
 			ibcoMyClaims: myClaims
 		})
 	}
