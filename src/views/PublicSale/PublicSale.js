@@ -26,9 +26,6 @@ let scatterChart;
 let chartData;
 let gradientStroke;
 let lang = "en";
-if(getCurrentLocale().includes('zh')){
-	lang = "zh";
-} 
 
 function PublicSale() {
 	const { t, i18n } = useTranslation();
@@ -59,6 +56,12 @@ function PublicSale() {
 	const [shakeInput, setShakeInput] = React.useState(false);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
 	const [classShowPanels, setClassShowPanels] = React.useState(false);
+
+	React.useEffect(() => {
+		if(getCurrentLocale().includes('zh')){
+			lang = "zh";
+		} 
+	}, [])
 
 	// Check if anything changed from web3context
 	React.useEffect(() => {
@@ -740,7 +743,7 @@ function PublicSale() {
 		return (
 		<div className="i-ibco-input">
 			<div>
-				{lang == 'zh' ? <TextField
+				{true ? <TextField
 					type="number"
 					className={`${shakeInput ? "--shake":""}`}
 					placeholder={"0.00"}
@@ -784,7 +787,7 @@ function PublicSale() {
 			return (
 			<div className="i-ibco-input">
 				<div>
-					{lang == 'zh' ? <TextField
+					{true ? <TextField
 						type="number"
 						className={`${shakeInput ? "--shake":""}`}
 						placeholder={"0.00"}
