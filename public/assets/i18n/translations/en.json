@@ -417,6 +417,7 @@
 	"Success.request.processing": "Your order request is being processed",
 	"Lands.select.multiple.lands": "Multiple land selection",
 	"IBCO.max.slippage.reached": "Maximum slippage reached",
+	"IBCO.double.claim": "Claim above Order",
 	"Auctions.allowance": "Auction allowance",
 	"Auctions.allowance.increment": "Increase",
 	"Aucitons.allowance.tooltip": "Auction allowance means the total amount of token that you permit to withdraw from your wallet when you participate a land auction. If the allowance is too low, it might cause to fail the transaction necessary to close the auction."

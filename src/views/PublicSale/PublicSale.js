@@ -361,7 +361,7 @@ function PublicSale() {
 
 	function renderClaimButton(trans){
 		if(trans.duplicateBatch === true){
-			return "Claim above Order"
+			return t('IBCO.double.claim')
 		}
 		if(trans.type === "Sell"){
 			return <div

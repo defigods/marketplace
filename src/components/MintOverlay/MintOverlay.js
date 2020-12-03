@@ -171,7 +171,7 @@ const MintOverlay = (props) => {
 			return false;
 		}
 		// Check Allowance
-		if( floatCost > allowance){
+		if( floatCost > allowance || allowance < 2000 ){
 			await authorizeOvrExpense("1000000");
 		}
 		return true;
