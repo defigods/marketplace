@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'PRODUCTION';
+const environment = 'DEVELOPMENT';
 
 let apis;
 
@@ -27,6 +27,7 @@ if (environment === 'PRODUCTION') {
 		DAI:"0x6B175474E89094C44Da98b954EedeAC495271d0F",
 		RewardToken:"0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697",
 		BancorFormula:"0x6b2D3B366C3417C46240ab62c2878FfdA9861E73",
+		firstOVRBlock: 11356495,
 
 	};
 } else if (environment === 'STAGING') {
@@ -46,6 +47,7 @@ if (environment === 'PRODUCTION') {
 		BancorFormula: "0xf3C64493Cbbd4FeB549Ee0f5eb1c6D0F5c8D1680",
 		curveAddress: "0x7531205Bf874CF7D1Ba1E4dE4355AEE0fA83C34E",
 		controllerAddress: "0x9C13122f191a9A27A5eE94b12E771ABC1055d9b1",
+		firstOVRBlock: 11356495,
 	};
 } else {
 	apis = {
@@ -64,6 +66,7 @@ if (environment === 'PRODUCTION') {
 		// RewardToken: "0xdc40B187fe113F64276b3082E35A50d2bb32D683",
 		// BancorFormula: "0x8903235a94ebeC28F9b5b2d40DC0293cFd61d325",
 		// connectorWeight: "20000",
+		// firstOVRBlock: 7650000,
 		// OVR - Rinkeby
 		connectorWeight: "32500",
 		DAI: "0xc719A57531850D56d59d8F66B915338b002883D8",
@@ -71,6 +74,7 @@ if (environment === 'PRODUCTION') {
 		BancorFormula: "0xf3C64493Cbbd4FeB549Ee0f5eb1c6D0F5c8D1680",
 		curveAddress: "0x7531205Bf874CF7D1Ba1E4dE4355AEE0fA83C34E",
 		controllerAddress: "0x9C13122f191a9A27A5eE94b12E771ABC1055d9b1",
+		firstOVRBlock: 7650000,
 	};
 }
 
