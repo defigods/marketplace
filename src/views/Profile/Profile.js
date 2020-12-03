@@ -53,7 +53,11 @@ const ProfileLayout = () => {
 	const web3Context = useContext(Web3Context);
 	const user = userContext.state.user;
 	const [balance, setBalance] = React.useState(user.balance);
+	const [allowance, setAllowance] = React.useState(user.allowance);
 	const [address, setAddress] = React.useState(user.publicAddress);
+	const { refreshBalanceAndAllowance } = userContext.actions;
+	const { authorizeOvrExpense } = web3Context.actions;
+
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
@@ -69,6 +73,13 @@ const ProfileLayout = () => {
 			setBalance(user.balance.toFixed(2))
 		}
 	}, [user.balance]);
+
+	useEffect(() => {
+	if(user != undefined && user.allowance != undefined){
+		setAllowance(user.allowance.toFixed(0))
+	}
+	}, [user.allowance]);
+
 
 	React.useEffect(() => {
 		setAddress(user.publicAddress)
@@ -203,6 +214,25 @@ const ProfileLayout = () => {
 										<ValueCounter value={balance} />
 										<div>
 											<HexButton url="/public-sale" className={`--orange `} text={t('Profile.buy.ovr')}></HexButton>
+											{/* history.push('/profile');
+											// TODO: KYC -  */}
+										</div>
+									</div>
+								</div>
+								<div className="p-balance">
+									<div className="p-small-title">{t('Auctions.allowance')}</div>
+									<div className="p-balance-value">
+										<ValueCounter value={allowance} />
+										<div>
+											<HexButton url="#" onClick={
+												async (e) => {
+													e.preventDefault()
+													await authorizeOvrExpense("1000000");
+													setTimeout(() => {
+														refreshBalanceAndAllowance();
+													}, 20000);
+												}
+											} className={`--orange `} text={t('Auctions.allowance.increment')}></HexButton>
 											{/* history.push('/profile');
 											// TODO: KYC -  */}
 										</div>

@@ -380,6 +380,7 @@
 	"IBCO.verify.toparticipate": "Verify Identity to Participate",
 	"IBCO.accept.toparticipate": "Accept Terms and Conditions",
 	"IBCO.allowance": "Allowance",
+	"IBCO.allowance.increment": "Increment",
 	"IBCO.pending.transactions": "Pending Transactions",
 	"IBCO.after.claim": "Available after Claim",
 	"IBCO.my.transactions": "My Transactions",
@@ -415,5 +416,7 @@
 	"Profile.ovr.sale.started": "OVR Token Sale started. Click on Buy OVR to participite the Public Sale",
 	"Success.request.processing": "Your order request is being processed",
 	"Lands.select.multiple.lands": "Multiple land selection",
-	"IBCO.max.slippage.reached": "Maximum slippage reached"
+	"IBCO.max.slippage.reached": "Maximum slippage reached",
+	"Auctions.allowance": "Auction allowance",
+	"Auctions.allowance.increment": "Increment"
 }

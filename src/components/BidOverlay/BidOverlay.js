@@ -171,7 +171,7 @@ const BidOverlay = (props) => {
 		}
 		// Check Allowance
 		if( floatCost > allowance){
-			await authorizeOvrExpense(String(floatCost * 3));
+			await authorizeOvrExpense("1000000");
 		}
 		return true;
 	}

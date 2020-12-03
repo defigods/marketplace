@@ -23,7 +23,6 @@ const initialVirtualBalance = BigNumber.from(371681).mul(
 );
 const mantissa = new bn(1e18);
 const firstOVRBlock = 11356495;
-//const firstOVRBlock = 7650000; //Rinkeby
 
 export const Web3Context = createContext();
 
@@ -258,16 +257,12 @@ export class Web3Provider extends Component {
 		let fromBlock = firstOVRBlock;
 		let toBlock = firstOVRBlock+9999; 
 		let nowBlock = this.state.ibcoBlock.toNumber();
-		console.log("toBlock - nowBlock",toBlock - nowBlock)
 		while(toBlock <= nowBlock){
-			// if(toBlock > nowBlock){
-			// 	break
-			// }
 			await this.historicData(fromBlock, toBlock);
 			fromBlock = toBlock+1;
 			toBlock = fromBlock+9999;
 		}
-		await this.historicData(fromBlock, nowBlock);
+		await this.historicData(fromBlock+1, nowBlock);
 
 		// Setup final state
 		this.setState({
@@ -622,7 +617,7 @@ export class Web3Provider extends Component {
 						// ]
 				],
 		};
-		let _logs = await this.state.provider.getLogs(historicFilter);
+		const _logs = await this.state.provider.getLogs(historicFilter);
 
 		let openBuys = [];
 		let openSells = [];
@@ -799,6 +794,7 @@ export class Web3Provider extends Component {
 
 	appendClaims(input) {
 		// My Claims Detect
+		console.log('appendClaims', input)
 		let myClaims = []
 		let Claims = this.state.ibcoClaims
 		for (const claim of input) {
