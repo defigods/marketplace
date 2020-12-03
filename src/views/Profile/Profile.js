@@ -21,6 +21,10 @@ import { Web3Context } from '../../context/Web3Context';
 import snsWebSdk from '@sumsub/websdk';
 import { useTranslation, Translation} from 'react-i18next';
 
+
+import Tooltip from '@material-ui/core/Tooltip';
+import Help from '@material-ui/icons/Help';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 import i18n from 'i18next';
 import {getCurrentLocale} from '../../i18n';
@@ -220,7 +224,19 @@ const ProfileLayout = () => {
 									</div>
 								</div>
 								<div className="p-balance">
-									<div className="p-small-title">{t('Auctions.allowance')}</div>
+									<div className="p-small-title">{t('Auctions.allowance')}
+									<Tooltip
+										title={
+											<React.Fragment>
+												{t('Aucitons.allowance.tooltip')}
+											</React.Fragment>
+										}
+										aria-label="info"
+										placement="bottom"
+									>
+										<Help className="Help" />
+									</Tooltip>
+									</div>
 									<div className="p-balance-value">
 										<ValueCounter value={allowance} />
 										<div>

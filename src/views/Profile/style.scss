@@ -1,5 +1,13 @@
 .profile {
 	min-height: 60vh;
+	.Help{
+		font-size: 14px;
+		color: $ovr-grey;
+		margin-left: 5px;
+		line-height: 16px;
+		position: relative;
+		top: 2px;
+	}
 	.c-dialog{
 		padding-top: 50px;
 	}
