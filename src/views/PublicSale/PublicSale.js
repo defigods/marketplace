@@ -316,9 +316,20 @@ function PublicSale() {
 				fee: parseFloat(ethers.utils.formatEther(claim.fee).toString()),
 				value: parseFloat(ethers.utils.formatEther(claim.value).toString()),
 				transactionHash: claim.transactionHash,
+				duplicateBatch:false
 			}
 			if(claim.buyer.toLowerCase() === web3Context.state.address.toLowerCase()){ 
-				openPending.push(nClaim) 
+				// If there is another transaction per batch, mark as duplicate
+				if(openPending.map(o => o.batchId._hex).includes(claim.batchId._hex)){
+					nClaim.duplicateBatch = true;
+				}
+				// If there is a claimed transaction with same batchId
+				if(web3Context.state.ibcoMyClaims.map(o => o.batchId._hex).includes(claim.batchId._hex)){
+					// don't push as pending
+				} else {
+					openPending.push(nClaim) 	
+				}
+
 			}
 		}
 		for (const claim of web3Context.state.ibcoOpenSellOrders) {
@@ -330,12 +341,42 @@ function PublicSale() {
 				fee: 0,
 				value: 0,
 				transactionHash: claim.transactionHash,
+				duplicateBatch:false
 			}
 			if(claim.seller.toLowerCase() === web3Context.state.address.toLowerCase()){ 
-				openPending.push(nClaim) 
+				// If there is another transaction per batch, mark as duplicate
+				if(openPending.map(o => o.batchId._hex).includes(claim.batchId._hex)){
+					nClaim.duplicateBatch = true;
+				}
+				// If there is a claimed transaction with same batchId
+				if(web3Context.state.ibcoMyClaims.map(o => o.batchId._hex).includes(claim.batchId._hex)){
+					// don't push as pending
+				} else {
+					openPending.push(nClaim) 	
+				} 
 			}
 		}
 		setIbcoPendingTransactions(openPending)
+	}
+
+	function renderClaimButton(trans){
+		if(trans.duplicateBatch === true){
+			return "Claim above Order"
+		}
+		if(trans.type === "Sell"){
+			return <div
+					className="HexButton --orange"
+					data-b={trans.batchId}
+					onClick={handleClaimSell}
+			>{t("IBCO.claim.sell")}</div>
+		}
+		if(trans.type === "Buy"){
+			return <div
+					className="HexButton --orange"
+					data-b={trans.batchId}
+					onClick={handleClaimBuy}
+			>{t("IBCO.claim.buy")}</div>
+		}
 	}
 	
 	function renderIbcoPendingTransactions() {
@@ -396,15 +437,7 @@ function PublicSale() {
 										{trans.amount == 0 ? <>{t('IBCO.after.claim')}</> : <></>}
 									</td>
 									<td className="">
-										{trans.type === "Sell" ? <div
-												className="HexButton --orange"
-												data-b={trans.batchId}
-												onClick={handleClaimSell}
-										>{t("IBCO.claim.sell")}</div>: <div
-												className="HexButton --orange"
-												data-b={trans.batchId}
-												onClick={handleClaimBuy}
-										>{t("IBCO.claim.buy")}</div>}
+										{renderClaimButton(trans)}
 									</td>
 									<td><a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer" target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a></td>
 								</tr>

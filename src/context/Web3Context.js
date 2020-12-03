@@ -676,40 +676,21 @@ export class Web3Provider extends Component {
 												this.state.address.toLowerCase() ==
 												log.args.buyer.toLowerCase()
 										) {
-												var filterBuy = openBuys.filter(function (value, index, arr) {
-														if (value.args.batchId._hex !== log.args.batchId._hex) {
-																return value;
-														} else {
-																// console.log("MATCH", value.args.batchId._hex);
-														}
-												});
-												openBuys = filterBuy;
+												log.transactionHash = transactionHash;
+												claims.push(log);
+												break;
 										}
-										log.transactionHash = transactionHash;
-										claims.push(log);
-										break;
+										
 								}
 								case "ClaimSellOrder": {
 										if (
 												this.state.address.toLowerCase() ==
 												log.args.seller.toLowerCase()
 										) {
-												var filterSell = openSells.filter(function (
-														value,
-														index,
-														arr
-												) {
-														if (value.args.batchId._hex !== log.args.batchId._hex) {
-																return value;
-														} else {
-																// console.log("MATCH", value.args.batchId._hex);
-														}
-												});
-												openSells = filterSell;
+												log.transactionHash = transactionHash;
+												claims.push(log);
+												break;
 										}
-										log.transactionHash = transactionHash;
-										claims.push(log);
-										break;
 								}
 								default:
 										break;
@@ -720,8 +701,6 @@ export class Web3Provider extends Component {
 						continue;
 				}
 		}
-
-		console.log('FINITO IL LOOOP')
 
 		// format data for store
 		let storeOpenBuys = [];
