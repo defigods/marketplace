@@ -22,7 +22,8 @@ const initialVirtualBalance = BigNumber.from(371681).mul(
 		BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
 );
 const mantissa = new bn(1e18);
-
+const firstOVRBlock = 11356495;
+//const firstOVRBlock = 7650000; //Rinkeby
 
 export const Web3Context = createContext();
 
@@ -248,14 +249,36 @@ export class Web3Provider extends Component {
 			})
 
 			// Start setting up History and Poll
- 			this.historicData();
+			await this.startHistoricLoop();
 			this.ibcoPoll()
-			
-			// Swich setup to complete
-			this.setState({
-				"ibcoSetupComplete": true
-			})
 	};
+
+	startHistoricLoop = async () => {
+		// Loop trough blocks
+		let fromBlock = firstOVRBlock;
+		let toBlock = firstOVRBlock+9999; 
+		let nowBlock = this.state.ibcoBlock.toNumber();
+		console.log("toBlock - nowBlock",toBlock - nowBlock)
+		while(toBlock <= nowBlock){
+			// if(toBlock > nowBlock){
+			// 	break
+			// }
+			await this.historicData(fromBlock, toBlock);
+			fromBlock = toBlock+1;
+			toBlock = fromBlock+9999;
+		}
+		await this.historicData(fromBlock, nowBlock);
+
+		// Setup final state
+		this.setState({
+			ibcoLoadedHistory: true,
+			ibcoSetupComplete: true,
+			ibcoOpenBuyOrders: this.state.ibcoOpenBuyOrders.reverse(),
+			ibcoMyClaims: this.state.ibcoMyClaims.reverse(),
+			ibcoOpenSellOrders: this.state.ibcoOpenSellOrders.reverse(),
+			ibcoClaims: this.state.ibcoClaims.reverse().slice(0, 15),
+		})
+	}
 	
 	// Calculate adapted price
 	calculateCustomBuyPrice = async (val) => {
@@ -507,7 +530,7 @@ export class Web3Provider extends Component {
 										transactionHash: receipt.transactionHash
 									},
 							];
-							this.setOpenBuyOrders(oBuy);
+							this.appendOpenBuyOrders(oBuy);
 							await this.updateBalances();
 					}
 			);
@@ -527,7 +550,7 @@ export class Web3Provider extends Component {
 									},
 							];
 							// console.log("ON OpenSellOrder")
-							this.setOpenSellOrders(oSell);
+							this.appendOpenSellOrders(oSell);
 							await this.updateBalances();
 					}
 			);
@@ -548,7 +571,7 @@ export class Web3Provider extends Component {
 							},
 					];
 					// this.removeOpenBuyOrder(bClaim)
-					this.setClaims(bClaim);
+					this.appendClaims(bClaim);
 					await this.updateBalances();
 			});
 
@@ -571,20 +594,20 @@ export class Web3Provider extends Component {
 									},
 							];
 							// this.removeOpenSellOrder(sClaim)
-							this.setClaims(sClaim);
+							this.appendClaims(sClaim);
 							await this.updateBalances();
 					}
 			);
 	};
-
-	historicData = async () => {
+	// 
+	historicData = async (fromBlock, toBlock) => {
 		//
 		// HISTORICAL DATA POLLING
 		//
 		const historicFilter = {
 				address: config.apis.curveAddress,
-				fromBlock: this.state.ibcoBlock.sub(9800).toNumber(),
-				toBlock: this.state.ibcoBlock.toNumber(),
+				fromBlock: fromBlock, 
+				toBlock: toBlock,
 				topics: [
 						[
 								utils.id("OpenBuyOrder(address,uint256,address,uint256,uint256)"),
@@ -594,9 +617,12 @@ export class Web3Provider extends Component {
 										"ClaimSellOrder(address,uint256,address,uint256,uint256)"
 								),
 						],
+						// [
+						// 	ethers.utils.keccak256(this.state.address)
+						// ]
 				],
 		};
-		const _logs = await this.state.provider.getLogs(historicFilter);
+		let _logs = await this.state.provider.getLogs(historicFilter);
 
 		let openBuys = [];
 		let openSells = [];
@@ -609,14 +635,27 @@ export class Web3Provider extends Component {
 		// should migrate to TheGraph for more stable interaction with historical data
 		for (const _log of _logs) {
 				y++;
-				// console.log(y);
+				// console.log("YYYYY",y);
 				try {
 						const log = this.state.ibcoCurveViewer.interface.parseLog(_log);
-						// console.log("_LOG: ", _log);
+						//console.log("_LOG: ", _log);
 						const blockNum = _log.blockNumber;
 						const transactionHash = _log['transactionHash'];
-						console.log("blockNum",blockNum)
+						// console.log("blockNum",blockNum)
 						// console.log(log.args.batchId._hex);
+						// console.log('log.orgs',log.args)
+						// if(log.args.buyer !== undefined && log.args.buyer){
+						// 	if(log.args.buyer.toLowerCase() === this.state.address.toLowerCase()){
+						// 		console.log('me as a buyer', log)
+						// 	}
+						// }
+
+						// if(log.args.seller !== undefined && log.args.seller){
+						// 	if(log.args.seller.toLowerCase() === this.state.address.toLowerCase()){
+						// 		console.log('me as a seller', log)
+						// 	}
+						// }
+						
 						switch (log.name) {
 								case "OpenBuyOrder": {
 										if (
@@ -740,24 +779,54 @@ export class Web3Provider extends Component {
 						});
 				}
 		}
-
+		console.log('storeOpenBuys',storeOpenBuys)
 		// store logged data as store
-		this.setOpenBuyOrders(storeOpenBuys);
-		this.setOpenSellOrders(storeOpenSells);
-		this.setClaims(storeClaims);
-		this.setState({
-			ibcoLoadedHistory: true
-		})
-		
+		this.appendOpenBuyOrders(storeOpenBuys);
+		this.appendOpenSellOrders(storeOpenSells);
+		this.appendClaims(storeClaims);	
 	};
 
+	appendOpenBuyOrders(input) {
+		console.log("appendOpenBuyOrders",input)
+		let orders = this.state.ibcoOpenBuyOrders.concat(input);
+		this.setState({ ibcoOpenBuyOrders: orders })
+	}
+
+	appendOpenSellOrders(input) {
+		let orders = this.state.ibcoOpenSellOrders.concat(input);
+		this.setState({ ibcoOpenSellOrders: orders })
+	}
+
+	appendClaims(input) {
+		// My Claims Detect
+		let myClaims = []
+		let Claims = this.state.ibcoClaims
+		for (const claim of input) {
+			if (claim.type === "ClaimBuyOrder") {
+				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){ 
+					myClaims.push(claim) 
+				}
+			} else {
+				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){ 
+					myClaims.push(claim) 
+				}
+			}
+		}
+		// var joined = this.state.ibcoClaims.concat(input);
+		this.setState({ 
+			ibcoClaims: Claims.concat(input),//.reverse().slice(0, 15), 
+			ibcoMyClaims: this.state.ibcoMyClaims.concat(myClaims)
+		})
+	}
+
 	setOpenBuyOrders(input) {
-		this.setState({ ibcoOpenBuyOrders: input.reverse() })
+		this.setState({ ibcoOpenBuyOrders: input })
 	}
 
 	setOpenSellOrders(input) {
-		this.setState({ ibcoOpenSellOrders: input.reverse() })
+		this.setState({ ibcoOpenSellOrders: input })
 	}
+
 
 	setClaims(input) {
 		// My Claims Detect
