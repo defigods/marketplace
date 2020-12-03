@@ -672,25 +672,15 @@ export class Web3Provider extends Component {
 										break;
 								}
 								case "ClaimBuyOrder": {
-										if (
-												this.state.address.toLowerCase() ==
-												log.args.buyer.toLowerCase()
-										) {
-												log.transactionHash = transactionHash;
-												claims.push(log);
-												break;
-										}
+										log.transactionHash = transactionHash;
+										claims.push(log);
+										break;
 										
 								}
 								case "ClaimSellOrder": {
-										if (
-												this.state.address.toLowerCase() ==
-												log.args.seller.toLowerCase()
-										) {
-												log.transactionHash = transactionHash;
-												claims.push(log);
-												break;
-										}
+										log.transactionHash = transactionHash;
+										claims.push(log);
+										break;
 								}
 								default:
 										break;
