@@ -341,6 +341,7 @@
 	"Warning.no.lands.title": "没有土地可购买",
 	"Warning.no.ovrtokens.desc": "你没有足够的 OVR tokens",
 	"Lands.select.multiple.lands": "选择多个土地",
-	"IBCO.max.slippage.reached": "达到的最大滑点"
-
+	"IBCO.max.slippage.reached": "达到的最大滑点",
+	"Auctions.allowance": "竞拍最高允许出价",
+	"Auctions.allowance.increment": "竞拍增量"
 }
