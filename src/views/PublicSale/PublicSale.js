@@ -25,7 +25,6 @@ let ctx;
 let scatterChart;
 let chartData;
 let gradientStroke;
-let lang = "en";
 
 function PublicSale() {
 	const { t, i18n } = useTranslation();
@@ -50,6 +49,7 @@ function PublicSale() {
 	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.00);
 	const [ibcoHasHistoryLoaded, setIbcoHasHistoryLoaded] = React.useState(false);
+	const [lang, setLang] = React.useState("en");
 	
 	const [hasMaxSlippageReached, setHasMaxSlippageReached] = React.useState(false);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
@@ -58,10 +58,13 @@ function PublicSale() {
 	const [classShowPanels, setClassShowPanels] = React.useState(false);
 
 	React.useEffect(() => {
-		if(getCurrentLocale().includes('zh')){
-			lang = "zh";
-		} 
+		setInterval(() => {
+			if(getCurrentLocale().includes('zh')){
+				setLang("zh");
+			} 
+		}, 200);
 	}, [])
+
 
 	// Check if anything changed from web3context
 	React.useEffect(() => {
@@ -158,7 +161,7 @@ function PublicSale() {
 				balance = parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)
 			}
 
-			if(lang == "en"){
+			if(!getCurrentLocale().includes('zh')){
 				if (parseFloat(transactionValue) >= balance){
 					setTransactionValue(balance);
 					setShakeInput(true);
@@ -363,16 +366,16 @@ function PublicSale() {
 		if(trans.duplicateBatch === true){
 			return t('IBCO.double.claim')
 		}
-		if(trans.type === "Sell"){
+		if(trans.typeUni.toLowerCase() === "sell"){
 			return <div
-					className="--orange-link"
+					className="HexButton --orange"
 					data-b={trans.batchId}
 					onClick={handleClaimSell}
 			>{t("IBCO.claim.sell")}</div>
 		}
-		if(trans.type === "Buy"){
+		if(trans.typeUni.toLowerCase() === "buy"){
 			return <div
-					className="--orange-link"
+					className="HexButton --orange"
 					data-b={trans.batchId}
 					onClick={handleClaimBuy}
 			>{t("IBCO.claim.buy")}</div>
@@ -776,7 +779,7 @@ function PublicSale() {
 		return (
 		<div className="i-ibco-input">
 			<div>
-				{lang == 'zh' ? <TextField
+				{getCurrentLocale().includes('zh') ? <TextField
 					type="number"
 					className={`${shakeInput ? "--shake":""}`}
 					placeholder={"0.00"}
@@ -820,7 +823,7 @@ function PublicSale() {
 			return (
 			<div className="i-ibco-input">
 				<div>
-					{lang == 'zh' ? <TextField
+					{getCurrentLocale().includes('zh') ? <TextField
 						type="number"
 						className={`${shakeInput ? "--shake":""}`}
 						placeholder={"0.00"}
