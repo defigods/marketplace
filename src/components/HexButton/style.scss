@@ -57,7 +57,9 @@
 	border: 0px;
 }
 .HexButton.--orange {
+	background-color: $ovr-orange;
 	background-image: linear-gradient(90deg,$ovr-orange,$ovr-yellow);
+	background: linear-gradient(90deg,$ovr-orange,$ovr-yellow);
 	border: 0px;
 }
 .HexButton.--hollow-orange{
