@@ -49,22 +49,12 @@ function PublicSale() {
 	const [ibcoOVRDAIPrice, setIbcoOVRDAIPrice] = React.useState(0.1);
 	const [ibcoSlippage, setIbcoSlippage] = React.useState(0.00);
 	const [ibcoHasHistoryLoaded, setIbcoHasHistoryLoaded] = React.useState(false);
-	const [lang, setLang] = React.useState("en");
 	
 	const [hasMaxSlippageReached, setHasMaxSlippageReached] = React.useState(false);
 	const [hasPointRendered, setHasPointRendered] = React.useState(false);
 	const [shakeInput, setShakeInput] = React.useState(false);
 	const [showTermsAndConditionsOverlay, setShowTermsAndConditionsOverlay] = React.useState(false);
 	const [classShowPanels, setClassShowPanels] = React.useState(false);
-
-	React.useEffect(() => {
-		setInterval(() => {
-			if(getCurrentLocale().includes('zh')){
-				setLang("zh");
-			} 
-		}, 200);
-	}, [])
-
 
 	// Check if anything changed from web3context
 	React.useEffect(() => {

@@ -565,7 +565,7 @@ export class Web3Provider extends Component {
 							},
 					];
 					// this.removeOpenBuyOrder(bClaim)
-					this.appendClaims(bClaim);
+					this.prependClaims(bClaim);
 					await this.updateBalances();
 			});
 
@@ -588,7 +588,7 @@ export class Web3Provider extends Component {
 									},
 							];
 							// this.removeOpenSellOrder(sClaim)
-							this.appendClaims(sClaim);
+							this.prependClaims(sClaim);
 							await this.updateBalances();
 					}
 			);
@@ -780,6 +780,29 @@ export class Web3Provider extends Component {
 		this.setState({ 
 			ibcoClaims: Claims.concat(input),//.reverse().slice(0, 15), 
 			ibcoMyClaims: this.state.ibcoMyClaims.concat(myClaims)
+		})
+	}
+
+	prependClaims(input) {
+		// My Claims Detect
+		console.log('appendClaims', input)
+		let myClaims = []
+		let Claims = this.state.ibcoClaims
+		for (const claim of input) {
+			if (claim.type === "ClaimBuyOrder") {
+				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){ 
+					myClaims.push(claim) 
+				}
+			} else {
+				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){ 
+					myClaims.push(claim) 
+				}
+			}
+		}
+		// var joined = this.state.ibcoClaims.concat(input);
+		this.setState({ 
+			ibcoClaims: input.concat(Claims),//.reverse().slice(0, 15), 
+			ibcoMyClaims:  myClaims.concat(this.state.ibcoMyClaims)
 		})
 	}
 
