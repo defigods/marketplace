@@ -7,7 +7,7 @@
 	letter-spacing: 1px;
   border-radius: 50px;
   padding: 10px 20px;
-	border: 2px solid white;
+	border: 0px;
 	color: #fff;
   transition: 350ms all cubic-bezier(0.190,  1.000, 0.220, 1.000);
 	transform: scale(1);
@@ -99,6 +99,17 @@
 			border-radius: inherit;
 			background: #fff;
 	}
+}
+.--orange-link{
+	padding: 0;
+	text-decoration: underline;
+	text-transform: uppercase;
+	color: #282d32;
+	margin-left: 0;
+	font-weight: 400;
+	font-size: 14px;
+	color: $ovr-orange;
+	cursor: pointer;
 }
 .HexButton.--hollow {
 

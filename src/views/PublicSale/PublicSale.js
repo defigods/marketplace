@@ -365,14 +365,14 @@ function PublicSale() {
 		}
 		if(trans.type === "Sell"){
 			return <div
-					className="HexButton --orange"
+					className="--orange-link"
 					data-b={trans.batchId}
 					onClick={handleClaimSell}
 			>{t("IBCO.claim.sell")}</div>
 		}
 		if(trans.type === "Buy"){
 			return <div
-					className="HexButton --orange"
+					className="--orange-link"
 					data-b={trans.batchId}
 					onClick={handleClaimBuy}
 			>{t("IBCO.claim.buy")}</div>
