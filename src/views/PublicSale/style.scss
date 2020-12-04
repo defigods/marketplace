@@ -1,6 +1,14 @@
 .PublicSale{
 	background-image: linear-gradient(90deg, #5e509d 0%, #724a93 100%);
 	padding-bottom: 50px;
+	.Help{
+		font-size: 14px;
+		color: $ovr-grey;
+		margin-left: 5px;
+		line-height: 16px;
+		position: relative;
+		top: 2px;
+	}
 	.o-section{
 		margin-top: 45px;
 		display: inline-block;

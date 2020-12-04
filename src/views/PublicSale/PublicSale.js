@@ -19,6 +19,9 @@ import TextField from '@material-ui/core/TextField';
 
 import {getCurrentLocale} from '../../i18n';
 
+import Tooltip from '@material-ui/core/Tooltip';
+import Help from '@material-ui/icons/Help';
+
 import {Chart} from 'chart.js'
 const mantissa = new bn(1e18);
 let ctx;
@@ -354,7 +357,19 @@ function PublicSale() {
 
 	function renderClaimButton(trans){
 		if(trans.duplicateBatch === true){
-			return t('IBCO.double.claim')
+			return <>{t('IBCO.double.claim')}
+			<Tooltip
+				title={
+					<React.Fragment>
+						{t('IBCO.double.claim.tooltip')}
+					</React.Fragment>
+				}
+				aria-label="info"
+				placement="bottom"
+			>
+				<Help className="Help" />
+			</Tooltip>
+			</>
 		}
 		if(trans.typeUni.toLowerCase() === "sell"){
 			return <div

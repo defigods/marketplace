@@ -418,6 +418,7 @@
 	"Lands.select.multiple.lands": "Multiple land selection",
 	"IBCO.max.slippage.reached": "Maximum slippage reached",
 	"IBCO.double.claim": "Claim above Order",
+	"IBCO.double.claim.tooltip": "Orders are claimed by Batch ID, claiming the above Order will automatically include the sum of all other orders in the same Batch",
 	"Auctions.allowance": "Auction allowance",
 	"Auctions.allowance.increment": "Increase",
 	"Aucitons.allowance.tooltip": "Auction allowance means the total amount of token that you permit to withdraw from your wallet when you participate a land auction. If the allowance is too low, it might cause to fail the transaction necessary to close the auction."

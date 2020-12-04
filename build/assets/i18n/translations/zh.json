@@ -345,5 +345,6 @@
 	"Auctions.allowance": "允许参与土地拍卖的额度",
 	"Auctions.allowance.increment": "增加参与竞拍的最高限额",
 	"IBCO.double.claim": "申领上面的交易订单",
+	"IBCO.double.claim.tooltip": "订单是按批次ID申领的，对上面的订单的申领将自动包括同一批中所有其他订单的申领",
 	"Aucitons.allowance.tooltip": "注意： 这个允许参与土地拍卖的额度意味着你允许参与土地竞拍的token的总额，这个上限过低可能会导致你的土地交易无法完成。"
 }
