@@ -243,7 +243,7 @@ const Map = (props) => {
 						interactive: false,
 						paint: {
 							'fill-outline-color': '#fff',
-							'fill-color': '#8851b4',
+							'fill-color': 'rgba(136, 81, 180, 0.5)',
 							'fill-opacity': 1,
 						},
 					});
