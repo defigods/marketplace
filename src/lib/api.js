@@ -262,6 +262,17 @@ export function indexMyLands(sort = null, page = 1) {
 	);
 }
 
+export function indexInterestingLands(hex_ids=[]) {
+	return request(
+		{ url: '/lands/interesting/list', method: 'POST' },
+		{
+			hex_ids: hex_ids,
+		},
+		null,
+	);
+}
+
+
 // SELL
 export function sellLand(landUuid = null, worth = null) {
 	return request(

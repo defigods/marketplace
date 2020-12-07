@@ -8,7 +8,7 @@ import geojson2h3 from 'geojson2h3';
 import * as h3 from 'h3-js';
 import config from '../../lib/config';
 import { MapContext, withMapContext } from '../../context/MapContext';
-
+import {indexInterestingLands} from '../../lib/api'
 import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
 import MapNavigationBox from '../MapNavigationBox/MapNavigationBox';
 
@@ -87,7 +87,11 @@ const Map = (props) => {
 		const zoomThreshold = 17;
 		map.on('moveend', () => {
 			if (map.getZoom() > zoomThreshold) {
-				renderHexes(hexagons());
+				let hexs = hexagons();
+				// Render general hexes
+				renderHexes(hexs);
+				// Render owned Lands
+				renderInterestingHexes(hexs);
 			}
 		});
 	}, []);
@@ -204,6 +208,51 @@ const Map = (props) => {
 				[0.5, config.map.colorScale[0]],
 				[1, config.map.colorScale[0]],
 			],
+		});
+	}
+	
+	function renderInterestingHexes(hexagons){
+		// Filter rendering Hexagons to see if there is some interesting
+		let hexIds = Object.keys(hexagons)
+		let interestingHexagons = []
+		indexInterestingLands(hexIds).then((response) => {
+			if (response.data.result === true) {
+				interestingHexagons = response.data.hexIds;
+				// Prepare format
+				var data = Object.assign({}, interestingHexagons);
+				var newData = Object.keys(data).reduce(function (obj, key) {
+					obj[data[key]] = Math.random();
+					return obj;
+				}, {});
+
+				// Plot hexes
+				const geojson = geojson2h3.h3SetToFeatureCollection(Object.keys(newData), (hex) => ({ value: hexagons[hex] }));
+				const sourceId = 'h3-interesting-hexes';
+				const layerId = `${sourceId}-interesting-layer`;
+				let source = map.getSource(sourceId);
+
+				if (!source) {
+					map.addSource(sourceId, {
+						type: 'geojson',
+						data: geojson,
+					});
+					map.addLayer({
+						id: layerId,
+						source: sourceId,
+						type: 'fill',
+						interactive: false,
+						paint: {
+							'fill-outline-color': '#fff',
+							'fill-color': '#8851b4',
+							'fill-opacity': 1,
+						},
+					});
+					source = map.getSource(sourceId);
+				}
+
+				// Update the geojson data
+				source.setData(geojson);
+			} 
 		});
 	}
 

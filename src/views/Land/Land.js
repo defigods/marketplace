@@ -44,6 +44,7 @@ const Land = (props) => {
 	const { isLoggedIn } = props.userProvider.state;
 
 	const [hexId, setHexId] = useState(props.mapProvider.state);
+	const [integerId, setIntegerId] = useState(props.mapProvider.state);
 	const [value, setValue] = useState(10);
 	const [marketStatus, setMarketStatus] = useState(0);
 	const [userPerspective, setUserPerspective] = useState(0);

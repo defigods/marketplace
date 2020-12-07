@@ -11,6 +11,7 @@ export class MapProvider extends Component {
 		this.state = {
 			onSingleView: false,
 			hex_id: '8c81326dda43dff',
+			integer_id: 632776805293768200,
 			isAuction: false,
 			isUserRelated: false,
 			activeBidOverlay: false,
@@ -41,7 +42,7 @@ export class MapProvider extends Component {
 	changeHexId(hex_id) {
 		// TODO change it as it could accept 3words names
 		if (h3.h3IsValid(hex_id)) {
-			this.setState({ onSingleView: true, hex_id: hex_id, isAuction: true });
+			this.setState({ onSingleView: true, hex_id: hex_id, integer_id: parseInt(hex_id, 16), isAuction: true });
 		}
 	}
 	enableMultipleLandSelection() {
