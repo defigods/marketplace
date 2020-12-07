@@ -91,7 +91,7 @@ const Map = (props) => {
 				// Render general hexes
 				renderHexes(hexs);
 				// Render owned Lands
-				renderInterestingHexes(hexs);
+				// renderInterestingHexes(hexs);
 			}
 		});
 	}, []);
