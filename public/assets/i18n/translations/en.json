@@ -421,5 +421,9 @@
 	"IBCO.double.claim.tooltip": "Orders are claimed by Batch ID, claiming the above Order will automatically include the sum of all other orders in the same Batch",
 	"Auctions.allowance": "Auction allowance",
 	"Auctions.allowance.increment": "Increase",
-	"Aucitons.allowance.tooltip": "Auction allowance means the total amount of token that you permit to withdraw from your wallet when you participate a land auction. If the allowance is too low, it might cause to fail the transaction necessary to close the auction."
+	"Aucitons.allowance.tooltip": "Auction allowance means the total amount of token that you permit to withdraw from your wallet when you participate a land auction. If the allowance is too low, it might cause to fail the transaction necessary to close the auction.",
+	"Auction.double.bidder.confirmation": "You are already the best bidder for this auction, are you sure you want to place another bid?",
+	"Auctions.allowance.waiting.title": "Auction allowance",
+	"Auctions.allowance.waiting.desc": "Please wait the allowance transaction to succeed and try again to bid in a couple of minutes",
+	"Auctions.please.reload": "Please reload the page to see the new auction values"
 }

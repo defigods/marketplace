@@ -44,7 +44,7 @@ const Land = (props) => {
 	const { isLoggedIn } = props.userProvider.state;
 
 	const [hexId, setHexId] = useState(props.mapProvider.state);
-	const [integerId, setIntegerId] = useState(props.mapProvider.state);
+	const [integerId, setIntegerId] = useState();
 	const [value, setValue] = useState(10);
 	const [marketStatus, setMarketStatus] = useState(0);
 	const [userPerspective, setUserPerspective] = useState(0);
@@ -120,6 +120,7 @@ const Land = (props) => {
 					changeHexId(data.hexId);
 					// Update state component
 					setHexId(data.hexId);
+					setIntegerId(data.intId);
 					setName({ sentence: data.sentenceId, hex: data.hexId });
 					setLocation(data.address.full);
 					setUserPerspective(data.userPerspective);
@@ -567,6 +568,7 @@ const Land = (props) => {
 					<BidOverlay
 						currentBid={value}
 						land={{ hexId: hexId, marketStatus: marketStatus, name: name, location: location }}
+						auction={auction}
 					></BidOverlay>
 					<MintOverlay
 						currentBid={value}
@@ -588,6 +590,7 @@ const Land = (props) => {
 					<div className="o-container">
 						<div className="Land__heading__1">
 							<h2>
+								<span className="--nft-id">NFT ID: {integerId}</span>
 								<Textfit mode="single" max={25}>
 									{name.sentence}
 								</Textfit>

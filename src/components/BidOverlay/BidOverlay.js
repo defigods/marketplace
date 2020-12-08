@@ -172,8 +172,22 @@ const BidOverlay = (props) => {
 		// Check Allowance
 		if( floatCost > allowance || allowance < 2000){
 			await authorizeOvrExpense("1000000");
+			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
 		return true;
+	}
+
+	const ensureDoubleBid = async () => {
+		console.log(props.auction)
+		if(props.auction && props.auction.bestBidder){
+			if(props.auction.bestBidder === userState.uuid){
+				if(	window.confirm(t('Auction.double.bidder.confirmation'))){
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
 	}
 
 	const participateInAuction = async (type) => {
@@ -188,6 +202,9 @@ const BidOverlay = (props) => {
 		// Ensure balance and allowance
 		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
 		if( !checkOnBal ) return;
+		// Ask for confirmation if best bid is from same user
+		let checkOnDoubleBid = await ensureDoubleBid();
+		if( !checkOnDoubleBid ) return;
 
 		// Centralized
 		auctionBid(hexId, bid, gasProjection)

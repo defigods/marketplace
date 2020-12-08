@@ -137,8 +137,11 @@ const Lands = (props) => {
 			if (response.data.result === true) {
 				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
 			} else {
+				setTimeout(() => {
+					successNotification(t('Generic.congrats.label'), t('Auctions.please.reload'));
+				}, 2000);
 				// console.log('responseFalse');
-				return successNotification(t('Generic.congrats.label'), t('Success.request.processing'));
+				successNotification(t('Generic.congrats.label'), t('Success.request.processing'));
 			}
 		})
 		.catch((error) => {

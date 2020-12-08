@@ -173,6 +173,7 @@ const MintOverlay = (props) => {
 		// Check Allowance
 		if( floatCost > allowance || allowance < 2000 ){
 			await authorizeOvrExpense("1000000");
+			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
 		return true;
 	}
