@@ -30,6 +30,7 @@ export class MapProvider extends Component {
 		this.enableMultipleLandSelection = this.enableMultipleLandSelection.bind(this);
 		this.disableMultipleLandSelection = this.disableMultipleLandSelection.bind(this);
 		this.changeMultipleLandSelectionList = this.changeMultipleLandSelectionList.bind(this);
+		this.resetMultipleLandSelectionList = this.resetMultipleLandSelectionList.bind(this);
 		this.changeAuctionList = this.changeAuctionList.bind(this);
 		this.changeActiveBidOverlay = this.changeActiveBidOverlay.bind(this);
 		this.changeActiveMintOverlay = this.changeActiveMintOverlay.bind(this);
@@ -62,6 +63,9 @@ export class MapProvider extends Component {
 	}
 	changeMultipleLandSelectionList(list) {
 		this.setState({ multipleLandSelectionList: 	_.uniq(list) });
+	}
+	resetMultipleLandSelectionList(list) {
+		this.setState({ multipleLandSelectionList: [] });
 	}
 	changeActiveBidOverlay(activeVal) {
 		this.setState({ activeBidOverlay: activeVal });
@@ -97,6 +101,7 @@ export class MapProvider extends Component {
 						enableMultipleLandSelection: this.enableMultipleLandSelection,
 						disableMultipleLandSelection: this.disableMultipleLandSelection,
 						changeMultipleLandSelectionList: this.changeMultipleLandSelectionList,
+						resetMultipleLandSelectionList: this.resetMultipleLandSelectionList,
 					},
 					overviewList: this.overviewList,
 				}}

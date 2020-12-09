@@ -21,7 +21,6 @@ import { Web3Context } from '../../context/Web3Context';
 import snsWebSdk from '@sumsub/websdk';
 import { useTranslation, Translation} from 'react-i18next';
 
-
 import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
 
@@ -93,20 +92,18 @@ const ProfileLayout = () => {
 		// IMWallet workaround
 		if (isiOS() == true){
 			if(window.ethereum){
-				if(window.ethereum.isImToken){
-					setIsIMWallet(true)
-					if(user.uuid != undefined){
-						let sumsubLang = "en";
-						if(getCurrentLocale().includes('zh')){
-							sumsubLang = "zh";
-						} 
-						getSumsubExternalLink(sumsubLang).then((response) => {
-							if (response.data.result === true) {
-								setUrlKyc(response.data.url)
-							}
-						})
-						.catch(() => {});
-					}
+				setIsIMWallet(true)
+				if(user.uuid != undefined){
+					let sumsubLang = "en";
+					if(getCurrentLocale().includes('zh')){
+						sumsubLang = "zh";
+					} 
+					getSumsubExternalLink(sumsubLang).then((response) => {
+						if (response.data.result === true) {
+							setUrlKyc(response.data.url)
+						}
+					})
+					.catch(() => {});
 				}
 			}
 		}
@@ -310,7 +307,7 @@ const ProfileLayout = () => {
 								<div className="p-section-content">
 									<h4 className="p-content-title">{t('Profile.status.label')}</h4>
 									{isIMWallet ? <><div className="p-tiny-message">
-										{t('Profile.imwallet.sumsub')}
+										{t('Profile.ios.sumsub')}
 									</div><br></br></> : <></>}
 
 									<div className="p-balance-value">

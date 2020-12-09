@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next'
 
 const Lands = (props) => {
 	const { t, i18n } = useTranslation();
-	const { enableMultipleLandSelection, disableMultipleLandSelection } = props.mapProvider.actions;
+	const { enableMultipleLandSelection, disableMultipleLandSelection, resetMultipleLandSelectionList } = props.mapProvider.actions;
 	const { multipleLandSelectionList } = props.mapProvider.state;
 	const { refreshBalanceAndAllowance } = props.userProvider.actions;
 
@@ -33,6 +33,8 @@ const Lands = (props) => {
 	const [listLandsObj, setListLandsObj] = useState([]);
 	const { getUSDValueInOvr, authorizeOvrExpense } = props.web3Provider.actions;
 	const { gasLandCost } = props.web3Provider.state;
+	const [isProcessing, setIsProcessing] = useState(false);
+
 
 	const userState = props.userProvider.state.user;
 	const { balance, allowance } = userState;
@@ -76,23 +78,27 @@ const Lands = (props) => {
 		setGasProjection(gasLandCost)
 	}, [gasLandCost]);
 
-	function renderTotalEstimate() {
+	const renderTotalEstimate = () => {
 		let total = 0;
-		listLandsObj.map((land) =>{
-			console.log('land',land)
-			let value = land.value < 100 ? parseFloat(getUSDValueInOvr(10)) : parseFloat(land.value)
-			total = total + value
-		});
+		if(listLandsObj){
+			listLandsObj.map((land) =>{
+				console.log('land',land)
+				let value = land.value < 100 ? parseFloat(getUSDValueInOvr(10)) : parseFloat(land.value)
+				total = total + value
+			});
+		}
 		return <ValueCounter value={total} currency="ovr"></ValueCounter>
 	}
 
-	function calculateTotal() {
+	const calculateTotal = () => {
 		let total = 0;
-		listLandsObj.map((land) =>{
-			console.log('land',land)
-			let value = land.value < 100 ? parseFloat(getUSDValueInOvr(10)) : parseFloat(land.value)
-			total = total + value
-		});
+		if(listLandsObj){
+			listLandsObj.map((land) =>{
+				console.log('land',land)
+				let value = land.value < 100 ? parseFloat(getUSDValueInOvr(10)) : parseFloat(land.value)
+				total = total + value
+			});
+		}
 		total = total + (gasLandCost * listLandsObj.length)
 		return total.toFixed(2)
 	}
@@ -121,6 +127,7 @@ const Lands = (props) => {
 	};
 
 	const participateInAuctions = async (type) => {
+		setIsProcessing(true);
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
@@ -134,13 +141,16 @@ const Lands = (props) => {
 		// Start centralized auction
 		participateMultipleAuctions(hexIds, parseFloat(getUSDValueInOvr(10)))
 		.then((response) => {
-			if (response.data.result === true) {
+			console.log(response)
+			if (response.data.result === false) {
 				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
 			} else {
 				setTimeout(() => {
 					successNotification(t('Generic.congrats.label'), t('Auctions.please.reload'));
+					setIsProcessing(false);
 				}, 2000);
-				// console.log('responseFalse');
+				console.log('responseFalse');
+				resetMultipleLandSelectionList();
 				successNotification(t('Generic.congrats.label'), t('Success.request.processing'));
 			}
 		})
@@ -203,7 +213,7 @@ const Lands = (props) => {
 								<HexButton
 									url="#"
 									text={t('Success.order.confirm')}
-									className={`--orange`}
+									className={`--orange ${!isProcessing ? '' : '--disabled'}`}
 									ariaHaspopup="true"
 									onClick={() => participateInAuctions()}
 								></HexButton>

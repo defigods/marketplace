@@ -22,6 +22,7 @@
 	"Profile.status.label" : "身份认证状态",
 	"Profile.emailPresence.label" : "邮箱地址",
 	"Profile.imwallet.sumsub":"如果你在使用imToken钱包手机端， 请点击外部链接按钮， 复制网页链接到Safari浏览器打开网页。",
+	"Profile.ios.sumsub":"如果你在使用iOS钱包手机端， 请点击外部链接按钮， 复制网页链接到Safari浏览器打开网页。",
 	"Email.add" : "保存",
 	"Warning.email.not.detected.title":"此邮箱不存在于我们的数据库里",
 	"Warning.email.not.detected.desc":"你必须设置邮箱地址才能开始身份认证",
