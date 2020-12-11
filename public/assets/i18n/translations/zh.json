@@ -351,6 +351,7 @@
 	"Auction.double.bidder.confirmation": "你已经是出价最高的人，你确定你要再次加价吗？",
 	"Auctions.allowance.waiting.title": "参与竞拍的额度",
 	"Auctions.allowance.waiting.desc": "请等待额度交易成功，过几分钟后再出价",
-	"Auctions.please.reload": "请刷新页面看看是否有新的竞拍出价"
+	"Auctions.please.reload": "请刷新页面看看是否有新的竞拍出价",
+	"Cashback.banner.desc": "前3000的买拍的土地可以享受月度的现金返还政策"
 
 }

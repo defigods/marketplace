@@ -426,5 +426,6 @@
 	"Auction.double.bidder.confirmation": "You are already the best bidder for this auction, are you sure you want to place another bid?",
 	"Auctions.allowance.waiting.title": "Auction allowance",
 	"Auctions.allowance.waiting.desc": "Please wait the allowance transaction to succeed and try again to bid in a couple of minutes",
-	"Auctions.please.reload": "Please reload the page to see the new auction values"
+	"Auctions.please.reload": "Please reload the page to see the new auction values",
+	"Cashback.banner.desc": "Monthly cashback applied to first 3000 auctions"
 }
