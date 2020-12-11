@@ -187,6 +187,8 @@ const BidOverlay = (props) => {
 					return false;
 				}
 			}
+		} else {
+			return true;
 		}
 	}
 
