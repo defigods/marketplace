@@ -178,7 +178,6 @@ const BidOverlay = (props) => {
 	}
 
 	const ensureDoubleBid = async () => {
-		console.log(props.auction)
 		if(props.auction && props.auction.bestBidder){
 			if(props.auction.bestBidder === userState.uuid){
 				if(	window.confirm(t('Auction.double.bidder.confirmation'))){
@@ -186,6 +185,8 @@ const BidOverlay = (props) => {
 				} else {
 					return false;
 				}
+			} else {
+				return true;
 			}
 		} else {
 			return true;
