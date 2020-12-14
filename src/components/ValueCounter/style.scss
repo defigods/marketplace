@@ -12,7 +12,16 @@
     }
     .ValueCounter__icon{
       height: 20px;
-    }
+		}
+		span{
+			color: $ovr-grey;
+			text-transform: uppercase;
+			font-size: 10px;
+			font-weight: bold;
+			line-height: 20px;
+			position: relative;
+			top: -2px;
+		}
 }
 
 
