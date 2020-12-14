@@ -27,6 +27,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
 
 
+const mantissa = new bn(1e18);
+
 function Stacking() {
 	const { t, i18n } = useTranslation();
 	const [tab, setTab] = React.useState('stacking');
@@ -41,6 +43,7 @@ function Stacking() {
 	const { isLoggedIn: userAuthenticated } = userContext.state;
 
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
+
 
 
 	// Check if terms condition changed from userstate and kyc passed
@@ -138,51 +141,47 @@ function Stacking() {
 	const participateVestingDeposit = async (currency) =>{
 		console.log('participateVestingDeposit', currency)
 		console.log('value', transactionValue)
-		console.log('lockup', lockup)
+		console.log('currency', currency)
+
+		let bnValue=new bn(transactionValue).times(mantissa).toFixed(0)
+		console.log('valueBN', bnValue)
 
 		if(currency === "ovrg"){
-
+			//let balOVR = await web3Context.state.VestOVRGViewer.balanceOVR();
+			//Float: parseFloat(ethers.utils.formatEther(VALOREBIGNUMBER).toString()).toFixed(2)
+			//console.log('Balance OVR: ',ethers.utils.formatEther(balOVR).toString());
+			let depositOVRG = await web3Context.state.VestOVRGSigner.deposit(bnValue);
 		}
 		if(currency === "ovrg15"){
-
+			let depositOVRG15 = await web3Context.state.VestOVRG15Signer.deposit(bnValue);
 		}
 		if(currency === "ovrg30"){
-
+			let depositOVRG30 = await web3Context.state.VestOVRG30Signer.deposit(bnValue);
 		}
 	}
 
-	const participateVestingClaim = async (kind, currency) =>{
-		console.log('participateVestingClaim', {kind, currency})
+	const participateVestingClaim = async (currency) =>{
+		console.log('participateVestingClaim', currency)
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
-		
-		if(kind === "capital"){
-			if(currency === "ovrg"){
 
+
+			if(currency === "ovrg"){
+				let claimOVRG = await web3Context.state.VestOVRGSigner.unlockVestedTokens();
 			}
 			if(currency === "ovrg15"){
-
+				let claimOVRG = await web3Context.state.VestOVRG15Signer.unlockVestedTokens();
 			}
 			if(currency === "ovrg30"){
-
+				let claimOVRG = await web3Context.state.VestOVRG30Signer.unlockVestedTokens();
 			}
-		}
-		if(kind === "stakes"){
-			if(currency === "ovrg"){
 
-			}
-			if(currency === "ovrg15"){
-
-			}
-			if(currency === "ovrg30"){
-
-			}
-		}
 	}
 
 
 	// Example
 	const handleApprove = async (val) => {
+		let test = await web3Context.state.vestingOVRGViewer.deposit(100);
 			// let approve = await web3Context.state.ibcoDAISigner.approve(
 			// 		config.apis.curveAddress,
 			// 		new bn(val).times(mantissa).toFixed(0)
@@ -198,7 +197,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -227,7 +226,7 @@ function Stacking() {
 					<div className="o-row o-flow-root">
 						<h3 className="c-section-title">Deposit OVRG</h3>
 					</div>
-					<div className="o-half i-ibco-input">
+					<div className="i-ibco-input">
 						<CurrencyTextField
 						variant="outlined"
 						currencySymbol="OVRG"
@@ -238,6 +237,15 @@ function Stacking() {
 							if(value>0){handleTransactionValueChange(value)};
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={"OVRG ALLOWANCE"}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => participateVestingDeposit('ovrg')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
@@ -277,7 +285,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -356,7 +364,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -438,7 +446,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -471,7 +479,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -513,7 +521,7 @@ function Stacking() {
 							<b>Lockup:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup 
+										No lockup
 									</ToggleButton>
 									<ToggleButton value={3}>
 										3 months
@@ -555,7 +563,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -597,7 +605,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -630,7 +638,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -672,7 +680,7 @@ function Stacking() {
 							<b>Lockup:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup 
+										No lockup
 									</ToggleButton>
 									<ToggleButton value={3}>
 										3 months
@@ -714,7 +722,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -756,7 +764,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -789,7 +797,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -831,7 +839,7 @@ function Stacking() {
 							<b>Lockup:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup 
+										No lockup
 									</ToggleButton>
 									<ToggleButton value={3}>
 										3 months
@@ -873,7 +881,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -915,7 +923,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking															 
+								Total Stacking
 							</div>
 							<div className="o-value">
 								<ValueCounter value={10000} currency="ovr"></ValueCounter>
@@ -948,7 +956,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -990,7 +998,7 @@ function Stacking() {
 							<b>Lockup:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup 
+										No lockup
 									</ToggleButton>
 									<ToggleButton value={3}>
 										3 months
@@ -1032,7 +1040,7 @@ function Stacking() {
 						<b>Lockup:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup 
+									No lockup
 								</ToggleButton>
 								<ToggleButton value={3}>
 									3 months
@@ -1153,7 +1161,7 @@ function Stacking() {
 				</div>
 			</div>
 		</div>
-		)	
+		)
 	};
 
 	if (!userAuthenticated) {
@@ -1169,7 +1177,7 @@ function Stacking() {
 										<h3 className="p-card-title">Titolo</h3>
 									</div>
 									<div className="o-row">
-										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. 
+										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
 										<br></br><br></br>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
 									</div>
 								</div>

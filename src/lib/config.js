@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'PRODUCTION';
+const environment = 'STAGING';
 
 let apis;
 
@@ -20,7 +20,7 @@ if (environment === 'PRODUCTION') {
 		// Auctions
 		OVRContract: '0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697',
 		walletApproved: '0x8ABa7FBaE92012c8A86C5182538A5dE11039Dad1',
-		// IBCO 
+		// IBCO
 		connectorWeight: "32500",
 		controllerAddress:"0x5c0D928A3d86766E6c2Ca7378ABE76e7b2fF1028",
 		curveAddress:"0x8c19cF0135852BA688643F57d56Be72bB898c411",
@@ -28,7 +28,10 @@ if (environment === 'PRODUCTION') {
 		RewardToken:"0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697",
 		BancorFormula:"0x6b2D3B366C3417C46240ab62c2878FfdA9861E73",
 		firstOVRBlock: 11356495,
-
+		// VESTING Contracts
+		VestingOVRG: "0x74C4eF527C5459f78874C2583d0Ec3508F79E440",
+		VestingOVRG15: "0x74C4eF527C5459f78874C2583d0Ec3508F79E440",
+		VestingOVRG30: "0x74C4eF527C5459f78874C2583d0Ec3508F79E440",
 	};
 } else if (environment === 'STAGING') {
 	apis = {
@@ -48,6 +51,10 @@ if (environment === 'PRODUCTION') {
 		curveAddress: "0x7531205Bf874CF7D1Ba1E4dE4355AEE0fA83C34E",
 		controllerAddress: "0x9C13122f191a9A27A5eE94b12E771ABC1055d9b1",
 		firstOVRBlock: 11356495,
+		// VESTING Contracts
+		VestingOVRG: "0x74C4eF527C5459f78874C2583d0Ec3508F79E440",
+		VestingOVRG15: "0x74C4eF527C5459f78874C2583d0Ec3508F79E440",
+		VestingOVRG30: "0x74C4eF527C5459f78874C2583d0Ec3508F79E440",
 	};
 } else {
 	apis = {
@@ -157,7 +164,7 @@ export function isiOS() {
   ].includes(navigator.platform)
   // iPad on iOS 13 detection
   || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
-} 
+}
 
 export function isImToken(){
 	return !!window.imToken
