@@ -29,6 +29,13 @@ import Help from '@material-ui/icons/Help';
 function Stacking() {
 	const { t, i18n } = useTranslation();
 	const [tab, setTab] = React.useState('stacking');
+
+	const [stackingValuesOVR, setStackingValuesOVR] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [stackingValuesOVRG, setStackingValuesOVRG] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [stackingValuesOVRG15, setStackingValuesOVRG15] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [stackingValuesOVRG30, setStackingValuesOVRG30] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [vestingValues, setVestingValues] = React.useState([0,0,0,0,0,0,0,0,0]); // OVRG-assigned, OVRG-vested, OVRG-claimed, OVRG15-assigned, OVRG15-vested, OVRG15-claimed..
+
 	const [subTab, setSubTab] = React.useState('ovr');
 	const [transactionValue, setTransactionValue] = React.useState(0.00);
 	const [transactionValueValid, setTransactionValueValid] = React.useState(false);
@@ -40,6 +47,11 @@ function Stacking() {
 	const { isLoggedIn: userAuthenticated } = userContext.state;
 
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
+
+
+	React.useEffect(() => {
+		//setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
+	}, []);
 
 
 	// Check if terms condition changed from userstate and kyc passed
@@ -200,7 +212,7 @@ function Stacking() {
 								Total Assigned															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[0]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -208,7 +220,7 @@ function Stacking() {
 								Total Vested
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[1]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -216,7 +228,7 @@ function Stacking() {
 								Total Claimed
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[2]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -234,8 +246,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -280,7 +292,7 @@ function Stacking() {
 								Total Assigned															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[3]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -288,7 +300,7 @@ function Stacking() {
 								Total Vested
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[4]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -296,7 +308,7 @@ function Stacking() {
 								Total Claimed
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[5]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -314,8 +326,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -360,7 +372,7 @@ function Stacking() {
 								Total Assigned															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[6]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -368,7 +380,7 @@ function Stacking() {
 								Total Vested
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[7]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -376,7 +388,7 @@ function Stacking() {
 								Total Claimed
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[8]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -394,8 +406,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -443,13 +455,13 @@ function Stacking() {
 								Total Stacking															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[0]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[1]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -457,13 +469,13 @@ function Stacking() {
 								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[3]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[4]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -471,13 +483,13 @@ function Stacking() {
 								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[6]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[7]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -513,8 +525,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -607,8 +619,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -635,13 +647,13 @@ function Stacking() {
 								Total Stacking															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[0]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[1]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -649,13 +661,13 @@ function Stacking() {
 								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[3]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[4]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -663,13 +675,13 @@ function Stacking() {
 								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[6]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[7]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -705,8 +717,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -799,8 +811,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -827,13 +839,13 @@ function Stacking() {
 								Total Stacking															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[0]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[1]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -841,13 +853,13 @@ function Stacking() {
 								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[3]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[4]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -855,13 +867,13 @@ function Stacking() {
 								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[6]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[7]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -897,8 +909,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -991,8 +1003,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -1019,13 +1031,13 @@ function Stacking() {
 								Total Stacking															 
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[0]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[1]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -1033,13 +1045,13 @@ function Stacking() {
 								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[3]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[4]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
@@ -1047,13 +1059,13 @@ function Stacking() {
 								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[6]} currency="ovr" text="0 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[7]} currency="ovr" text="3 Months"></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -1089,8 +1101,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -1183,8 +1195,8 @@ function Stacking() {
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
