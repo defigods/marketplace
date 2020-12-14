@@ -17,6 +17,7 @@ const curveABI = require("../contract/curveABI");
 const DAIABI = require("../contract/DAIABI");
 const rewardABI = require("../contract/rewardABI");
 const bancorFormulaABI = require("../contract/bancorFormulaABI");
+
 const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(
 		BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))

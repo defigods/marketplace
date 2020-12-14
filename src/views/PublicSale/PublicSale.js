@@ -111,7 +111,7 @@ function PublicSale() {
 
 					// Render Point on Chart ( and keep updated )
 					if(ibcoIsChartReady === true){
-						renderPointsOnChart();
+						
 					}
 				}
 			}
@@ -731,7 +731,7 @@ function PublicSale() {
 				}
 			}
 		});
-		setIbcoIsChartReady(true);
+		renderPointsOnChart();
 	}
 
 	function renderPointsOnChart(){
