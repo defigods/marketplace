@@ -514,7 +514,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG"})}</h3>
+						<h3 className="c-section-title">{t("Stacking.convert", {token: "OVRG"})}</h3>
 					</div>
 					<div className="i-ibco-input">
 						<TextField
@@ -541,7 +541,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={t("Stacking.deposit", {token: "OVRG"})}
+							text={t("Stacking.convert", {token: "OVRG"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateVestingDeposit('ovrg')}
@@ -551,14 +551,14 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVRG"})}</h3>
+						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 
 						<div className="o-row">
 							<HexButton
 								url="#"
-								text={t("Vesting.claim", {token: "OVRG"})}
+								text={t("Vesting.claim", {token: "OVR"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateVestingClaim('ovrg')}
@@ -603,7 +603,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG15"})}</h3>
+						<h3 className="c-section-title">{t("Stacking.convert", {token: "OVRG15"})}</h3>
 					</div>
 					<div className="i-ibco-input">
 						<TextField
@@ -630,7 +630,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={t("Stacking.deposit", {token: "OVRG15"})}
+							text={t("Stacking.convert", {token: "OVRG15"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateVestingDeposit('ovrg15')}
@@ -640,14 +640,14 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVRG15"})}</h3>
+						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 
 						<div className="o-row">
 							<HexButton
 								url="#"
-								text={t("Vesting.claim", {token: "OVRG15"})}
+								text={t("Vesting.claim", {token: "OVR"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateVestingClaim('ovrg15')}
@@ -692,7 +692,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG30"})}</h3>
+						<h3 className="c-section-title">{t("Stacking.convert", {token: "OVRG30"})}</h3>
 					</div>
 					<div className="i-ibco-input">
 						<TextField
@@ -719,7 +719,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={t("Stacking.deposit", {token: "OVRG30"})}
+							text={t("Stacking.convert", {token: "OVRG30"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateVestingDeposit('ovrg30')}
@@ -729,14 +729,14 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVRG30"})}</h3>
+						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 
 						<div className="o-row">
 							<HexButton
 								url="#"
-								text={t("Vesting.claim", {token: "OVRG30"})}
+								text={t("Vesting.claim", {token: "OVR"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateVestingClaim('ovrg30')}
@@ -822,7 +822,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
 					</div>
-					<div className="i-ibco-input">
+					<div className="o-half i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -916,20 +916,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
-						<TextField
-						variant="outlined"
-						type="number"
-						currencySymbol="OVR"
-						minimumValue={"0"}
-						decimalCharacter="."
-						digitGroupSeparator=","
-						onChange={(e)=> {
-							handleTransactionValueChange(e.target.value);
-						}}
-							/>
-					</div>
-					<div className="o-half">
+					<div className="o-row">
 						<HexButton
 							url="#"
 							text={t("Stacking.claim.rewards", {token: "OVR"})}
@@ -1014,7 +1001,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="i-ibco-input">
+					<div className="o-half i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -1108,20 +1095,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
-						<TextField
-						variant="outlined"
-						type="number"
-						currencySymbol="OVRG"
-						minimumValue={"0"}
-						decimalCharacter="."
-						digitGroupSeparator=","
-						onChange={(e)=> {
-							handleTransactionValueChange(e.target.value);
-						}}
-							/>
-					</div>
-					<div className="o-half">
+					<div className="o-row">
 						<HexButton
 							url="#"
 							text={t("Stacking.claim.rewards", {token: "OVRG"})}
@@ -1206,7 +1180,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="i-ibco-input">
+					<div className="o-half i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -1300,20 +1274,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
-						<TextField
-						variant="outlined"
-						type="number"
-						currencySymbol="OVRG15"
-						minimumValue={"0"}
-						decimalCharacter="."
-						digitGroupSeparator=","
-						onChange={(e)=> {
-							handleTransactionValueChange(e.target.value);
-						}}
-							/>
-					</div>
-					<div className="o-half">
+					<div className="o-row">
 						<HexButton
 							url="#"
 							text={t("Stacking.claim.rewards", {token: "OVRG15"})}
@@ -1492,20 +1453,7 @@ function Stacking() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
-						<TextField
-						variant="outlined"
-						type="number"
-						currencySymbol="OVRG30"
-						minimumValue={"0"}
-						decimalCharacter="."
-						digitGroupSeparator=","
-						onChange={(e)=> {
-							handleTransactionValueChange(e.target.value);
-						}}
-							/>
-					</div>
-					<div className="o-half">
+					<div className="o-row">
 						<HexButton
 							url="#"
 							text={t("Stacking.claim.rewards", {token: "OVRG30"})}
@@ -1554,34 +1502,8 @@ function Stacking() {
 			return (
 				<>
 				<div className="o-row">
-					<div className="c-sub-tab-selector_cont">
-						<div
-								className={`c-sub-tab-selector ${subTab == 'ovr' ? '--selected' : ''}`}
-								onClick={() => handleSubTabChange('ovr')}
-						>
-							OVR
-						</div>
-						<div
-								className={`c-sub-tab-selector ${subTab == 'ovrg' ? '--selected' : ''}`}
-								onClick={() => handleSubTabChange('ovrg')}
-						>
-							OVRG
-						</div>
-						<div
-								className={`c-sub-tab-selector ${subTab == 'ovrg15' ? '--selected' : ''}`}
-								onClick={() => {handleSubTabChange('ovrg15')}}
-						>
-							OVRG15
-						</div>
-						<div
-								className={`c-sub-tab-selector ${subTab == 'ovrg30' ? '--selected' : ''}`}
-								onClick={() => {handleSubTabChange('ovrg30')}}
-						>
-							OVRG30
-						</div>
-					</div>
+					
 				</div>
-				<div className="o-line --venti"></div>
 				{renderSubTabStacking()}
 				</>
 			)
@@ -1620,34 +1542,12 @@ function Stacking() {
 										<h3 className="p-card-title">{t('Stacking.title')}</h3>
 									</div>
 									<div className="o-row">
-										{t('Stacking.desc.copy').split('\n').reduce((r, c, x) => r ? [...r, <br key={x}/>, c] : [c], null)}
-									</div>
-									<div className="o-row">
-										<h3 className="p-card-title">{t('Vesting.title')}</h3>
-									</div>
-									<div className="o-row">
-										{t('Vesting.desc.copy').split('\n').reduce((r, c, x) => r ? [...r, <br key={x}/>, c] : [c], null)}
+										{t('Stacking.desc.copy.ovr').split('\n').reduce((r, c, x) => r ? [...r, <br key={x}/>, c] : [c], null)}
 									</div>
 								</div>
 							</div>
 								<div className="o-half">
 									<div className="o-card ">
-											<div className="o-row">
-												<div className="c-transaction-selector_cont">
-													<div
-															className={`c-transaction-selector ${tab == 'stacking' ? '--selected' : ''}`}
-															onClick={() => handleTabChange('stacking')}
-													>
-														{t('Stacking.title')}
-													</div>
-													<div
-															className={`c-transaction-selector --second ${tab == 'vesting' ? '--selected' : ''}`}
-															onClick={() => {handleTabChange('vesting')}}
-													>
-														{t('Vesting.title')}
-													</div>
-												</div>
-											</div>
 											{renderTab()}
 									</div>
 								</div>

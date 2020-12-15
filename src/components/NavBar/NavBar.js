@@ -161,6 +161,9 @@ const NavBar = () => {
 				<NavLink className="NavBar__link" to="/map/discover">
 					{t('Navbar.marketplace.label')}
 				</NavLink>
+				<NavLink className="NavBar__link" to="/stacking">
+					{t('Stacking.title')}
+				</NavLink>
 				</>
 			);
 		}
