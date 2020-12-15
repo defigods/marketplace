@@ -5,6 +5,7 @@ import HexButton from '../../components/HexButton/HexButton';
 import TermsAndConditionsOverlay from '../../components/TermsAndConditionsOverlay/TermsAndConditionsOverlay'
 import { Web3Context } from '../../context/Web3Context';
 import { UserContext } from '../../context/UserContext';
+import { getToken, removeToken, saveToken } from '../../lib/auth';
 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -54,6 +55,8 @@ function Stacking() {
 
 	// On Web3Loaded
 	React.useEffect(() => {
+		saveToken('lastVisitedPage', '/stacking')
+
 		if(web3Context.state){
 			if(web3Context.state.ibcoSetupComplete){
 				if(web3Context.state.ibcoSetupComplete === true){
@@ -316,7 +319,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Assigned
+								{t("Vesting.total")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[0]} currency="ovr"></ValueCounter>
@@ -324,7 +327,7 @@ function Stacking() {
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Vested
+								{t("Vesting.total.vested")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[1]} currency="ovr"></ValueCounter>
@@ -332,7 +335,7 @@ function Stacking() {
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Claimed
+								{t("Vesting.total.claimed")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[2]} currency="ovr"></ValueCounter>
@@ -343,7 +346,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Deposit OVRG</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG"})}</h3>
 					</div>
 					<div className="i-ibco-input">
 						<TextField
@@ -361,7 +364,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"OVRG ALLOWANCE"}
+							text={t("Vesting.allwance", {token: "OVRG"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => AllowanceDeposit('ovrg')}
@@ -370,7 +373,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVRG"}
+							text={t("Stacking.deposit", {token: "OVRG"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateVestingDeposit('ovrg')}
@@ -380,14 +383,14 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVRG</h3>
+						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVRG"})}</h3>						
 					</div>
 					<div className="o-row o-flow-root">
 
 						<div className="o-row">
 							<HexButton
 								url="#"
-								text={"Claim OVRG"}
+								text={t("Vesting.claim", {token: "OVRG"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateVestingClaim('ovrg')}
@@ -405,7 +408,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Assigned
+								{t("Vesting.total")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[3]} currency="ovr"></ValueCounter>
@@ -413,7 +416,7 @@ function Stacking() {
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Vested
+								{t("Vesting.total.vested")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[4]} currency="ovr"></ValueCounter>
@@ -421,7 +424,7 @@ function Stacking() {
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Claimed
+								{t("Vesting.total.claimed")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[5]} currency="ovr"></ValueCounter>
@@ -432,7 +435,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Deposit OVRG15</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG15"})}</h3>
 					</div>
 					<div className="i-ibco-input">
 						<TextField
@@ -450,7 +453,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"OVRG ALLOWANCE"}
+							text={t("Vesting.allwance", {token: "OVRG15"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => AllowanceDeposit('ovrg15')}
@@ -459,7 +462,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVRG15"}
+							text={t("Stacking.deposit", {token: "OVRG15"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateVestingDeposit('ovrg15')}
@@ -469,14 +472,14 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVRG15</h3>
+						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVRG15"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 
 						<div className="o-row">
 							<HexButton
 								url="#"
-								text={"Claim OVRG15"}
+								text={t("Vesting.claim", {token: "OVRG15"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateVestingClaim('ovrg15')}
@@ -494,7 +497,7 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Assigned
+								{t("Vesting.total")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[6]} currency="ovr"></ValueCounter>
@@ -502,7 +505,7 @@ function Stacking() {
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Vested
+								{t("Vesting.total.vested")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[7]} currency="ovr"></ValueCounter>
@@ -510,7 +513,7 @@ function Stacking() {
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Claimed
+								{t("Vesting.total.claimed")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[8]} currency="ovr"></ValueCounter>
@@ -521,7 +524,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Deposit OVRG30</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG30"})}</h3>
 					</div>
 					<div className="i-ibco-input">
 						<TextField
@@ -539,7 +542,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"OVRG ALLOWANCE"}
+							text={t("Vesting.allwance", {token: "OVRG30"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => AllowanceDeposit('ovrg30')}
@@ -548,7 +551,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVRG30"}
+							text={t("Stacking.deposit", {token: "OVRG30"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateVestingDeposit('ovrg30')}
@@ -558,14 +561,14 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVRG30</h3>
+						<h3 className="c-section-title">{t("Vesting.claim", {token: "OVRG30"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 
 						<div className="o-row">
 							<HexButton
 								url="#"
-								text={"Claim OVRG30"}
+								text={t("Vesting.claim", {token: "OVRG30"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateVestingClaim('ovrg30')}
@@ -586,44 +589,44 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								{t("Stacking.total")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[0]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[0]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[1]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[1]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[2]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[2]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Rewards
+								{t("Stacking.total.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[3]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[3]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[4]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[4]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[5]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[5]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Rewards
+								{t("Stacking.claimed.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[6]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[6]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[7]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[7]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVR[8]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[8]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -631,24 +634,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Deposit OVR</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								 6 months
+								 {t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -667,7 +670,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVR"}
+							text={t("Stacking.deposit", {token: "OVR"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingDeposit('ovr')}
@@ -677,25 +680,25 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVR from Capital</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.capital", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 						<div className="o-row">
-							<b>Lockup:</b>
+							<b>{t("Stacking.lockup")}:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup
+										{t("Stacking.lockup.no")}
 									</ToggleButton>
 									<ToggleButton value={3}>
-										3 months
+										{t("Stacking.lockup.3")}
 									</ToggleButton>
 									<ToggleButton value={6}>
-									6 months
+									{t("Stacking.lockup.6")}
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
 						<div className="o-row --apy">
-							<b>APY:</b>
+							<b>{t("Stacking.apy")}:</b>
 							<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
 						</div>
 						<div className="o-half i-ibco-input">
@@ -714,7 +717,7 @@ function Stacking() {
 						<div className="o-half">
 							<HexButton
 								url="#"
-								text={"Claim OVR from Capital"}
+								text={t("Stacking.claim.capital", {token: "OVR"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateStackingClaim('capital','ovr')}
@@ -725,24 +728,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVR from Rewards</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -761,7 +764,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVR from Rewards"}
+							text={t("Stacking.claim.rewards", {token: "OVR"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovr')}
@@ -778,44 +781,44 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								{t("Stacking.total")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[0]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[0]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[1]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[1]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[2]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[2]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Rewards
+								{t("Stacking.total.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[3]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[3]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[4]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[4]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[5]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[5]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Rewards
+								{t("Stacking.claimed.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[6]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[6]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[7]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[7]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG[8]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[8]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -823,24 +826,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Deposit OVRG</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -859,7 +862,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVRG"}
+							text={t("Stacking.deposit", {token: "OVRG"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingDeposit('ovrg')}
@@ -869,25 +872,25 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVRG from Capital</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.capital", {token: "OVRG"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 						<div className="o-row">
-							<b>Lockup:</b>
+							<b>{t("Stacking.lockup")}:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup
+										{t("Stacking.lockup.no")}
 									</ToggleButton>
 									<ToggleButton value={3}>
-										3 months
+										{t("Stacking.lockup.3")}
 									</ToggleButton>
 									<ToggleButton value={6}>
-									6 months
+									{t("Stacking.lockup.6")}
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
 						<div className="o-row --apy">
-							<b>APY:</b>
+							<b>{t("Stacking.apy")}:</b>
 							<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 						</div>
 						<div className="o-half i-ibco-input">
@@ -906,7 +909,7 @@ function Stacking() {
 						<div className="o-half">
 							<HexButton
 								url="#"
-								text={"Claim OVRG from Capital"}
+								text={t("Stacking.claim.capital", {token: "OVRG"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateStackingClaim('capital','ovrg')}
@@ -917,24 +920,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVRG from Rewards</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVRG"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -953,7 +956,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVRG from Rewards"}
+							text={t("Stacking.claim.rewards", {token: "OVRG"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg')}
@@ -970,44 +973,44 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								{t("Stacking.total")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[0]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[0]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[1]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[1]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[2]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[2]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Rewards
+								{t("Stacking.total.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[3]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[3]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[4]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[4]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[5]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[5]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Rewards
+								{t("Stacking.claimed.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[6]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[6]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[7]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[7]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG15[8]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[8]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -1015,24 +1018,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Deposit OVRG15</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG15"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -1051,7 +1054,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVRG15"}
+							text={t("Stacking.deposit", {token: "OVRG15"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingDeposit('ovrg15')}
@@ -1061,25 +1064,25 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVRG15 from Capital</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.capital", {token: "OVRG15"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 						<div className="o-row">
-							<b>Lockup:</b>
+							<b>{t("Stacking.lockup")}:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup
+										{t("Stacking.lockup.no")}
 									</ToggleButton>
 									<ToggleButton value={3}>
-										3 months
+										{t("Stacking.lockup.3")}
 									</ToggleButton>
 									<ToggleButton value={6}>
-									6 months
+									{t("Stacking.lockup.6")}
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
 						<div className="o-row --apy">
-							<b>APY:</b>
+							<b>{t("Stacking.apy")}:</b>
 							<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 						</div>
 						<div className="o-half i-ibco-input">
@@ -1098,7 +1101,7 @@ function Stacking() {
 						<div className="o-half">
 							<HexButton
 								url="#"
-								text={"Claim OVRG15 from Capital"}
+								text={t("Stacking.claim.capital", {token: "OVRG15"})}
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateStackingClaim('capital','ovrg15')}
@@ -1109,24 +1112,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVRG15 from Rewards</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVRG15"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 					</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -1145,7 +1148,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVRG15 from Rewards"}
+							text={t("Stacking.claim.rewards", {token: "OVRG15"})} 
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg15')}
@@ -1162,44 +1165,44 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								{t("Stacking.total")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[0]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[0]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[1]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[1]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[2]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[2]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Rewards
+								{t("Stacking.total.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[3]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[3]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[4]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[4]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[5]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[5]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Rewards
+								{t("Stacking.claimed.rewards")}
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[6]} currency="ovr" text="0 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[6]} currency="ovr" text={t("Stacking.lockup.0")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[7]} currency="ovr" text="3 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[7]} currency="ovr" text={t("Stacking.lockup.3")}></ValueCounter>
 							</div>
 							<div className="o-value">
-								<ValueCounter value={stackingValuesOVRG30[8]} currency="ovr" text="6 Months"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[8]} currency="ovr" text={t("Stacking.lockup.6")}></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -1207,24 +1210,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Deposit OVRG30</h3>
+						<h3 className="c-section-title">{t("Stacking.deposit", {token: "OVRG30"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -1243,7 +1246,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Deposit OVRG30"}
+							text={t("Stacking.deposit", {token: "OVRG30"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingDeposit('ovrg30')}
@@ -1253,25 +1256,25 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row">
-						<h3 className="c-section-title">Claim OVRG30 from Capital</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.capital", {token: "OVRG30"})}</h3>
 					</div>
 					<div className="o-row o-flow-root">
 						<div className="o-row">
-							<b>Lockup:</b>
+							<b>{t("Stacking.lockup")}:</b>
 							<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 									<ToggleButton value={0}>
-										No lockup
+										{t("Stacking.lockup.no")}
 									</ToggleButton>
 									<ToggleButton value={3}>
-										3 months
+										{t("Stacking.lockup.3")}
 									</ToggleButton>
 									<ToggleButton value={6}>
-									6 months
+									{t("Stacking.lockup.6")}
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
 						<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 						<div className="o-half i-ibco-input">
@@ -1290,7 +1293,7 @@ function Stacking() {
 						<div className="o-half">
 							<HexButton
 								url="#"
-								text={"Claim OVRG30 from Capital"}
+								text={t("Stacking.claim.capital", {token: "OVRG30"})} 
 								className={`--orange --large --kyc-button --only-butt`}
 								// ${bidValid ? '' : '--disabled'}
 								onClick={() => participateStackingClaim('capital','ovrg30')}
@@ -1301,24 +1304,24 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVRG30 from Rewards</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVRG30"})}</h3>
 					</div>
 					<div className="o-row">
-						<b>Lockup:</b>
+						<b>{t("Stacking.lockup")}:</b>
 						<ToggleButtonGroup size="small" value={lockup} exclusive onChange={handleChangeLockup}>
 								<ToggleButton value={0}>
-									No lockup
+									{t("Stacking.lockup.no")}
 								</ToggleButton>
 								<ToggleButton value={3}>
-									3 months
+									{t("Stacking.lockup.3")}
 								</ToggleButton>
 								<ToggleButton value={6}>
-								6 months
+								{t("Stacking.lockup.6")}
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
 					<div className="o-row --apy">
-						<b>APY:</b>
+						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
 					<div className="o-half i-ibco-input">
@@ -1337,7 +1340,7 @@ function Stacking() {
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVRG30 from Rewards"}
+							text={t("Stacking.claim.rewards", {token: "OVRG30"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg30')}
@@ -1424,12 +1427,12 @@ function Stacking() {
 			<div className="o-container">
 				<div className="c-dialog --centered">
 					<div className="c-dialog-main-title">
-						{t('Stacking.login.required.title')}
+						{t('Generic.login.required.title')}
 						<span role="img" aria-label="Cool dude">
 							😎
 						</span>
 					</div>
-					<div className="c-dialog-sub-title">{t('Stacking.login.required.desc')}</div>
+					<div className="c-dialog-sub-title">{t('Generic.login.required.desc')}</div>
 				</div>
 			</div>
 		</div>
@@ -1446,23 +1449,16 @@ function Stacking() {
 							<div className="o-half">
 								<div className="o-card">
 									<div className="o-row">
-										<h3 className="p-card-title">Stacking</h3>
+										<h3 className="p-card-title">{t('Stacking.title')}</h3>
 									</div>
 									<div className="o-row">
-										There are 3 different staking options you can select: no lockup with 10% APY, 3 months lockup with 20% APY and 6 months lockup with 30% APY. <br></br><br></br>
-										With no lockup option you can claim both capital and rewards at any moment, rewards will keep accruing for as long as you matain your capital stacked <br></br><br></br>
-										With 3 and 6 months lockup options capital will be locked until the end of the selected period while you'll be able to withdraw rewards at any moment. Once the staking period (3 or 6 months) ends you will have to withdraw and stake your capital again in order to continue earning rewards. <br></br><br></br>
-										Total staking, total rewards hystorically earned and total claimed rewards are detailed for each of the available staking periods<br></br><br></br><br></br>
+										{t('Stacking.desc.copy').split('\n').reduce((r, c, x) => r ? [...r, <br key={x}/>, c] : [c], null)}
 									</div>
 									<div className="o-row">
-										<h3 className="p-card-title">Vesting</h3>
+										<h3 className="p-card-title">{t('Vesting.title')}</h3>
 									</div>
 									<div className="o-row">
-										Select the OVRGn token type yuo own (OVRG, OVRG15, OVRG30)<br></br><br></br>
-										Select the amount of tokens you want to start vesting and click deposit. Pay attention this is a one way action, once deposited you will not be able to withdraw OVRGn tokens anymore and benefit of double staking rewards.<br></br><br></br>
-										Total Assigned: the total number of OVR tokens assigned to your address. 1:1 ratio with deposited OVRGn tokens.<br></br><br></br>
-										Total Vested: total number of OVR tokens that has already vested. Includes already claimed.<br></br><br></br>
-										Total Claimed: total amount of vested OVR tokens claimed.<br></br><br></br>
+										{t('Vesting.desc.copy').split('\n').reduce((r, c, x) => r ? [...r, <br key={x}/>, c] : [c], null)}
 									</div>
 								</div>
 							</div>
@@ -1474,13 +1470,13 @@ function Stacking() {
 															className={`c-transaction-selector ${tab == 'stacking' ? '--selected' : ''}`}
 															onClick={() => handleTabChange('stacking')}
 													>
-														Stacking
+														{t('Stacking.title')}
 													</div>
 													<div
 															className={`c-transaction-selector --second ${tab == 'vesting' ? '--selected' : ''}`}
 															onClick={() => {handleTabChange('vesting')}}
 													>
-														Vesting
+														{t('Vesting.title')}
 													</div>
 												</div>
 											</div>
