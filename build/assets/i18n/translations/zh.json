@@ -377,7 +377,7 @@
 	"Stacking.claim.capital":"从本金中申领{{token}} ",
 	"Stacking.claim.rewards":"从奖励中申领{{token}} ",
 	"Stacking.apy":"年度收益率",
-	"Vesting.total":"发送代币总量",
+	"Vesting.total":"兑换代币总量",
 	"Vesting.total.vested":"已释放代币总量",
 	"Vesting.total.claimed":"已申领代币总量",
 	"Vesting.claim":"申领{{token}}",
