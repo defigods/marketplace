@@ -62,7 +62,11 @@ if (environment === 'PRODUCTION') {
 		OVR: "0xBBE3Cf657dA9afBA8fdb3D097B881dE6404c6B6b",
 		OVRG: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6",
 		OVRG15: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6",
-		OVRG30: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6"
+		OVRG30: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6",
+		stakingOVR: "0x8FEdD810c37c50f035D82E318263647F70C6824c",
+		stakingOVRG: "0x8FEdD810c37c50f035D82E318263647F70C6824c",
+		stakingOVRG15: "0x8FEdD810c37c50f035D82E318263647F70C6824c",
+		stakingOVRG30: "0x8FEdD810c37c50f035D82E318263647F70C6824c",
 	};
 } else {
 	apis = {
@@ -176,4 +180,9 @@ export function isiOS() {
 
 export function isImToken(){
 	return !!window.imToken
+}
+
+
+export function isPositiveFloat(s) {
+  return !isNaN(s) && Number(s) > 0 && s != "";
 }
