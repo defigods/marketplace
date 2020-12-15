@@ -16,6 +16,9 @@ import Signup from './views/Signup/Signup';
 import BuyTokens from './views/BuyTokens/BuyTokens';
 import IndacoinResponse from './views/IndacoinResponse/IndacoinResponse';
 import PublicSale from './views/PublicSale/PublicSale';
+import Stacking from './views/Stacking/Stacking';
+import Vesting from './views/Vesting/Vesting';
+
 
 import NavBar from './components/NavBar/NavBar';
 import Map from './components/Map/Map';
@@ -121,6 +124,8 @@ function App() {
 																			<Route path="/login" component={Login}></Route>
 																			<Route path="/login-helper" component={LoginHelper}></Route>
 																			<Route path="/public-sale" component={PublicSale}></Route>
+																			<Route path="/stacking" component={Stacking}></Route>
+																			<Route path="/vesting" component={Vesting}></Route>
 
 																			{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
 																			<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}

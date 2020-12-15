@@ -17,6 +17,8 @@ const curveABI = require("../contract/curveABI");
 const DAIABI = require("../contract/DAIABI");
 const rewardABI = require("../contract/rewardABI");
 const bancorFormulaABI = require("../contract/bancorFormulaABI");
+const vestingABI = require("../contract/vestingABI");
+
 const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(
 		BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))
@@ -59,7 +61,7 @@ export class Web3Provider extends Component {
       this.setupWeb3((res) =>{
         if( res == false ){
           this.context.actions.logoutUser();
-        } 
+        }
       }, false)
 		}
   }
@@ -72,7 +74,7 @@ export class Web3Provider extends Component {
 			let chainId = network.chainId;
 			let signer = provider.getSigner(0);
 			let address = await signer.getAddress();
-			
+
 			if (address == undefined) {
 				// Metamask found, but not logged in
 				callback(false)
@@ -87,10 +89,10 @@ export class Web3Provider extends Component {
 				}
 
 				// Metamask found, logged in, chainId correct
-				
+
 				let block = await provider.getBlock();
 				await this.setState({"ibcoBlock": BigNumber.from(block.number)})
-				
+
 				this.setState({
 					"provider": provider,
 					"signer": signer,
@@ -99,7 +101,7 @@ export class Web3Provider extends Component {
 					"setupComplete": true,
 				});
 
-				// Intialize contracts 
+				// Intialize contracts
 				let data = await this.initializeContracts();
 				await this.setSigners(
 						data[0],
@@ -109,9 +111,21 @@ export class Web3Provider extends Component {
 						data[4],
 						data[5],
 						data[6],
-						data[7]
+						data[7],
+						data[8],
+						data[9],
+						data[10],
+						data[11],
+						data[12],
+						data[13],
+						data[14],
+						data[15],
+						data[16],
+						data[17],
+						data[18],
+						data[19]
 				);
-				
+
         // Centralized Login
         if(login == true){
           await this.handleCentralizedLogin(address, callback)
@@ -126,12 +140,12 @@ export class Web3Provider extends Component {
 			return false;
 		}
 	};
-	
-	// 
+
+	//
 	// IBCO
 	//
 
-	setSigners = async (x, y, z, a, b, c, d, e) => {
+	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m,n,o,p,q,r,s) => {
 			this.setState({
 				"ibcoController": x,
 				"ibcoControllerViewer": y,
@@ -141,6 +155,18 @@ export class Web3Provider extends Component {
 				"ibcoRewardSigner": c,
 				"ibcoRewardViewer": d,
 				"ibcoBancorFormulaViewer": e,
+				"VestOVRGSigner": f,
+				"VestOVRGViewer": g,
+				"VestOVRG15Signer": h,
+				"VestOVRG15Viewer": i,
+				"VestOVRG30Signer": l,
+				"VestOVRG30Viewer": m,
+				"tokenOVRGSigner": n,
+				"tokenOVRGViewer": o,
+				"tokenOVRG15Signer": p,
+				"tokenOVRG15Viewer": q,
+				"tokenOVRG30Signer": r,
+				"tokenOVRG30Viewer": s
 			});
 			this.initializeStore();
 	};
@@ -166,7 +192,7 @@ export class Web3Provider extends Component {
 					"slippage": DAI[4],
 				},
 			});
-			
+
 			// Reward token balance
 			let reward = await this.state.ibcoRewardViewer.balanceOf(
 					this.state.address
@@ -201,7 +227,7 @@ export class Web3Provider extends Component {
 							)
 					)
 
-			let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))			
+			let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
 			let vsBancorFormula = doublePremine.add(CurveOVRSupply)
 
 			this.setState({
@@ -224,7 +250,7 @@ export class Web3Provider extends Component {
 			let res = this.state.ibcoDAIReserve.toString() === "0"
 							? BigNumber.from(1)
 							: this.state.ibcoDAIReserve;
-						
+
 			let virtualResBancorFormula = res.add(initialVirtualBalance);
 			this.setState({
 				"ibcoVirtualResBancorFormula": virtualResBancorFormula,
@@ -239,7 +265,7 @@ export class Web3Provider extends Component {
 			this.setState({
 				"ibcoPrice1": price1
 			});
-			
+
 			// priceOVR
 			let priceOvr = parseFloat(ethers.utils.formatEther(price1).toString()).toFixed(3)
 			this.setState({
@@ -254,7 +280,7 @@ export class Web3Provider extends Component {
 	startHistoricLoop = async () => {
 		// Loop trough blocks
 		let fromBlock = config.apis.firstOVRBlock;
-		let toBlock = config.apis.firstOVRBlock+9999; 
+		let toBlock = config.apis.firstOVRBlock+9999;
 		let nowBlock = this.state.ibcoBlock.toNumber();
 		while(toBlock <= nowBlock){
 			await this.historicData(fromBlock, toBlock);
@@ -273,7 +299,7 @@ export class Web3Provider extends Component {
 			ibcoClaims: this.state.ibcoClaims.reverse().slice(0, 15),
 		})
 	}
-	
+
 	// Calculate adapted price
 	calculateCustomBuyPrice = async (val) => {
 		let amountInput =
@@ -349,7 +375,7 @@ export class Web3Provider extends Component {
 	// initialize all contracts as signer and viewer objects, which allow functions to be called from the blockchain
 	// signers call functions which mutate chain state and cost gas
 	// viewers call public view functions to retreive data without costing gas
-	initializeContracts = async () => {			
+	initializeContracts = async () => {
 			let controllerSigner = new ethers.Contract(
 					config.apis.controllerAddress,
 					controllerABI,
@@ -390,6 +416,73 @@ export class Web3Provider extends Component {
 					bancorFormulaABI,
 					this.state.provider
 			);
+
+			let vestingOVRGSigner = new ethers.Contract(
+				config.apis.VestingOVRG,
+				vestingABI,
+				this.state.signer
+			);
+
+			let vestingOVRGViewer = new ethers.Contract(
+				config.apis.VestingOVRG,
+				vestingABI,
+				this.state.provider
+			);
+
+			let vestingOVRG15Signer = new ethers.Contract(
+				config.apis.VestingOVRG15,
+				vestingABI,
+				this.state.signer
+			);
+
+			let vestingOVRG15Viewer = new ethers.Contract(
+				config.apis.VestingOVRG15,
+				vestingABI,
+				this.state.provider
+			);
+
+			let vestingOVRG30Signer = new ethers.Contract(
+				config.apis.VestingOVRG30,
+				vestingABI,
+				this.state.signer
+			);
+
+			let vestingOVRG30Viewer = new ethers.Contract(
+				config.apis.VestingOVRG30,
+				vestingABI,
+				this.state.provider
+			);
+			let OVRGSigner = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.signer
+			);
+			let OVRGViewer = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.provider
+			);
+			let OVRG15Signer = new ethers.Contract(
+					config.apis.OVRG15,
+					ovrAbi,
+					this.state.signer
+			);
+			let OVRG15Viewer = new ethers.Contract(
+					config.apis.OVRG15,
+					ovrAbi,
+					this.state.provider
+			);
+			let OVRG30Signer = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.signer
+			);
+			let OVRG30Viewer = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.provider
+			);
+
 			let data = [
 					controllerSigner,
 					controllerViewer,
@@ -399,6 +492,18 @@ export class Web3Provider extends Component {
 					rewardSigner,
 					rewardViewer,
 					bancorViewer,
+					vestingOVRGSigner,
+					vestingOVRGViewer,
+					vestingOVRG15Signer,
+					vestingOVRG15Viewer,
+					vestingOVRG30Signer,
+					vestingOVRG30Viewer,
+					OVRGSigner,
+					OVRGViewer,
+					OVRG15Signer,
+					OVRG15Viewer,
+					OVRG30Signer,
+					OVRG30Viewer
 			];
 			return data;
 	};
@@ -463,6 +568,7 @@ export class Web3Provider extends Component {
 				"ibcoDAIAllowance": allowance
 			});
 	};
+
 
 	ibcoPoll = async () => {
 			const openBuyOrderFilter = {
@@ -593,14 +699,14 @@ export class Web3Provider extends Component {
 					}
 			);
 	};
-	// 
+	//
 	historicData = async (fromBlock, toBlock) => {
 		//
 		// HISTORICAL DATA POLLING
 		//
 		const historicFilter = {
 				address: config.apis.curveAddress,
-				fromBlock: fromBlock, 
+				fromBlock: fromBlock,
 				toBlock: toBlock,
 				topics: [
 						[
@@ -649,13 +755,13 @@ export class Web3Provider extends Component {
 						// 		console.log('me as a seller', log)
 						// 	}
 						// }
-						
+
 						switch (log.name) {
 								case "OpenBuyOrder": {
 										if (
 												this.state.address.toLowerCase() ==
 												log.args.buyer.toLowerCase()
-										) {	
+										) {
 												log.transactionHash = transactionHash;
 												openBuys.push(log);
 										}
@@ -675,7 +781,7 @@ export class Web3Provider extends Component {
 										log.transactionHash = transactionHash;
 										claims.push(log);
 										break;
-										
+
 								}
 								case "ClaimSellOrder": {
 										log.transactionHash = transactionHash;
@@ -746,7 +852,7 @@ export class Web3Provider extends Component {
 		// store logged data as store
 		this.appendOpenBuyOrders(storeOpenBuys);
 		this.appendOpenSellOrders(storeOpenSells);
-		this.appendClaims(storeClaims);	
+		this.appendClaims(storeClaims);
 	};
 
 	appendOpenBuyOrders(input) {
@@ -767,18 +873,18 @@ export class Web3Provider extends Component {
 		let Claims = this.state.ibcoClaims
 		for (const claim of input) {
 			if (claim.type === "ClaimBuyOrder") {
-				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){ 
-					myClaims.push(claim) 
+				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){
+					myClaims.push(claim)
 				}
 			} else {
-				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){ 
-					myClaims.push(claim) 
+				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){
+					myClaims.push(claim)
 				}
 			}
 		}
 		// var joined = this.state.ibcoClaims.concat(input);
-		this.setState({ 
-			ibcoClaims: Claims.concat(input),//.reverse().slice(0, 15), 
+		this.setState({
+			ibcoClaims: Claims.concat(input),//.reverse().slice(0, 15),
 			ibcoMyClaims: this.state.ibcoMyClaims.concat(myClaims)
 		})
 	}
@@ -790,18 +896,18 @@ export class Web3Provider extends Component {
 		let Claims = this.state.ibcoClaims
 		for (const claim of input) {
 			if (claim.type === "ClaimBuyOrder") {
-				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){ 
-					myClaims.push(claim) 
+				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){
+					myClaims.push(claim)
 				}
 			} else {
-				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){ 
-					myClaims.push(claim) 
+				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){
+					myClaims.push(claim)
 				}
 			}
 		}
 		// var joined = this.state.ibcoClaims.concat(input);
-		this.setState({ 
-			ibcoClaims: input.concat(Claims),//.reverse().slice(0, 15), 
+		this.setState({
+			ibcoClaims: input.concat(Claims),//.reverse().slice(0, 15),
 			ibcoMyClaims:  myClaims.concat(this.state.ibcoMyClaims)
 		})
 	}
@@ -820,18 +926,18 @@ export class Web3Provider extends Component {
 		let myClaims = []
 		for (const claim of input) {
 			if (claim.type === "ClaimBuyOrder") {
-				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){ 
-					myClaims.push(claim) 
+				if(claim.buyer.toLowerCase() === this.state.address.toLowerCase()){
+					myClaims.push(claim)
 				}
 			} else {
-				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){ 
-					myClaims.push(claim) 
+				if(claim.seller.toLowerCase() === this.state.address.toLowerCase()){
+					myClaims.push(claim)
 				}
 			}
 		}
 		// var joined = this.state.ibcoClaims.concat(input);
-		this.setState({ 
-			ibcoClaims: input.reverse().slice(0, 15), 
+		this.setState({
+			ibcoClaims: input.reverse().slice(0, 15),
 			ibcoMyClaims: myClaims
 		})
 	}
@@ -840,7 +946,7 @@ export class Web3Provider extends Component {
 		var newIbcoOpenSellOrder = this.state.ibcoOpenSellOrders.filter((value) => {
 			if (this.state.address.toLowerCase() === input[0].seller.toLowerCase() && value.batchId === input[0].batchId) {
 				return value;
-			} 
+			}
 		});
 		this.setState({ ibcoOpenSellOrders: newIbcoOpenSellOrder })
 	}
@@ -849,7 +955,7 @@ export class Web3Provider extends Component {
 		var newIbcoOpenBuyOrder = this.state.ibcoOpenBuyOrders.filter((value) => {
 			if (this.state.address.toLowerCase() === input[0].buyer.toLowerCase() && value.batchId === input[0].batchId) {
 				return value;
-			} 
+			}
 		});
 		this.setState({ ibcoOpenBuyOrders: newIbcoOpenBuyOrder })
 	}
@@ -860,7 +966,7 @@ export class Web3Provider extends Component {
 	}
 
 	///
-	
+
 	//
 	// Transactions helper
 	//
@@ -871,7 +977,7 @@ export class Web3Provider extends Component {
 					if(response.data.landGasCost){
 					this.setState({gasLandCost: (response.data.landGasCost).toFixed(2)})
 				}
-				} 
+				}
 		});
 	}
 
@@ -912,12 +1018,12 @@ export class Web3Provider extends Component {
 	}
 
 	authorizeOvrExpense = async ( ovr = "100000" ) => {
-		window.ethereum.enable() 
+		window.ethereum.enable()
 		let contractAsAccount = new ethers.Contract(config.apis.OVRContract, ovrAbi, this.state.signer)
 		const howMuchTokens = ethers.utils.parseUnits(ovr, 18)
 		await contractAsAccount.approve(config.apis.walletApproved, howMuchTokens)
 	}
-	
+
 	setRewardBalance = (reward) => {
 		this.setState({
 			"ibcoRewardBalance": reward
@@ -933,7 +1039,7 @@ export class Web3Provider extends Component {
 					if (response.data.result === true) {
 							let nonce = response.data.user.nonce;
 							this.handleUserSignMessage(publicAddress, nonce, callback);
-					} 
+					}
 			});
 		});
   }
@@ -949,7 +1055,7 @@ export class Web3Provider extends Component {
 				// Save data in store
 				this.context.actions.loginUser(response.data.token, response.data.user);
 				this.setState({gasLandCost: (response.data.gas.landGasCost).toFixed(2)})
-				
+
         if (callback) {
           callback();
         }

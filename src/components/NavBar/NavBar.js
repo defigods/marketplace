@@ -6,6 +6,7 @@ import NotificationCenter from '../NotificationCenter/NotificationCenter';
 import { UserContext, withUserContext } from '../../context/UserContext';
 import Blockies from 'react-blockies';
 import { Web3Context, withWeb3Context } from '../../context/Web3Context';
+import { getToken, removeToken, saveToken } from '../../lib/auth';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -100,7 +101,14 @@ const NavBar = () => {
 			if( res == false ){
 				history.push('/login-helper');
 			} else {
-				history.push('/profile');
+				
+				let cookie = getToken('lastVisitedPage')
+				if ( cookie ){
+					removeToken('lastVisitedPage')
+					history.push(cookie);
+				} else {
+					history.push('/profile');
+				}
 			}
 			setIsConnecting(false);
 		})
@@ -153,7 +161,6 @@ const NavBar = () => {
 				<NavLink className="NavBar__link" to="/map/discover">
 					{t('Navbar.marketplace.label')}
 				</NavLink>
-				
 				</>
 			);
 		}

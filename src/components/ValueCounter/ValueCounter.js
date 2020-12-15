@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const ValueCounter = ({ currency="ovr", value=0, color="orange" }) => {
+const ValueCounter = ({ currency="ovr", value=0, color="orange", text="" }) => {
 	return <div className={`ValueCounter --${color}`}>
 		<div className="ValueCounter__icon">
 			<div className="Icon">
@@ -41,7 +41,7 @@ const ValueCounter = ({ currency="ovr", value=0, color="orange" }) => {
 				</svg> : <></>}
 			</div>
 		</div>
-		<div className="ValueCounter__value"> {value}</div>
+		<div className="ValueCounter__value"> {value} {text !== "" ? <span>{text}</span> : <></>}</div>
 	</div>;
 };
 ValueCounter.propTypes = {

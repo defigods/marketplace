@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'PRODUCTION';
+const environment = 'STAGING';
 
 let apis;
 
@@ -20,7 +20,7 @@ if (environment === 'PRODUCTION') {
 		// Auctions
 		OVRContract: '0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697',
 		walletApproved: '0x8ABa7FBaE92012c8A86C5182538A5dE11039Dad1',
-		// IBCO 
+		// IBCO
 		connectorWeight: "32500",
 		controllerAddress:"0x5c0D928A3d86766E6c2Ca7378ABE76e7b2fF1028",
 		curveAddress:"0x8c19cF0135852BA688643F57d56Be72bB898c411",
@@ -28,7 +28,14 @@ if (environment === 'PRODUCTION') {
 		RewardToken:"0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697",
 		BancorFormula:"0x6b2D3B366C3417C46240ab62c2878FfdA9861E73",
 		firstOVRBlock: 11356495,
-
+		// VESTING Contracts
+		VestingOVRG: "0x29E98db39D6Cf95fd3d6F063ddb1973e5e17ed2e",
+		VestingOVRG15: "0xCa0F390C044FD43b1F38B9D2A02e06b13B65FA48",
+		VestingOVRG30: "0x504B19E0485eB8450c5dC1b8611342DB57BaAE2c",
+		OVR: "0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697",
+		OVRG: "0x16f87095fedc26d66e29f64f1f73f4a07b0db853",
+		OVRG15: "0x7878d44e03f8c2d72416e40a251065bdd7f6ce5e",
+		OVRG30: "0x9ad140ca21e3298e1e1ec830d9738829efadd4a7"
 	};
 } else if (environment === 'STAGING') {
 	apis = {
@@ -48,6 +55,14 @@ if (environment === 'PRODUCTION') {
 		curveAddress: "0x7531205Bf874CF7D1Ba1E4dE4355AEE0fA83C34E",
 		controllerAddress: "0x9C13122f191a9A27A5eE94b12E771ABC1055d9b1",
 		firstOVRBlock: 11356495,
+		// VESTING Contracts
+		VestingOVRG: "0x126E1F247DCB2A1c6D7ECEC4BD127e46963567cf",
+		VestingOVRG15: "0x126E1F247DCB2A1c6D7ECEC4BD127e46963567cf",
+		VestingOVRG30: "0x126E1F247DCB2A1c6D7ECEC4BD127e46963567cf",
+		OVR: "0xBBE3Cf657dA9afBA8fdb3D097B881dE6404c6B6b",
+		OVRG: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6",
+		OVRG15: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6",
+		OVRG30: "0x114145cC6037d5Ef306A8D67af53E6051dE8aaa6"
 	};
 } else {
 	apis = {
@@ -157,8 +172,13 @@ export function isiOS() {
   ].includes(navigator.platform)
   // iPad on iOS 13 detection
   || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
-} 
+}
 
 export function isImToken(){
 	return !!window.imToken
+}
+
+
+export function isPositiveFloat(s) {
+  return !isNaN(s) && Number(s) > 0 && s != "";
 }
