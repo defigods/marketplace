@@ -215,12 +215,19 @@ function Stacking() {
 		console.log('participateVestingClaim', currency)
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
-
+		console.log('Wallet: ',web3Context.state.address)
 		let ovrgAddress = await web3Context.state.VestOVRGViewer.ovrg();
 		let ovrg = "10000000"
 		const howMuchTokens = ethers.utils.parseUnits(ovrg, 18)
 
 			if(currency === "ovrg"){
+
+				let allowance = await web3Context.state.tokenOVRGViewer.allowance(
+						web3Context.state.address,
+						config.apis.VestingOVRG
+				);
+				console.log("Allowance: ",allowance)
+
 				let approve = await web3Context.state.tokenOVRGSigner.approve(
 						config.apis.VestingOVRG,
 						new bn(ovrg).times(mantissa).toFixed(0)
