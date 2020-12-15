@@ -130,18 +130,56 @@ function StackingVestingOvrg() {
 		if (lockup==6) { lockup2=3; }
 
 		if(currency === "ovr"){
-			// setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
-
+			let allowanceOVR = await web3Context.state.ibcoRewardViewer.allowance(
+					web3Context.state.address,
+					config.apis.stakingOVR
+			);
+			allowanceOVR = parseFloat(ethers.utils.formatEther(allowanceOVR).toString()).toFixed(2)
+			if(allowanceOVR < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
 			let stakeBalOVR = await web3Context.state.StakeOVRSigner.deposit(lockup2,bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg"){
+			let allowanceOVRG = await web3Context.state.tokenOVRGViewer.allowance(
+					web3Context.state.address,
+					config.apis.stakingOVRG
+			);
+			allowanceOVRG = parseFloat(ethers.utils.formatEther(allowanceOVRG).toString()).toFixed(2)
+			if(allowanceOVRG < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
 			let stakeBalOVRG = await web3Context.state.StakeOVRGSigner.deposit(lockup2,bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg15"){
+			let allowanceOVRG15 = await web3Context.state.tokenOVRG15Viewer.allowance(
+					web3Context.state.address,
+					config.apis.stakingOVRG15
+			);
+			allowanceOVRG15 = parseFloat(ethers.utils.formatEther(allowanceOVRG15).toString()).toFixed(2)
+			if(allowanceOVRG15 < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
 			let stakeBalOVRG15 = await web3Context.state.StakeOVRG15Signer.deposit(lockup2,bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg30"){
+			let allowanceOVRG30 = await web3Context.state.tokenOVRG30Viewer.allowance(
+					web3Context.state.address,
+					config.apis.stakingOVRG30
+			);
+			allowanceOVRG30 = parseFloat(ethers.utils.formatEther(allowanceOVRG30).toString()).toFixed(2)
+			if(allowanceOVRG30 < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
 			let stakeBalOVRG30 = await web3Context.state.StakeOVRG30Signer.deposit(lockup2,bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 	}
 
@@ -399,7 +437,7 @@ function StackingVestingOvrg() {
 
 	}
 
-	const AllowanceDeposit = async (currency) =>{
+	const allowanceDeposit = async (currency) =>{
 		console.log('participateVestingClaim', currency)
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
@@ -431,7 +469,7 @@ function StackingVestingOvrg() {
 		}
 	}
 
-	const AllowanceStaking = async (currency) =>{
+	const allowanceStaking = async (currency) =>{
 		console.log('participateVestingClaim', currency)
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
@@ -535,7 +573,7 @@ function StackingVestingOvrg() {
 							text={t("Vesting.allwance", {token: "OVRG"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
-							onClick={() => AllowanceDeposit('ovrg')}
+							onClick={() => allowanceDeposit('ovrg')}
 						></HexButton>
 					</div>
 					<div className="o-half">
@@ -624,7 +662,7 @@ function StackingVestingOvrg() {
 							text={t("Vesting.allwance", {token: "OVRG15"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
-							onClick={() => AllowanceDeposit('ovrg15')}
+							onClick={() => allowanceDeposit('ovrg15')}
 						></HexButton>
 					</div>
 					<div className="o-half">
@@ -713,7 +751,7 @@ function StackingVestingOvrg() {
 							text={t("Vesting.allwance", {token: "OVRG30"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
-							onClick={() => AllowanceDeposit('ovrg30')}
+							onClick={() => allowanceDeposit('ovrg30')}
 						></HexButton>
 					</div>
 					<div className="o-half">
@@ -822,7 +860,7 @@ function StackingVestingOvrg() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
+					<div className="i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -834,6 +872,15 @@ function StackingVestingOvrg() {
 							handleTransactionValueChange(e.target.value);
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={t("Vesting.allwance", {token: "OVR"})}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => allowanceStaking('ovr')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
@@ -1001,7 +1048,7 @@ function StackingVestingOvrg() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
+					<div className="i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -1013,6 +1060,15 @@ function StackingVestingOvrg() {
 							handleTransactionValueChange(e.target.value);
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={t("Vesting.allwance", {token: "OVRG"})}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => allowanceStaking('ovrg')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
@@ -1180,7 +1236,7 @@ function StackingVestingOvrg() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
+					<div className="i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -1192,6 +1248,15 @@ function StackingVestingOvrg() {
 							handleTransactionValueChange(e.target.value);
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={t("Vesting.allwance", {token: "OVRG15"})}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => allowanceStaking('ovrg15')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
@@ -1359,7 +1424,7 @@ function StackingVestingOvrg() {
 						<b>{t("Stacking.apy")}:</b>
 						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
 					</div>
-					<div className="o-half i-ibco-input">
+					<div className="i-ibco-input">
 						<TextField
 						variant="outlined"
 						type="number"
@@ -1371,6 +1436,15 @@ function StackingVestingOvrg() {
 							handleTransactionValueChange(e.target.value);
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={t("Vesting.allwance", {token: "OVRG30"})}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => allowanceStaking('ovrg30')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
