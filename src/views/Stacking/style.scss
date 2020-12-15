@@ -12,6 +12,12 @@
 	.p-card-title{
 		margin-top: 0px;
 	}
+	.o-first{
+		@include column(2/5);
+	}
+	.o-second{
+		@include column(3/5);
+	}
 	.--value-header{
 		.o-one-label{
 			width: 100%;
@@ -252,12 +258,20 @@
 
 
 @media screen and (max-width: 769px){
-
-	.Stacking .o-half{
+	.Stacking .o-half, .Stacking .o-first, .Stacking .o-second{
 		width: 100%;
 	}
 	.Stacking .o-card{
 		margin-bottom: 20px;
+	}
+	.Stacking .--value-header .o-one-label .o-label {
+		text-align: center;
+		margin-top: 25px;
+	}
+	.Stacking .MuiToggleButtonGroup-root{
+		margin-top: 15px;
+		font-size: 12px;
+		margin-left: 0px;
 	}
 }
 

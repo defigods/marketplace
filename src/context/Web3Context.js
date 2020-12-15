@@ -18,6 +18,7 @@ const DAIABI = require("../contract/DAIABI");
 const rewardABI = require("../contract/rewardABI");
 const bancorFormulaABI = require("../contract/bancorFormulaABI");
 const vestingABI = require("../contract/vestingABI");
+const stakingABI = require("../contract/stakingABI");
 
 const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(
@@ -123,7 +124,15 @@ export class Web3Provider extends Component {
 						data[16],
 						data[17],
 						data[18],
-						data[19]
+						data[19],
+						data[20],
+						data[21],
+						data[22],
+						data[23],
+						data[24],
+						data[25],
+						data[26],
+						data[27]
 				);
 
         // Centralized Login
@@ -145,7 +154,7 @@ export class Web3Provider extends Component {
 	// IBCO
 	//
 
-	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m,n,o,p,q,r,s) => {
+	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m,n,o,p,q,r,s,t,u,v,aa,ab,bb,cb,db) => {
 			this.setState({
 				"ibcoController": x,
 				"ibcoControllerViewer": y,
@@ -166,7 +175,16 @@ export class Web3Provider extends Component {
 				"tokenOVRG15Signer": p,
 				"tokenOVRG15Viewer": q,
 				"tokenOVRG30Signer": r,
-				"tokenOVRG30Viewer": s
+				"tokenOVRG30Viewer": s,
+				"StakeOVRSigner": t,
+				"StakeOVRViewer": u,
+				"StakeOVRGSigner": v,
+				"StakeOVRGViewer": aa,
+				"StakeOVRG15Signer": ab,
+				"StakeOVRG15Viewer": bb,
+				"StakeOVRG30Signer": cb,
+				"StakeOVRG30Viewer": db,
+
 			});
 			this.initializeStore();
 	};
@@ -482,7 +500,52 @@ export class Web3Provider extends Component {
 					ovrAbi,
 					this.state.provider
 			);
+			let stakingOVRSigner = new ethers.Contract(
+			  config.apis.stakingOVR,
+			  stakingABI,
+			  this.state.signer
+			);
 
+			let stakingOVRViewer = new ethers.Contract(
+			  config.apis.stakingOVR,
+			  stakingABI,
+			  this.state.provider
+			)
+			let stakingOVRGSigner = new ethers.Contract(
+			  config.apis.stakingOVRG,
+			  stakingABI,
+			  this.state.signer
+			);
+
+			let stakingOVRGViewer = new ethers.Contract(
+			  config.apis.stakingOVRG,
+			  stakingABI,
+			  this.state.provider
+			);
+
+			let stakingOVRG15Signer = new ethers.Contract(
+			  config.apis.stakingOVRG15,
+			  stakingABI,
+			  this.state.signer
+			);
+
+			let stakingOVRG15Viewer = new ethers.Contract(
+			  config.apis.stakingOVRG15,
+			  stakingABI,
+			  this.state.provider
+			);
+
+			let stakingOVRG30Signer = new ethers.Contract(
+			  config.apis.stakingOVRG30,
+			  stakingABI,
+			  this.state.signer
+			);
+
+			let stakingOVRG30Viewer = new ethers.Contract(
+			  config.apis.stakingOVRG30,
+			  stakingABI,
+			  this.state.provider
+			);
 			let data = [
 					controllerSigner,
 					controllerViewer,
@@ -503,7 +566,15 @@ export class Web3Provider extends Component {
 					OVRG15Signer,
 					OVRG15Viewer,
 					OVRG30Signer,
-					OVRG30Viewer
+					OVRG30Viewer,
+					stakingOVRSigner,
+					stakingOVRViewer,
+					stakingOVRGSigner,
+					stakingOVRGViewer,
+					stakingOVRG15Signer,
+					stakingOVRG15Viewer,
+					stakingOVRG30Signer,
+					stakingOVRG30Viewer
 			];
 			return data;
 	};
