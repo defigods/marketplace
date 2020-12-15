@@ -149,6 +149,11 @@ function Stacking() {
 		console.log('participateStackingDeposit', {kind, currency})
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
+		// check on values
+		if(!isPositiveFloat(transactionValue)){
+			warningNotification(t('Warning.amount.invalid.title'), t('Warning.amount.invalid.desc'));
+			return false;
+		}
 		// convert to BN to do the deposit
 		let bnValue=new bn(transactionValue).times(mantissa).toFixed(0)
 		let lockup2=0;
@@ -1536,7 +1541,7 @@ function Stacking() {
 			<div className="Stacking">
 				<div className="o-container">
 						<div className="o-section">
-							<div className="o-half">
+							<div className="o-first">
 								<div className="o-card">
 									<div className="o-row">
 										<h3 className="p-card-title">{t('Stacking.title')}</h3>
@@ -1546,7 +1551,7 @@ function Stacking() {
 									</div>
 								</div>
 							</div>
-								<div className="o-half">
+								<div className="o-second">
 									<div className="o-card ">
 											{renderTab()}
 									</div>

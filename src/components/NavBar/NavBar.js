@@ -81,18 +81,6 @@ const NavBar = () => {
 		return button;
 	}
 
-	const renderPublicSaleButtonMobile = () => {
-		let button = <MenuItem
-				onClick={(e) => {
-					handleClose(e);
-					handleGoTo('/public-sale');
-				}}
-			>
-				{t('BuyTokens.buy.ovr')}
-			</MenuItem>
-		return button;
-	}
-
 	const handleMetamaskAuthentication = () => {
 		setIsConnecting(true);
 		window.gtag_report_metamask_conversion();
@@ -218,6 +206,7 @@ const NavBar = () => {
 				</Grow>
 			)}
 		</Popper>
+		{centerContainer()}
 		</div>)
 		return cont
 	}
@@ -258,7 +247,22 @@ const NavBar = () => {
 				>
 					{t('Navbar.marketplace.label')}
 				</MenuItem>
-				{renderPublicSaleButtonMobile()}
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/public-sale');
+					}}
+				>
+					{t('BuyTokens.buy.ovr')}
+				</MenuItem>
+				<MenuItem
+					onClick={(e) => {
+						handleClose(e);
+						handleGoTo('/stacking');
+					}}
+				>
+					{t('Stacking.title')}
+				</MenuItem>
 				<MenuItem
 					onClick={(e) => {
 						handleClose(e);
@@ -433,7 +437,6 @@ const NavBar = () => {
 			</Link>
 			<div className="Navbar__link_container">
 				{leftContainer()}
-				{centerContainer()}
 				{rightContainer()}
 			</div>
 		</div>

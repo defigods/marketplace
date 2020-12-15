@@ -1556,7 +1556,7 @@ function StackingVestingOvrg() {
 			<div className="Stacking">
 				<div className="o-container">
 						<div className="o-section">
-							<div className="o-half">
+							<div className="o-first">
 								<div className="o-card">
 									<div className="o-row">
 										<h3 className="p-card-title">{t('Stacking.title')}</h3>
@@ -1572,7 +1572,7 @@ function StackingVestingOvrg() {
 									</div>
 								</div>
 							</div>
-								<div className="o-half">
+								<div className="o-second">
 									<div className="o-card ">
 											<div className="o-row">
 												<div className="c-transaction-selector_cont">
