@@ -531,14 +531,14 @@ function StackingVestingOvrg() {
 								<ValueCounter value={vestingValues[0]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
-						<div className="o-one-label">
+						{/* <div className="o-one-label">
 							<div className="o-label">
 								{t("Vesting.total.vested")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[1]} currency="ovr"></ValueCounter>
 							</div>
-						</div>
+						</div> */}
 						<div className="o-one-label">
 							<div className="o-label">
 								{t("Vesting.total.claimed")}
@@ -620,14 +620,14 @@ function StackingVestingOvrg() {
 								<ValueCounter value={vestingValues[3]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
-						<div className="o-one-label">
+						{/* <div className="o-one-label">
 							<div className="o-label">
 								{t("Vesting.total.vested")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[4]} currency="ovr"></ValueCounter>
 							</div>
-						</div>
+						</div> */}
 						<div className="o-one-label">
 							<div className="o-label">
 								{t("Vesting.total.claimed")}
@@ -709,14 +709,14 @@ function StackingVestingOvrg() {
 								<ValueCounter value={vestingValues[6]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
-						<div className="o-one-label">
+						{/* <div className="o-one-label">
 							<div className="o-label">
 								{t("Vesting.total.vested")}
 							</div>
 							<div className="o-value">
 								<ValueCounter value={vestingValues[7]} currency="ovr"></ValueCounter>
 							</div>
-						</div>
+						</div> */}
 						<div className="o-one-label">
 							<div className="o-label">
 								{t("Vesting.total.claimed")}
