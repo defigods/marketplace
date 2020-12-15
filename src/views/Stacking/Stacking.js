@@ -1127,7 +1127,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVRG"})}</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row">
 						<b>{t("Stacking.lockup")}:</b>
@@ -1150,7 +1150,7 @@ function Stacking() {
 					<div className="o-row">
 						<HexButton
 							url="#"
-							text={t("Stacking.claim.rewards", {token: "OVRG"})}
+							text={t("Stacking.claim.rewards", {token: "OVR"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg')}
@@ -1306,7 +1306,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVRG15"})}</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row">
 						<b>{t("Stacking.lockup")}:</b>
@@ -1329,7 +1329,7 @@ function Stacking() {
 					<div className="o-row">
 						<HexButton
 							url="#"
-							text={t("Stacking.claim.rewards", {token: "OVRG15"})}
+							text={t("Stacking.claim.rewards", {token: "OVR"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg15')}
@@ -1485,7 +1485,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVRG30"})}</h3>
+						<h3 className="c-section-title">{t("Stacking.claim.rewards", {token: "OVR"})}</h3>
 					</div>
 					<div className="o-row">
 						<b>{t("Stacking.lockup")}:</b>
@@ -1508,7 +1508,7 @@ function Stacking() {
 					<div className="o-row">
 						<HexButton
 							url="#"
-							text={t("Stacking.claim.rewards", {token: "OVRG30"})}
+							text={t("Stacking.claim.rewards", {token: "OVR"})}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg30')}
