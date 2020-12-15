@@ -117,7 +117,13 @@ export class Web3Provider extends Component {
 						data[10],
 						data[11],
 						data[12],
-						data[13]
+						data[13],
+						data[14],
+						data[15],
+						data[16],
+						data[17],
+						data[18],
+						data[19]
 				);
 
         // Centralized Login
@@ -139,7 +145,7 @@ export class Web3Provider extends Component {
 	// IBCO
 	//
 
-	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m) => {
+	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m,n,o,p,q,r,s) => {
 			this.setState({
 				"ibcoController": x,
 				"ibcoControllerViewer": y,
@@ -152,9 +158,15 @@ export class Web3Provider extends Component {
 				"VestOVRGSigner": f,
 				"VestOVRGViewer": g,
 				"VestOVRG15Signer": h,
-				"VestOVRGV15iewer": i,
-				"VestOVRGS30igner": l,
-				"VestOVRGV30iewer": m
+				"VestOVRG15Viewer": i,
+				"VestOVRG30Signer": l,
+				"VestOVRG30Viewer": m,
+				"tokenOVRGSigner": n,
+				"tokenOVRGViewer": o,
+				"tokenOVRG15Signer": p,
+				"tokenOVRG15Viewer": q,
+				"tokenOVRG30Signer": r,
+				"tokenOVRG30Viewer": s
 			});
 			this.initializeStore();
 	};
@@ -440,6 +452,36 @@ export class Web3Provider extends Component {
 				vestingABI,
 				this.state.provider
 			);
+			let OVRGSigner = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.signer
+			);
+			let OVRGViewer = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.provider
+			);
+			let OVRG15Signer = new ethers.Contract(
+					config.apis.OVRG15,
+					ovrAbi,
+					this.state.signer
+			);
+			let OVRG15Viewer = new ethers.Contract(
+					config.apis.OVRG15,
+					ovrAbi,
+					this.state.provider
+			);
+			let OVRG30Signer = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.signer
+			);
+			let OVRG30Viewer = new ethers.Contract(
+					config.apis.OVRG,
+					ovrAbi,
+					this.state.provider
+			);
 
 			let data = [
 					controllerSigner,
@@ -455,7 +497,13 @@ export class Web3Provider extends Component {
 					vestingOVRG15Signer,
 					vestingOVRG15Viewer,
 					vestingOVRG30Signer,
-					vestingOVRG30Viewer
+					vestingOVRG30Viewer,
+					OVRGSigner,
+					OVRGViewer,
+					OVRG15Signer,
+					OVRG15Viewer,
+					OVRG30Signer,
+					OVRG30Viewer
 			];
 			return data;
 	};

@@ -18,7 +18,6 @@ import bn from "bignumber.js";
 import config from '../../lib/config';
 import { useHistory, Link } from 'react-router-dom';
 
-import CurrencyTextField from '@unicef/material-ui-currency-textfield'
 import TextField from '@material-ui/core/TextField';
 
 import {getCurrentLocale} from '../../i18n';
@@ -32,6 +31,13 @@ const mantissa = new bn(1e18);
 function Stacking() {
 	const { t, i18n } = useTranslation();
 	const [tab, setTab] = React.useState('stacking');
+
+	const [stackingValuesOVR, setStackingValuesOVR] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [stackingValuesOVRG, setStackingValuesOVRG] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [stackingValuesOVRG15, setStackingValuesOVRG15] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [stackingValuesOVRG30, setStackingValuesOVRG30] = React.useState([0,0,0,0,0,0,0,0,0]); // 0-stacking, 0-rewards, 0-claimed, 3-stacking, 3-rewards..
+	const [vestingValues, setVestingValues] = React.useState([0,0,0,0,0,0,0,0,0]); // OVRG-assigned, OVRG-vested, OVRG-claimed, OVRG15-assigned, OVRG15-vested, OVRG15-claimed..
+
 	const [subTab, setSubTab] = React.useState('ovr');
 	const [transactionValue, setTransactionValue] = React.useState(0.00);
 	const [transactionValueValid, setTransactionValueValid] = React.useState(false);
@@ -45,6 +51,11 @@ function Stacking() {
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
 
 
+	React.useEffect(() => {
+		//setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
+
+	}, []);
+
 
 	// Check if terms condition changed from userstate and kyc passed
 	React.useEffect(() => {
@@ -56,6 +67,7 @@ function Stacking() {
 
 	// Interface helpers
 	const handleTabChange = (newValue) => {
+
 		setTab(newValue);
 		setTransactionValue(0.0);
 		setTransactionValueValid(false);
@@ -67,6 +79,7 @@ function Stacking() {
 	};
 
 	const handleSubTabChange = (newValue) => {
+
 		setSubTab(newValue);
 		setTransactionValue(0.0);
 		setTransactionValueValid(false);
@@ -89,7 +102,7 @@ function Stacking() {
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
 		if(currency === "ovr"){
-
+			setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
 		}
 		if(currency === "ovrg"){
 
@@ -142,7 +155,28 @@ function Stacking() {
 		console.log('participateVestingDeposit', currency)
 		console.log('value', transactionValue)
 		console.log('currency', currency)
+		//update values
+		// TODO: move to a periodical update 30/60 sec
+		//let depOVRG = await web3Context.state.VestOVRGViewer.deposited(web3Context.state.address);
+		let depOVRG = await web3Context.state.VestOVRGViewer.grants(web3Context.state.address);
+		let depOVRGHuman = parseFloat(ethers.utils.formatEther(depOVRG.value).toString()).toFixed(2);
+		let depOVRGClaimedHuman = parseFloat(ethers.utils.formatEther(depOVRG.transferred).toString()).toFixed(2);
 
+		let depOVRG15 = await web3Context.state.VestOVRG15Viewer.grants(web3Context.state.address);
+		let depOVRG15Human = parseFloat(ethers.utils.formatEther(depOVRG15.value).toString()).toFixed(2);
+		let depOVRG15ClaimedHuman = parseFloat(ethers.utils.formatEther(depOVRG15.transferred).toString()).toFixed(2);
+
+		let depOVRG30 = await web3Context.state.VestOVRG30Viewer.grants(web3Context.state.address);
+		let depOVRG30Human = parseFloat(ethers.utils.formatEther(depOVRG30.value).toString()).toFixed(2);
+		let depOVRG30ClaimedHuman = parseFloat(ethers.utils.formatEther(depOVRG30.transferred).toString()).toFixed(2);
+
+
+		setVestingValues([depOVRGHuman,depOVRGHuman,depOVRGClaimedHuman,
+										depOVRG15Human,depOVRG15Human,depOVRG15ClaimedHuman,
+										depOVRG30Human,depOVRG30Human,depOVRG30ClaimedHuman]); // OVRG-assigned, OVRG-vested, OVRG-claimed, OVRG15-assigned, OVRG15-vested, OVRG15-claimed..
+		//// END update values
+
+		// convert to BN to do the deposit
 		let bnValue=new bn(transactionValue).times(mantissa).toFixed(0)
 		console.log('valueBN', bnValue)
 
@@ -165,7 +199,6 @@ function Stacking() {
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
 
-
 			if(currency === "ovrg"){
 				let claimOVRG = await web3Context.state.VestOVRGSigner.unlockVestedTokens();
 			}
@@ -178,10 +211,39 @@ function Stacking() {
 
 	}
 
+	const AllowanceDeposit = async (currency) =>{
+		console.log('participateVestingClaim', currency)
+		console.log('value', transactionValue)
+		console.log('lockup', lockup)
+
+		let ovrgAddress = await web3Context.state.VestOVRGViewer.ovrg();
+		let ovrg = "10000000"
+		const howMuchTokens = ethers.utils.parseUnits(ovrg, 18)
+
+			if(currency === "ovrg"){
+				let approve = await web3Context.state.tokenOVRGSigner.approve(
+						config.apis.VestingOVRG,
+						new bn(ovrg).times(mantissa).toFixed(0)
+				);
+			}
+			if(currency === "ovrg15"){
+				let approve = await web3Context.state.tokenOVRG15Signer.approve(
+						config.apis.VestingOVRG15,
+						new bn(ovrg).times(mantissa).toFixed(0)
+				);
+			}
+			if(currency === "ovrg30"){
+				let approve = await web3Context.state.tokenOVRG30Signer.approve(
+						config.apis.VestingOVRG30,
+						new bn(ovrg).times(mantissa).toFixed(0)
+				);
+			}
+
+	}
 
 	// Example
 	const handleApprove = async (val) => {
-		let test = await web3Context.state.vestingOVRGViewer.deposit(100);
+		//let test = await web3Context.state.vestingOVRGViewer.deposit(100);
 			// let approve = await web3Context.state.ibcoDAISigner.approve(
 			// 		config.apis.curveAddress,
 			// 		new bn(val).times(mantissa).toFixed(0)
@@ -197,26 +259,26 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								Total Assigned
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[0]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Vested
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[1]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Total Claimed
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[2]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -227,14 +289,15 @@ function Stacking() {
 						<h3 className="c-section-title">Deposit OVRG</h3>
 					</div>
 					<div className="i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -244,7 +307,7 @@ function Stacking() {
 							text={"OVRG ALLOWANCE"}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
-							onClick={() => participateVestingDeposit('ovrg')}
+							onClick={() => AllowanceDeposit('ovrg')}
 						></HexButton>
 					</div>
 					<div className="o-half">
@@ -285,26 +348,26 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								Total Assigned
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[3]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Vested
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[4]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Total Claimed
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[5]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -314,17 +377,27 @@ function Stacking() {
 					<div className="o-row o-flow-root">
 						<h3 className="c-section-title">Deposit OVRG15</h3>
 					</div>
-					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+					<div className="i-ibco-input">
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG15"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={"OVRG ALLOWANCE"}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => AllowanceDeposit('ovrg15')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
@@ -364,26 +437,26 @@ function Stacking() {
 					<div className="o-row --value-header">
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stacking
+								Total Assigned
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[6]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Vested
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[7]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Total Claimed
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={vestingValues[8]} currency="ovr"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -393,17 +466,27 @@ function Stacking() {
 					<div className="o-row o-flow-root">
 						<h3 className="c-section-title">Deposit OVRG30</h3>
 					</div>
-					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+					<div className="i-ibco-input">
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG30"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
+					</div>
+					<div className="o-half">
+						<HexButton
+							url="#"
+							text={"OVRG ALLOWANCE"}
+							className={`--orange --large --kyc-button --only-butt`}
+							// ${bidValid ? '' : '--disabled'}
+							onClick={() => AllowanceDeposit('ovrg30')}
+						></HexButton>
 					</div>
 					<div className="o-half">
 						<HexButton
@@ -449,23 +532,41 @@ function Stacking() {
 								Total Stacking
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[0]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVR[1]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVR[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[3]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVR[4]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVR[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVR[6]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVR[7]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVR[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -489,15 +590,20 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVR"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -531,9 +637,14 @@ function Stacking() {
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
+						<div className="o-row --apy">
+							<b>APY:</b>
+							<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
+						</div>
 						<div className="o-half i-ibco-input">
-							<CurrencyTextField
+							<TextField
 							variant="outlined"
+							type="number"
 							currencySymbol="OVR"
 							minimumValue={"0"}
 							decimalCharacter="."
@@ -557,7 +668,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVR from Stakes</h3>
+						<h3 className="c-section-title">Claim OVR from Rewards</h3>
 					</div>
 					<div className="o-row">
 						<b>Lockup:</b>
@@ -573,22 +684,27 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "5%":''}{lockup === 3 ? "10%":''}{lockup === 6 ? "15%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVR"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVR from Stakes"}
+							text={"Claim OVR from Rewards"}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovr')}
@@ -608,23 +724,41 @@ function Stacking() {
 								Total Stacking
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[0]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG[1]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[3]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG[4]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG[6]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG[7]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -648,15 +782,20 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -690,9 +829,14 @@ function Stacking() {
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
+						<div className="o-row --apy">
+							<b>APY:</b>
+							<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+						</div>
 						<div className="o-half i-ibco-input">
-							<CurrencyTextField
+							<TextField
 							variant="outlined"
+							type="number"
 							currencySymbol="OVRG"
 							minimumValue={"0"}
 							decimalCharacter="."
@@ -716,7 +860,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVRG from Stakes</h3>
+						<h3 className="c-section-title">Claim OVRG from Rewards</h3>
 					</div>
 					<div className="o-row">
 						<b>Lockup:</b>
@@ -732,22 +876,27 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVRG from Stakes"}
+							text={"Claim OVRG from Rewards"}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg')}
@@ -767,23 +916,41 @@ function Stacking() {
 								Total Stacking
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[0]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG15[1]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG15[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[3]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG15[4]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG15[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG15[6]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG15[7]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG15[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -807,15 +974,20 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG15"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -849,9 +1021,14 @@ function Stacking() {
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
+						<div className="o-row --apy">
+							<b>APY:</b>
+							<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+						</div>
 						<div className="o-half i-ibco-input">
-							<CurrencyTextField
+							<TextField
 							variant="outlined"
+							type="number"
 							currencySymbol="OVRG15"
 							minimumValue={"0"}
 							decimalCharacter="."
@@ -875,7 +1052,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVRG15 from Stakes</h3>
+						<h3 className="c-section-title">Claim OVRG15 from Rewards</h3>
 					</div>
 					<div className="o-row">
 						<b>Lockup:</b>
@@ -888,25 +1065,30 @@ function Stacking() {
 								</ToggleButton>
 								<ToggleButton value={6}>
 								6 months
-								</ToggleButton>
+					</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG15"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVRG15 from Stakes"}
+							text={"Claim OVRG15 from Rewards"}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg15')}
@@ -926,23 +1108,41 @@ function Stacking() {
 								Total Stacking
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[0]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG30[1]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG30[2]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Total Stakes
+								Total Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[3]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG30[4]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG30[5]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 						<div className="o-one-label">
 							<div className="o-label">
-								Claimed Stakes
+								Claimed Rewards
 							</div>
 							<div className="o-value">
-								<ValueCounter value={10000} currency="ovr"></ValueCounter>
+								<ValueCounter value={stackingValuesOVRG30[6]} currency="ovr" text="0 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG30[7]} currency="ovr" text="3 Months"></ValueCounter>
+							</div>
+							<div className="o-value">
+								<ValueCounter value={stackingValuesOVRG30[8]} currency="ovr" text="6 Months"></ValueCounter>
 							</div>
 						</div>
 					</div>
@@ -966,15 +1166,20 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG30"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
@@ -1008,9 +1213,14 @@ function Stacking() {
 									</ToggleButton>
 							</ToggleButtonGroup>
 						</div>
+						<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 						<div className="o-half i-ibco-input">
-							<CurrencyTextField
+							<TextField
 							variant="outlined"
+							type="number"
 							currencySymbol="OVRG30"
 							minimumValue={"0"}
 							decimalCharacter="."
@@ -1034,7 +1244,7 @@ function Stacking() {
 				<div className="o-line --venti"></div>
 				<div className="o-row o-flow-root">
 					<div className="o-row o-flow-root">
-						<h3 className="c-section-title">Claim OVRG30 from Stakes</h3>
+						<h3 className="c-section-title">Claim OVRG30 from Rewards</h3>
 					</div>
 					<div className="o-row">
 						<b>Lockup:</b>
@@ -1050,22 +1260,27 @@ function Stacking() {
 								</ToggleButton>
 						</ToggleButtonGroup>
 					</div>
+					<div className="o-row --apy">
+						<b>APY:</b>
+						<div>{lockup === 0 ? "10%":''}{lockup === 3 ? "20%":''}{lockup === 6 ? "30%":''}</div>
+					</div>
 					<div className="o-half i-ibco-input">
-						<CurrencyTextField
+						<TextField
 						variant="outlined"
+						type="number"
 						currencySymbol="OVRG30"
 						minimumValue={"0"}
 						decimalCharacter="."
 						digitGroupSeparator=","
-						onChange={(event, value)=> {
-							if(value>0){handleTransactionValueChange(value)};
+						onChange={(e)=> {
+							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
 						}}
 							/>
 					</div>
 					<div className="o-half">
 						<HexButton
 							url="#"
-							text={"Claim OVRG30 from Stakes"}
+							text={"Claim OVRG30 from Rewards"}
 							className={`--orange --large --kyc-button --only-butt`}
 							// ${bidValid ? '' : '--disabled'}
 							onClick={() => participateStackingClaim('stakes','ovrg30')}
@@ -1174,11 +1389,23 @@ function Stacking() {
 							<div className="o-half">
 								<div className="o-card">
 									<div className="o-row">
-										<h3 className="p-card-title">Titolo</h3>
+										<h3 className="p-card-title">Stacking</h3>
 									</div>
 									<div className="o-row">
-										Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-										<br></br><br></br>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+										There are 3 different staking options you can select: no lockup with 10% APY, 3 months lockup with 20% APY and 6 months lockup with 30% APY. <br></br><br></br>
+										With no lockup option you can claim both capital and rewards at any moment, rewards will keep accruing for as long as you matain your capital stacked <br></br><br></br>
+										With 3 and 6 months lockup options capital will be locked until the end of the selected period while you'll be able to withdraw rewards at any moment. Once the staking period (3 or 6 months) ends you will have to withdraw and stake your capital again in order to continue earning rewards. <br></br><br></br>
+										Total staking, total rewards hystorically earned and total claimed rewards are detailed for each of the available staking periods<br></br><br></br><br></br>
+									</div>
+									<div className="o-row">
+										<h3 className="p-card-title">Vesting</h3>
+									</div>
+									<div className="o-row">
+										Select the OVRGn token type yuo own (OVRG, OVRG15, OVRG30)<br></br><br></br>
+										Select the amount of tokens you want to start vesting and click deposit. Pay attention this is a one way action, once deposited you will not be able to withdraw OVRGn tokens anymore and benefit of double staking rewards.<br></br><br></br>
+										Total Assigned: the total number of OVR tokens assigned to your address. 1:1 ratio with deposited OVRGn tokens.<br></br><br></br>
+										Total Vested: total number of OVR tokens that has already vested. Includes already claimed.<br></br><br></br>
+										Total Claimed: total amount of vested OVR tokens claimed.<br></br><br></br>
 									</div>
 								</div>
 							</div>
