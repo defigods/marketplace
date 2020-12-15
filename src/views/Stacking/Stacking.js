@@ -16,6 +16,7 @@ import { ethers, BigNumber,utils } from 'ethers';
 import bn from "bignumber.js";
 
 import config from '../../lib/config';
+import {isPositiveFloat} from '../../lib/config';
 import { useHistory, Link } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
@@ -46,16 +47,28 @@ function Stacking() {
 	let history = useHistory();
 	const web3Context = useContext(Web3Context);
 	const userContext = useContext(UserContext);
+	const [web3IsReady, setWeb3IsReady] = React.useState(false);
 	const { isLoggedIn: userAuthenticated } = userContext.state;
 
 	const [ibcoIsKYCPassed, setIbcoIsKYCPassed] = React.useState(false);
 
+	// On Web3Loaded
+	React.useEffect(() => {
+		if(web3Context.state){
+			if(web3Context.state.ibcoSetupComplete){
+				if(web3Context.state.ibcoSetupComplete === true){
+					setWeb3IsReady(true);
+				}
+			}
+		}
+	}, [web3Context]);
 
 	React.useEffect(() => {
-		//setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
-
-	}, []);
-
+		loadVestingDeposit();
+		setInterval(() => {
+			loadVestingDeposit();
+		}, 30000);
+	}, [web3IsReady]);
 
 	// Check if terms condition changed from userstate and kyc passed
 	React.useEffect(() => {
@@ -67,7 +80,6 @@ function Stacking() {
 
 	// Interface helpers
 	const handleTabChange = (newValue) => {
-
 		setTab(newValue);
 		setTransactionValue(0.0);
 		setTransactionValueValid(false);
@@ -79,7 +91,6 @@ function Stacking() {
 	};
 
 	const handleSubTabChange = (newValue) => {
-
 		setSubTab(newValue);
 		setTransactionValue(0.0);
 		setTransactionValueValid(false);
@@ -102,7 +113,7 @@ function Stacking() {
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
 		if(currency === "ovr"){
-			setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
+			// setStackingValuesOVR([0,0,2,3,4,5,6,7,8])
 		}
 		if(currency === "ovrg"){
 
@@ -150,13 +161,8 @@ function Stacking() {
 		}
 	}
 
-	// Vesting
-	const participateVestingDeposit = async (currency) =>{
-		console.log('participateVestingDeposit', currency)
-		console.log('value', transactionValue)
-		console.log('currency', currency)
-		//update values
-		// TODO: move to a periodical update 30/60 sec
+	const loadVestingDeposit = async () => {
+		if(web3Context.state.VestOVRGViewer){
 		//let depOVRG = await web3Context.state.VestOVRGViewer.deposited(web3Context.state.address);
 		let depOVRG = await web3Context.state.VestOVRGViewer.grants(web3Context.state.address);
 		let depOVRGHuman = parseFloat(ethers.utils.formatEther(depOVRG.value).toString()).toFixed(2);
@@ -174,23 +180,69 @@ function Stacking() {
 		setVestingValues([depOVRGHuman,depOVRGHuman,depOVRGClaimedHuman,
 										depOVRG15Human,depOVRG15Human,depOVRG15ClaimedHuman,
 										depOVRG30Human,depOVRG30Human,depOVRG30ClaimedHuman]); // OVRG-assigned, OVRG-vested, OVRG-claimed, OVRG15-assigned, OVRG15-vested, OVRG15-claimed..
-		//// END update values
+		}
+	}
+
+	// Vesting
+	const participateVestingDeposit = async (currency) =>{
+		console.log('participateVestingDeposit', currency)
+		console.log('value', transactionValue)
+		console.log('currency', currency)
+		// check on values
+		if(!isPositiveFloat(transactionValue)){
+			warningNotification(t('Warning.amount.invalid.title'), t('Warning.amount.invalid.desc'));
+			return false;
+		}
 
 		// convert to BN to do the deposit
 		let bnValue=new bn(transactionValue).times(mantissa).toFixed(0)
 		console.log('valueBN', bnValue)
 
 		if(currency === "ovrg"){
-			//let balOVR = await web3Context.state.VestOVRGViewer.balanceOVR();
-			//Float: parseFloat(ethers.utils.formatEther(VALOREBIGNUMBER).toString()).toFixed(2)
-			//console.log('Balance OVR: ',ethers.utils.formatEther(balOVR).toString());
+			// Check Allowance 
+			let allowanceOVRG = await web3Context.state.tokenOVRGViewer.allowance(
+					web3Context.state.address,
+					config.apis.VestingOVRG
+			);
+			allowanceOVRG = parseFloat(ethers.utils.formatEther(allowanceOVRG).toString()).toFixed(2)
+			console.log('allowanceOVRG',allowanceOVRG)
+			if(allowanceOVRG < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
+			// Partecipate 
 			let depositOVRG = await web3Context.state.VestOVRGSigner.deposit(bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg15"){
+			// Check Allowance 
+			let allowanceOVRG15 = await web3Context.state.tokenOVRG15Viewer.allowance(
+					web3Context.state.address,
+					config.apis.VestingOVRG15
+			);
+			allowanceOVRG15 = parseFloat(ethers.utils.formatEther(allowanceOVRG15).toString()).toFixed(2)
+			if(allowanceOVRG15 < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
+			// Partecipate 
 			let depositOVRG15 = await web3Context.state.VestOVRG15Signer.deposit(bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg30"){
+			// Check Allowance 
+			let allowanceOVRG30 = await web3Context.state.tokenOVRG30Viewer.allowance(
+					web3Context.state.address,
+					config.apis.VestingOVRG30
+			);
+			allowanceOVRG30 = parseFloat(ethers.utils.formatEther(allowanceOVRG30).toString()).toFixed(2)
+			if(allowanceOVRG30 < parseFloat(transactionValue)){
+				warningNotification(t('Warning.allowance.invalid.title'), t('Warning.allowance.invalid.desc'));
+				return false;
+			}
+			// Partecipate 
 			let depositOVRG30 = await web3Context.state.VestOVRG30Signer.deposit(bnValue);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 	}
 
@@ -199,14 +251,17 @@ function Stacking() {
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
 
-			if(currency === "ovrg"){
+			if(currency === "ovrg"){				
 				let claimOVRG = await web3Context.state.VestOVRGSigner.unlockVestedTokens();
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg15"){
 				let claimOVRG = await web3Context.state.VestOVRG15Signer.unlockVestedTokens();
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg30"){
 				let claimOVRG = await web3Context.state.VestOVRG30Signer.unlockVestedTokens();
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 
 	}
@@ -220,25 +275,27 @@ function Stacking() {
 		let ovrg = "10000000"
 		const howMuchTokens = ethers.utils.parseUnits(ovrg, 18)
 
-			if(currency === "ovrg"){
-				let approve = await web3Context.state.tokenOVRGSigner.approve(
-						config.apis.VestingOVRG,
-						new bn(ovrg).times(mantissa).toFixed(0)
-				);
-			}
-			if(currency === "ovrg15"){
-				let approve = await web3Context.state.tokenOVRG15Signer.approve(
-						config.apis.VestingOVRG15,
-						new bn(ovrg).times(mantissa).toFixed(0)
-				);
-			}
-			if(currency === "ovrg30"){
-				let approve = await web3Context.state.tokenOVRG30Signer.approve(
-						config.apis.VestingOVRG30,
-						new bn(ovrg).times(mantissa).toFixed(0)
-				);
-			}
-
+		if(currency === "ovrg"){
+			let approve = await web3Context.state.tokenOVRGSigner.approve(
+					config.apis.VestingOVRG,
+					new bn(ovrg).times(mantissa).toFixed(0)
+			);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
+		}
+		if(currency === "ovrg15"){
+			let approve = await web3Context.state.tokenOVRG15Signer.approve(
+					config.apis.VestingOVRG15,
+					new bn(ovrg).times(mantissa).toFixed(0)
+			);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
+		}
+		if(currency === "ovrg30"){
+			let approve = await web3Context.state.tokenOVRG30Signer.approve(
+					config.apis.VestingOVRG30,
+					new bn(ovrg).times(mantissa).toFixed(0)
+			);
+			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
+		}
 	}
 
 	// Example
@@ -297,7 +354,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -386,7 +443,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -475,7 +532,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -603,7 +660,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -649,8 +706,8 @@ function Stacking() {
 							minimumValue={"0"}
 							decimalCharacter="."
 							digitGroupSeparator=","
-							onChange={(event, value)=> {
-								if(value>0){handleTransactionValueChange(value)};
+							onChange={(e)=> {
+								handleTransactionValueChange(e.target.value);
 							}}
 								/>
 						</div>
@@ -697,7 +754,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -795,7 +852,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -841,8 +898,8 @@ function Stacking() {
 							minimumValue={"0"}
 							decimalCharacter="."
 							digitGroupSeparator=","
-							onChange={(event, value)=> {
-								if(value>0){handleTransactionValueChange(value)};
+							onChange={(e)=> {
+								handleTransactionValueChange(e.target.value);
 							}}
 								/>
 						</div>
@@ -889,7 +946,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -987,7 +1044,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -1033,8 +1090,8 @@ function Stacking() {
 							minimumValue={"0"}
 							decimalCharacter="."
 							digitGroupSeparator=","
-							onChange={(event, value)=> {
-								if(value>0){handleTransactionValueChange(value)};
+							onChange={(e)=> {
+								handleTransactionValueChange(e.target.value);
 							}}
 								/>
 						</div>
@@ -1081,7 +1138,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -1179,7 +1236,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>
@@ -1225,8 +1282,8 @@ function Stacking() {
 							minimumValue={"0"}
 							decimalCharacter="."
 							digitGroupSeparator=","
-							onChange={(event, value)=> {
-								if(value>0){handleTransactionValueChange(value)};
+							onChange={(e)=> {
+								handleTransactionValueChange(e.target.value);
 							}}
 								/>
 						</div>
@@ -1273,7 +1330,7 @@ function Stacking() {
 						decimalCharacter="."
 						digitGroupSeparator=","
 						onChange={(e)=> {
-							if(e.target.value>0){handleTransactionValueChange(e.target.value)};
+							handleTransactionValueChange(e.target.value);
 						}}
 							/>
 					</div>

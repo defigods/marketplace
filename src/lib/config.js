@@ -173,3 +173,8 @@ export function isiOS() {
 export function isImToken(){
 	return !!window.imToken
 }
+
+
+export function isPositiveFloat(s) {
+  return !isNaN(s) && Number(s) > 0 && s != "";
+}
