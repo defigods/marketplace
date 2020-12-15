@@ -431,5 +431,30 @@
 	"Auctions.allowance.waiting.title": "Auction allowance",
 	"Auctions.allowance.waiting.desc": "Please wait the allowance transaction to succeed and try again to bid in a couple of minutes",
 	"Auctions.please.reload": "Please reload the page to see the new auction values",
-	"Cashback.banner.desc": "Monthly cashback applied to first 3000 auctions"
+	"Cashback.banner.desc": "Monthly cashback applied to first 3000 auctions",
+	"Generic.login.required.title": "You have to log in to visit this page",
+	"Generic.login.required.desc": "Discover OVR. Connect your wallet.",
+	"Stacking.title": "Stacking",
+	"Vesting.title": "Vesting",
+	"Stacking.desc.copy": "There are 3 different staking options you can select: no lockup with 10% APY, 3 months lockup with 20% APY and 6 months lockup with 30% APY. \n\nWith no lockup option you can claim both capital and rewards at any moment, rewards will keep accruing for as long as you matain your capital stacked \n\nWith 3 and 6 months lockup options capital will be locked until the end of the selected period while you'll be able to withdraw rewards at any moment. Once the staking period (3 or 6 months) ends you will have to withdraw and stake your capital again in order to continue earning rewards. \n\nTotal staking, total rewards hystorically earned and total claimed rewards are detailed for each of the available staking periods\n\n\n",
+	"Vesting.desc.copy": "Select the OVRGn token type yuo own (OVRG, OVRG15, OVRG30)\n\nSelect the amount of tokens you want to start vesting and click deposit. Pay attention this is a one way action, once deposited you will not be able to withdraw OVRGn tokens anymore and benefit of double staking rewards.\n\nTotal Assigned: the total number of OVR tokens assigned to your address. 1:1 ratio with deposited OVRGn tokens.\n\nTotal Vested: total number of OVR tokens that has already vested. Includes already claimed.\n\nTotal Claimed: total amount of vested OVR tokens claimed.\n\n",
+	"Stacking.total":"Total Stacking",
+	"Stacking.total.rewards":"Total Rewards",
+	"Stacking.claimed.rewards":"Claimed Rewards",
+	"Stacking.lockup":"Lockup",
+	"Stacking.lockup.no":"No lockup",
+	"Stacking.lockup.0":"0 months",
+	"Stacking.lockup.3":"3 months",
+	"Stacking.lockup.6":"6 months",
+	"Stacking.deposit":"Deposit {{token}}",
+	"Stacking.claim.capital":"Claim {{token}} from Capital",
+	"Stacking.claim.rewards":"Claim {{token}} from Rewards",
+	"Stacking.apy":"APY",
+	"Vesting.total":"Total Assigned",
+	"Vesting.total.vested":"Total Vested",
+	"Vesting.total.claimed":"Total Claimed",
+	"Vesting.claim":"Claim {{token}}",
+	"Vesting.allwance":"{{token}} Allowance"
 }
+
+
