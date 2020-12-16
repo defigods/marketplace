@@ -195,33 +195,46 @@ function StackingVestingOvrg() {
 		if (lockup==6) { lockup2=3; }
 
 		if(kind === "capital"){
+			if(!isPositiveFloat(transactionValue)){
+				warningNotification(t('Warning.amount.invalid.title'), t('Warning.amount.invalid.desc'));
+				return false;
+			}
 			if(currency === "ovr"){
 				let stakeCapOVR = await web3Context.state.StakeOVRSigner.makeWithdrawal(lockup2,bnValue);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg"){
 				let stakeCapOVRG = await web3Context.state.StakeOVRGSigner.makeWithdrawal(lockup2,bnValue);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg15"){
 				let stakeCapOVRG15 = await web3Context.state.StakeOVRG15Signer.makeWithdrawal(lockup2,bnValue);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg30"){
 				let stakeCapOVRG30 = await web3Context.state.StakeOVRG30Signer.makeWithdrawal(lockup2,bnValue);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 		}
 		if(kind === "stakes"){
 			if(currency === "ovr"){
 				let stakeSTKOVR = await web3Context.state.StakeOVRSigner.makeWithdrawalRewards(lockup2);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg"){
 				let stakeSTKOVRG = await web3Context.state.StakeOVRGSigner.makeWithdrawalRewards(lockup2);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg15"){
 				let stakeSTKOVRG15 = await web3Context.state.StakeOVRG15Signer.makeWithdrawalRewards(lockup2);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 			if(currency === "ovrg30"){
 				let stakeSTKOVRG30 = await web3Context.state.StakeOVRG30Signer.makeWithdrawalRewards(lockup2);
+				successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 			}
 		}
+		
 	}
 
 	const loadVestingDeposit = async () => {

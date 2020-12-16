@@ -187,11 +187,6 @@ function Stacking() {
 		console.log('participateStackingDeposit', {kind, currency})
 		console.log('value', transactionValue)
 		console.log('lockup', lockup)
-		// check on values
-		if(!isPositiveFloat(transactionValue)){
-			warningNotification(t('Warning.amount.invalid.title'), t('Warning.amount.invalid.desc'));
-			return false;
-		}
 		// convert to BN to do the deposit
 		let bnValue=new bn(transactionValue).times(mantissa).toFixed(0)
 		let lockup2=0;
@@ -200,6 +195,11 @@ function Stacking() {
 		if (lockup==6) { lockup2=3; }
 
 		if(kind === "capital"){
+			// check on values
+			if(!isPositiveFloat(transactionValue)){
+				warningNotification(t('Warning.amount.invalid.title'), t('Warning.amount.invalid.desc'));
+				return false;
+			}
 			if(currency === "ovr"){
 				let stakeCapOVR = await web3Context.state.StakeOVRSigner.makeWithdrawal(lockup2,bnValue);
 			}
