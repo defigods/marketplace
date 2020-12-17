@@ -496,7 +496,7 @@ export class Web3Provider extends Component {
 					this.state.signer
 			);
 			let OVRG30Viewer = new ethers.Contract(
-					config.apis.OVRG,
+					config.apis.OVRG30,
 					ovrAbi,
 					this.state.provider
 			);
