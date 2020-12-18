@@ -119,6 +119,13 @@ export function indexMyOpenAuctions(sort = null, page = 1) {
 	);
 }
 
+export function getAuctionsTotals() {
+	return request(
+		{ url: '/auctions/totals', method: 'GET' },
+		null,
+	);
+}
+
 export function auctionCreate(landUuid = null, worth = 10, gas = 10) {
 	return request(
 		{ url: '/auction/start', method: 'POST' },
