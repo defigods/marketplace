@@ -499,21 +499,21 @@ function StackingVestingOvrg() {
 			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg"){
-			let approve = await web3Context.state.OVRGSigner.approve(
+			let approve = await web3Context.state.OVRG.approve(
 					config.apis.stakingOVRG,
 					new bn(ovrg).times(mantissa).toFixed(0)
 			);
 			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg15"){
-			let approve = await web3Context.state.OVRG15Signer.approve(
+			let approve = await web3Context.state.OVRG15.approve(
 					config.apis.stakingOVRG15,
 					new bn(ovrg).times(mantissa).toFixed(0)
 			);
 			successNotification(t("IBCO.request.process.title"),t("IBCO.request.process.desc"))
 		}
 		if(currency === "ovrg30"){
-			let approve = await web3Context.state.OVRG30Signer.approve(
+			let approve = await web3Context.state.OVRG30.approve(
 					config.apis.stakingOVRG30,
 					new bn(ovrg).times(mantissa).toFixed(0)
 			);
