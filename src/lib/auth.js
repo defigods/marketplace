@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import config from './config';
 
 export function saveToken(tokenName = 'token', tokenValue) {
-	Cookies.set(tokenName, tokenValue); //, { domain: config.apis.cookieDomain }
+	Cookies.set(tokenName, tokenValue, { domain: config.apis.cookieDomain }); 
 }
 
 export function getToken(tokenName = 'token') {
