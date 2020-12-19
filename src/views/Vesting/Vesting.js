@@ -362,8 +362,8 @@ function StackingVestingOvrg() {
 
 		setStackingValuesOVR([stakeBalOVRHuman,stakeBalOVRHuman3,stakeBalOVRHuman6,getRewOVRHuman,getRewOVRHuman3,getRewOVRHuman6,stakeCrewOVRHuman,stakeCrewOVRHuman3,stakeCrewOVRHuman6]);
 		setStackingValuesOVRG([stakeBalOVRGHuman,stakeBalOVRGHuman3,stakeBalOVRGHuman6,getRewOVRGHuman,getRewOVRGHuman3,getRewOVRGHuman6,stakeCrewOVRGHuman,stakeCrewOVRGHuman3,stakeCrewOVRGHuman6]);
-		setStackingValuesOVRG15([stakeBalOVRG15Human,stakeBalOVRG15Human3,stakeBalOVRG15Human6,getRewOVRG15Human,getRewOVRG15Human3,getRewOVRG30Human6,stakeCrewOVRG15Human,stakeCrewOVRG15Human3,stakeCrewOVRG15Human6]);
-		setStackingValuesOVRG30([stakeBalOVRG30Human,stakeBalOVRG30Human3,stakeBalOVRG30Human6,getRewOVRG30Human,getRewOVRG15Human3,getRewOVRG30Human6,stakeCrewOVRG30Human,stakeCrewOVRG30Human3,stakeCrewOVRG30Human6]);
+		setStackingValuesOVRG15([stakeBalOVRG15Human,stakeBalOVRG15Human3,stakeBalOVRG15Human6,getRewOVRG15Human,getRewOVRG15Human3,getRewOVRG15Human6,stakeCrewOVRG15Human,stakeCrewOVRG15Human3,stakeCrewOVRG15Human6]);
+		setStackingValuesOVRG30([stakeBalOVRG30Human,stakeBalOVRG30Human3,stakeBalOVRG30Human6,getRewOVRG30Human,getRewOVRG30Human3,getRewOVRG30Human6,stakeCrewOVRG30Human,stakeCrewOVRG30Human3,stakeCrewOVRG30Human6]);
 		}
 	}
 
