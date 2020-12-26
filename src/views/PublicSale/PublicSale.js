@@ -198,7 +198,7 @@ function PublicSale() {
 			}
 			if((slip*100).toFixed(2) >= maxSlip ){
 				if(tab === 'buy'){
-					setHasMaxSlippageReached(true);
+					// setHasMaxSlippageReached(true);
 				}
 			} else {
 				setHasMaxSlippageReached(false);
