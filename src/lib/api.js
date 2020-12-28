@@ -269,11 +269,11 @@ export function indexMyLands(sort = null, page = 1) {
 	);
 }
 
-export function indexInterestingLands(hex_ids=[]) {
+export function indexInterestingLands(hex_id) {
 	return request(
 		{ url: '/lands/interesting/list', method: 'POST' },
 		{
-			hex_ids: hex_ids,
+			hex_id: hex_id,
 		},
 		null,
 	);

@@ -13,7 +13,7 @@ import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
 import MapNavigationBox from '../MapNavigationBox/MapNavigationBox';
 import BannerNotification from '../BannerNotification/BannerNotification';
 
-import _ from 'lodash';
+import _, { isElement } from 'lodash';
 
 // @ts-check
 
@@ -86,15 +86,20 @@ const Map = (props) => {
 
 		// Show grid on high zoom
 		const zoomThreshold = 17;
-		map.on('moveend', () => {
+		const delayedQuery = _.debounce(q => {
 			if (map.getZoom() > zoomThreshold) {
+				console.log('change MAP')
 				let hexs = hexagons();
 				// Render general hexes
 				renderHexes(hexs);
 				// Render owned Lands
-				// renderInterestingHexes(hexs);
+				renderInterestingHexes(hexs);
 			}
+		}, 1500)
+		map.on('moveend', () => {
+			delayedQuery();
 		});
+
 	}, []);
 
 	useEffect(() => {
@@ -214,62 +219,190 @@ const Map = (props) => {
 	
 	function renderInterestingHexes(hexagons){
 		// Filter rendering Hexagons to see if there is some interesting
-		let hexIds = Object.keys(hexagons)
-		let interestingHexagons = []
-		indexInterestingLands(hexIds).then((response) => {
+		indexInterestingLands(Object.keys(hexagons)[0]).then((response) => {
 			if (response.data.result === true) {
-				interestingHexagons = response.data.hexIds;
-				// Prepare format
-				var data = Object.assign({}, interestingHexagons);
-				var newData = Object.keys(data).reduce(function (obj, key) {
-					obj[data[key]] = Math.random();
-					return obj;
-				}, {});
-
-				// Plot hexes
-				const geojson = geojson2h3.h3SetToFeatureCollection(Object.keys(newData), (hex) => ({ value: hexagons[hex] }));
-				const sourceId = 'h3-interesting-hexes';
-				const layerId = `${sourceId}-interesting-layer`;
-				let source = map.getSource(sourceId);
-
-				if (!source) {
-					map.addSource(sourceId, {
-						type: 'geojson',
-						data: geojson,
-					});
-					map.addLayer({
-						id: layerId,
-						source: sourceId,
-						type: 'fill',
-						interactive: false,
-						paint: {
-							'fill-outline-color': '#fff',
-							'fill-color': 'rgba(136, 81, 180, 0.5)',
-							'fill-opacity': 1,
-						},
-					});
-					source = map.getSource(sourceId);
-				}
-
-				// Update the geojson data
-				source.setData(geojson);
+				let lands = response.data.lands;
+				renderMintedLands(lands.minted);
+				//renderClosingAuctions(lands.auctionClosing);
+				renderOngoingAuctions(lands.auctionStarted.concat(lands.auctionClosing));
 			} 
 		});
 	}
 
-	function hexagons() {
-		var center = map.getCenter();
-
-		const centerHex = h3.geoToH3(center['lat'], center['lng'], 12);
-		const kRing = h3.kRing(centerHex, 20);
-
-		var data = Object.assign({}, kRing);
-
+	function renderMintedLands(hexagons){
+		// Prepare format
+		var data = Object.assign({}, hexagons);
 		var newData = Object.keys(data).reduce(function (obj, key) {
 			obj[data[key]] = Math.random();
 			return obj;
 		}, {});
 
+		// Plot hexes
+		const geojson = geojson2h3.h3SetToFeatureCollection(Object.keys(newData), (hex) => ({ value: hexagons[hex] }));
+		const sourceId = 'h3-interesting-hexes';
+		const layerId = `${sourceId}-interesting-layer`;
+		let source = map.getSource(sourceId);
+
+		if (!source) {
+			map.addSource(sourceId, {
+				type: 'geojson',
+				data: geojson,
+			});
+			map.addLayer({
+				id: layerId,
+				source: sourceId,
+				type: 'fill',
+				interactive: false,
+				paint: {
+					'fill-outline-color': '#ec663c',
+					'fill-color': 'rgba(249,180,38,0.4)',
+					'fill-opacity': 1,
+				},
+			});
+			source = map.getSource(sourceId);
+		}
+
+		// Update the geojson data
+		source.setData(geojson);
+		// Add markers
+		geojson.features.forEach(function (marker) {
+			// create a DOM element for the marker
+			var el = document.createElement('div');
+			el.className = 'sold-marker';
+			el.style.backgroundImage =
+			'url(https://ovr-assets.oss-accelerate.aliyuncs.com/images/sold-label-bg.png)';
+			el.style.width =  '50px';
+			el.style.height = '29px';
+
+			map.on('zoom', () => {
+				if (map.getZoom() < 17) {
+					var paras = document.getElementsByClassName('sold-marker');
+					
+					while (paras[0]) {
+						paras[0].parentNode.removeChild(paras[0]);
+					}
+				} 
+			});
+
+			// add marker to map
+			console.log('marker.geometry.id',marker.id)
+			let coordi = h3.h3ToGeo(marker.id);
+			
+			new mapboxgl.Marker(el, {anchor: 'center'})
+			.setLngLat([coordi[1],coordi[0]])
+			.addTo(map);
+		});
+	}
+
+	// function renderClosingAuctions(hexagons){
+	// 	// Prepare format
+	// 	var data = Object.assign({}, hexagons);
+	// 	var newData = Object.keys(data).reduce(function (obj, key) {
+	// 		obj[data[key]] = Math.random();
+	// 		return obj;
+	// 	}, {});
+
+	// 	// Plot hexes
+	// 	const geojson = geojson2h3.h3SetToFeatureCollection(Object.keys(newData), (hex) => ({ value: hexagons[hex] }));
+	// 	const sourceId = 'h3-closing-auctions-hexes';
+	// 	const layerId = `${sourceId}-closing-auctions-layer`;
+	// 	let source = map.getSource(sourceId);
+
+	// 	if (!source) {
+	// 		map.addSource(sourceId, {
+	// 			type: 'geojson',
+	// 			data: geojson,
+	// 		});
+	// 		map.addLayer({
+	// 			id: layerId,
+	// 			source: sourceId,
+	// 			type: 'fill',
+	// 			interactive: false,
+	// 			paint: {
+	// 				'fill-outline-color': '#fff',
+	// 				'fill-color': 'rgba(136, 81, 180, 0.5)',
+	// 				'fill-opacity': 1,
+	// 			},
+	// 		});
+	// 		source = map.getSource(sourceId);
+	// 	}
+
+	// 	// Update the geojson data
+	// 	source.setData(geojson);
+	// }
+
+	function renderOngoingAuctions(hexagons){
+		// Prepare format
+		var data = Object.assign({}, hexagons);
+		var newData = Object.keys(data).reduce(function (obj, key) {
+			obj[data[key]] = Math.random();
+			return obj;
+		}, {});
+
+		// Plot hexes
+		const geojson = geojson2h3.h3SetToFeatureCollection(Object.keys(newData), (hex) => ({ value: hexagons[hex] }));
+		const sourceId = 'h3-ongoing-auctions-hexes';
+		const layerId = `${sourceId}-ongoing-auctions-layer`;
+		let source = map.getSource(sourceId);
+
+		if (!source) {
+			map.addSource(sourceId, {
+				type: 'geojson',
+				data: geojson,
+			});
+			map.addLayer({
+				id: layerId,
+				source: sourceId,
+				type: 'fill',
+				interactive: false,
+				paint: {
+					'fill-outline-color': '#fff',
+					'fill-color': 'rgba(136, 81, 180, 0.5)',
+					'fill-opacity': 1,
+				},
+			});
+			source = map.getSource(sourceId);
+		}
+
+		// Update the geojson data
+		source.setData(geojson);
+		// Add markers
+		geojson.features.forEach(function (marker) {
+			// create a DOM element for the marker
+			var el = document.createElement('div');
+			el.className = 'sold-marker';
+			el.style.backgroundImage =
+			'url(https://ovr-assets.oss-accelerate.aliyuncs.com/images/auction-label.png)';
+			el.style.width =  '45px';
+			el.style.height = '45px';
+
+			map.on('zoom', () => {
+				if (map.getZoom() < 17) {
+					var paras = document.getElementsByClassName('auction-marker');
+
+					while (paras[0]) {
+						paras[0].parentNode.removeChild(paras[0]);
+					}
+				} 
+			});
+
+			// add marker to map
+			let coordi = h3.h3ToGeo(marker.id);
+			new mapboxgl.Marker(el, {anchor: 'center'})
+			.setLngLat([coordi[1],coordi[0]])
+			.addTo(map);
+		});
+	}
+
+	function hexagons() {
+		var center = map.getCenter();
+		const centerHex = h3.geoToH3(center['lat'], center['lng'], 12);
+		const kRing = h3.kRing(centerHex, 20);
+		var data = Object.assign({}, kRing);
+		var newData = Object.keys(data).reduce(function (obj, key) {
+			obj[data[key]] = Math.random();
+			return obj;
+		}, {});
 		return newData;
 	}
 

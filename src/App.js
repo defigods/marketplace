@@ -104,14 +104,15 @@ function App() {
 																		<Route path="/map/" component={Map}></Route>
 																		</div>
 																		<Switch>
-																			{/* <Route path="/" exact component={Home}></Route> */}
-																			<Route exact path="/">
+																			{/* <Route exact path="/">
 																				{userValue.state.isLoggedIn ? (
 																					<Redirect to="/profile" />
 																				) : (
 																					<Redirect to="/login" />
 																				)}
-																				{/* TODO: KYC - Redirect to Redirect to="/map/discover" */}
+																			</Route> */}
+																			<Route exact path="/">
+																				<Redirect to="/map/discover" />
 																			</Route>
 																			<Route path="/map/discover" component={Discover}></Route>
 																			<Route path="/map/overview" component={Overview}></Route>

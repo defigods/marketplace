@@ -490,7 +490,6 @@ const Land = (props) => {
 											<TimeCounter date_end={bid.when}></TimeCounter>
 										</td>
 										<td>{bid.from}</td>
-										{console.log('bid.status',bid)}
 										{bid.status === "-99" ? <td>
 											<div class="c-status-badge  --outbidded">FAILED</div>
 										</td> : <></>}

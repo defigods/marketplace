@@ -154,6 +154,14 @@ const NavBar = () => {
 				</NavLink>
 				</>
 			);
+		} else {
+			cont = (
+				<>
+				<NavLink className="NavBar__link" to="/map/discover">
+					{t('Navbar.marketplace.label')}
+				</NavLink>
+				</>
+			);
 		}
 		return cont;
 	}

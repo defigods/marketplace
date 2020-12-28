@@ -47,3 +47,28 @@
 .mapboxgl-ctrl-geocoder {
 	box-shadow: 0 0 0px rgba(0, 0, 0, 0.1) !important;
 }
+
+
+.sold-marker {
+	display: block;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	position: absolute;
+	background-size: contain;
+	background-repeat: no-repeat;
+	// left: -14px;
+}
+
+.auction-marker {
+	display: block;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	position: absolute;
+	background-size: contain;
+	background-repeat: no-repeat;
+	// left: -14px;
+}
+
+*:focus { outline: none; }
