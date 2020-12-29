@@ -375,6 +375,7 @@
 	"IBCO.receive.amount": "Receive amount",
 	"IBCO.ext.receive.amount": "Extimate receive amount",
 	"IBCO.slippage": "Slippage",
+	"IBCO.max.slippage": "Max Slippage",
 	"IBCO.reserve": "Reserve",
 	"IBCO.curveissuance": "Curve Issuance",
 	"IBCO.buy": "Buy",
