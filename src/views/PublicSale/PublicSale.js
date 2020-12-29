@@ -407,12 +407,12 @@ function PublicSale() {
 					<table className="Table TableFixed">
 						<thead>
 							<tr>
+								<th>{t("IBCO.transaction.status")}</th>
 								<th>{t("IBCO.transaction.batchID")}</th>
 								<th>{t('IBCO.transaction.type')}</th>
 								<th>{t('IBCO.transaction.priceDai')}</th>
 								{/* <th>Fee (DAI)</th> */}
 								<th>{t('IBCO.transaction.amountOVR')}</th>
-								<th>{t("IBCO.transaction.status")}</th>
 								<th></th>
 							</tr>
 						</thead>
