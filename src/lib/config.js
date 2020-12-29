@@ -55,7 +55,7 @@ if (environment === 'PRODUCTION') {
 		connectorWeight: "32500",
 		DAI: "0xc719A57531850D56d59d8F66B915338b002883D8",
 		RewardToken: "0xaC828Df5Cbb05c417f98FeC1b36dE596b5FC0ca2",
-		BancorFormula: "0xed7be474cdf3d65f5c79cea6e90aa8e52f6f27b6",
+		BancorFormula: "0xf3C64493Cbbd4FeB549Ee0f5eb1c6D0F5c8D1680",
 		curveAddress: "0x7531205Bf874CF7D1Ba1E4dE4355AEE0fA83C34E",
 		controllerAddress: "0x9C13122f191a9A27A5eE94b12E771ABC1055d9b1",
 		firstOVRBlock: 11356495,
