@@ -22,7 +22,6 @@ const MintOverlay = (props) => {
 	const { t, i18n } = useTranslation()
 
 	const userState = props.userProvider.state.user;
-	const { balance, allowance } = userState;
 	const { refreshBalanceAndAllowance } = props.userProvider.actions;
 
 	const { authorizeOvrExpense, getUSDValueInOvr } = props.web3Provider.actions;
@@ -85,9 +84,11 @@ const MintOverlay = (props) => {
 	}, [bid]);
 
 	useEffect(() => {
-		setUserBalance(balance)
-		setUserAllowance(allowance)
-	}, [balance, allowance]);
+		if( userState && userState.balance ){
+			setUserBalance(userState.balance)
+			setUserAllowance(userState.allowance)
+		}
+	}, [userState]);
 
 	useEffect(() => {
 		setGasProjection(gasLandCost)
@@ -166,12 +167,12 @@ const MintOverlay = (props) => {
 	const ensureBalanceAndAllowance = async (cost) => {
 		let floatCost = parseFloat(cost)
 		// Check balance
-		if( floatCost > balance){
+		if( floatCost > userBalance){
 			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
 			return false;
 		}
 		// Check Allowance
-		if( floatCost > allowance || allowance < 2000 ){
+		if( floatCost > userAllowance || userAllowance < 2000 ){
 			await authorizeOvrExpense("1000000");
 			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}

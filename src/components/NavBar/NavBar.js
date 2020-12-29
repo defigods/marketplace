@@ -123,7 +123,7 @@ const NavBar = () => {
 				}
 			}
 		}
-	}, [userState.user, userState.user.balance]);
+	}, [userState.user]);
 	// END - Profile sub menu
 
 	React.useEffect(() => {

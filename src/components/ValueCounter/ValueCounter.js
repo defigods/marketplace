@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+function format(num){
+  return ('' + num).replace(
+    /(\d)(?=(?:\d{3})+(?:\.|$))|(\.\d\d?)\d*$/g, 
+    function(m, s1, s2){
+      return s2 || (s1 + ',');
+    }
+  );
+}
+
 const ValueCounter = ({ currency="ovr", value=0, color="orange", text="" }) => {
+	let show_value = value;
+	if (parseFloat(value) > 1000){
+		show_value = format(value)
+	}
 	return <div className={`ValueCounter --${color}`}>
 		<div className="ValueCounter__icon">
 			<div className="Icon">
@@ -41,7 +54,7 @@ const ValueCounter = ({ currency="ovr", value=0, color="orange", text="" }) => {
 				</svg> : <></>}
 			</div>
 		</div>
-		<div className="ValueCounter__value"> {value} {text !== "" ? <span>{text}</span> : <></>}</div>
+		<div className="ValueCounter__value"> {show_value} {text !== "" ? <span>{text}</span> : <></>}</div>
 	</div>;
 };
 ValueCounter.propTypes = {

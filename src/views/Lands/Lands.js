@@ -146,7 +146,7 @@ const Lands = (props) => {
 				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
 			} else {
 				setTimeout(() => {
-					successNotification(t('Generic.congrats.label'), t('Auctions.please.reload'));
+					successNotification(t('Generic.congrats.label'), t('Auctions.please.patient'));
 					setIsProcessing(false);
 				}, 2000);
 				console.log('responseFalse');

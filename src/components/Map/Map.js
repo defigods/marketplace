@@ -504,7 +504,7 @@ const Map = (props) => {
 			selected_source.setData(featureOfSelectedLands);
 			map.setLayoutProperty(selected_layerId, 'visibility', 'visible');
 		}
-		console.log("changeAuctionList",auctionList)		
+		// console.log("changeAuctionList",auctionList)		
 	}
 
 	function plotAuctions() {

@@ -420,6 +420,9 @@ function PublicSale() {
 							{ibcoPendingTransactions.map((trans) => (
 								<tr className="Table__line" key={trans.transactionHash}>
 									<td className="">
+										{renderClaimButton(trans)}
+									</td>
+									<td className="">
 										{/* <a href={`${config.apis.etherscan}tx/${ethers.utils.formatEther(trans.batchId).toString()}`} target="_blank">
 											{ethers.utils.formatEther().toString().slice(0,8)}...{ethers.utils.formatEther(trans.batchId).toString().slice(-8)}
 										</a> */}
@@ -443,9 +446,6 @@ function PublicSale() {
 									<td className="">
 										{trans.amount == 0 ? <></> : <ValueCounter value={trans.amount} currency="ovr"></ValueCounter>}
 										{trans.amount == 0 ? <>{t('IBCO.after.claim')}</> : <></>}
-									</td>
-									<td className="">
-										{renderClaimButton(trans)}
 									</td>
 									<td><a href={config.apis.etherscan + 'tx/' + trans.transactionHash} rel="noopener noreferrer" target="_blank" className="HexButton view-on-etherscan-link">{t('ActivityTile.view.ether')}</a></td>
 								</tr>
@@ -670,8 +670,8 @@ function PublicSale() {
 		// }
 		// var dataY = data.map((x,i) => getY(x,i));
 
-		var dataX = ["14285","141030","278529","412674","543625","671534","796541","918778","1038366","1155419","1270044","2302147","3172427","3925359","4589220","5183124","5720601","6211585","6663587","7082428","7472708","7838129","8181711","8505957","8812957","9104481","9382036","9646919","9900256","10143024","10376084","10600194","10816026","11024179","11225189","11419539","11607660","11789948","11966757","12138413","12305213","12467427","12625305","12779077","12928954","13075131","13217790","13357098","13493213","13626279","13756431","13883798","14008497","14130641","14250332","14367669","14482745","14595646","14706455","14815248","14922099","15027077","15130248","15231674","15331413","15429523","15526056","15621062","15714591","15806688","15897397","15986760","16074816","16161605","16247163","16331525","16414723"]
-		var dataY = ["0.0700","0.0718","0.0736","0.075","0.077","0.079","0.081","0.083","0.085","0.086","0.088","0.106","0.124","0.142","0.160","0.177","0.195","0.213","0.230","0.248","0.265","0.282","0.300","0.317","0.334","0.352","0.369","0.386","0.403","0.421","0.438","0.455","0.472","0.489","0.506","0.523","0.540","0.557","0.574","0.591","0.608","0.625","0.642","0.659","0.676","0.693","0.709","0.726","0.743","0.760","0.777","0.794","0.810","0.827","0.844","0.861","0.877","0.894","0.911","0.928","0.944","0.961","0.978","0.994","1.011","1.028","1.044","1.061","1.078","1.094","1.111","1.127","1.144","1.161","1.177","1.194","1.210"]
+		var dataX = ["14285","141030","278529","412674","543625","671534","796541","918778","1038366","1155419","1270044","2302147","3172427","3925359","4589220","5183124","5720601","6211585","6663587","7082428","7472708","7838129","8181711","8505957","8812957","9104481","9382036","9646919","9900256","10143024","10376084","10600194","10816026","11024179","11225189","11419539","11607660","11789948","11966757","12138413","12305213","12467427","12625305","12779077","12928954","13075131","13217790","13357098","13493213","13626279","13756431","13883798","14008497","14130641","14250332","14367669","14482745","14595646","14706455","14815248","14922099","15027077","15130248","15231674","15331413","15429523","15526056","15621062","15714591","15806688","15897397"]
+		var dataY = ["0.0700","0.0718","0.0736","0.075","0.077","0.079","0.081","0.083","0.085","0.086","0.088","0.106","0.124","0.142","0.160","0.177","0.195","0.213","0.230","0.248","0.265","0.282","0.300","0.317","0.334","0.352","0.369","0.386","0.403","0.421","0.438","0.455","0.472","0.489","0.506","0.523","0.540","0.557","0.574","0.591","0.608","0.625","0.642","0.659","0.676","0.693","0.709","0.726","0.743","0.760","0.777","0.794","0.810","0.827","0.844","0.861","0.877","0.894","0.911","0.928","0.944","0.961","0.978","0.994","1.011","1.028","1.044","1.061","1.078","1.094","1.111","1.127","1.144","1.161","1.177","1.194"]
 		var dataXY = [];
 		for (var i = 0; i < dataX.length; i++) {
 			let dot = {x: dataX[i],y: dataY[i]}
@@ -912,9 +912,7 @@ function PublicSale() {
 											{t('IBCO.reserve')}
 										</div>
 										<div className="o-value">
-											<ValueCounter value={ibcoIsReady ? <>
-												{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2).toString()}
-											</> : '0.0'} currency="dai"></ValueCounter>
+											<ValueCounter value={ibcoIsReady ? parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIReserve).toString()).toFixed(2).toString() : '0.0'} currency="dai"></ValueCounter>
 										</div>
 									</div>
 									<div className="o-one-label">
@@ -922,9 +920,7 @@ function PublicSale() {
 											{t('IBCO.curveissuance')}
 										</div>
 										<div className="o-value">
-											<ValueCounter value={ibcoIsReady ? <>
-												{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2)}
-											</> : '0.0'}></ValueCounter>
+											<ValueCounter value={ibcoIsReady ? parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2) : '0.0'}></ValueCounter>
 										</div>
 									</div>
 								</div>
@@ -955,18 +951,11 @@ function PublicSale() {
 								</div>
 								<div className="o-row o-row__your_wallet">
 									<h3 className="p-section-title">{t('IBCO.ur.wallet')}</h3>
-									<ValueCounter value={ibcoIsReady ? <>
-										{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2)}
-									</> : '0.00'} currency="dai"></ValueCounter>
-
-									<ValueCounter value={ibcoIsReady ? <>
-										{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2)}
-									</> : '0.00'}></ValueCounter>
+									<ValueCounter value={ibcoIsReady ? parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIBalance).toString()).toFixed(2) : '0.00'} currency="dai"></ValueCounter>
+									<ValueCounter value={ibcoIsReady ? parseFloat(ethers.utils.formatEther(web3Context.state.ibcoRewardBalance).toString()).toFixed(2) : '0.00'}></ValueCounter>
 								</div>
 								<br></br>
-								<div className="o-row">{t('IBCO.allowance')} {ibcoIsReady ? <>
-									{parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIAllowance).toString()).toFixed(0)}
-								</> : '0.00'}</div>
+								<div className="o-row">{t('IBCO.allowance')} {ibcoIsReady ? parseFloat(ethers.utils.formatEther(web3Context.state.ibcoDAIAllowance).toString()).toFixed(0) : '0.00'}</div>
 								<div className="o-line"></div>
 								<div className="o-row o-info-row">
 									<div className="o-half"><h3 className="o-info-title">Price</h3></div>
@@ -983,10 +972,11 @@ function PublicSale() {
 									</div>
 								</div>
 								<div className="o-row o-info-row">
-									<div className="o-half"><h3 className="o-info-title">{t('IBCO.slippage')}</h3></div>
-									<div className="o-half">{(ibcoIsReady) ? <>
+									<div className="o-half"><h3 className="o-info-title">{t('IBCO.max.slippage')}</h3></div>
+									<div className="o-half">25%</div>
+									{/* {(ibcoIsReady) ? <>
 										{ibcoSlippage}
-									</> : '0.00'}%</div>
+									</> : '0.00'} */}
 								</div>
 								<div className="o-row o-field-row">
 									{renderActionButtonSection()}

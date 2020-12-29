@@ -6,7 +6,7 @@ import { UserContext } from '../../context/UserContext';
 // import HexImage from '../../components/HexImage/HexImage';
 import HexButton from '../../components/HexButton/HexButton';
 import config from '../../lib/config';
-import {isiOS, isImToken} from '../../lib/config';
+// import {isiOS, isImToken} from '../../lib/config';
 // import CheckBox from '../../components/CheckBox/CheckBox';
 // import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
 // import IdensicComp from '../../components/IdensicComp/IdensicComp';
@@ -29,6 +29,7 @@ import i18n from 'i18next';
 import {getCurrentLocale} from '../../i18n';
 
 import ReactGA from 'react-ga';
+let isMobile = window.innerWidth < 860;
 
 const ProfileContentLoginRequired = () => {
 	const { t, i18n } = useTranslation();
@@ -90,7 +91,7 @@ const ProfileLayout = () => {
 
 	useEffect(() => {
 		// IMWallet workaround
-		if (isiOS() == true){
+		if (isMobile == true){
 			if(window.ethereum){
 				setIsIMWallet(true)
 				if(user.uuid != undefined){

@@ -35,7 +35,7 @@ const LoginHelper = () => {
       } else {
         history.push('/profile');
       }
-    })
+    }, false)
 
 		// If user is logged in
 		if (userContext.state.isLoggedIn) {

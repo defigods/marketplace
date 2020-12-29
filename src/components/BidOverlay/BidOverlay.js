@@ -19,7 +19,6 @@ const BidOverlay = (props) => {
 	const { t, i18n } = useTranslation()
 	
 	const userState = props.userProvider.state.user;
-	const { balance, allowance } = userState;
 	const { refreshBalanceAndAllowance } = props.userProvider.actions;
 	
 	const { participateBid, approveOvrTokens,authorizeOvrExpense,getUSDValueInOvr } = props.web3Provider.actions;
@@ -36,6 +35,9 @@ const BidOverlay = (props) => {
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
 	const [gasProjection, setGasProjection]  = useState(0);
+
+	const [userBalance, setUserBalance] = useState(0);
+	const [userAllowance, setUserAllowance] = useState(0);
 
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
@@ -165,12 +167,12 @@ const BidOverlay = (props) => {
 	const ensureBalanceAndAllowance = async (cost) => {
 		let floatCost = parseFloat(cost)
 		// Check balance
-		if( floatCost > balance){
+		if( floatCost > userBalance){
 			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
 			return false;
 		}
 		// Check Allowance
-		if( floatCost > allowance || allowance < 2000){
+		if( floatCost > userAllowance || userAllowance < 2000 ){
 			await authorizeOvrExpense("1000000");
 			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
@@ -192,6 +194,13 @@ const BidOverlay = (props) => {
 			return true;
 		}
 	}
+
+	useEffect(() => {
+		if( userState && userState.balance ){
+			setUserBalance(userState.balance)
+			setUserAllowance(userState.allowance)
+		}
+	}, [userState]);
 
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)

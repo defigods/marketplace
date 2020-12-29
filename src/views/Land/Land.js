@@ -254,7 +254,7 @@ const Land = (props) => {
 
 	const handleEtherscan = (e) => {
 		e.preventDefault()
-		let etherscanLink = config.apis.etherscan + '/tx/' + mintTxHash;
+		let etherscanLink = 'https://etherscan.io/token/0x56b80bbee68932a8d739315c79bc7b125341098a?a=' + integerId;
 		window.open(etherscanLink, "_blank")
 	};
 	

@@ -67,7 +67,7 @@ export class Web3Provider extends Component {
 		}
   }
 
-  setupWeb3 = async (callback, login=true) => {
+  setupWeb3 = async (callback, login=true, showNotification=true) => {
 		if (typeof web3 !== "undefined") {
 			await window.ethereum.enable();
 			let provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -84,7 +84,9 @@ export class Web3Provider extends Component {
 				let web3NetworkVersion = parseInt(chainId) === config.web3network;
 				if( web3NetworkVersion === false ) {
 					// Wrong Network
-          warningNotification(this.props.t('Warning.metamask.wrong.network.title'), this.props.t('Warning.metamask.wrong.network.desc'));
+					if(showNotification === true){
+						warningNotification(this.props.t('Warning.metamask.wrong.network.title'), this.props.t('Warning.metamask.wrong.network.desc'));
+					}
 					callback(false);
 					return false;
 				}
@@ -919,7 +921,7 @@ export class Web3Provider extends Component {
 						});
 				}
 		}
-		console.log('storeOpenBuys',storeOpenBuys)
+		// console.log('storeOpenBuys',storeOpenBuys)
 		// store logged data as store
 		this.appendOpenBuyOrders(storeOpenBuys);
 		this.appendOpenSellOrders(storeOpenSells);
@@ -927,7 +929,7 @@ export class Web3Provider extends Component {
 	};
 
 	appendOpenBuyOrders(input) {
-		console.log("appendOpenBuyOrders",input)
+		// console.log("appendOpenBuyOrders",input)
 		let orders = this.state.ibcoOpenBuyOrders.concat(input);
 		this.setState({ ibcoOpenBuyOrders: orders })
 	}
@@ -939,7 +941,7 @@ export class Web3Provider extends Component {
 
 	appendClaims(input) {
 		// My Claims Detect
-		console.log('appendClaims', input)
+		// console.log('appendClaims', input)
 		let myClaims = []
 		let Claims = this.state.ibcoClaims
 		for (const claim of input) {
@@ -962,7 +964,7 @@ export class Web3Provider extends Component {
 
 	prependClaims(input) {
 		// My Claims Detect
-		console.log('appendClaims', input)
+		// console.log('appendClaims', input)
 		let myClaims = []
 		let Claims = this.state.ibcoClaims
 		for (const claim of input) {
