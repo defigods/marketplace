@@ -18,6 +18,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
 import Translate from '@material-ui/icons/Translate';
 import { removeUser } from '../../lib/auth';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { useTranslation } from 'react-i18next'
 let isMobile = window.innerWidth < 860;
@@ -89,7 +90,6 @@ const NavBar = () => {
 			if( res == false ){
 				history.push('/login-helper');
 			} else {
-				
 				let cookie = getToken('lastVisitedPage')
 				if ( cookie ){
 					removeToken('lastVisitedPage')

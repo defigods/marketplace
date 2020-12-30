@@ -135,6 +135,11 @@ const BidOverlay = (props) => {
 			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
+		if (!props.userProvider.state.user.email) {
+			setActiveStep(0);
+			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.auction.not.detected.desc'));
+			return false;
+		}
 		return true;
 	};
 
@@ -212,8 +217,6 @@ const BidOverlay = (props) => {
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)
 			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
-		if (!checkUserLoggedIn()) return;
-
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance

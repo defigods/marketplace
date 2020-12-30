@@ -29,8 +29,8 @@
 	"Email.add" : "Save",
 	"Warning.email.not.detected.title":"Email not present",
 	"Warning.email.not.detected.desc":"In order to perform the KYC you have to set up an email address",
+	"Warning.email.auction.not.detected.desc":"In order to participate you have to set up an email address. You can do it in your Profile.",
 	"Signup.email.saved.title" : "The inserted email address has been saved",
-
 	"Signup.email.not.valid" : "The inserted email address is not a valid email address",
 	"Signup.try.login" : "Try to login instead",
 	"Signup.connect.with" : "Connect with",
@@ -367,6 +367,7 @@
 	"Navbar.myassets.label": "My Assets", 
 	"Navbar.marketplace.label" : "Marketplace",
 	"Navbar.activity.label" : "Activity",
+	"Navbar.ovr.pending.label" : "Currently you secured {{OVRToken}} OVR in ongoing auctions.",
 	"ActivityTile.view.ether": "View on Etherscan",
 	"Lands.not.available.liquidity.mining": "This OVRLand is not available for sale and is reserved for liquidity miners.\n Please give write us an e-mail and we will inform you as soon as the liquidity mining program starts or the land becomes available",
 	"IBCO.buyprice": "Buy Price",

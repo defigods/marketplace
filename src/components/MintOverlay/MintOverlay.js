@@ -137,6 +137,11 @@ const MintOverlay = (props) => {
 			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
+		if (!props.userProvider.state.user.email) {
+			setActiveStep(0);
+			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.auction.not.detected.desc'));
+			return false;
+		}
 		return true;
 	};
 

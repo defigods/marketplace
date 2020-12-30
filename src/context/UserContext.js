@@ -24,6 +24,7 @@ export class UserProvider extends Component {
 				uuid: null,
 				allowance: 0,
 				balance: 0,
+				email: null,
 				balanceProjection: 0,
 				pendingOnBalance: 0,
 				kycReviewAnswer: -1,
