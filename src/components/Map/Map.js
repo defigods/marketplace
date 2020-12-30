@@ -285,7 +285,7 @@ const Map = (props) => {
 			});
 
 			// add marker to map
-			console.log('marker.geometry.id',marker.id)
+			// console.log('marker.geometry.id',marker.id)
 			let coordi = h3.h3ToGeo(marker.id);
 			
 			new mapboxgl.Marker(el, {anchor: 'center'})

@@ -38,6 +38,8 @@ const BidOverlay = (props) => {
 
 	const [userBalance, setUserBalance] = useState(0);
 	const [userAllowance, setUserAllowance] = useState(0);
+	const [userBalanceProjection, setUserBalanceProjection] = useState(0);
+	const [userPendingOnBalance, setUserPendingOnBalance] = useState(0);
 
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
@@ -176,6 +178,11 @@ const BidOverlay = (props) => {
 			await authorizeOvrExpense("1000000");
 			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
+		// Ensure balance with projection of others open auctions
+		if( userBalanceProjection - cost < 0){
+			warningNotification(t('Warning.no.token.title'), t('Auctions.total.projection', {OVRTotal: userBalance.toFixed(2), OVRPending: userPendingOnBalance.toFixed(2)}), 10000);
+			return false;
+		}
 		return true;
 	}
 
@@ -196,11 +203,11 @@ const BidOverlay = (props) => {
 	}
 
 	useEffect(() => {
-		if( userState && userState.balance ){
-			setUserBalance(userState.balance)
-			setUserAllowance(userState.allowance)
-		}
-	}, [userState]);
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, [userState, userState.balance, userState.allowance, userState.balanceProjection, userState.pendingOnBalance]);
 
 	const participateInAuction = async (type) => {
 		if (bid < nextBid)

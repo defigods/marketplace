@@ -135,6 +135,12 @@ const Land = (props) => {
 						setValue(val);
 					}
 					setMarketStatus(data.marketStatus)
+					if(data.auction){
+						if(data.auction.status === 1 && Date.parse(data.auction.closeAt) < Date.now()){
+							setMarketStatus(10)
+						} 
+					}
+					
 
 					// Update state for MapContext
 					let state = {

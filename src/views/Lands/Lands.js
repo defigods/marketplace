@@ -37,7 +37,10 @@ const Lands = (props) => {
 
 
 	const userState = props.userProvider.state.user;
-	const { balance, allowance } = userState;
+	const [userBalance, setUserBalance] = useState(0);
+	const [userAllowance, setUserAllowance] = useState(0);
+	const [userBalanceProjection, setUserBalanceProjection] = useState(0);
+	const [userPendingOnBalance, setUserPendingOnBalance] = useState(0);
 
 	// First load
 	useEffect(() => {
@@ -46,6 +49,14 @@ const Lands = (props) => {
 			disableMultipleLandSelection();
 		};
 	}, []);
+
+	// On change balances
+	useEffect(() => {
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, [userState, userState.balance, userState.allowance, userState.balanceProjection, userState.pendingOnBalance]);
 
 	// On Change of list
 	useEffect(() => {
@@ -106,13 +117,19 @@ const Lands = (props) => {
 	const ensureBalanceAndAllowance = async (cost) => {
 		let floatCost = parseFloat(cost)
 		// Check balance
-		if( floatCost > balance){
+		if( floatCost > userBalance){
 			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
 			return false;
 		}
 		// Check Allowance
-		if( floatCost > allowance){
-			await authorizeOvrExpense(String(floatCost * 3));
+		if( floatCost > userAllowance || userAllowance < 2000 ){
+			await authorizeOvrExpense("1000000");
+			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
+		}
+		// Ensure balance with projection of others open auctions
+		if( userBalanceProjection - cost < 0){
+			warningNotification(t('Warning.no.token.title'), t('Auctions.total.projection', {OVRTotal: userBalance.toFixed(2), OVRPending: userPendingOnBalance.toFixed(2)}), 10000);
+			return false;
 		}
 		return true;
 	}

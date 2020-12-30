@@ -24,6 +24,8 @@ export class UserProvider extends Component {
 				uuid: null,
 				allowance: 0,
 				balance: 0,
+				balanceProjection: 0,
+				pendingOnBalance: 0,
 				kycReviewAnswer: -1,
 				ibcoAcceptedTerms: false
 			}
@@ -101,6 +103,8 @@ export class UserProvider extends Component {
 				console.log("refreshBalanceAndAllowance", response.data)
 				this.setState({ user: { ...this.state.user,
 					allowance: response.data.allowance,
+					balanceProjection: response.data.balanceProjection,
+					pendingOnBalance: response.data.pendingOnBalance
 				}});
 			} 
 			})

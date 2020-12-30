@@ -16,7 +16,7 @@ export function networkError() {
 	});
 }
 
-export function warningNotification(title, message) {
+export function warningNotification(title, message, duration=5000) {
 	store.addNotification({
 		title: title,
 		message: message,
@@ -27,7 +27,7 @@ export function warningNotification(title, message) {
 		animationOut: ['animated', 'fadeOut'],
 		showIcon: true,
 		dismiss: {
-			duration: 5000,
+			duration: duration,
 		},
 	});
 }
