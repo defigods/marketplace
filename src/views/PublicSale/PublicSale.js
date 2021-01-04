@@ -737,7 +737,7 @@ function PublicSale() {
 	function renderPointsOnChart(){
 		if(hasPointRendered == false && ibcoOVRDAIPrice > 0.1){
 			var newDataset = {
-				data: [{x: parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2), y: (1/ibcoOVRDAIPrice).toFixed(4)}],
+				data: [{x: web3Context.state.ibcoOVRSupply, y: (1/ibcoOVRDAIPrice).toFixed(4)}],
 				backgroundColor: gradientStroke,
 				label: "Buy Price",
 				borderColor: '#5d509c',
@@ -920,7 +920,7 @@ function PublicSale() {
 											{t('IBCO.curveissuance')}
 										</div>
 										<div className="o-value">
-											<ValueCounter value={ibcoIsReady ? parseFloat(ethers.utils.formatEther(web3Context.state.ibcoOVRSupply).toString()).toFixed(2) : '0.0'}></ValueCounter>
+											<ValueCounter value={ibcoIsReady ? web3Context.state.ibcoOVRSupply : '0.0'}></ValueCounter>
 										</div>
 									</div>
 								</div>

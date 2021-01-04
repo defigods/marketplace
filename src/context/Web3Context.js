@@ -249,6 +249,13 @@ export class Web3Provider extends Component {
 
 			let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
 			let vsBancorFormula = doublePremine.add(CurveOVRSupply)
+			
+			// Fallback bug
+			if( CurveOVRSupply.isNegative() ){
+				CurveOVRSupply = parseFloat(ethers.utils.formatEther(reserve).toString()).toFixed(2) / 0.07
+			} else {
+				CurveOVRSupply = parseFloat(ethers.utils.formatEther(TotalOVRSupply).toString()).toFixed(2)
+			}
 
 			this.setState({
 				"ibcoOVRSupply": CurveOVRSupply,
