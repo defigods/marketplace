@@ -29,18 +29,13 @@ const Overview = () => {
 		if(userState.isLoggedIn != undefined){
 			setUserAuthenticated(userState.isLoggedIn)
 			loadAuctionsByPage();
-			console.log('QUI')
 		}
-		console.log('effect is loggedin,',userState.isLoggedIn)
-		console.log('QUI2')
-
 	}, [userState.isLoggedIn]);
 
 	function loadAuctionsByPage(page) {
 		// Call API function
 		indexMyOpenAuctions(null, page)
 			.then((response) => {
-				console.log("AHHHH",response);
 				if (response.data.result === true) {
 					// Load Auctions in MapContext
 					mapActions.changeAuctionList(response.data.auctions);

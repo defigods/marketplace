@@ -23,10 +23,10 @@ const BannerNotification = () => {
 	useEffect(() => {
 		if (userAuthenticated) {
 			let cookie = getToken('dismissBanner')
-			console.log('window.location.pathname.',window.location.pathname)
-			if ( !cookie ){
-				setUpTotals();
-			}
+			// if ( !cookie ){ // Check cookie
+			// 	setUpTotals();
+			// }
+			setUpTotals();
 		}
 	}, [userAuthenticated]);
 
@@ -58,9 +58,9 @@ const BannerNotification = () => {
 						{/* <div className="BannerNotification__title">{t('BannerNotification.welcome')}{' '}🥳</div> */}
 						<div className="BannerNotification__content">
 							{t('Cashback.banner.desc', {total:total})}
-							<span onClick={(e) => dismissBanner(e)}>
+							{/* <span onClick={(e) => dismissBanner(e)}>
 								<Cancel className="Cancel" />
-							</span>
+							</span> */}
 						</div>
 					</div>
 				</div>
