@@ -198,7 +198,7 @@ const MintOverlay = (props) => {
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
-		refreshBalanceAndAllowance();
+		await refreshBalanceAndAllowance();
 		
 		// Ensure balance and allowance
 		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));

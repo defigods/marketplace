@@ -83,6 +83,11 @@
 	}
 }
 
+.l-light-minted-copy{
+	margin-top: 35px;
+	font-size: 14px;
+}
+
 .c-status-badge .MuiCircularProgress-root{
 	width: 10px!important;
 	height: 10px!important;
@@ -99,5 +104,8 @@
 	margin-top: 40px;
 	display: inline-block;
 	font-size: 14px;
+	color: $ovr-sideral-grey;
+}
+.l-light-minted-copy{
 	color: $ovr-sideral-grey;
 }

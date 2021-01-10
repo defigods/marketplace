@@ -39,7 +39,7 @@ const Land = (props) => {
 		changeActiveBuyOverlay,
 		changeActiveBuyOfferOverlay,
 	} = props.mapProvider.actions;
-	const { redeemSingleLand, getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions;
+	const { mintLightMintedLand, getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 	const { isLoggedIn } = props.userProvider.state;
 
@@ -140,6 +140,12 @@ const Land = (props) => {
 							setMarketStatus(10)
 						} 
 					}
+
+					// If you are owner and land has been assigned give a check to land market status
+					if(marketStatus === 11 && userPerspective == 1){
+						// commented because it's already recursive
+						// updateLandMarketStatusIfHasBeenMinted(hexId).then((response) => {});
+					}
 					
 
 					// Update state for MapContext
@@ -200,12 +206,18 @@ const Land = (props) => {
 		setOpenBuyOffers(offers);
 	};
 
+	// OLD // 
+	// const redeemLand = async (e) => {
+	// 	e.preventDefault();
+	// 	setIsRedeemingLand(true);
+	// 	sendAuctionCheckClose(hexId);
+	// 	await mintLightMintedLand(hexId);
+	// 	setIsRedeemingLand(false);
+	// };
+
 	const redeemLand = async (e) => {
 		e.preventDefault();
-		setIsRedeemingLand(true);
-		sendAuctionCheckClose(hexId);
-		await redeemSingleLand(hexId);
-		setIsRedeemingLand(false);
+		let resultRedeem = await mintLightMintedLand(hexId);
 	};
 
 	function setActiveBidOverlay(e) {
@@ -267,7 +279,16 @@ const Land = (props) => {
 	function renderVisitOnEtherscan () {
 		let rend = <></>
 		if(mintTxHash !== undefined && mintTxHash !== "" && mintTxHash !== null){
-			rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.view.ether')}</a>
+			// If land has been minted
+			if(marketStatus == 2){
+				rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.view.ether')}</a>
+			} 
+			// If land has been assigned but not minted
+			if(marketStatus == 11){
+				rend = <div className="l-light-minted-copy">{t("Land.has.been.assigned")}<br></br>
+				 <a to="" href="#" onClick={(e) => {e.preventDefault();window.open('https://www.ovr.ai/blog/introducing-light-minting/', "_blank")}}>{t("BuyTokens.read.more")}</a>.</div>
+			}
+				
 		}
 		return rend
 	}
@@ -286,6 +307,14 @@ const Land = (props) => {
 				);
 				break;
 			case 2:
+				badge = (
+					<div>
+						<h3 className="o-small-title">{t('Land.status.label')}</h3>
+						<div className="c-status-badge  --owned">{t('Land.owned.label')}</div>
+					</div>
+				);
+				break;
+			case 11:
 				badge = (
 					<div>
 						<h3 className="o-small-title">{t('Land.status.label')}</h3>
@@ -375,6 +404,15 @@ const Land = (props) => {
 				break;
 			case 10:
 				button = <div></div>
+				break;
+			case 11:
+				// If land has been assigned, check if you are owner
+				if( userPerspective == 1){
+					button = (
+						<HexButton url="/" text={t('Land.redeem.land')} className="--purple" onClick={(e) => redeemLand(e)}></HexButton>
+					);
+				}
+				
 				break;
 			// case 2:
 			// 	button = <></>;
@@ -608,8 +646,10 @@ const Land = (props) => {
 							<div className="o-fourth">
 								{renderBadge()} 
 							</div>
-							<div className="o-fourth">{renderOverlayButton()}
-							{renderVisitOnEtherscan()}</div>
+							<div className="o-fourth">
+								{renderVisitOnEtherscan()}
+								{renderOverlayButton()}
+							</div>
 						</div>
 					</div>
 					{/* {renderActiveOpenOrders()} */}

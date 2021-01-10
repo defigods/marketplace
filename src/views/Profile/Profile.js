@@ -241,7 +241,7 @@ const ProfileLayout = () => {
 											<HexButton url="#" onClick={
 												async (e) => {
 													e.preventDefault()
-													await authorizeOvrExpense("1000000");
+													await authorizeOvrExpense("10000000");
 													setTimeout(() => {
 														refreshBalanceAndAllowance();
 													}, 20000);

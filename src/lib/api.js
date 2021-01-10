@@ -237,6 +237,18 @@ export function getLand(hex_id = null) {
 	);
 }
 
+export function updateLandMarketStatusIfHasBeenMinted(hex_id = null) {
+	return request(
+		{ url: '/land/update_market_status_if_has_been_minted', method: 'POST' },
+		{
+			hex_id: hex_id,
+		},
+		null,
+	);
+}
+
+
+
 export function getLands(hex_ids = null) {
 	return request(
 		{ url: '/lands/list', method: 'GET' },

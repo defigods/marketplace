@@ -202,6 +202,7 @@
 	"Land.outbidded.label": "出价高于其他人",
 	"Land.owned.label": "获得产权",
 	"Land.owner.label": "产权所有者",
+	"Land.assigned.label" : "ASSIGNED",
 	"Land.place.bid": "出价",
 	"Land.price.label": "价格",
 	"Land.redeem.land": "兑换土地",

@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react';
 import { removeToken, saveToken, isLogged, getToken, removeUser, getPublicAddress} from '../lib/auth';
 import { successNotification, networkError, dangerNotification, warningNotification } from '../lib/notifications';
-import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendPreAuctionBid, signUpLoginMetamask, getGasPrice } from '../lib/api';
+import { userProfile, getUserNonce, signUpPublicAddress, signIn, sendPreAuctionStart, sendConfirmAuctionStart, sendPreAuctionBid, signUpLoginMetamask, getGasPrice, updateLandMarketStatusIfHasBeenMinted } from '../lib/api';
 import {promisify} from '../lib/config';
 import config from '../lib/config';
 import { promisifyAll } from 'bluebird';
@@ -19,6 +19,8 @@ const rewardABI = require("../contract/rewardABI");
 const bancorFormulaABI = require("../contract/bancorFormulaABI");
 const vestingABI = require("../contract/vestingABI");
 const stakingABI = require("../contract/stakingABI");
+const lightMintingABI = require("../contract/lightMintingABI");
+
 
 const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(
@@ -134,7 +136,8 @@ export class Web3Provider extends Component {
 						data[24],
 						data[25],
 						data[26],
-						data[27]
+						data[27],
+						data[28],
 				);
 
         // Centralized Login
@@ -156,7 +159,7 @@ export class Web3Provider extends Component {
 	// IBCO
 	//
 
-	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m,n,o,p,q,r,s,t,u,v,aa,ab,bb,cb,db) => {
+	setSigners = async (x, y, z, a, b, c, d, e,f,g,h,i,l,m,n,o,p,q,r,s,t,u,v,aa,ab,bb,cb,db,eb) => {
 			this.setState({
 				"ibcoController": x,
 				"ibcoControllerViewer": y,
@@ -186,6 +189,7 @@ export class Web3Provider extends Component {
 				"StakeOVRG15Viewer": bb,
 				"StakeOVRG30Signer": cb,
 				"StakeOVRG30Viewer": db,
+				"lightMintingSigner": eb
 
 			});
 			this.initializeStore();
@@ -555,6 +559,12 @@ export class Web3Provider extends Component {
 			  stakingABI,
 			  this.state.provider
 			);
+
+			let lightMintingSigner = new ethers.Contract(
+				config.apis.lightMinting,
+				lightMintingABI,
+				this.state.signer
+			);
 			let data = [
 					controllerSigner,
 					controllerViewer,
@@ -583,7 +593,8 @@ export class Web3Provider extends Component {
 					stakingOVRG15Signer,
 					stakingOVRG15Viewer,
 					stakingOVRG30Signer,
-					stakingOVRG30Viewer
+					stakingOVRG30Viewer,
+					lightMintingSigner
 			];
 			return data;
 	};
@@ -1082,6 +1093,20 @@ export class Web3Provider extends Component {
 		}, 30000)
 	}
 
+	mintLightMintedLand = async (hexId) => {
+		try {
+			let approve = await this.state.lightMintingSigner.claim(
+				'0x'+hexId
+			);
+			// Start recursive check on land market status
+			updateLandMarketStatusIfHasBeenMinted(hexId).then((response) => {});
+		} catch (err){
+			if(err.toString().includes('transaction may fail')){
+				warningNotification(this.props.t('Warning.action.already.done.title'), this.props.t('Warning.action.already.done.desc'));
+			}
+		}
+	}
+
 	getUSDValueInOvr = (usd = 1) => {
 		let floorValue = 0.1;
 		let ibcoOVRCurrentPrice;
@@ -1154,6 +1179,7 @@ export class Web3Provider extends Component {
 						setupWeb3: this.setupWeb3,
 						authorizeOvrExpense: this.authorizeOvrExpense,
 						getUSDValueInOvr: this.getUSDValueInOvr,
+						mintLightMintedLand: this.mintLightMintedLand,
 						setRewardBalance: this.setRewardBalance,
 						calculateCustomBuyPrice: this.calculateCustomBuyPrice,
 						calculateCustomSellPrice: this.calculateCustomSellPrice,

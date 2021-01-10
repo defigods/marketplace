@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'PRODUCTION';
+const environment = 'STAGING';
 
 let apis;
 
@@ -51,6 +51,7 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://test-api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		lightMinting: '0xe8ecba02c6c7aaa718880f2b9f59668e4b72ca7f',
 		// OVR - Rinkeby
 		connectorWeight: "32500",
 		DAI: "0x45032B3bE0702b7e81B8E426830B941F096AA770",
@@ -82,6 +83,7 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://test-api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		lightMinting: '0xe8ecba02c6c7aaa718880f2b9f59668e4b72ca7f',
 		// IBCO - dOrg demo
 		// controllerAddress: "0xcbc2E866D629aE2BCB597Cdf4dCb7dc2F8821Ee7",
 		// curveAddress: "0x361A79A0dc80cc18383747F8147C885F414A829D",
