@@ -86,6 +86,7 @@ const MintOverlay = (props) => {
 	}, [bid]);
 
 	useEffect(() => {
+		console.log('userState.balance.onload',userState.balance)
 		setUserBalance(userState.balance)
 		setUserAllowance(userState.allowance)
 		setUserBalanceProjection(userState.balanceProjection)
@@ -93,6 +94,7 @@ const MintOverlay = (props) => {
 	}, []);
 
 	useEffect(() => {
+		console.log('userState.balance.onUpdate',userState.balance)
 		setUserBalance(userState.balance)
 		setUserAllowance(userState.allowance)
 		setUserBalanceProjection(userState.balanceProjection)
