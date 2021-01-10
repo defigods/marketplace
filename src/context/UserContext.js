@@ -103,6 +103,7 @@ export class UserProvider extends Component {
 			if (response.data.result === true) {
 				console.log("refreshBalanceAndAllowance", response.data)
 				this.setState({ user: { ...this.state.user,
+					balance: response.data.balance,
 					allowance: response.data.allowance,
 					balanceProjection: response.data.balanceProjection,
 					pendingOnBalance: response.data.pendingOnBalance
