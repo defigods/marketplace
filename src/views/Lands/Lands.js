@@ -50,6 +50,13 @@ const Lands = (props) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, []);
+	
 	// On change balances
 	useEffect(() => {
 		setUserBalance(userState.balance)

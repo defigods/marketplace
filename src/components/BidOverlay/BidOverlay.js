@@ -206,6 +206,13 @@ const BidOverlay = (props) => {
 			return true;
 		}
 	}
+	
+	useEffect(() => {
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, []);
 
 	useEffect(() => {
 		setUserBalance(userState.balance)
