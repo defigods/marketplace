@@ -5,7 +5,7 @@ import _ from 'lodash';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'STAGING';
+const environment = 'PRODUCTION';
 
 let apis;
 
@@ -27,7 +27,8 @@ if (environment === 'PRODUCTION') {
 		DAI:"0x6B175474E89094C44Da98b954EedeAC495271d0F",
 		RewardToken:"0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697",
 		BancorFormula:"0x6b2D3B366C3417C46240ab62c2878FfdA9861E73",
-		firstOVRBlock: 11356495,
+		firstOVRBlock: 11633259, //Original: 11356495. Updated 11 Jan 2021.
+		lightMinting: "0xc8197cA043696527f357905885D51878AA3D835B",
 		// VESTING Contracts
 		VestingOVRG: "0xd9773379c134eec57da972042c5a25f1afa1e64a",
 		VestingOVRG15: "0xCa0F390C044FD43b1F38B9D2A02e06b13B65FA48",
