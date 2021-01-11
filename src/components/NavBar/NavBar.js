@@ -20,7 +20,7 @@ import Translate from '@material-ui/icons/Translate';
 import { removeUser } from '../../lib/auth';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 let isMobile = window.innerWidth < 860;
 
 const NavBar = () => {
@@ -34,13 +34,12 @@ const NavBar = () => {
 	const [isConnecting, setIsConnecting] = React.useState(false);
 	const prevOpen = React.useRef(open);
 	const langRef = React.useRef(langOpen);
-	
+
 	const changeLanguage = (string) => {
-		i18n.changeLanguage(string)
-	}
+		i18n.changeLanguage(string);
+	};
 
 	// START - Profile sub menu
-
 
 	let history = useHistory();
 
@@ -64,7 +63,7 @@ const NavBar = () => {
 	};
 
 	const handleCloseLang = (event) => {
-		if(event){
+		if (event) {
 			if (anchorRef.current && anchorRef.current.contains(event.target)) {
 				return;
 			}
@@ -74,34 +73,36 @@ const NavBar = () => {
 
 	const renderPublicSaleButton = () => {
 		let button = <></>;
-		if(!isMobile){
-			button = <Link to="/public-sale" className="Funds__buy HexButton --orange">
-				{t("Profile.buy.ovr")}
-			</Link>
+		if (!isMobile) {
+			button = (
+				<Link to="/public-sale" className="Funds__buy HexButton --orange">
+					{t('Profile.buy.ovr')}
+				</Link>
+			);
 		}
 		return button;
-	}
+	};
 
 	const handleMetamaskAuthentication = () => {
 		setIsConnecting(true);
 		window.gtag_report_metamask_conversion();
 		window.twitter_push_wallet_connect();
 		web3Actions.setupWeb3((res) => {
-			if( res == false ){
+			if (res == false) {
 				history.push('/login-helper');
 			} else {
-				let cookie = getToken('lastVisitedPage')
-				if ( cookie ){
-					removeToken('lastVisitedPage')
+				let cookie = getToken('lastVisitedPage');
+				if (cookie) {
+					removeToken('lastVisitedPage');
 					history.push(cookie);
 				} else {
 					history.push('/profile');
 				}
 			}
 			setIsConnecting(false);
-		})
-	}
-	
+		});
+	};
+
 	React.useEffect(() => {
 		if (userState.isLoggedIn) {
 			if (prevOpen.current === true && open === false) {
@@ -112,13 +113,13 @@ const NavBar = () => {
 	}, [open]);
 
 	React.useEffect(() => {
-		if(userState.user != undefined && userState.user.balance != undefined){
+		if (userState.user != undefined && userState.user.balance != undefined) {
 			// console.log("userState.user.balanceAAA",userState.user.balance)
 			// TODO Perchè cazzo arriva 0 qua ogni tanto
-			if(userState.user.balance !== undefined){
-				if(!isNaN(parseFloat(userState.user.balance))){
-					if(parseFloat(userState.user.balance).toFixed(2) > 0){
-						setBalance(userState.user.balance.toFixed(2))
+			if (userState.user.balance !== undefined) {
+				if (!isNaN(parseFloat(userState.user.balance))) {
+					if (parseFloat(userState.user.balance).toFixed(2) > 0) {
+						setBalance(userState.user.balance.toFixed(2));
 					}
 				}
 			}
@@ -140,210 +141,215 @@ const NavBar = () => {
 		if (userState.isLoggedIn === true && userState.user !== null) {
 			cont = (
 				<>
-				<NavLink className="NavBar__link" to="/profile">
-					{t('Navbar.profile.label')}
-				</NavLink>
-				<NavLink className="NavBar__link" to="/map/overview">
-					{t('Navbar.myassets.label')}
-				</NavLink>
-				<NavLink className="NavBar__link" to="/map/discover">
-					{t('Navbar.marketplace.label')}
-				</NavLink>
-				<NavLink className="NavBar__link" to="/stacking">
-					{t('Stacking.title')}
-				</NavLink>
-				<a
-					href={'https://www.ovr.ai/'}
-					rel="noopener noreferrer"
-					target={'_blank'}
-					className="NavBar__link"
-				>
-					About Us
-				</a>
+					<NavLink className="NavBar__link" to="/profile">
+						{t('Navbar.profile.label')}
+					</NavLink>
+					<NavLink className="NavBar__link" to="/map/overview">
+						{t('Navbar.myassets.label')}
+					</NavLink>
+					<NavLink className="NavBar__link" to="/map/discover">
+						{t('Navbar.marketplace.label')}
+					</NavLink>
+					<NavLink className="NavBar__link" to="/stacking">
+						{t('Stacking.title')}
+					</NavLink>
+					<NavLink className="NavBar__link" to="/cashback">
+						Cashback
+					</NavLink>
+					<a href={'https://www.ovr.ai/'} rel="noopener noreferrer" target={'_blank'} className="NavBar__link">
+						About Us
+					</a>
 				</>
 			);
 		} else {
 			cont = (
 				<>
-				<NavLink className="NavBar__link" to="/map/discover">
-					{t('Navbar.marketplace.label')}
-				</NavLink>
-				<a
-					href={'https://www.ovr.ai/'}
-					rel="noopener noreferrer"
-					target={'_blank'}
-					className="NavBar__link"
-				>
-					About Us
-				</a>
+					<NavLink className="NavBar__link" to="/map/discover">
+						{t('Navbar.marketplace.label')}
+					</NavLink>
+					<a href={'https://www.ovr.ai/'} rel="noopener noreferrer" target={'_blank'} className="NavBar__link">
+						About Us
+					</a>
 				</>
 			);
 		}
 		return cont;
 	}
 
-	function leftContainer(){
-		let cont =<></>
+	function leftContainer() {
+		let cont = <></>;
 		cont = (
-		<div className="Navbar__left_container">
-		<Link
-			to="#"
-			className="NavBar__link Language__link"
-			ref={langRef}
-			aria-controls={langOpen ? 'menu-list-grow' : undefined}
-			aria-haspopup="true"
-			onClick={(e) => {
-				handleCloseLang(e);
-				handleLang(e);
-			}}
-		>
-			<Translate className="Translate" shapeRendering="auto"/>
-		</Link>
-		<Popper open={langOpen} anchorEl={langRef.current} role={undefined} transition disablePortal>
-			{({ TransitionProps, placement }) => (
-				<Grow
-					{...TransitionProps}
-					style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+			<div className="Navbar__left_container">
+				<Link
+					to="#"
+					className="NavBar__link Language__link"
+					ref={langRef}
+					aria-controls={langOpen ? 'menu-list-grow' : undefined}
+					aria-haspopup="true"
+					onClick={(e) => {
+						handleCloseLang(e);
+						handleLang(e);
+					}}
 				>
-					<Paper>
-						<ClickAwayListener onClickAway={handleCloseLang}>
-							<MenuList autoFocusItem={langOpen} id="menu-lang-list-grow" className="navbar-lang-submenu">
-								<MenuItem
-									onClick={(e) => {
-										changeLanguage("en");
-										handleCloseLang();
-									}}
-								>
-									English
-								</MenuItem>
-								<MenuItem
-									onClick={(e) => {
-										changeLanguage("zh");
-										handleCloseLang();
-									}}
-								>
-									中文
-								</MenuItem>
-							</MenuList>
-						</ClickAwayListener>
-					</Paper>
-				</Grow>
-			)}
-		</Popper>
-		{centerContainer()}
-		</div>)
-		return cont
+					<Translate className="Translate" shapeRendering="auto" />
+				</Link>
+				<Popper open={langOpen} anchorEl={langRef.current} role={undefined} transition disablePortal>
+					{({ TransitionProps, placement }) => (
+						<Grow
+							{...TransitionProps}
+							style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+						>
+							<Paper>
+								<ClickAwayListener onClickAway={handleCloseLang}>
+									<MenuList autoFocusItem={langOpen} id="menu-lang-list-grow" className="navbar-lang-submenu">
+										<MenuItem
+											onClick={(e) => {
+												changeLanguage('en');
+												handleCloseLang();
+											}}
+										>
+											English
+										</MenuItem>
+										<MenuItem
+											onClick={(e) => {
+												changeLanguage('zh');
+												handleCloseLang();
+											}}
+										>
+											中文
+										</MenuItem>
+									</MenuList>
+								</ClickAwayListener>
+							</Paper>
+						</Grow>
+					)}
+				</Popper>
+				{centerContainer()}
+			</div>
+		);
+		return cont;
 	}
-	function renderMobileMenuItem(){
-		if(isMobile){
-		return(<>
-		<ClickAwayListener onClickAway={handleClose}>										
-			<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						handleGoTo('/profile');
-					}}
-				>
-					{t('Navbar.profile.label')}
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						handleGoTo('/activity');
-					}}
-				>
-					{t('Navbar.activity.label')}
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						handleGoTo('/map/overview');
-					}}
-				>
-					{t('Navbar.myassets.label')}
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						handleGoTo('/map/discover');
-					}}
-				>
-					{t('Navbar.marketplace.label')}
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						handleGoTo('/public-sale');
-					}}
-				>
-					{t('BuyTokens.buy.ovr')}
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						handleGoTo('/stacking');
-					}}
-				>
-					{t('Stacking.title')}
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						window.open("https://ovr.ai", "_blank")
-					}}
-				>
-					About Us
-				</MenuItem>
-				<MenuItem
-					onClick={(e) => {
-						handleClose(e);
-						userActions.logoutUser();
-					}}
-				>
-					{t('Navbar.Logout.label')}
-				</MenuItem>
-			</MenuList>
-		</ClickAwayListener>
-		</>)
+	function renderMobileMenuItem() {
+		if (isMobile) {
+			return (
+				<>
+					<ClickAwayListener onClickAway={handleClose}>
+						<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/profile');
+								}}
+							>
+								{t('Navbar.profile.label')}
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/activity');
+								}}
+							>
+								{t('Navbar.activity.label')}
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/map/overview');
+								}}
+							>
+								{t('Navbar.myassets.label')}
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/map/discover');
+								}}
+							>
+								{t('Navbar.marketplace.label')}
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/public-sale');
+								}}
+							>
+								{t('BuyTokens.buy.ovr')}
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/stacking');
+								}}
+							>
+								{t('Stacking.title')}
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									handleGoTo('/cashback');
+								}}
+							>
+								Cashback
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									window.open('https://ovr.ai', '_blank');
+								}}
+							>
+								About Us
+							</MenuItem>
+							<MenuItem
+								onClick={(e) => {
+									handleClose(e);
+									userActions.logoutUser();
+								}}
+							>
+								{t('Navbar.Logout.label')}
+							</MenuItem>
+						</MenuList>
+					</ClickAwayListener>
+				</>
+			);
 		} else {
-			return (<ClickAwayListener onClickAway={handleClose}>										
-				<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
-					<MenuItem
-						onClick={(e) => {
-							handleClose(e);
-							handleGoTo('/profile');
-						}}
-					>
-						{t('Navbar.profile.label')}
-					</MenuItem>
-					<MenuItem
-						onClick={(e) => {
-							handleClose(e);
-							handleGoTo('/activity');
-						}}
-					>
-						{t('Navbar.activity.label')}
-					</MenuItem>
-					<MenuItem
-						onClick={(e) => {
-							handleClose(e);
-							userActions.logoutUser();
-						}}
-					>
-						{t('Navbar.Logout.label')}
-					</MenuItem>
-				</MenuList>
-			</ClickAwayListener>)
+			return (
+				<ClickAwayListener onClickAway={handleClose}>
+					<MenuList autoFocusItem={open} id="menu-list-grow" className="navbar-submenu">
+						<MenuItem
+							onClick={(e) => {
+								handleClose(e);
+								handleGoTo('/profile');
+							}}
+						>
+							{t('Navbar.profile.label')}
+						</MenuItem>
+						<MenuItem
+							onClick={(e) => {
+								handleClose(e);
+								handleGoTo('/activity');
+							}}
+						>
+							{t('Navbar.activity.label')}
+						</MenuItem>
+						<MenuItem
+							onClick={(e) => {
+								handleClose(e);
+								userActions.logoutUser();
+							}}
+						>
+							{t('Navbar.Logout.label')}
+						</MenuItem>
+					</MenuList>
+				</ClickAwayListener>
+			);
 		}
 	}
 	function rightContainer() {
-		let rightContainer = <div></div>; 
+		let rightContainer = <div></div>;
 		if (userState.isLoggedIn === true && userState.user !== null) {
 			rightContainer = (
 				<>
 					<div className="Navbar__right_container">
-					
 						<Link
 							to="/"
 							id="js-open-notification-link"
@@ -376,8 +382,8 @@ const NavBar = () => {
 									? userState.user.notifications.unreadedCount
 									: 0}
 							</div>
-						</Link> 
-						
+						</Link>
+
 						<div className="Funds__container">
 							{/* <Link to="/buy-tokens" className="Funds__link">
 								<ValueCounter value={ovrsOwned}></ValueCounter>
@@ -393,7 +399,7 @@ const NavBar = () => {
 								Buy OVR
 							</Link> */}
 						</div>
-						
+
 						<Link
 							ref={anchorRef}
 							aria-controls={open ? 'menu-list-grow' : undefined}
@@ -426,9 +432,7 @@ const NavBar = () => {
 									{...TransitionProps}
 									style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
 								>
-									<Paper>
-										{renderMobileMenuItem()}
-									</Paper>
+									<Paper>{renderMobileMenuItem()}</Paper>
 								</Grow>
 							)}
 						</Popper>
@@ -451,11 +455,14 @@ const NavBar = () => {
 			); */
 			rightContainer = (
 				<div className="AuthLogin__link">
-					<div className={`HexButton --orange ${!isConnecting ? '' : '--disabled'}`} onClick={handleMetamaskAuthentication}>
+					<div
+						className={`HexButton --orange ${!isConnecting ? '' : '--disabled'}`}
+						onClick={handleMetamaskAuthentication}
+					>
 						{t('Navbar.wallet.connect')}
 					</div>
 				</div>
-			)
+			);
 		}
 		return rightContainer;
 	}
