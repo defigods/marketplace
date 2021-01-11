@@ -101,7 +101,7 @@
 	"Land.closing.price" : "Closing price",
 	"Land.price.label" : "Price",
 	"Land.history.label" : "History",
-	"Land.has.been.assigned": "This land has been assigned to the owner, but has not been minted.",
+	"Land.has.been.assigned": "This OVRLand has been light minted.",
 	"Land.be.the.one" : "Be the one to start an auction",
 	"Land.no.active.auction" : "The land has no active Auction at the moment. <1></1>Click on \"Init Auction\" and be the one to own it.",
 	"Land.bid.history" : "Bid History",

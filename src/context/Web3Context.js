@@ -1100,6 +1100,8 @@ export class Web3Provider extends Component {
 			);
 			// Start recursive check on land market status
 			updateLandMarketStatusIfHasBeenMinted(hexId).then((response) => {});
+			// Confirm notification
+			successNotification(this.props.t('Success.action.title'), this.props.t('Success.request.process.desc'));
 		} catch (err){
 			if(err.toString().includes('transaction may fail')){
 				warningNotification(this.props.t('Warning.action.already.done.title'), this.props.t('Warning.action.already.done.desc'));
