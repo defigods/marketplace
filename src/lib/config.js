@@ -1,5 +1,8 @@
 import _ from 'lodash';
 
+import mainnetMerkle from '../contract/merkle/mainnet_merkleinfo.json';
+import rinkebyMerkle from '../contract/merkle/rinkeby_merkleinfo.json';
+
 //
 // General Configs
 //
@@ -42,6 +45,7 @@ if (environment === 'PRODUCTION') {
 		stakingOVRG30: '0x69e016205E878C8d56AE0854E0ed1671c64E07b0',
 		// cashback
 		merkleDistributor: '',
+		merkleInfo: mainnetMerkle,
 	};
 } else if (environment === 'STAGING') {
 	apis = {
@@ -75,6 +79,7 @@ if (environment === 'PRODUCTION') {
 		stakingOVRG30: '0x8FEdD810c37c50f035D82E318263647F70C6824c',
 		// cashback
 		merkleDistributor: '0x95b1206a1b0133a77d7bf92d854e92b364d240e2',
+		merkleInfo: rinkebyMerkle,
 	};
 } else {
 	apis = {
@@ -117,6 +122,7 @@ if (environment === 'PRODUCTION') {
 		stakingOVRG30: '0x8FEdD810c37c50f035D82E318263647F70C6824c',
 		// cashback
 		merkleDistributor: '0x95b1206a1b0133a77d7bf92d854e92b364d240e2',
+		merkleInfo: rinkebyMerkle,
 	};
 }
 

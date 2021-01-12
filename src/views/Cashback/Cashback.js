@@ -5,7 +5,7 @@ import HexButton from '../../components/HexButton/HexButton';
 import { Web3Context } from '../../context/Web3Context';
 import { UserContext } from '../../context/UserContext';
 
-import merkleInfo from './merkleInfo.json';
+import config from '../../lib/config';
 
 const Cashback = () => {
 	const { t, i18n } = useTranslation();
@@ -30,12 +30,12 @@ const Cashback = () => {
 		if (!address) {
 			setClaimInfo(null);
 		} else {
-			const userClaimIndex = Object.keys(merkleInfo.claims).findIndex(
+			const userClaimIndex = Object.keys(config.apis.merkleInfo.claims).findIndex(
 				(el) => el.toLocaleLowerCase() === address.toLocaleLowerCase(),
 			);
 
 			if (userClaimIndex >= 0) {
-				const claimInfo = merkleInfo.claims[Object.keys(merkleInfo.claims)[userClaimIndex]];
+				const claimInfo = config.apis.merkleInfo.claims[Object.keys(config.apis.merkleInfo.claims)[userClaimIndex]];
 				setClaimInfo(claimInfo);
 				checkIsClaimed(claimInfo.index);
 			}
