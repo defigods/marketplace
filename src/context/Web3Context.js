@@ -11,6 +11,7 @@ import {
 	sendPreAuctionBid,
 	signUpLoginMetamask,
 	getGasPrice,
+	updateLandMarketStatusIfHasBeenMinted,
 } from '../lib/api';
 import { promisify } from '../lib/config';
 import config from '../lib/config';
@@ -22,7 +23,6 @@ import { abi } from '../contract/abi';
 import ovrAbi from '../contract/ovrAbi';
 import bn from 'bignumber.js';
 
-import merkleDistributorABI from '../contract/merkleDistributorABI';
 const controllerABI = require('../contract/controllerABI');
 const curveABI = require('../contract/curveABI');
 const DAIABI = require('../contract/DAIABI');
@@ -30,6 +30,8 @@ const rewardABI = require('../contract/rewardABI');
 const bancorFormulaABI = require('../contract/bancorFormulaABI');
 const vestingABI = require('../contract/vestingABI');
 const stakingABI = require('../contract/stakingABI');
+const lightMintingABI = require('../contract/lightMintingABI');
+const merkleDistributorABI = require('../contract/merkleDistributorABI');
 
 const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)));
@@ -118,7 +120,6 @@ export class Web3Provider extends Component {
 
 				// Intialize contracts
 				let data = await this.initializeContracts();
-				console.log(data);
 				await this.setSigners(data);
 
 				// Centralized Login
@@ -173,6 +174,7 @@ export class Web3Provider extends Component {
 			StakeOVRG15Viewer: data.stakingOVRG15Viewer,
 			StakeOVRG30Signer: data.stakingOVRG30Signer,
 			StakeOVRG30Viewer: data.stakingOVRG30Viewer,
+			lightMintingSigner: data.lightMintingSigner,
 			MerkleDistributorSigner: data.merkleDistributorSigner,
 			MerkleDistributorViewer: data.merkleDistributorViewer,
 		});
@@ -407,6 +409,8 @@ export class Web3Provider extends Component {
 
 		let stakingOVRG30Viewer = new ethers.Contract(config.apis.stakingOVRG30, stakingABI, this.state.provider);
 
+		let lightMintingSigner = new ethers.Contract(config.apis.lightMinting, lightMintingABI, this.state.signer);
+
 		let merkleDistributorSigner = new ethers.Contract(
 			config.apis.merkleDistributor,
 			merkleDistributorABI,
@@ -448,6 +452,7 @@ export class Web3Provider extends Component {
 			stakingOVRG15Viewer,
 			stakingOVRG30Signer,
 			stakingOVRG30Viewer,
+			lightMintingSigner,
 			merkleDistributorSigner,
 			merkleDistributorViewer,
 		};
@@ -913,6 +918,23 @@ export class Web3Provider extends Component {
 		}, 30000);
 	};
 
+	mintLightMintedLand = async (hexId) => {
+		try {
+			let approve = await this.state.lightMintingSigner.claim('0x' + hexId);
+			// Start recursive check on land market status
+			updateLandMarketStatusIfHasBeenMinted(hexId).then((response) => {});
+			// Confirm notification
+			successNotification(this.props.t('Success.action.title'), this.props.t('Success.request.process.desc'));
+		} catch (err) {
+			if (err.toString().includes('transaction may fail')) {
+				warningNotification(
+					this.props.t('Warning.action.already.done.title'),
+					this.props.t('Warning.action.already.done.desc'),
+				);
+			}
+		}
+	};
+
 	getUSDValueInOvr = (usd = 1) => {
 		let floorValue = 0.1;
 		let ibcoOVRCurrentPrice;
@@ -985,6 +1007,7 @@ export class Web3Provider extends Component {
 						setupWeb3: this.setupWeb3,
 						authorizeOvrExpense: this.authorizeOvrExpense,
 						getUSDValueInOvr: this.getUSDValueInOvr,
+						mintLightMintedLand: this.mintLightMintedLand,
 						setRewardBalance: this.setRewardBalance,
 						calculateCustomBuyPrice: this.calculateCustomBuyPrice,
 						calculateCustomSellPrice: this.calculateCustomSellPrice,

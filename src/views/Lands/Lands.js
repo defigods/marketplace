@@ -50,6 +50,13 @@ const Lands = (props) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, []);
+	
 	// On change balances
 	useEffect(() => {
 		setUserBalance(userState.balance)
@@ -123,7 +130,7 @@ const Lands = (props) => {
 		}
 		// Check Allowance
 		if( floatCost > userAllowance || userAllowance < 2000 ){
-			await authorizeOvrExpense("1000000");
+			await authorizeOvrExpense("10000000");
 			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
 		// Ensure balance with projection of others open auctions
@@ -148,7 +155,7 @@ const Lands = (props) => {
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
-		refreshBalanceAndAllowance();
+		await refreshBalanceAndAllowance();
 		// Ensure balance and allowance 
 		let checkOnBal = await ensureBalanceAndAllowance(calculateTotal());
 		if( !checkOnBal ) return;

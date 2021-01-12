@@ -184,4 +184,4 @@ const merkleDistributorABI = [
 	},
 ];
 
-export default merkleDistributorABI;
+module.exports = merkleDistributorABI;

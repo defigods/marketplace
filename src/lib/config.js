@@ -30,7 +30,8 @@ if (environment === 'PRODUCTION') {
 		DAI: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
 		RewardToken: '0x21BfBDa47A0B4B5b1248c767Ee49F7caA9B23697',
 		BancorFormula: '0x6b2D3B366C3417C46240ab62c2878FfdA9861E73',
-		firstOVRBlock: 11356495,
+		firstOVRBlock: 11563998, //Original: 11356495. Updated 11 Jan 2021.
+		lightMinting: '0xc8197cA043696527f357905885D51878AA3D835B',
 		// VESTING Contracts
 		VestingOVRG: '0xd9773379c134eec57da972042c5a25f1afa1e64a',
 		VestingOVRG15: '0xCa0F390C044FD43b1F38B9D2A02e06b13B65FA48',
@@ -57,6 +58,7 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://test-api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		lightMinting: '0xe8ecba02c6c7aaa718880f2b9f59668e4b72ca7f',
 		// OVR - Rinkeby
 		connectorWeight: '32500',
 		DAI: '0x45032B3bE0702b7e81B8E426830B941F096AA770',
@@ -91,6 +93,7 @@ if (environment === 'PRODUCTION') {
 		sumsubApi: 'https://test-api.sumsub.com',
 		OVRContract: '0x4CbE615C151aeb453aab0516Ad7207C641Fe70dC',
 		walletApproved: '0xda0b2EC0E8eE995e3257Bf99EA678e26651DbeEc',
+		lightMinting: '0xe8ecba02c6c7aaa718880f2b9f59668e4b72ca7f',
 		// IBCO - dOrg demo
 		// controllerAddress: "0xcbc2E866D629aE2BCB597Cdf4dCb7dc2F8821Ee7",
 		// curveAddress: "0x361A79A0dc80cc18383747F8147C885F414A829D",

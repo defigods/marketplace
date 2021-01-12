@@ -86,6 +86,15 @@ const MintOverlay = (props) => {
 	}, [bid]);
 
 	useEffect(() => {
+		console.log('userState.balance.onload',userState.balance)
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, []);
+
+	useEffect(() => {
+		console.log('userState.balance.onUpdate',userState.balance)
 		setUserBalance(userState.balance)
 		setUserAllowance(userState.allowance)
 		setUserBalanceProjection(userState.balanceProjection)
@@ -198,7 +207,7 @@ const MintOverlay = (props) => {
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
-		refreshBalanceAndAllowance();
+		await refreshBalanceAndAllowance();
 		
 		// Ensure balance and allowance
 		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));

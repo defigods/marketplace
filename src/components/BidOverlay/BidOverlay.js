@@ -206,6 +206,13 @@ const BidOverlay = (props) => {
 			return true;
 		}
 	}
+	
+	useEffect(() => {
+		setUserBalance(userState.balance)
+		setUserAllowance(userState.allowance)
+		setUserBalanceProjection(userState.balanceProjection)
+		setUserPendingOnBalance(userState.pendingOnBalance)
+	}, []);
 
 	useEffect(() => {
 		setUserBalance(userState.balance)
@@ -220,7 +227,7 @@ const BidOverlay = (props) => {
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
-		refreshBalanceAndAllowance();
+		await refreshBalanceAndAllowance();
 		// Ensure balance and allowance
 		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
 		if( !checkOnBal ) return;

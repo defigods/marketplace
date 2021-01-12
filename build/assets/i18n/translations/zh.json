@@ -114,7 +114,6 @@
 	"Generic.external.link" : "外部链接",
 	"Generic.back.link" : "返回",
 	"Generic.contactus.interested" : "如果你感兴趣请联系我们",
-	"Generic.bid.tooltip" : "Gas费用会用来支付以太坊上的铸币gas费。 只有当你赢得拍卖的时候，这笔OVR才会从你的钱包里提走",
 
 	"BannerNotification.welcome": "欢迎来到OVR",
 	"BannerNotification.intro": "你现在可以拥有自己的土地, 将它定制化, 为你的 OVR 钱包充值",
@@ -204,8 +203,6 @@
 	"Land.owner.label": "产权所有者",
 	"Land.place.bid": "出价",
 	"Land.price.label": "价格",
-	"Land.redeem.land": "兑换土地",
-	"Land.redeeming.land": "正在兑换土地...",
 	"Land.sell.land": "出售土地",
 	"Land.status.label": "状态",
 	"Land.unavailable.label": "不可置信",
@@ -385,5 +382,12 @@
 	"Vesting.total.vested":"已释放代币总量",
 	"Vesting.total.claimed":"已申领代币总量",
 	"Vesting.claim":"申领{{token}}",
-	"Vesting.allwance":"{{token}}释放额度上限"
+	"Vesting.allwance":"{{token}}释放额度上限",
+	"Land.assigned.label" : "已指定所有者",
+	"Land.redeem.land" : "铸造土地NFT",
+	"Land.redeeming.land" : "正在铸造土地NFT...",
+	"Land.has.been.assigned": "这块OVR土地已经被轻度铸造",
+	"Warning.action.already.done.title":"已经提出交易请求",
+	"Warning.action.already.done.desc":"你可以在钱包管理中查看交易状态，在交易被通过的几分钟后你可以在界面上看到更新的信息",
+	"Generic.bid.tooltip" : "这个矿工费用于支付以太坊主网上的轻度铸币费。只有当你赢得这块土地的竞拍的时候，OVR才会从你的钱包里被扣取。"
 }
