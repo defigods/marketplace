@@ -1,21 +1,5 @@
 const merkleDistributorABI = [
 	{
-		inputs: [
-			{
-				internalType: 'address',
-				name: 'token_',
-				type: 'address',
-			},
-			{
-				internalType: 'bytes32',
-				name: 'merkleRoot_',
-				type: 'bytes32',
-			},
-		],
-		stateMutability: 'nonpayable',
-		type: 'constructor',
-	},
-	{
 		anonymous: false,
 		inputs: [
 			{
@@ -124,6 +108,32 @@ const merkleDistributorABI = [
 	{
 		inputs: [
 			{
+				internalType: 'address',
+				name: 'token_',
+				type: 'address',
+			},
+		],
+		name: 'setToken',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function',
+	},
+	{
+		inputs: [
+			{
+				internalType: 'bytes32',
+				name: 'merkleRoot_',
+				type: 'bytes32',
+			},
+		],
+		name: 'setMerkleRoot',
+		outputs: [],
+		stateMutability: 'nonpayable',
+		type: 'function',
+	},
+	{
+		inputs: [
+			{
 				internalType: 'uint256',
 				name: 'index',
 				type: 'uint256',
@@ -173,7 +183,12 @@ const merkleDistributorABI = [
 		inputs: [
 			{
 				internalType: 'address',
-				name: 'receiver',
+				name: 'token_',
+				type: 'address',
+			},
+			{
+				internalType: 'address',
+				name: 'receiver_',
 				type: 'address',
 			},
 		],

@@ -19,14 +19,14 @@ import ValueCounter from '../../components/ValueCounter/ValueCounter';
 import { Web3Context } from '../../context/Web3Context';
 
 import snsWebSdk from '@sumsub/websdk';
-import { useTranslation, Translation} from 'react-i18next';
+import { useTranslation, Translation } from 'react-i18next';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import i18n from 'i18next';
-import {getCurrentLocale} from '../../i18n';
+import { getCurrentLocale } from '../../i18n';
 
 import ReactGA from 'react-ga';
 let isMobile = window.innerWidth < 860;
@@ -35,19 +35,19 @@ const ProfileContentLoginRequired = () => {
 	const { t, i18n } = useTranslation();
 	return (
 		<div className="profile">
-		<div className="o-container">
-			<div className="c-dialog --centered">
-				<div className="c-dialog-main-title">
-					{t('Profile.login.required')}
-					<span role="img" aria-label="Cool dude">
-						😎
-					</span>
+			<div className="o-container">
+				<div className="c-dialog --centered">
+					<div className="c-dialog-main-title">
+						{t('Profile.login.required')}
+						<span role="img" aria-label="Cool dude">
+							😎
+						</span>
+					</div>
+					<div className="c-dialog-sub-title">{t('Profile.check.profile')}</div>
 				</div>
-				<div className="c-dialog-sub-title">{t('Profile.check.profile')}</div>
 			</div>
 		</div>
-	</div>
-	)	
+	);
 };
 
 const ProfileLayout = () => {
@@ -61,13 +61,13 @@ const ProfileLayout = () => {
 	const [address, setAddress] = React.useState(user.publicAddress);
 	const { refreshBalanceAndAllowance } = userContext.actions;
 	const { authorizeOvrExpense } = web3Context.actions;
-	const { MerkleDistributorSigner, MerkleDistributorViewer, ethersAddress } = web3Context.state;
+	const { MerkleDistributorSigner, MerkleDistributorViewer, address: userAddress } = web3Context.state;
 
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
 	const [userEmailValid, setUserEmailValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
 	const [userEmail, setUserEmail] = useState('');
-	const [urlKyc, setUrlKyc] = useState("#");
+	const [urlKyc, setUrlKyc] = useState('#');
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
 	const [isIMWallet, setIsIMWallet] = useState(false);
 	const [hasMounted, setHasMounted] = useState(false);
@@ -75,41 +75,40 @@ const ProfileLayout = () => {
 	const [isClaimed, setClaimed] = useState(true);
 	const [claimInfo, setClaimInfo] = useState(null);
 
-
 	React.useEffect(() => {
-		if(user != undefined && user.balance != undefined){
-			setBalance(user.balance.toFixed(2))
+		if (user != undefined && user.balance != undefined) {
+			setBalance(user.balance.toFixed(2));
 		}
 	}, [user.balance]);
 
 	React.useEffect(() => {
-	if(user != undefined && user.allowance != undefined){
-		setAllowance(user.allowance.toFixed(0))
-	}
+		if (user != undefined && user.allowance != undefined) {
+			setAllowance(user.allowance.toFixed(0));
+		}
 	}, [user.allowance]);
 
-
 	React.useEffect(() => {
-		setAddress(user.publicAddress)
+		setAddress(user.publicAddress);
 	}, [user.publicAddress]);
 
 	// Sumsub and ImWallet
 	React.useEffect(() => {
 		// IMWallet workaround
-		if (isMobile == true){
-			if(window.ethereum){
-				setIsIMWallet(true)
-				if(user.uuid != undefined){
-					let sumsubLang = "en";
-					if(getCurrentLocale().includes('zh')){
-						sumsubLang = "zh";
-					} 
-					getSumsubExternalLink(sumsubLang).then((response) => {
-						if (response.data.result === true) {
-							setUrlKyc(response.data.url)
-						}
-					})
-					.catch(() => {});
+		if (isMobile == true) {
+			if (window.ethereum) {
+				setIsIMWallet(true);
+				if (user.uuid != undefined) {
+					let sumsubLang = 'en';
+					if (getCurrentLocale().includes('zh')) {
+						sumsubLang = 'zh';
+					}
+					getSumsubExternalLink(sumsubLang)
+						.then((response) => {
+							if (response.data.result === true) {
+								setUrlKyc(response.data.url);
+							}
+						})
+						.catch(() => {});
 				}
 			}
 		}
@@ -121,8 +120,7 @@ const ProfileLayout = () => {
 						launchWebSdk(config.apis.sumsubApi, 'basic-kyc', response.data.content.token, user.email, null, t);
 					}
 				})
-				.catch((error) => {
-				});
+				.catch((error) => {});
 			if (user.kycReviewAnswer == -1) {
 				setSumsubVerificationToStarted()
 					.then(() => {})
@@ -140,12 +138,16 @@ const ProfileLayout = () => {
 			}
 		};
 
-		if (!ethersAddress) {
+		console.log('userAddress', userAddress);
+
+		if (!userAddress) {
 			setClaimInfo(null);
 		} else {
 			const userClaimIndex = Object.keys(config.apis.merkleInfo.claims).findIndex(
-				(el) => el.toLocaleLowerCase() === ethersAddress.toLocaleLowerCase(),
+				(el) => el.toLocaleLowerCase() === userAddress.toLocaleLowerCase(),
 			);
+
+			console.log('userClaimIndex', userClaimIndex);
 
 			if (userClaimIndex >= 0) {
 				const claimInfo = config.apis.merkleInfo.claims[Object.keys(config.apis.merkleInfo.claims)[userClaimIndex]];
@@ -153,24 +155,21 @@ const ProfileLayout = () => {
 				checkIsClaimed(claimInfo.index);
 			}
 		}
-	}, [ethersAddress, MerkleDistributorViewer]);
-
-
+	}, [userAddress, MerkleDistributorViewer]);
 
 	const toggleKycVerificationFrame = (e) => {
 		e.preventDefault();
-		if(user.email){
+		if (user.email) {
 			setSumsubShowPanel(!sumsubShowPanel);
-			ReactGA.set({ page: window.location.pathname + "/kyc-started"}); 
-			ReactGA.pageview(window.location.pathname + "/kyc-started");
+			ReactGA.set({ page: window.location.pathname + '/kyc-started' });
+			ReactGA.pageview(window.location.pathname + '/kyc-started');
 		} else {
 			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.not.detected.desc'));
 		}
 	};
 
-	const toggleImWalletKycVerificationFrame = (e) => {		
-		if(user.email){
-
+	const toggleImWalletKycVerificationFrame = (e) => {
+		if (user.email) {
 		} else {
 			e.preventDefault();
 			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.not.detected.desc'));
@@ -190,22 +189,22 @@ const ProfileLayout = () => {
 		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)) {
 			setIsSignupLoading(true);
 			setUserEmailInputError(false);
-			setDbUserEmail(userEmail).then((response) => {
-				if (response.data.result === true) {
-					userContext.actions.setUserEmail(userEmail)
-					successNotification(t('Generic.congrats.label'), t('Signup.email.saved.title'))
-					ReactGA.set({ page: window.location.pathname + "/email-saved"}); 
-					ReactGA.pageview(window.location.pathname + "/email-saved"); 
-					window.gtag_report_email_inserted_conversion();
-				} else {
-					let error_message = response.data.errors[0].message;
-					setIsSignupLoading(false)
-					setUserEmailValid(false);
-					setUserEmailInputError(error_message);
-				}
-			})
-			.catch((error) => {
-			});
+			setDbUserEmail(userEmail)
+				.then((response) => {
+					if (response.data.result === true) {
+						userContext.actions.setUserEmail(userEmail);
+						successNotification(t('Generic.congrats.label'), t('Signup.email.saved.title'));
+						ReactGA.set({ page: window.location.pathname + '/email-saved' });
+						ReactGA.pageview(window.location.pathname + '/email-saved');
+						window.gtag_report_email_inserted_conversion();
+					} else {
+						let error_message = response.data.errors[0].message;
+						setIsSignupLoading(false);
+						setUserEmailValid(false);
+						setUserEmailInputError(error_message);
+					}
+				})
+				.catch((error) => {});
 		} else {
 			setUserEmailInputError(t('Signup.email.not.valid'));
 			setUserEmailValid(false);
@@ -219,12 +218,12 @@ const ProfileLayout = () => {
 		}
 
 		try {
-			await MerkleDistributorSigner.claim(claimInfo.index, ethersAddress, claimInfo.amount, claimInfo.proof);
+			await MerkleDistributorSigner.claim(claimInfo.index, userAddress, claimInfo.amount, claimInfo.proof);
 			successNotification(t('Success.action.title'), t('Success.request.process.desc'));
 		} catch (error) {
 			console.log(error);
 		}
-	}
+	};
 
 	return (
 		<div className="profile">
@@ -250,46 +249,44 @@ const ProfileLayout = () => {
 							<h3 className="p-section-title">{t('Profile.wallet.info')}</h3>
 							<div className="p-section-content">
 								<h4 className="p-content-title">{t('Profile.wallet.addr')}</h4>
-								<div className="p-wallet-address">
-									{address}
-								</div>
+								<div className="p-wallet-address">{address}</div>
 								<div className="p-balance">
 									<div className="p-small-title">{t('Profile.balance')}</div>
 									<div className="p-balance-value">
 										<ValueCounter value={balance} />
 										<div>
-											<HexButton url="/public-sale" className={`--orange `} text={t('Profile.buy.ovr')}></HexButton>
+											<HexButton url="/public-sale" className={'--orange '} text={t('Profile.buy.ovr')}></HexButton>
 											{/* history.push('/profile');
 											// TODO: KYC -  */}
 										</div>
 									</div>
 								</div>
 								<div className="p-balance">
-									<div className="p-small-title">{t('Auctions.allowance')}
-									<Tooltip
-										title={
-											<React.Fragment>
-												{t('Aucitons.allowance.tooltip')}
-											</React.Fragment>
-										}
-										aria-label="info"
-										placement="bottom"
-									>
-										<Help className="Help" />
-									</Tooltip>
+									<div className="p-small-title">
+										{t('Auctions.allowance')}
+										<Tooltip
+											title={<React.Fragment>{t('Aucitons.allowance.tooltip')}</React.Fragment>}
+											aria-label="info"
+											placement="bottom"
+										>
+											<Help className="Help" />
+										</Tooltip>
 									</div>
 									<div className="p-balance-value">
 										<ValueCounter value={allowance} />
 										<div>
-											<HexButton url="#" onClick={
-												async (e) => {
-													e.preventDefault()
-													await authorizeOvrExpense("10000000");
+											<HexButton
+												url="#"
+												onClick={async (e) => {
+													e.preventDefault();
+													await authorizeOvrExpense('10000000');
 													setTimeout(() => {
 														refreshBalanceAndAllowance();
 													}, 20000);
-												}
-											} className={`--orange `} text={t('Auctions.allowance.increment')}></HexButton>
+												}}
+												className={'--orange '}
+												text={t('Auctions.allowance.increment')}
+											></HexButton>
 											{/* history.push('/profile');
 											// TODO: KYC -  */}
 										</div>
@@ -299,77 +296,92 @@ const ProfileLayout = () => {
 							<div key="KYC" className="p-section --m-t">
 								<h3 className="p-section-title">{t('Profile.identify.verification')}</h3>
 								<div className="p-tiny-message">
-									
 									<div className="p-tiny-message">
-									{t('Profile.ovr.sale.started')} 
-									<br></br>
+										{t('Profile.ovr.sale.started')}
+										<br></br>
 									</div>
 
-									{user.kycReviewAnswer == 1
-										? ''
-										: t('Profile.whitelisted.no.ok')}
+									{user.kycReviewAnswer == 1 ? '' : t('Profile.whitelisted.no.ok')}
 									<br></br>
 									<br></br>
 								</div>
 								<div className="p-section-content">
-									{user.email ? <div className="p-balance-value">
-									 <TextField
-											id="quantity"
-											label="Email address"
-											type="email"
-											className="Signup__email_textfield"
-											value={user.email}
-											disabled
-										/>
-									</div> : <div className="p-balance-value">
-										<TextField
-											id="quantity"
-											label="Email address"
-											type="email"
-											className="Signup__email_textfield"
-											error={userEmailInputError !== false ? true : false}
-											helperText={userEmailInputError !== false ? userEmailInputError : ''}
-											value={userEmail}
-											onFocus={updateUserEmail}
-											onChange={updateUserEmail}
-											onKeyUp={updateUserEmail}
-										/>
-										<div>
-											{!isSignupLoading && <HexButton
-												url="#"
-												className={`--blue ${userEmailValid ? '' : '--disabled'}`}
-												text={t('Email.add')}
-												onClick={handleAddEmail}
-											></HexButton>}
-											{isSignupLoading && <CircularProgress />}
+									{user.email ? (
+										<div className="p-balance-value">
+											<TextField
+												id="quantity"
+												label="Email address"
+												type="email"
+												className="Signup__email_textfield"
+												value={user.email}
+												disabled
+											/>
 										</div>
-									</div>}
+									) : (
+										<div className="p-balance-value">
+											<TextField
+												id="quantity"
+												label="Email address"
+												type="email"
+												className="Signup__email_textfield"
+												error={userEmailInputError !== false ? true : false}
+												helperText={userEmailInputError !== false ? userEmailInputError : ''}
+												value={userEmail}
+												onFocus={updateUserEmail}
+												onChange={updateUserEmail}
+												onKeyUp={updateUserEmail}
+											/>
+											<div>
+												{!isSignupLoading && (
+													<HexButton
+														url="#"
+														className={`--blue ${userEmailValid ? '' : '--disabled'}`}
+														text={t('Email.add')}
+														onClick={handleAddEmail}
+													></HexButton>
+												)}
+												{isSignupLoading && <CircularProgress />}
+											</div>
+										</div>
+									)}
 								</div>
 								<br></br>
 								<br></br>
 								<br></br>
 								<div className="p-section-content">
 									<h4 className="p-content-title">{t('Profile.status.label')}</h4>
-									{isIMWallet ? <><div className="p-tiny-message">
-										{t('Profile.ios.sumsub')}
-									</div><br></br></> : <></>}
+									{isIMWallet ? (
+										<>
+											<div className="p-tiny-message">{t('Profile.ios.sumsub')}</div>
+											<br></br>
+										</>
+									) : (
+										<></>
+									)}
 
 									<div className="p-balance-value">
 										{renderBadge(user.kycReviewAnswer, t)}
 										<div>
-											{ !isIMWallet ? <HexButton
-												url="#"
-												className="--blue"
-												text={user.kycReviewAnswer == -1 ? t('Profile.start.verification') : t('Profile.check.verification')}
-												onClick={toggleKycVerificationFrame}
-											></HexButton> : <HexButton
-												target={'_blank'}
-												url={urlKyc}
-												className="--blue"
-												text={t('Generic.external.link')}
-												onClick={toggleImWalletKycVerificationFrame}
-											></HexButton>
-											}
+											{!isIMWallet ? (
+												<HexButton
+													url="#"
+													className="--blue"
+													text={
+														user.kycReviewAnswer == -1
+															? t('Profile.start.verification')
+															: t('Profile.check.verification')
+													}
+													onClick={toggleKycVerificationFrame}
+												></HexButton>
+											) : (
+												<HexButton
+													target={'_blank'}
+													url={urlKyc}
+													className="--blue"
+													text={t('Generic.external.link')}
+													onClick={toggleImWalletKycVerificationFrame}
+												></HexButton>
+											)}
 										</div>
 									</div>
 								</div>
@@ -380,22 +392,19 @@ const ProfileLayout = () => {
 							</div>
 							<div key="Cashback" className="p-section --m-t">
 								<h3 className="p-section-title">{t('Profile.cashback.title')}</h3>
-								
+
 								<div className="p-tiny-message">
-									
-									<div className="p-tiny-message">
-									{t('Profile.cashback.description')} 
-									</div>
+									<div className="p-tiny-message">{t('Profile.cashback.description')}</div>
 									<br></br>
 									<br></br>
 								</div>
 								<div className="p-section-content">
-										<HexButton
-											url="#"
-											className={`--orange`}
-											text={t('Profile.cashback.button')}
-											onClick={handleClaimCashback}
-										></HexButton>
+									<HexButton
+										url="#"
+										className={'--orange'}
+										text={t('Profile.cashback.button')}
+										onClick={handleClaimCashback}
+									></HexButton>
 								</div>
 							</div>
 							<div className="p-tiny-message">
@@ -459,7 +468,6 @@ const ProfileLayout = () => {
 	);
 };
 
-
 const renderBadge = (status, t) => {
 	let badge = <div>&nbsp;</div>;
 	switch (status) {
@@ -482,15 +490,20 @@ const renderBadge = (status, t) => {
 };
 
 const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone, t) => {
-	let sumsubLang = "en";
-	if(getCurrentLocale().includes('zh')){
-		sumsubLang = "zh";
-	} 
+	let sumsubLang = 'en';
+	if (getCurrentLocale().includes('zh')) {
+		sumsubLang = 'zh';
+	}
 	let userWallet;
-	if (window.web3 && window.web3.eth && window.web3.eth.defaultAccount && window.web3.eth.defaultAccount.toLowerCase()){
+	if (
+		window.web3 &&
+		window.web3.eth &&
+		window.web3.eth.defaultAccount &&
+		window.web3.eth.defaultAccount.toLowerCase()
+	) {
 		userWallet = window.web3.eth.defaultAccount.toLowerCase();
 	}
-	if (userWallet){
+	if (userWallet) {
 		let snsWebSdkInstance = snsWebSdk
 			.Builder(apiUrl, flowName)
 			.withAccessToken(accessToken, (newAccessTokenCallback) => {
@@ -503,7 +516,7 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 				lang: sumsubLang,
 				email: applicantEmail,
 				phone: applicantPhone,
-				metadata: [{"key": "walletAddress", "value": userWallet}],
+				metadata: [{ key: 'walletAddress', value: userWallet }],
 				onMessage: (type, payload) => {
 					console.log('WebSDK onMessage', type, payload);
 				},
@@ -517,7 +530,6 @@ const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPh
 	} else {
 		warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
 	}
-	
 };
 
 const Profile = () => {
@@ -527,19 +539,19 @@ const Profile = () => {
 
 	// Google Analytics
 	useEffect(() => {
-		let authenticated = "";
-		if(userAuthenticated){
-			authenticated = "/authenticated"
+		let authenticated = '';
+		if (userAuthenticated) {
+			authenticated = '/authenticated';
 		}
-		ReactGA.set({ page: window.location.pathname + authenticated}); 
-		ReactGA.pageview(window.location.pathname + authenticated); 
-	}, [userAuthenticated])
+		ReactGA.set({ page: window.location.pathname + authenticated });
+		ReactGA.pageview(window.location.pathname + authenticated);
+	}, [userAuthenticated]);
 
 	if (!userAuthenticated) {
-		return <ProfileContentLoginRequired t={t}/>;
+		return <ProfileContentLoginRequired t={t} />;
 	}
 
-	return <ProfileLayout state={state}/>;
+	return <ProfileLayout state={state} />;
 };
 
 export default Profile;

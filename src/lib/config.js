@@ -80,7 +80,7 @@ if (environment === 'PRODUCTION') {
 		stakingOVRG15: '0x8FEdD810c37c50f035D82E318263647F70C6824c',
 		stakingOVRG30: '0x8FEdD810c37c50f035D82E318263647F70C6824c',
 		// cashback
-		merkleDistributor: '0x9926f9674Dea32D8F9cC46579f35DF704b29Fbb2',
+		merkleDistributor: '0xaa4F46934cbaf38C1A1AE42E4cF1d3f6854a2256',
 		merkleInfo: rinkebyMerkle,
 	};
 } else {
@@ -124,7 +124,7 @@ if (environment === 'PRODUCTION') {
 		stakingOVRG15: '0x8FEdD810c37c50f035D82E318263647F70C6824c',
 		stakingOVRG30: '0x8FEdD810c37c50f035D82E318263647F70C6824c',
 		// cashback
-		merkleDistributor: '0x9926f9674Dea32D8F9cC46579f35DF704b29Fbb2',
+		merkleDistributor: '0xaa4F46934cbaf38C1A1AE42E4cF1d3f6854a2256',
 		merkleInfo: rinkebyMerkle,
 	};
 }

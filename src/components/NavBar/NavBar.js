@@ -153,9 +153,6 @@ const NavBar = () => {
 					<NavLink className="NavBar__link" to="/stacking">
 						{t('Stacking.title')}
 					</NavLink>
-					<NavLink className="NavBar__link" to="/cashback">
-						Cashback
-					</NavLink>
 					<a href={'https://www.ovr.ai/'} rel="noopener noreferrer" target={'_blank'} className="NavBar__link">
 						About Us
 					</a>
@@ -282,14 +279,6 @@ const NavBar = () => {
 								}}
 							>
 								{t('Stacking.title')}
-							</MenuItem>
-							<MenuItem
-								onClick={(e) => {
-									handleClose(e);
-									handleGoTo('/cashback');
-								}}
-							>
-								Cashback
 							</MenuItem>
 							<MenuItem
 								onClick={(e) => {
