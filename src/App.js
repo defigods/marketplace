@@ -17,7 +17,6 @@ import BuyTokens from './views/BuyTokens/BuyTokens';
 import IndacoinResponse from './views/IndacoinResponse/IndacoinResponse';
 import PublicSale from './views/PublicSale/PublicSale';
 import Stacking from './views/Stacking/Stacking';
-import Cashback from './views/Cashback/Cashback';
 import StackingVestingOvrg from './views/Vesting/Vesting';
 
 import NavBar from './components/NavBar/NavBar';
@@ -123,7 +122,6 @@ function App() {
 																				<Route path="/login-helper" component={LoginHelper}></Route>
 																				<Route path="/public-sale" component={PublicSale}></Route>
 																				<Route path="/stacking" component={Stacking}></Route>
-																				<Route path="/cashback" component={Cashback}></Route>
 																				<Route path="/stacking-vesting-ovrg" component={StackingVestingOvrg}></Route>
 
 																				{/* <Route path="/buy-tokens" component={BuyTokens}></Route>

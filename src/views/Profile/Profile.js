@@ -61,6 +61,7 @@ const ProfileLayout = () => {
 	const [address, setAddress] = React.useState(user.publicAddress);
 	const { refreshBalanceAndAllowance } = userContext.actions;
 	const { authorizeOvrExpense } = web3Context.actions;
+	const { MerkleDistributorSigner, MerkleDistributorViewer, ethersAddress } = web3Context.state;
 
 	const [sumsubShowPanel, setSumsubShowPanel] = useState(false);
 	const [userEmailValid, setUserEmailValid] = useState(false);
@@ -71,6 +72,9 @@ const ProfileLayout = () => {
 	const [isIMWallet, setIsIMWallet] = useState(false);
 	const [hasMounted, setHasMounted] = useState(false);
 
+	const [isClaimed, setClaimed] = useState(true);
+	const [claimInfo, setClaimInfo] = useState(null);
+
 
 	React.useEffect(() => {
 		if(user != undefined && user.balance != undefined){
@@ -78,7 +82,7 @@ const ProfileLayout = () => {
 		}
 	}, [user.balance]);
 
-	useEffect(() => {
+	React.useEffect(() => {
 	if(user != undefined && user.allowance != undefined){
 		setAllowance(user.allowance.toFixed(0))
 	}
@@ -89,7 +93,8 @@ const ProfileLayout = () => {
 		setAddress(user.publicAddress)
 	}, [user.publicAddress]);
 
-	useEffect(() => {
+	// Sumsub and ImWallet
+	React.useEffect(() => {
 		// IMWallet workaround
 		if (isMobile == true){
 			if(window.ethereum){
@@ -126,6 +131,31 @@ const ProfileLayout = () => {
 		}
 	}, [user, sumsubShowPanel, localStorage.getItem('i18nextLng')]);
 
+	// Cashback
+	React.useEffect(() => {
+		const checkIsClaimed = async (index) => {
+			if (MerkleDistributorViewer) {
+				const isClaimed = await MerkleDistributorViewer.isClaimed(index);
+				setClaimed(isClaimed);
+			}
+		};
+
+		if (!ethersAddress) {
+			setClaimInfo(null);
+		} else {
+			const userClaimIndex = Object.keys(config.apis.merkleInfo.claims).findIndex(
+				(el) => el.toLocaleLowerCase() === ethersAddress.toLocaleLowerCase(),
+			);
+
+			if (userClaimIndex >= 0) {
+				const claimInfo = config.apis.merkleInfo.claims[Object.keys(config.apis.merkleInfo.claims)[userClaimIndex]];
+				setClaimInfo(claimInfo);
+				checkIsClaimed(claimInfo.index);
+			}
+		}
+	}, [ethersAddress, MerkleDistributorViewer]);
+
+
 
 	const toggleKycVerificationFrame = (e) => {
 		e.preventDefault();
@@ -157,7 +187,6 @@ const ProfileLayout = () => {
 	};
 
 	const handleAddEmail = (e) => {
-		console.log(userEmail)
 		if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail)) {
 			setIsSignupLoading(true);
 			setUserEmailInputError(false);
@@ -182,6 +211,20 @@ const ProfileLayout = () => {
 			setUserEmailValid(false);
 		}
 	};
+
+	const handleClaimCashback = async (e) => {
+		if (!claimInfo || isClaimed) {
+			warningNotification(t('Profile.cashback.error.title'), t('Profile.cashback.error.desc'));
+			return;
+		}
+
+		try {
+			await MerkleDistributorSigner.claim(claimInfo.index, ethersAddress, claimInfo.amount, claimInfo.proof);
+			successNotification(t('Success.action.title'), t('Success.request.process.desc'));
+		} catch (error) {
+			console.log(error);
+		}
+	}
 
 	return (
 		<div className="profile">
@@ -334,6 +377,26 @@ const ProfileLayout = () => {
 									{user.kycClientComment != null && user.kycReviewAnswer != 1 && user.kycClientComment}
 								</div>
 								<div id="sumsub-websdk-container"></div>
+							</div>
+							<div key="Cashback" className="p-section --m-t">
+								<h3 className="p-section-title">{t('Profile.cashback.title')}</h3>
+								
+								<div className="p-tiny-message">
+									
+									<div className="p-tiny-message">
+									{t('Profile.cashback.description')} 
+									</div>
+									<br></br>
+									<br></br>
+								</div>
+								<div className="p-section-content">
+										<HexButton
+											url="#"
+											className={`--orange`}
+											text={t('Profile.cashback.button')}
+											onClick={handleClaimCashback}
+										></HexButton>
+								</div>
 							</div>
 							<div className="p-tiny-message">
 								{/* Every account will need to verify it's identity in order to buy OVR. <br></br>

@@ -37,6 +37,9 @@ const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)));
 const mantissa = new bn(1e18);
 
+
+console.log('VALUE',ethers.utils.formatEther('0x0a3441f432e61a0000').toString())
+
 export const Web3Context = createContext();
 
 export class Web3Provider extends Component {

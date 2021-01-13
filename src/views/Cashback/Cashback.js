@@ -44,12 +44,13 @@ const Cashback = () => {
 
 	const claimToken = async () => {
 		if (!claimInfo || isClaimed) {
-			console.log('No Claims for this User or Already Claimed');
+			warningNotification(t('Profile.cashback.error.title'), t('Profile.cashback.error.desc'));
 			return;
 		}
 
 		try {
 			await MerkleDistributorSigner.claim(claimInfo.index, address, claimInfo.amount, claimInfo.proof);
+			successNotification(t('Success.action.title'), t('Success.request.process.desc'));
 		} catch (error) {
 			console.log(error);
 		}
