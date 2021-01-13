@@ -256,7 +256,7 @@ export class Web3Provider extends Component {
 			
 			// Fallback bug
 			if( CurveOVRSupply.isNegative() ){
-				CurveOVRSupply = parseFloat(ethers.utils.formatEther(reserve).toString()).toFixed(2) / 0.07
+				CurveOVRSupply = (parseFloat(ethers.utils.formatEther(reserve).toString()) / 0.07).toFixed(2)
 			} else {
 				CurveOVRSupply = parseFloat(ethers.utils.formatEther(TotalOVRSupply).toString()).toFixed(2)
 			}
