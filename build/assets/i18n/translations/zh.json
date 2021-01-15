@@ -389,5 +389,10 @@
 	"Land.has.been.assigned": "这块OVR土地已经被轻度铸造",
 	"Warning.action.already.done.title":"已经提出交易请求",
 	"Warning.action.already.done.desc":"你可以在钱包管理中查看交易状态，在交易被通过的几分钟后你可以在界面上看到更新的信息",
-	"Generic.bid.tooltip" : "这个矿工费用于支付以太坊主网上的轻度铸币费。只有当你赢得这块土地的竞拍的时候，OVR才会从你的钱包里被扣取。"
+	"Generic.bid.tooltip" : "这个矿工费用于支付以太坊主网上的轻度铸币费。只有当你赢得这块土地的竞拍的时候，OVR才会从你的钱包里被扣取。",
+	"Profile.cashback.title": "现金返还",
+	"Profile.cashback.button": "申领现金返还",
+	"Profile.cashback.description": "点击申领现金返还并且确认交易，即可获得12月进行的土地拍卖的返还奖励",
+	"Profile.cashback.error.title": "没有可以申领的现金返还",
+	"Profile.cashback.error.desc": "此用户目前没有可以申领的现金返还，如果你没有收到返还的现金，请查看你的钱包交易记录中‘正在打包的交易’。"
 }

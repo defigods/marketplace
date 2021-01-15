@@ -14,11 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-<<<<<<< HEAD
-  "./precache-manifest.f7b7f3341f4b537890f4cec507d2f8f6.js"
-=======
-  "./precache-manifest.5464583c351f39d7e404ed8ab3abce72.js"
->>>>>>> cashback
+  "./precache-manifest.667ffbea4900c81f937756cba00c804e.js"
 );
 
 self.addEventListener('message', (event) => {
