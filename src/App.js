@@ -19,7 +19,6 @@ import PublicSale from './views/PublicSale/PublicSale';
 import Stacking from './views/Stacking/Stacking';
 import StackingVestingOvrg from './views/Vesting/Vesting';
 
-
 import NavBar from './components/NavBar/NavBar';
 import Map from './components/Map/Map';
 import Footer from './components/Footer/Footer';
@@ -42,7 +41,6 @@ const supportedLangs = ['en', 'zh'];
 const fallbackLang = 'en';
 
 function App() {
-
 	i18next.use(LanguageDetector).init({
 		// order and from where user language should be detected
 		order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
@@ -55,95 +53,96 @@ function App() {
 		lookupFromPathIndex: 0,
 		lookupFromSubdomainIndex: 0,
 		lng: navigator.language || navigator.userLanguage,
-	  
+
 		// cache user language on
 		caches: ['localStorage', 'cookie'],
 		excludeCacheFor: ['cimode'], // languages to not persist (cookie, localStorage)
 	});
 
-	if(!supportedLangs.includes(i18next.language)){
+	if (!supportedLangs.includes(i18next.language)) {
 		localStorage.removeItem('i18nextLng');
-		i18next.changeLanguage(fallbackLang)
+		i18next.changeLanguage(fallbackLang);
 	}
 
 	const history = createBrowserHistory();
-	
+
 	// Initialize google analytics page view tracking
-	history.listen(location => {
-		console.log('GA', location.pathname)
+	history.listen((location) => {
+		console.log('GA', location.pathname);
 		ReactGA.initialize('UA-128415861-1');
 		ReactGA.set({ page: location.pathname }); // Update the user's current page
 		ReactGA.pageview(location.pathname); // Record a pageview for the given page
 	});
-	function historyPush(route){
-		history.push(route)
+	function historyPush(route) {
+		history.push(route);
 	}
 	window.historyPush = historyPush;
 
 	return (
 		<Suspense fallback="loading">
 			<Translation>
-				{(t, { i18n }) =>
-				<UserProvider t={t} i18n={i18n}>
-					<Web3Provider t={t} i18n={i18n}>
-						<MapProvider>
-							<UserContext.Consumer>
-								{(userValue) => {
-									return (
-										<Web3Context.Consumer>
-											{(web3Value) => {
-												return (
-													<MapContext.Consumer>
-														{(mapValue) => {
-															return (
-																<Router history={history}>
-																	<div className="App">
-																		<ReactNotification />
-																		<NavBar></NavBar>
-																		<div className="o-container">
-																		<Route path="/map/" component={Map}></Route>
-																		</div>
-																		<Switch>
-																			{/* <Route exact path="/">
+				{(t, { i18n }) => (
+					<UserProvider t={t} i18n={i18n}>
+						<Web3Provider t={t} i18n={i18n}>
+							<MapProvider>
+								<UserContext.Consumer>
+									{(userValue) => {
+										return (
+											<Web3Context.Consumer>
+												{(web3Value) => {
+													return (
+														<MapContext.Consumer>
+															{(mapValue) => {
+																return (
+																	<Router history={history}>
+																		<div className="App">
+																			<ReactNotification />
+																			<NavBar></NavBar>
+																			<div className="o-container">
+																				<Route path="/map/" component={Map}></Route>
+																			</div>
+																			<Switch>
+																				{/* <Route exact path="/">
 																				{userValue.state.isLoggedIn ? (
 																					<Redirect to="/profile" />
 																				) : (
 																					<Redirect to="/login" />
 																				)}
 																			</Route> */}
-																			<Route exact path="/">
-																				<Redirect to="/map/discover" />
-																			</Route>
-																			<Route path="/map/discover" component={Discover}></Route>
-																			<Route path="/map/overview" component={Overview}></Route>
-																			<Route path="/map/lands" component={Lands}></Route>
-																			<Route path="/map/land/:id" component={Land}></Route> 
-																			<Route path="/profile" component={Profile}></Route>
-																			<Route path="/activity" component={Activity}></Route>
-																			<Route path="/login" component={Login}></Route>
-																			<Route path="/login-helper" component={LoginHelper}></Route>
-																			<Route path="/public-sale" component={PublicSale}></Route>
-																			<Route path="/stacking" component={Stacking}></Route>
-																			<Route path="/stacking-vesting-ovrg" component={StackingVestingOvrg}></Route>
+																				<Route exact path="/">
+																					<Redirect to="/map/discover" />
+																				</Route>
+																				<Route path="/map/discover" component={Discover}></Route>
+																				<Route path="/map/overview" component={Overview}></Route>
+																				<Route path="/map/lands" component={Lands}></Route>
+																				<Route path="/map/land/:id" component={Land}></Route>
+																				<Route path="/profile" component={Profile}></Route>
+																				<Route path="/activity" component={Activity}></Route>
+																				<Route path="/login" component={Login}></Route>
+																				<Route path="/login-helper" component={LoginHelper}></Route>
+																				<Route path="/public-sale" component={PublicSale}></Route>
+																				<Route path="/stacking" component={Stacking}></Route>
+																				<Route path="/stacking-vesting-ovrg" component={StackingVestingOvrg}></Route>
 
-																			{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
+																				{/* <Route path="/buy-tokens" component={BuyTokens}></Route>
 																			<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}
-																		</Switch>
-																		<Footer></Footer>
-																	</div>
-																</Router>
-															);
-														}}
-													</MapContext.Consumer>
-												);
-											}}
-										</Web3Context.Consumer>
-									);
-								}}
-							</UserContext.Consumer>
-						</MapProvider>
-					</Web3Provider>
-				</UserProvider> }
+																			</Switch>
+																			<Footer></Footer>
+																		</div>
+																	</Router>
+																);
+															}}
+														</MapContext.Consumer>
+													);
+												}}
+											</Web3Context.Consumer>
+										);
+									}}
+								</UserContext.Consumer>
+							</MapProvider>
+						</Web3Provider>
+					</UserProvider>
+				)}
 			</Translation>
 		</Suspense>
 	);

@@ -464,7 +464,8 @@
 	"Vesting.total.vested":"Total Vested",
 	"Vesting.total.claimed":"Total Claimed",
 	"Vesting.claim":"Claim {{token}}",
-	"Vesting.allwance":"{{token}} Allowance"
+	"Vesting.allwance":"{{token}} Allowance",
+	"Profile.cashback.title": "Casback"
 }
 
 
