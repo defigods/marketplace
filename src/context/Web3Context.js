@@ -228,21 +228,14 @@ export class Web3Provider extends Component {
 		let TotalOVRSupply = await this.state.ibcoRewardViewer.totalSupply();
 		let CurveOVRSupply = TotalOVRSupply.sub(premine.mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))));
 
-			let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
-			let vsBancorFormula = doublePremine.add(CurveOVRSupply)
-			
-			// Fallback bug
-			if( CurveOVRSupply.isNegative() ){
-				CurveOVRSupply = (parseFloat(ethers.utils.formatEther(reserve).toString()) / 0.07).toFixed(2)
-			} else {
-				CurveOVRSupply = parseFloat(ethers.utils.formatEther(TotalOVRSupply).toString()).toFixed(2)
-			}
-
+		let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
+		let vsBancorFormula = doublePremine.add(CurveOVRSupply)
+		
 		// Fallback bug
-		if (CurveOVRSupply.isNegative()) {
-			CurveOVRSupply = parseFloat(ethers.utils.formatEther(reserve).toString()).toFixed(2) / 0.07;
+		if( CurveOVRSupply.isNegative() ){
+			CurveOVRSupply = (parseFloat(ethers.utils.formatEther(reserve).toString()) / 0.07).toFixed(2)
 		} else {
-			CurveOVRSupply = parseFloat(ethers.utils.formatEther(TotalOVRSupply).toString()).toFixed(2);
+			CurveOVRSupply = parseFloat(ethers.utils.formatEther(TotalOVRSupply).toString()).toFixed(2)
 		}
 
 		this.setState({
