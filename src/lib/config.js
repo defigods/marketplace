@@ -8,7 +8,7 @@ import rinkebyMerkle from '../contract/merkle/rinkeby_merkleinfo.json';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'STAGING';
+const environment = 'PRODUCTION';
 
 let apis;
 
@@ -45,7 +45,7 @@ if (environment === 'PRODUCTION') {
 		stakingOVRG15: '0x4232820c73b075e8785f5c36707c4a89648b53a5',
 		stakingOVRG30: '0x69e016205E878C8d56AE0854E0ed1671c64E07b0',
 		// cashback
-		merkleDistributor: '',
+		merkleDistributor: '0x352F1ff322a0dAb72E81AffeEba8316cf96d2180',
 		merkleInfo: mainnetMerkle,
 	};
 } else if (environment === 'STAGING') {
