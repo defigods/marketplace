@@ -226,6 +226,7 @@ export class Web3Provider extends Component {
 
 		// Total supply of OVR Token
 		let TotalOVRSupply = await this.state.ibcoRewardViewer.totalSupply();
+		console.log('TotalOVRSupply',TotalOVRSupply)
 		let CurveOVRSupply = TotalOVRSupply.sub(premine.mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))));
 
 		let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
@@ -234,7 +235,9 @@ export class Web3Provider extends Component {
 		// Fallback bug
 		if( CurveOVRSupply.isNegative() ){
 			CurveOVRSupply = (parseFloat(ethers.utils.formatEther(reserve).toString()) / 0.07).toFixed(2)
-		} 
+		} else {
+			CurveOVRSupply =  parseFloat(ethers.utils.formatEther(CurveOVRSupply).toString()).toFixed(2)
+		}
 
 		this.setState({
 			ibcoOVRSupply: CurveOVRSupply,

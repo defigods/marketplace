@@ -325,7 +325,6 @@ function PublicSale() {
 				} else {
 					openPending.push(nClaim) 	
 				}
-
 			}
 		}
 		for (const claim of web3Context.state.ibcoOpenSellOrders) {
