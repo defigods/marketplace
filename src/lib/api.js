@@ -22,6 +22,7 @@ export function example(user) {
  * @param {*}
  */
 export function signIn(publicAddress, singedNonce) {
+	console.log('signIn')
 	return request(
 		{ url: '/authentication/login', method: 'POST' },
 		{ public_address: publicAddress, signed_nonce: singedNonce },
@@ -511,7 +512,7 @@ export function request(endpoint, params, req_config = { headers: { 'Content-Typ
 			})
 			.catch((err) => {
 				reject(err);
-				// console.log(err);
+				console.log('error',err);
 			});
 	});
 }

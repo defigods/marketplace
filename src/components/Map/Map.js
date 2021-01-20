@@ -43,6 +43,11 @@ const Map = (props) => {
 			center: [config.map.lng, config.map.lat],
 			zoom: config.map.zoom,
 			style: 'mapbox://styles/mapbox/light-v9',
+			renderWorldCopies: false,
+			tileLayer: {
+				continuousWorld: false,
+				noWrap: true
+			},
 		});
 		waitMapStyle();
 		// geocoder setup

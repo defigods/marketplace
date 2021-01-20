@@ -130,9 +130,9 @@ if (environment === 'PRODUCTION') {
 }
 
 const map = {
-	lat: 46.0922495,
+	lat: 28.0922495,
 	lng: 13.2312417,
-	zoom: 0,
+	zoom: 0.7,
 	fillOpacity: 0.3,
 	colorScale: ['#5F39BE', '#ffffff', '#1a0731', '#EC663C', '#0081DD'],
 };
