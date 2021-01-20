@@ -169,6 +169,15 @@ export function participateMultipleAuctions(hexIds, singleMintWorth) {
 	);
 }
 
+export function getCachedOpenLandsGeojson() {
+	return request(
+		{ url: '/lands/geojson/cached/open/array', method: 'GET' },
+		{},
+		null,
+	);
+}
+
+
 
 // export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
 // 	return request(
