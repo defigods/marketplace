@@ -304,6 +304,13 @@
 	}
 	.Land__heading__1, .Land__heading__2{
 		width: 100%;
+		.o-fourth{
+			@include column(1/1)
+		}
+	}
+	.Land__heading__2 .HexButton{
+		float: left!important;
+		margin-top: 0px!important;
 	}
 	.Land__section{
 		table-layout: auto;

@@ -338,7 +338,7 @@ const Map = (props) => {
 			source: 'owned_cluster',
 			filter: ['!', ['has', 'point_count']],
 			paint: {
-				'circle-color': '#11b4da',
+				'circle-color': '#11b4da', // Yellow: rgba(249,180,38,1)
 				'circle-radius': 4,
 				'circle-stroke-width': 1,
 				'circle-stroke-color': '#fff'
