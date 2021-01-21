@@ -127,6 +127,13 @@ export function getAuctionsTotals() {
 	);
 }
 
+export function getCounters() {
+	return request(
+		{ url: '/lands/get_counters', method: 'GET' },
+		null,
+	);
+}
+
 export function auctionCreate(landUuid = null, worth = 10, gas = 10) {
 	return request(
 		{ url: '/auction/start', method: 'POST' },

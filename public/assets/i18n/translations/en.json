@@ -469,7 +469,13 @@
 	"Profile.cashback.button": "Claim Cashback",
 	"Profile.cashback.description": "Click on Claim Cashback and confirm the transaction to obtain the auction cashback for December",
 	"Profile.cashback.error.title": "No Cashback to claim",
-	"Profile.cashback.error.desc": "There is no available Cashback for this user, if you didn't receive your amount check your wallet's pending transaction."
+	"Profile.cashback.error.desc": "There is no available Cashback for this user, if you didn't receive your amount check your wallet's pending transaction.",
+
+	"BannerCounter.closed.auctions": "Closed auctions",
+	"BannerCounter.open.auctions": "Currently open auctions",
+	"BannerCounter.visit.ovrland": "Visit OVRLand",
+	"BannerCounter.highest.bid": "Highest bid"
+
 }
 
 

@@ -12,6 +12,7 @@ import {indexInterestingLands, getCachedOpenLandsGeojson} from '../../lib/api'
 import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs';
 import MapNavigationBox from '../MapNavigationBox/MapNavigationBox';
 import BannerNotification from '../BannerNotification/BannerNotification';
+import BannerCounter from '../BannerCounter/BannerCounter';
 
 import _, { isElement } from 'lodash';
 
@@ -702,7 +703,8 @@ const Map = (props) => {
 		
 		return (
 			<>
-			<BannerNotification></BannerNotification>
+			{/* <BannerNotification></BannerNotification> */}
+			<BannerCounter></BannerCounter>
 			<Breadcrumbs />
 			<div id="Map" className="Map">
 			<div id="js-map-view">Satellite</div>
