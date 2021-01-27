@@ -140,6 +140,11 @@ const BidOverlay = (props) => {
 			warningNotification(t('Warning.email.not.detected.title'), t('Warning.email.auction.not.detected.desc'));
 			return false;
 		}
+		if (!props.userProvider.state.user.isConfirmedEmail) {
+			setActiveStep(0);
+			warningNotification(t('Warning.email.not.verified.title'), t('Warning.email.auction.not.detected.desc'));
+			return false;
+		}
 		return true;
 	};
 

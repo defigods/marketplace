@@ -12,6 +12,12 @@
   transition: 350ms all cubic-bezier(0.190,  1.000, 0.220, 1.000);
 	transform: scale(1);
 	text-align: center;
+	&.--small{
+		padding: 10px 10px;
+		width: fit-content;
+		font-size: 8px;
+		min-width: 80px;
+	}
   &.--white{
     border: 2px solid #fff;
     color: white;

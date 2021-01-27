@@ -102,6 +102,37 @@ export function setDbUserEmail(email = null) {
 	);
 }
 
+export function updateDbUserProfile(firstName = null, lastName = null, country = null) {
+	return request(
+		{ url: '/user/update/profile', method: 'POST' },
+		{
+			first_name: firstName,
+			last_name: lastName,
+			country: country
+		},
+		null,
+	);
+}
+
+
+export function confirmUserEmail(token = null) {
+	return request(
+		{ url: '/user/confirm_email', method: 'POST' },
+		{
+			token: token,
+		},
+		null,
+	);
+}
+
+export function requestConfirmUserEmail(token = null) {
+	return request(
+		{ url: '/user/request_confirm_email', method: 'GET' },
+		null,
+	);
+}
+
+
 
 // AUCTIONS
 // ----------------------------------------------------------------------------------------

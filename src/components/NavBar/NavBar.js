@@ -20,6 +20,7 @@ import Translate from '@material-ui/icons/Translate';
 import { removeUser } from '../../lib/auth';
 import Tooltip from '@material-ui/core/Tooltip';
 
+
 import { useTranslation } from 'react-i18next';
 let isMobile = window.innerWidth < 860;
 
@@ -32,8 +33,11 @@ const NavBar = () => {
 	const [open, setOpen] = React.useState(false);
 	const anchorRef = React.useRef(null);
 	const [isConnecting, setIsConnecting] = React.useState(false);
+	const [hovered, setHovered] = useState(false);
 	const prevOpen = React.useRef(open);
 	const langRef = React.useRef(langOpen);
+
+	const toggleHover = () => setHovered(!hovered);
 
 	const changeLanguage = (string) => {
 		i18n.changeLanguage(string);
@@ -153,9 +157,6 @@ const NavBar = () => {
 					<NavLink className="NavBar__link" to="/stacking">
 						{t('Stacking.title')}
 					</NavLink>
-					<a href={'https://www.ovr.ai/'} rel="noopener noreferrer" target={'_blank'} className="NavBar__link">
-						About Us
-					</a>
 				</>
 			);
 		} else {
@@ -457,6 +458,50 @@ const NavBar = () => {
 	}
 
 	return (
+		<>
+		<div 
+		className={hovered ? 'WebsiteNavBar js-hover-active' : 'WebsiteNavBar'}
+		onMouseEnter={toggleHover}
+		onMouseLeave={toggleHover}>
+			<nav className="main-nav">
+				<div className="container">
+						<div className="main-nav__logo">
+								<a href="https://www.ovr.ai">
+									<img className="s-ovr-logo" alt="OVR Logo" src={require('../../assets/img/ovr-outline.svg')} />
+								</a>
+						</div>
+						<div className="menu-menu-1-container">
+							{isMobile ?
+							 <ul id="main-menu" className="main-nav__main-menu">
+								<li className="c-navbar__item"><a href="https://www.ovr.ai/">{t("MiniNav.visit")}</a></li>
+							</ul> 
+							: 
+							<ul id="main-menu" className="main-nav__main-menu">
+								<li className="c-navbar__item --more">
+									{t("MiniNav.read")}
+								</li>
+								<li className="c-navbar__item">
+									<a href="https://www.ovr.ai/marketplace/">{t("MiniNav.marketplace")}</a>
+												<ul className="sub-menu">
+														<li className="c-navbar__item"><a href="https://www.ovr.ai/cashback/">{t("MiniNav.cashback")}</a></li>
+														<li className="c-navbar__item"><a href="https://www.ovr.ai/staking/">{t("MiniNav.stacking")}</a></li>
+												</ul>
+										</li>
+									<li className="c-navbar__item"><a href="https://www.ovr.ai/augmented-reality/">{t("MiniNav.ar")}</a></li>
+									<li className="c-navbar__item"><a href="https://www.ovr.ai/virtual-layer/">{t("MiniNav.vl")}</a>
+											<ul className="sub-menu">
+													<li className="c-navbar__item"><a href="https://www.ovr.ai/marketplace-sdk/">{t("MiniNav.mSDK")}</a></li>
+													<li className="c-navbar__item"><a href="https://www.ovr.ai/treasure-hunt/">{t("MiniNav.th")}</a></li>
+													<li className="c-navbar__item"><a href="https://www.ovr.ai/live-event/">{t("MiniNav.le")}</a></li>
+													<li className="c-navbar__item"><a href="https://www.ovr.ai/live-event/how-to-use-ovrlive/">{t("MiniNav.howto.ovrlive")}</a></li>
+											</ul>
+									</li>
+							</ul>}
+						</div>    
+				</div>
+			</nav>
+
+		</div>
 		<div className="NavBar">
 			<Link to="/" className="Logo__link">
 				<div className="Icon NavBar__logo">
@@ -468,6 +513,7 @@ const NavBar = () => {
 				{rightContainer()}
 			</div>
 		</div>
+	</>
 	);
 };
 

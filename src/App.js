@@ -16,6 +16,7 @@ import Signup from './views/Signup/Signup';
 import BuyTokens from './views/BuyTokens/BuyTokens';
 import IndacoinResponse from './views/IndacoinResponse/IndacoinResponse';
 import PublicSale from './views/PublicSale/PublicSale';
+import ConfirmEmail from './views/ConfirmEmail/ConfirmEmail';
 import Stacking from './views/Stacking/Stacking';
 import StackingVestingOvrg from './views/Vesting/Vesting';
 
@@ -122,6 +123,7 @@ function App() {
 																				<Route path="/login-helper" component={LoginHelper}></Route>
 																				<Route path="/public-sale" component={PublicSale}></Route>
 																				<Route path="/stacking" component={Stacking}></Route>
+																				<Route path="/confirm-email" component={ConfirmEmail}></Route>
 																				<Route path="/stacking-vesting-ovrg" component={StackingVestingOvrg}></Route>
 
 																				{/* <Route path="/buy-tokens" component={BuyTokens}></Route>

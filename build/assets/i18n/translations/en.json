@@ -29,8 +29,6 @@
 	"Email.add" : "Save",
 	"Warning.email.not.detected.title":"Email not present",
 	"Warning.email.not.detected.desc":"In order to perform the KYC you have to set up an email address",
-	"Warning.email.auction.not.detected.desc":"In order to participate you have to set up an email address. You can do it in your Profile.",
-	"Signup.email.saved.title" : "The inserted email address has been saved",
 	"Signup.email.not.valid" : "The inserted email address is not a valid email address",
 	"Signup.try.login" : "Try to login instead",
 	"Signup.connect.with" : "Connect with",
@@ -469,13 +467,39 @@
 	"Profile.cashback.button": "Claim Cashback",
 	"Profile.cashback.description": "Click on Claim Cashback and confirm the transaction to obtain the auction cashback for December",
 	"Profile.cashback.error.title": "No Cashback to claim",
-	"Profile.cashback.error.desc": "There is no available Cashback for this user, if you didn't receive your amount check your wallet's pending transaction.",
+	"Profile.cashback.error.desc": "There is no available Cashback for your wallet, if you didn't receive your amount check your wallet's pending transaction.",
 
 	"BannerCounter.closed.auctions": "Closed auctions",
 	"BannerCounter.open.auctions": "Currently open auctions",
 	"BannerCounter.visit.ovrland": "Visit OVRLand",
-	"BannerCounter.highest.bid": "Highest bid"
+	"BannerCounter.highest.bid": "Highest bid",
 
+	"Signup.profile.saved.title" : "Your profile informations have been updated",
+	"Profile.info.firstname" : "First Name",
+	"Profile.info.lastname" : "Last Name",
+	"Profile.info.country" : "Country",
+	"Signup.email.saved.title" : "The inserted email address has been saved, check your email inbox and verify your email address.",
+	"Warning.email.not.verified.title":"Email not verified",
+	"Warning.email.auction.not.detected.desc":"In order to participate you have to set up and verify an email address. You can do it in your Profile.",
+	"Email.resend.verification": "Resend email",
+	"Email.resend.verification.tile": "Verification email resended. Check your inbox and verify your email address.",
+
+	"ConfirmEmail.success": "You succesfully confirmed your email address.",
+	"ConfirmEmail.back": "Back to Profile",
+	"ConfirmEmail.try.again": "Please try again",
+	"ConfirmEmail.title": "",
+
+	"MiniNav.visit": "Visit OVR Website",
+	"MiniNav.read": "READ ABOUT",
+	"MiniNav.marketplace": "Marketplace",
+	"MiniNav.cashback": "OVR Cashback",
+	"MiniNav.stacking": "Staking",
+	"MiniNav.ar": "Augmented Reality",
+	"MiniNav.vl": "Virtual Layer",
+	"MiniNav.mSDK": "Marketplace & SDK",
+	"MiniNav.th": "Treasure Hunt",
+	"MiniNav.le": "Live Event",
+	"MiniNav.howto.ovrlive": "How to use OVRLive"
 }
 
 

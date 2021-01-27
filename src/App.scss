@@ -88,7 +88,7 @@ body {
 }
 
 .App {
-	padding-top: 70px;
+	padding-top: 110px;
 }
 
 .o-section-title {
@@ -132,6 +132,7 @@ body {
 @import './src/views/Lands/style.scss';
 @import './src/views/Login/style.scss';
 @import './src/views/Signup/style.scss';
+@import './src/views/ConfirmEmail/style.scss';
 @import './src/views/Profile/style.scss';
 @import './src/views/Activity/style.scss';
 @import './src/views/BuyTokens/style.scss';

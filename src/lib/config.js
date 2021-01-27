@@ -212,3 +212,8 @@ export function isImToken() {
 export function isPositiveFloat(s) {
 	return !isNaN(s) && Number(s) > 0 && s != '';
 }
+
+
+export function isEmpty(str) {
+    return (!str || 0 === str.length);
+}

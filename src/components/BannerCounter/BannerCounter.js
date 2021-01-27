@@ -87,7 +87,7 @@ const BannerCounter = () => {
 							<div className="o-label">
 								{t('BannerCounter.open.auctions')}
 							</div>
-							<div className="o-value">
+							<div className="o-value --big">
 								{openAuctionCount}
 							</div>
 							{/* <div className="o-link">

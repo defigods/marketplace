@@ -1,5 +1,6 @@
 .profile {
 	min-height: 60vh;
+
 	.Help{
 		font-size: 14px;
 		color: $ovr-grey;
@@ -51,6 +52,21 @@
 
 		.p-header-title {
 			font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+		}
+	}
+	.p-profile-form{
+		.HexButton{
+			margin-top: 15px;
+		}
+	}
+	.Signup__nationality_holder{
+		min-width: 110px;
+		.MuiInput-root{
+			width: 100%;
+		}
+		label{
+			font-size: 12px;
+			margin-bottom: 2px;
 		}
 	}
 	.p-section {

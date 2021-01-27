@@ -25,9 +25,13 @@ export class UserProvider extends Component {
 				allowance: 0,
 				balance: 0,
 				email: null,
+				firstName: '',
+				lastName: '',
+				country: '',
 				balanceProjection: 0,
 				pendingOnBalance: 0,
 				kycReviewAnswer: -1,
+				isConfirmedEmail: false,
 				ibcoAcceptedTerms: false
 			}
 		};
@@ -71,6 +75,34 @@ export class UserProvider extends Component {
 		this.setState({ user: {
 			...this.state.user,
 			email: email
+		} });
+	}
+
+	setUserFirstName = (firstName) => {
+		this.setState({ user: {
+			...this.state.user,
+			firstName: firstName
+		} });
+	}
+
+	setUserLastName = (lastName) => {
+		this.setState({ user: {
+			...this.state.user,
+			lastName: lastName
+		} });
+	}
+
+	setUserCountry = (country) => {
+		this.setState({ user: {
+			...this.state.user,
+			country: country
+		} });
+	}
+
+	setIsConfirmedEmail = (isConfirmedEmail) => {
+		this.setState({ user: {
+			...this.state.user,
+			isConfirmedEmail: isConfirmedEmail
 		} });
 	}
 
@@ -257,6 +289,10 @@ export class UserProvider extends Component {
 						setUserState: this.setUserState,
 						setUserActivity: this.setUserActivity,
 						setUserEmail: this.setUserEmail,
+						setUserFirstName: this.setUserFirstName,
+						setUserLastName: this.setUserLastName,
+						setUserCountry: this.setUserCountry,
+						setIsConfirmedEmail: this.setIsConfirmedEmail,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
 						refreshBalanceAndAllowance: this.refreshBalanceAndAllowance,
