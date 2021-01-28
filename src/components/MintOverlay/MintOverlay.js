@@ -156,6 +156,11 @@ const MintOverlay = (props) => {
 			warningNotification(t('Warning.email.not.verified.title'), t('Warning.email.auction.not.detected.desc'));
 			return false;
 		}
+		if (!props.userProvider.state.user.country) {
+			setActiveStep(0);
+			warningNotification(t('Warning.profile.not.completed.title'), t('Warning.profile.country.missing.desc'));
+			return false;
+		}
 		return true;
 	};
 

@@ -7,7 +7,7 @@
 	"Profile.started" : "开始",
 	"Profile.completed" : "完成",
 	"Profile.failed" : "失败",
-	"Profile.ovr.sale.start": "OVR token公售将开始于",
+	"Profile.ovr.profile.desc": "为什么我们需要这个信息： 如果有其他用户有兴趣购买或者租赁你拥有的OVR土地，OVR将通过邮件通知你。",
 	"Profile.secs" : "秒",
 	"Profile.mins" : "分",
 	"Profile.hours" : "小时",
@@ -420,5 +420,7 @@
 	"MiniNav.mSDK": "交易市场 & SDK",
 	"MiniNav.th": "寻宝活动",
 	"MiniNav.le": "OVRLive现场活动",
-	"MiniNav.howto.ovrlive": "如何使用OVRLive"
+	"MiniNav.howto.ovrlive": "如何使用OVRLive",
+	"Warning.profile.country.missing.desc": "请将您的国籍添加到您的用户信息",
+	"Profille.email.verified": "已验证"
 }

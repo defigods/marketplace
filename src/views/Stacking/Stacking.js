@@ -55,7 +55,7 @@ function Stacking() {
 
 	// On Web3Loaded
 	React.useEffect(() => {
-		saveToken('lastVisitedPage', '/stacking')
+		// saveToken('lastVisitedPage', '/stacking')
 
 		if(web3Context.state){
 			if(web3Context.state.ibcoSetupComplete){

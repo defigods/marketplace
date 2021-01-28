@@ -59,8 +59,11 @@
 			margin-top: 15px;
 		}
 	}
+	.--email-badge{
+		margin-top: 13px;
+	}
 	.Signup__nationality_holder{
-		min-width: 110px;
+			width: 80%;
 		.MuiInput-root{
 			width: 100%;
 		}
@@ -88,6 +91,7 @@
 		.p-tiny-message{
 			margin-top: 15px;
 			font-size: 14px;
+			max-width: 450px;
 		}
 		.p-content-title {
 			margin: 0 0 0.5rem 0;

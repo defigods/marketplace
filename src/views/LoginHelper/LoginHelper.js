@@ -29,13 +29,13 @@ const LoginHelper = () => {
     ReactGA.pageview(window.location.pathname);
     
     // Setup Web3
-    web3context.actions.setupWeb3((res) =>{
-      if( res == false ){
-        history.push('/login-helper');
-      } else {
-        history.push('/profile');
-      }
-    }, false)
+    // web3context.actions.setupWeb3((res) =>{
+    //   if( res == false ){
+    //     history.push('/login-helper');
+    //   } else {
+    //     history.push('/profile');
+    //   }
+    // }, false)
 
 		// If user is logged in
 		if (userContext.state.isLoggedIn) {

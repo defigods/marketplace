@@ -102,12 +102,10 @@ export function setDbUserEmail(email = null) {
 	);
 }
 
-export function updateDbUserProfile(firstName = null, lastName = null, country = null) {
+export function updateDbUserProfile(country = null) {
 	return request(
 		{ url: '/user/update/profile', method: 'POST' },
 		{
-			first_name: firstName,
-			last_name: lastName,
 			country: country
 		},
 		null,

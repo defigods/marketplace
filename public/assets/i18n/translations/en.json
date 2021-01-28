@@ -24,7 +24,7 @@
 	"Profile.start.verification" : "START VERIFICATION",
 	"Profile.check.verification" : "CHECK VERIFICATION",
 
-	"Profile.status.label" : "KYC Status",
+	"Profile.status.label" : "KYC Verification",
 	"Profile.emailPresence.label" : "Email address",
 	"Email.add" : "Save",
 	"Warning.email.not.detected.title":"Email not present",
@@ -422,7 +422,7 @@
 	"IBCO.available.on.etherscan": "Available on Etherscan",
 	"PublicSale.login.required.title": "You have to log in to visit our IBCO",
 	"PublicSale.login.required.desc": "Check our Public Sale. Connect your wallet.",
-	"Profile.ovr.sale.started": "OVR Token Sale started. Click on Buy OVR to participite the Public Sale",
+	"Profile.ovr.profile.desc": "Why we need this: OVR will use your e-mail as primary means to contact you in case other users are interested in buying or renting OVRLands you own.",
 	"Success.request.processing": "Your order request is being processed",
 	"Lands.select.multiple.lands": "Multiple land selection",
 	"IBCO.max.slippage.reached": "Maximum slippage reached",
@@ -499,7 +499,11 @@
 	"MiniNav.mSDK": "Marketplace & SDK",
 	"MiniNav.th": "Treasure Hunt",
 	"MiniNav.le": "Live Event",
-	"MiniNav.howto.ovrlive": "How to use OVRLive"
+	"MiniNav.howto.ovrlive": "How to use OVRLive",
+	"Warning.profile.not.completed.title": "Complete your profile",
+	"Warning.profile.not.completed.desc": "Complete your profile information with your Country to proceed",
+	"Warning.profile.country.missing.desc": "Add your Country in your Profile informations to proceed",
+	"Profille.email.verified": "Verified"
 }
 
 

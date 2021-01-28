@@ -72,10 +72,11 @@ const ProfileLayout = () => {
 	const [userFullNameValid, setUserFullNameValid] = useState(false);
 	const [userEmailInputError, setUserEmailInputError] = useState(false);
 	const [userEmail, setUserEmail] = useState('');
-	const [userFirstName, setUserFirstName] = useState('');
-	const [userLastName, setUserLastName] = useState('');
+	// const [userFirstName, setUserFirstName] = useState('');
+	// const [userLastName, setUserLastName] = useState('');
 	const [userCountry, setUserCountry] = useState('');
 	const [isConfirmedEmail, setIsConfirmedEmail] = useState('');
+	const [isProfileCompleted, setIsProfileCompleted] = useState('');
 
 	const [urlKyc, setUrlKyc] = useState('#');
 	const [isSignupLoading, setIsSignupLoading] = useState(false);
@@ -100,11 +101,13 @@ const ProfileLayout = () => {
 
 	React.useEffect(() => {
 		setAddress(user.publicAddress);
-		setUserFirstName(user.firstName);
-		setUserLastName(user.lastName);
 		setUserCountry(user.country);
 		setIsConfirmedEmail(user.isConfirmedEmail);
-	}, [user.publicAddress, user.firstName, user.lastName, user.country, user.isConfirmedEmail]);
+		setUserEmail(user.email);
+		setIsProfileCompleted(user.isProfileCompleted)
+		console.log('user.isConfirmedEmail in profile',user.isConfirmedEmail)
+		console.log('reacteffect in profile', user.email)
+	}, [user.publicAddress, user.firstName, user.email, user.lastName, user.country, user.isConfirmedEmail, user.isProfileCompleted]);
 
 	// Sumsub and ImWallet
 	React.useEffect(() => {
@@ -206,27 +209,27 @@ const ProfileLayout = () => {
 		setUserEmail(e.target.value);
 	};
 
-	const updateUserFirstName = (e) => {
-		if (isEmpty(userFirstName) || isEmpty(userLastName) || isEmpty(userCountry) || (userFirstName === user.firstName && userLastName === user.lastName)) {
-			setUserFullNameValid(false);
-		} else {
-			setUserFullNameValid(true);
-		}
-		setUserFirstName(e.target.value);
-	};
+	// const updateUserFirstName = (e) => {
+	// 	if (isEmpty(userFirstName) || isEmpty(userLastName) || isEmpty(userCountry) || (userFirstName === user.firstName && userLastName === user.lastName)) {
+	// 		setUserFullNameValid(false);
+	// 	} else {
+	// 		setUserFullNameValid(true);
+	// 	}
+	// 	setUserFirstName(e.target.value);
+	// };
 
-	const updateUserLastName = (e) => {
-		if (isEmpty(userFirstName) || isEmpty(userLastName) || isEmpty(userCountry) || (userFirstName === user.firstName && userLastName === user.lastName)) {
-			setUserFullNameValid(false);
-		} else {
-			setUserFullNameValid(true);
-		}
-		setUserLastName(e.target.value);
-	};
+	// const updateUserLastName = (e) => {
+	// 	if (isEmpty(userFirstName) || isEmpty(userLastName) || isEmpty(userCountry) || (userFirstName === user.firstName && userLastName === user.lastName)) {
+	// 		setUserFullNameValid(false);
+	// 	} else {
+	// 		setUserFullNameValid(true);
+	// 	}
+	// 	setUserLastName(e.target.value);
+	// };
 
 	const updateUserCountry = (e) => {
 		setUserCountry(e.target.value);
-		if (isEmpty(userFirstName) || isEmpty(userLastName) || isEmpty(e.target.value) ) {
+		if (isEmpty(e.target.value)) {
 			setUserFullNameValid(false);
 		} else {
 			setUserFullNameValid(true);
@@ -236,13 +239,12 @@ const ProfileLayout = () => {
 
 	const handleAddProfileInfos = (e) => {
 		setIsNamesLoading(true);
-		updateDbUserProfile(userFirstName, userLastName, userCountry)
+		updateDbUserProfile(userCountry)
 			.then((response) => {
 				if (response.data.result === true) {
 					setIsNamesLoading(false);
-					userContext.actions.setUserFirstName(userFirstName);
-					userContext.actions.setUserLastName(userLastName);
 					userContext.actions.setUserCountry(userCountry);
+					// userContext.actions.setIsProfileCompleted(true);
 					successNotification(t('Generic.congrats.label'), t('Signup.profile.saved.title'));
 
 				}
@@ -360,13 +362,14 @@ const ProfileLayout = () => {
 							</div>
 							<div key="KYC" className="p-section --m-t">
 								<h3 className="p-section-title">{t('Profile.identify.verification')}</h3>
+								<h4 className="p-content-title">Email Verification</h4>
 								<div className="p-tiny-message">
 									<div className="p-tiny-message">
-										{t('Profile.ovr.sale.started')}
+										{user.kycReviewAnswer == 1 ? '' : <>{t('Profile.whitelisted.no.ok')}<br></br><br></br></>}
+										{t('Profile.ovr.profile.desc')}
 										<br></br>
 									</div>
 
-									{user.kycReviewAnswer == 1 ? '' : t('Profile.whitelisted.no.ok')}
 									<br></br>
 									<br></br>
 								</div>
@@ -381,13 +384,13 @@ const ProfileLayout = () => {
 												value={user.email}
 												disabled
 											/>
-											{!isConfirmedEmail && <HexButton
+											{!isConfirmedEmail ? <HexButton
 													url="#"
 													className='--blue --small'
 													text={t('Email.resend.verification')}
 													onClick={requestConfirmEmail}
 												></HexButton>
-											}
+											: <div className="c-status-badge  --open --email-badge">{t('Profille.email.verified')}</div>}
 										</div>
 									) : (
 										<div className="p-balance-value p-profile-form">
@@ -421,7 +424,7 @@ const ProfileLayout = () => {
 								<br></br>
 								<div className="p-section-content p-profile-form">
 								<div className="p-balance-value">
-									<TextField
+									{/* <TextField
 										id="quantity"
 										label={t("Profile.info.firstname")}
 										type="text"
@@ -440,7 +443,7 @@ const ProfileLayout = () => {
 										onFocus={updateUserLastName}
 										onChange={updateUserLastName}
 										onKeyUp={updateUserLastName}
-									/>
+									/> */}
 									<div className="Signup__nationality_holder"> 
 										<InputLabel id="user-country-label">{t("Profile.info.country")}</InputLabel>
 										<Select

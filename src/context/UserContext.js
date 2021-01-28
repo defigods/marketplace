@@ -25,13 +25,14 @@ export class UserProvider extends Component {
 				allowance: 0,
 				balance: 0,
 				email: null,
-				firstName: '',
-				lastName: '',
-				country: '',
+				firstName: null,
+				lastName: null,
+				country: null,
 				balanceProjection: 0,
 				pendingOnBalance: 0,
 				kycReviewAnswer: -1,
 				isConfirmedEmail: false,
+				isProfileCompleted: false,
 				ibcoAcceptedTerms: false
 			}
 		};
@@ -103,6 +104,13 @@ export class UserProvider extends Component {
 		this.setState({ user: {
 			...this.state.user,
 			isConfirmedEmail: isConfirmedEmail
+		} });
+	}
+
+	setIsProfileCompleted = (isProfileCompleted) => {
+		this.setState({ user: {
+			...this.state.user,
+			isProfileCompleted: isProfileCompleted
 		} });
 	}
 
@@ -293,6 +301,7 @@ export class UserProvider extends Component {
 						setUserLastName: this.setUserLastName,
 						setUserCountry: this.setUserCountry,
 						setIsConfirmedEmail: this.setIsConfirmedEmail,
+						setIsProfileCompleted: this.setIsProfileCompleted,
 						toggleShowNotificationCenter: this.toggleShowNotificationCenter,
 						closeNotificationCenter: this.closeNotificationCenter,
 						refreshBalanceAndAllowance: this.refreshBalanceAndAllowance,
