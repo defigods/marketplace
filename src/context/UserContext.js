@@ -94,17 +94,33 @@ export class UserProvider extends Component {
 	}
 
 	setUserCountry = (country) => {
-		this.setState({ user: {
-			...this.state.user,
-			country: country
-		} });
+		// this.setState({ user: {
+		// 	...this.state.user,
+		// 	country: country
+		// } });
+		userProfile()
+		.then((response) => {
+			if (response.data.result === true) {
+				this.setState({ user: response.data.user });
+			}
+			})
 	}
 
-	setIsConfirmedEmail = (isConfirmedEmail) => {
-		this.setState({ user: {
-			...this.state.user,
-			isConfirmedEmail: isConfirmedEmail
-		} });
+	setIsConfirmedEmail = (boole) => {
+		// console.log('setIsConfirmedEmail in UserContext: ', boole)
+		// this.setState({ user: {
+		// 	...this.state.user,
+		// 	isConfirmedEmail: boole
+		// } });
+		// console.log('setIsConfirmedEmail in UserContext - State: ', this.state.user.isConfirmedEmail)
+		// console.log('USER in UserContext - State: ', this.state.user)
+		// Check
+		userProfile()
+		.then((response) => {
+			if (response.data.result === true) {
+				this.setState({ user: response.data.user });
+			}
+			})
 	}
 
 	setIsProfileCompleted = (isProfileCompleted) => {

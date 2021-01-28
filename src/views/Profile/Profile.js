@@ -59,7 +59,7 @@ const ProfileLayout = () => {
 	const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY');
 	const userContext = useContext(UserContext);
 	const web3Context = useContext(Web3Context);
-	const user = userContext.state.user;
+	let user = userContext.state.user;
 	const [balance, setBalance] = React.useState(user.balance);
 	const [allowance, setAllowance] = React.useState(user.allowance);
 	const [address, setAddress] = React.useState(user.publicAddress);
@@ -75,7 +75,7 @@ const ProfileLayout = () => {
 	// const [userFirstName, setUserFirstName] = useState('');
 	// const [userLastName, setUserLastName] = useState('');
 	const [userCountry, setUserCountry] = useState('');
-	const [isConfirmedEmail, setIsConfirmedEmail] = useState('');
+	const [isConfirmedEmail, setIsConfirmedEmail] = useState(false);
 	const [isProfileCompleted, setIsProfileCompleted] = useState('');
 
 	const [urlKyc, setUrlKyc] = useState('#');
@@ -107,7 +107,13 @@ const ProfileLayout = () => {
 		setIsProfileCompleted(user.isProfileCompleted)
 		console.log('user.isConfirmedEmail in profile',user.isConfirmedEmail)
 		console.log('reacteffect in profile', user.email)
+		console.log('reacteffect in profile - isConfirmedEmail', isConfirmedEmail)
 	}, [user.publicAddress, user.firstName, user.email, user.lastName, user.country, user.isConfirmedEmail, user.isProfileCompleted]);
+
+	React.useEffect(() => {
+		setIsConfirmedEmail(user.isConfirmedEmail);
+		console.log('user.isConfirmedEmail', user)
+	}, [user.isConfirmedEmail])
 
 	// Sumsub and ImWallet
 	React.useEffect(() => {
