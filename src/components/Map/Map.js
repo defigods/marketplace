@@ -159,7 +159,8 @@ const Map = (props) => {
 			// Fetch and render clustered Owned Lands
 			renderOwnedLandsCluster();
 			// Fetch and render clustered Open Auctions
-			renderOpenAuctionLandsCluster();
+			// Temporary disabled
+			//renderOpenAuctionLandsCluster();
 		}
 	}, [isMapReady]);
 	
@@ -223,9 +224,7 @@ const Map = (props) => {
 				let lands = response.data.lands;
 				renderHighZoomMintedLands(lands.minted);
 				//renderClosingAuctions(lands.auctionClosing);
-
-				// Temporary disabled:
-				// renderHighZoomOngoingAuctions(lands.auctionStarted.concat(lands.auctionClosing));
+				renderHighZoomOngoingAuctions(lands.auctionStarted.concat(lands.auctionClosing));
 			}
 		});
 	}
