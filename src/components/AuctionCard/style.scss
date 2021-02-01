@@ -53,6 +53,14 @@
   width: 50px;
   height: 50px;
 }
+.Map{
+	.c-ping-layer{
+		&:before, &:after {
+			animation: none;
+			display: none!important;
+		}
+	}
+}
 
 .c-ping-layer{
     border-radius: 50%;

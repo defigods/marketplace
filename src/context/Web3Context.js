@@ -38,7 +38,6 @@ const initialVirtualBalance = BigNumber.from(371681).mul(BigNumber.from(10 ** 9)
 const mantissa = new bn(1e18);
 
 
-console.log('VALUE',ethers.utils.formatEther('0x0a3441f432e61a0000').toString())
 
 export const Web3Context = createContext();
 
@@ -283,9 +282,10 @@ export class Web3Provider extends Component {
 
 	startHistoricLoop = async () => {
 		// Loop trough blocks
-		let fromBlock = config.apis.firstOVRBlock;
-		let toBlock = config.apis.firstOVRBlock + 9999;
+		let fromBlock = this.state.ibcoBlock.toNumber() - 26584;
+		let toBlock = this.state.ibcoBlock.toNumber() - 26584 + 9999;
 		let nowBlock = this.state.ibcoBlock.toNumber();
+
 		while (toBlock <= nowBlock) {
 			await this.historicData(fromBlock, toBlock);
 			fromBlock = toBlock + 1;
