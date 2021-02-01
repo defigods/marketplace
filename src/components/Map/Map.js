@@ -223,7 +223,9 @@ const Map = (props) => {
 				let lands = response.data.lands;
 				renderHighZoomMintedLands(lands.minted);
 				//renderClosingAuctions(lands.auctionClosing);
-				renderHighZoomOngoingAuctions(lands.auctionStarted.concat(lands.auctionClosing));
+
+				// Temporary disabled:
+				// renderHighZoomOngoingAuctions(lands.auctionStarted.concat(lands.auctionClosing));
 			}
 		});
 	}
