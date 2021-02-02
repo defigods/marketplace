@@ -225,7 +225,6 @@ export class Web3Provider extends Component {
 
 		// Total supply of OVR Token
 		let TotalOVRSupply = await this.state.ibcoRewardViewer.totalSupply();
-		console.log('TotalOVRSupply',TotalOVRSupply)
 		let CurveOVRSupply = TotalOVRSupply.sub(premine.mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))));
 
 		let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
@@ -293,6 +292,7 @@ export class Web3Provider extends Component {
 		}
 		await this.historicData(fromBlock + 1, nowBlock);
 
+		console.log('this.state.ibcoClaims',this.state.ibcoClaims)
 		// Setup final state
 		this.setState({
 			ibcoLoadedHistory: true,

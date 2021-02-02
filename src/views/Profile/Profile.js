@@ -94,8 +94,9 @@ const ProfileLayout = () => {
 	}, [user.balance]);
 
 	React.useEffect(() => {
-		if (user != undefined && user.allowance != undefined) {
-			setAllowance(user.allowance.toFixed(0));
+		if (user != undefined && user.allowance != undefined && user.allowance != false) {
+			console.log('user.allowance',user.allowance)
+			setAllowance(user.allowance.toFixed(2));
 		}
 	}, [user.allowance]);
 
