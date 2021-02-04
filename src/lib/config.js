@@ -15,6 +15,7 @@ let apis;
 if (environment === 'PRODUCTION') {
 	apis = {
 		hostname: 'https://mws.ovr.ai/api/v1',
+		merkleHostname: 'http://staging-merkle.ovr.ai/v1',
 		socket: 'wss://mws.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper.ovr.ai/indacoin',
 		etherscan: 'https://etherscan.io/',
@@ -51,6 +52,7 @@ if (environment === 'PRODUCTION') {
 } else if (environment === 'STAGING') {
 	apis = {
 		hostname: 'https://mws-staging.ovr.ai/api/v1',
+		merkleHostname: 'http://staging-merkle.ovr.ai/v1',
 		socket: 'wss://mws-staging.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
 		etherscan: 'https://rinkeby.etherscan.io/',
@@ -86,6 +88,7 @@ if (environment === 'PRODUCTION') {
 } else {
 	apis = {
 		hostname: 'http://localhost:3000/api/v1',
+		merkleHostname: 'http://staging-merkle.ovr.ai/v1',
 		socket: 'ws://localhost:3000/cable',
 		indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
 		etherscan: 'https://rinkeby.etherscan.io/',

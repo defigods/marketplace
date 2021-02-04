@@ -15,7 +15,7 @@ import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { warningNotification } from '../../lib/notifications';
 
-import { getLand, sendAuctionCheckClose } from '../../lib/api';
+import { getLand, sendAuctionCheckClose, checkLandOnMerkle } from '../../lib/api';
 import { networkError } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
@@ -24,7 +24,7 @@ import { Textfit } from 'react-textfit';
 import ActionCable from 'actioncable';
 import { Trans, useTranslation } from 'react-i18next'
 
-
+import _ from 'lodash';
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
@@ -57,6 +57,7 @@ const Land = (props) => {
 	const [isRedeemingLand, setIsRedeemingLand] = useState(false);
 	const [isNotValidH3, setIsNotValidH3] = useState(false);
 	const [isUnavailable, setIsUnavailable] = useState(false);
+	const [isMintable, setIsMintable] = useState(false);
 	
 
 	// First load
@@ -139,15 +140,17 @@ const Land = (props) => {
 						if(data.auction.status === 1 && Date.parse(data.auction.closeAt) < Date.now()){
 							setMarketStatus(10)
 						} 
-					}
+					}	
 
-					// If you are owner and land has been assigned give a check to land market status
-					if(marketStatus === 11 && userPerspective == 1){
-						// commented because it's already recursive
-						// updateLandMarketStatusIfHasBeenMinted(hexId).then((response) => {});
+					// If you are owner and land has been assigned on merkle, give the possibility to mint land
+					if(data.marketStatus === 11 && data.userPerspective == 1){
+						checkLandOnMerkle(integerId).then((response) =>{
+							if (!(_.isEmpty(response.data))){
+								setIsMintable(true);
+							}
+						})
 					}
 					
-
 					// Update state for MapContext
 					let state = {
 						key: data.hexId,
@@ -407,10 +410,16 @@ const Land = (props) => {
 				break;
 			case 11:
 				// If land has been assigned, check if you are owner
+				
 				if( userPerspective == 1){
-					button = (
-						<HexButton url="/" text={t('Land.redeem.land')} className="--purple" onClick={(e) => redeemLand(e)}></HexButton>
-					);
+					if(isMintable === true){
+						button = (
+							<HexButton url="/" text={t('Land.redeem.land')} className="--purple" onClick={(e) => redeemLand(e)}></HexButton>
+						);
+					} else {
+						button = <div className="l-light-minted-copy">Waiting writing on Merkle tree</div>
+					}
+					
 				}
 				
 				break;

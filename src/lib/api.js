@@ -337,6 +337,17 @@ export function indexInterestingLands(hex_id) {
 	);
 }
 
+export function checkLandOnMerkle(int_id) {
+
+	return requestMerkleAPI(
+		{ url: '/merkle/token', method: 'GET' },
+		{
+			id: int_id,
+		},
+		null,
+	);
+}
+
 
 // SELL
 export function sellLand(landUuid = null, worth = null) {
@@ -548,6 +559,37 @@ export function request(endpoint, params, req_config = { headers: { 'Content-Typ
 			})
 			.catch((err) => {
 				reject(err);
+				console.log('error',err);
+			});
+	});
+}
+
+
+export function requestMerkleAPI(endpoint, params, req_config = { headers: { 'Content-Type': 'application/json' } }) {
+	const token = getToken('userToken');
+	if (token) {
+		axios.defaults.headers.common['Authorization'] = token; // eslint-disable-line
+	}
+	if(req_config && req_config.headers){
+		req_config.headers['Content-Language'] = localStorage.getItem('i18nextLng');
+	}else{
+		req_config = { headers: { 'Content-Language': localStorage.getItem('i18nextLng') } }
+	}
+
+	return new Promise((resolve, reject) => {
+		let req;
+		if (endpoint.method === 'POST') {
+			req = axios.post(`${config.apis.merkleHostname}${endpoint.url}`, params, req_config);
+		} else {
+			req = axios.get(`${config.apis.merkleHostname}${endpoint.url}`, { params });
+		}
+		req
+			.then((response) => {
+				resolve(camelCaseKeys(response));
+			})
+			.catch((err) => {
+				reject(err);
+				console.log('URL', `${config.apis.merkleHostname}${endpoint.url}`)
 				console.log('error',err);
 			});
 	});
