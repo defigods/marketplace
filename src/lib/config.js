@@ -8,7 +8,7 @@ import rinkebyMerkle from '../contract/merkle/rinkeby_merkleinfo.json';
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'PRODUCTION';
+const environment = 'STAGING';
 
 let apis;
 
