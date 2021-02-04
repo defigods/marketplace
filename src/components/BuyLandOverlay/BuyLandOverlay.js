@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { withMapContext } from '../../context/MapContext';
-import { withUserContext } from '../../context/UserContext';
-import { withWeb3Context } from '../../context/Web3Context';
+import { withMapContext } from 'context/MapContext';
+import { withUserContext } from 'context/UserContext';
+import { withWeb3Context } from 'context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { warningNotification, dangerNotification } from '../../lib/notifications';
+import { warningNotification, dangerNotification } from 'lib/notifications';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -13,13 +13,12 @@ import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 
-// import { sellLand } from '../../lib/api';
+// import { sellLand } from 'lib/api';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next'
-
+import { useTranslation } from 'react-i18next';
 
 const BuyLandOverlay = (props) => {
-	const { t, i18n } = useTranslation()
+	const { t, i18n } = useTranslation();
 	const { approveOvrTokens, buy, buyLand } = props.web3Provider.actions;
 	const { ovr, ico, setupComplete } = props.web3Provider.state;
 
@@ -61,11 +60,6 @@ const BuyLandOverlay = (props) => {
 		setOpen(true);
 	};
 
-	// Init helpers web3
-	useEffect(() => {
-		if (setupComplete) setNextBidSelectedLand();
-	}, [setupComplete, ico, hexId, marketStatus, props.mapProvider.state.activeBuyOverlay]);
-
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
 			return false;
@@ -75,6 +69,11 @@ const BuyLandOverlay = (props) => {
 		const price = String(window.web3.fromWei(land[7]));
 		setBuyAt(price);
 	};
+
+	// Init helpers web3
+	useEffect(() => {
+		if (setupComplete) setNextBidSelectedLand();
+	}, [setupComplete, ico, hexId, marketStatus, props.mapProvider.state.activeBuyOverlay]);
 
 	function setDeactiveOverlay(e) {
 		e.preventDefault();
@@ -105,8 +104,7 @@ const BuyLandOverlay = (props) => {
 			try {
 				let currentBalance = await ovr.balanceOfAsync(window.web3.eth.defaultAccount);
 				if (!currentBalance.greaterThan(buyAt)) {
-					return dangerNotification(t('Danger.balance.insuff.title'),t('Danger.balance.insuff.desc'),
-					);
+					return dangerNotification(t('Danger.balance.insuff.title'), t('Danger.balance.insuff.desc'));
 				}
 				setMetamaskMessage(t('MetamaskMessage.set.approve.ovr'));
 				await approveOvrTokens(true, ovr);
@@ -240,7 +238,12 @@ const BuyLandOverlay = (props) => {
 									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
-								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.cancel.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
@@ -274,7 +277,8 @@ const BuyLandOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>{t('BuyLandOverlay.requested.buy')}
+								<br></br>
+								{t('BuyLandOverlay.requested.buy')}
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
@@ -289,7 +293,12 @@ const BuyLandOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.close.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { withMapContext } from '../../context/MapContext';
-import { withUserContext } from '../../context/UserContext';
-import { withWeb3Context } from '../../context/Web3Context';
+import { withMapContext } from 'context/MapContext';
+import { withUserContext } from 'context/UserContext';
+import { withWeb3Context } from 'context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import config from '../../lib/config';
-import { warningNotification, dangerNotification } from '../../lib/notifications';
+import config from 'lib/config';
+import { warningNotification, dangerNotification } from 'lib/notifications';
 import PropTypes from 'prop-types';
 
 import MomentUtils from '@date-io/moment';
@@ -18,14 +18,14 @@ import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
 
 const BuyOfferOverlay = (props) => {
-	const { t, i18n } = useTranslation()
+	const { t, i18n } = useTranslation();
 	const { approveOvrTokens, participateBuyOffer } = props.web3Provider.actions;
 	const { lastTransaction, ovr, dai, tether, usdc, ico, setupComplete } = props.web3Provider.state;
 	const { hexId } = props.land;
@@ -69,16 +69,16 @@ const BuyOfferOverlay = (props) => {
 		}
 	}, [props.mapProvider.state.activeBuyOfferOverlay]);
 
-	// Init helpers web3
-	useEffect(() => {
-		if (setupComplete) setNextBidSelectedLand();
-	}, [setupComplete, ico, ovr, hexId, marketStatus]);
-
 	const setNextBidSelectedLand = async () => {
 		if (!setupComplete || !ico || !ovr) {
 			return false;
 		}
 	};
+
+	// Init helpers web3
+	useEffect(() => {
+		if (setupComplete) setNextBidSelectedLand();
+	}, [setupComplete, ico, ovr, hexId, marketStatus]);
 
 	// Toggle bidding menu of selection currencies
 	const handleClose = (event) => {
@@ -274,7 +274,12 @@ const BuyOfferOverlay = (props) => {
 									ariaHaspopup="true"
 									onClick={handleClick}
 								></HexButton>
-								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.cancel.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
@@ -339,7 +344,8 @@ const BuyOfferOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>{t('BuyOfferOverlay.offer.sent')}
+								<br></br>
+								{t('BuyOfferOverlay.offer.sent')}
 								<div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('BuyOfferOverlay.view.status')}

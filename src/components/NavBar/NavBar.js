@@ -3,10 +3,10 @@ import { Link, NavLink } from 'react-router-dom';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import NotificationCenter from '../NotificationCenter/NotificationCenter';
 
-import { UserContext, withUserContext } from '../../context/UserContext';
+import { UserContext, withUserContext } from 'context/UserContext';
 import Blockies from 'react-blockies';
-import { Web3Context, withWeb3Context } from '../../context/Web3Context';
-import { getToken, removeToken, saveToken } from '../../lib/auth';
+import { Web3Context, withWeb3Context } from 'context/Web3Context';
+import { getToken, removeToken, saveToken } from 'lib/auth';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -17,9 +17,11 @@ import Popper from '@material-ui/core/Popper';
 import MenuList from '@material-ui/core/MenuList';
 import { useHistory } from 'react-router-dom';
 import Translate from '@material-ui/icons/Translate';
-import { removeUser } from '../../lib/auth';
+import { removeUser } from 'lib/auth';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import OvrOutline from 'assets/img/ovr-outline.svg';
+import OvrLogo from 'assets/img/ovr.png';
 
 import { useTranslation } from 'react-i18next';
 let isMobile = window.innerWidth < 860;
@@ -403,7 +405,7 @@ const NavBar = () => {
 								<div
 									id="Profile__img"
 									className="Profile__img"
-									style={{ backgroundImage: 'url(../../assets/img/auction-map.png)' }}
+									style={{ backgroundImage: 'url(assets/img/auction-map.png)' }}
 								>
 									<Blockies
 										seed={(userState.user && userState.user.publicAddress) || 'loading'}
@@ -459,61 +461,77 @@ const NavBar = () => {
 
 	return (
 		<>
-		<div 
-		className={hovered ? 'WebsiteNavBar js-hover-active' : 'WebsiteNavBar'}
-		onMouseEnter={toggleHover}
-		onMouseLeave={toggleHover}>
-			<nav className="main-nav">
-				<div className="container">
+			<div
+				className={hovered ? 'WebsiteNavBar js-hover-active' : 'WebsiteNavBar'}
+				onMouseEnter={toggleHover}
+				onMouseLeave={toggleHover}
+			>
+				<nav className="main-nav">
+					<div className="container">
 						<div className="main-nav__logo">
-								<a href="https://www.ovr.ai">
-									<img className="s-ovr-logo" alt="OVR Logo" src={require('../../assets/img/ovr-outline.svg')} />
-								</a>
+							<a href="https://www.ovr.ai">
+								<img className="s-ovr-logo" alt="OVR Logo" src={OvrOutline} />
+							</a>
 						</div>
 						<div className="menu-menu-1-container">
-							{isMobile ?
-							 <ul id="main-menu" className="main-nav__main-menu">
-								<li className="c-navbar__item"><a href="https://www.ovr.ai/">{t("MiniNav.visit")}</a></li>
-							</ul> 
-							: 
-							<ul id="main-menu" className="main-nav__main-menu">
-								<li className="c-navbar__item --more">
-									{t("MiniNav.read")}
-								</li>
-								<li className="c-navbar__item">
-									<a href="https://www.ovr.ai/marketplace/">{t("MiniNav.marketplace")}</a>
-												<ul className="sub-menu">
-														<li className="c-navbar__item"><a href="https://www.ovr.ai/cashback/">{t("MiniNav.cashback")}</a></li>
-														<li className="c-navbar__item"><a href="https://www.ovr.ai/staking/">{t("MiniNav.stacking")}</a></li>
-												</ul>
-										</li>
-									<li className="c-navbar__item"><a href="https://www.ovr.ai/augmented-reality/">{t("MiniNav.ar")}</a></li>
-									<li className="c-navbar__item"><a href="https://www.ovr.ai/virtual-layer/">{t("MiniNav.vl")}</a>
-											<ul className="sub-menu">
-													<li className="c-navbar__item"><a href="https://www.ovr.ai/marketplace-sdk/">{t("MiniNav.mSDK")}</a></li>
-													<li className="c-navbar__item"><a href="https://www.ovr.ai/treasure-hunt/">{t("MiniNav.th")}</a></li>
-													<li className="c-navbar__item"><a href="https://www.ovr.ai/live-event/">{t("MiniNav.le")}</a></li>
-													<li className="c-navbar__item"><a href="https://www.ovr.ai/live-event/how-to-use-ovrlive/">{t("MiniNav.howto.ovrlive")}</a></li>
-											</ul>
+							{isMobile ? (
+								<ul id="main-menu" className="main-nav__main-menu">
+									<li className="c-navbar__item">
+										<a href="https://www.ovr.ai/">{t('MiniNav.visit')}</a>
 									</li>
-							</ul>}
-						</div>    
-				</div>
-			</nav>
-
-		</div>
-		<div className="NavBar">
-			<Link to="/" className="Logo__link">
-				<div className="Icon NavBar__logo">
-					<img src={require('../../assets/img/ovr.png')} />
-				</div>
-			</Link>
-			<div className="Navbar__link_container">
-				{leftContainer()}
-				{rightContainer()}
+								</ul>
+							) : (
+								<ul id="main-menu" className="main-nav__main-menu">
+									<li className="c-navbar__item --more">{t('MiniNav.read')}</li>
+									<li className="c-navbar__item">
+										<a href="https://www.ovr.ai/marketplace/">{t('MiniNav.marketplace')}</a>
+										<ul className="sub-menu">
+											<li className="c-navbar__item">
+												<a href="https://www.ovr.ai/cashback/">{t('MiniNav.cashback')}</a>
+											</li>
+											<li className="c-navbar__item">
+												<a href="https://www.ovr.ai/staking/">{t('MiniNav.stacking')}</a>
+											</li>
+										</ul>
+									</li>
+									<li className="c-navbar__item">
+										<a href="https://www.ovr.ai/augmented-reality/">{t('MiniNav.ar')}</a>
+									</li>
+									<li className="c-navbar__item">
+										<a href="https://www.ovr.ai/virtual-layer/">{t('MiniNav.vl')}</a>
+										<ul className="sub-menu">
+											<li className="c-navbar__item">
+												<a href="https://www.ovr.ai/marketplace-sdk/">{t('MiniNav.mSDK')}</a>
+											</li>
+											<li className="c-navbar__item">
+												<a href="https://www.ovr.ai/treasure-hunt/">{t('MiniNav.th')}</a>
+											</li>
+											<li className="c-navbar__item">
+												<a href="https://www.ovr.ai/live-event/">{t('MiniNav.le')}</a>
+											</li>
+											<li className="c-navbar__item">
+												<a href="https://www.ovr.ai/live-event/how-to-use-ovrlive/">{t('MiniNav.howto.ovrlive')}</a>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							)}
+						</div>
+					</div>
+				</nav>
 			</div>
-		</div>
-	</>
+			<div className="NavBar">
+				<Link to="/" className="Logo__link">
+					<div className="Icon NavBar__logo">
+						<img src={OvrLogo} />
+					</div>
+				</Link>
+				<div className="Navbar__link_container">
+					{leftContainer()}
+					{rightContainer()}
+				</div>
+			</div>
+		</>
 	);
 };
 

@@ -1,15 +1,15 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from 'react';
-import { withUserContext } from '../../context/UserContext';
+import { withUserContext } from 'context/UserContext';
 import * as moment from 'moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
-import HexButton from '../../components/HexButton/HexButton';
+import HexButton from 'components/HexButton/HexButton';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import config from '../../lib/config';
-import { Trans, useTranslation } from 'react-i18next'
-
+import config from 'lib/config';
+import { Trans, useTranslation } from 'react-i18next';
 
 /**
  * Indacoin response component
@@ -22,14 +22,6 @@ const IndacoinResponse = () => {
 	const [transactionId] = useState(window.location.search.split('transaction_id=')[1]);
 
 	let history = useHistory();
-
-	useEffect(() => {
-		getIndacoinPayment();
-	}, []);
-
-	function handleMarketplace() {
-		history.push('map/discover');
-	}
 
 	const getIndacoinPayment = async () => {
 		try {
@@ -54,6 +46,14 @@ const IndacoinResponse = () => {
 			setErrorTraceback(e);
 		}
 	};
+
+	useEffect(() => {
+		getIndacoinPayment();
+	}, []);
+
+	function handleMarketplace() {
+		history.push('map/discover');
+	}
 
 	function respContent() {
 		if (respStatus == 0) {
@@ -88,7 +88,12 @@ const IndacoinResponse = () => {
 							{/* Account info are stored privately off the blockchain. <Link to="#">Read more</Link>. */}
 						</div>
 						<div className="Signup__section">
-							<HexButton url="#" text={t('IndacoinResponse.to.mrktplace')} className="--purple" onClick={handleMarketplace}></HexButton>
+							<HexButton
+								url="#"
+								text={t('IndacoinResponse.to.mrktplace')}
+								className="--purple"
+								onClick={handleMarketplace}
+							></HexButton>
 						</div>
 					</div>
 				</div>
@@ -107,9 +112,13 @@ const IndacoinResponse = () => {
 						</div>
 						<br></br>
 						<br></br>
-						<div className="Signup__section">{t('IndacoinResponse.error.label')}: {errorTraceback}</div>
+						<div className="Signup__section">
+							{t('IndacoinResponse.error.label')}: {errorTraceback}
+						</div>
 						{transactionId != undefined && (
-							<div className="Signup__section --small">{t('IndacoinResponse.transaction.id')}: {transactionId}</div>
+							<div className="Signup__section --small">
+								{t('IndacoinResponse.transaction.id')}: {transactionId}
+							</div>
 						)}
 						<div className="Signup__section">
 							<HexButton

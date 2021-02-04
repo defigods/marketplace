@@ -1,17 +1,25 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { useContext, useEffect, useState } from 'react';
 import * as moment from 'moment';
 
 import TextField from '@material-ui/core/TextField';
-import { UserContext } from '../../context/UserContext';
-// import HexImage from '../../components/HexImage/HexImage';
-import HexButton from '../../components/HexButton/HexButton';
-import config, {isEmpty} from '../../lib/config';
-// import {isiOS, isImToken} from '../../lib/config';
-// import CheckBox from '../../components/CheckBox/CheckBox';
-// import EmailConfirmation from '../../components/EmailConfirmation/EmailConfirmation';
-// import IdensicComp from '../../components/IdensicComp/IdensicComp';
-import { getSumsubData, setSumsubVerificationToStarted, setDbUserEmail, updateDbUserProfile, getSumsubExternalLink, requestConfirmUserEmail } from '../../lib/api';
-import { successNotification, warningNotification } from '../../lib/notifications';
+import { UserContext } from 'context/UserContext';
+// import HexImage from 'components/HexImage/HexImage';
+import HexButton from 'components/HexButton/HexButton';
+import config, { isEmpty } from 'lib/config';
+// import {isiOS, isImToken} from 'lib/config';
+// import CheckBox from 'components/CheckBox/CheckBox';
+// import EmailConfirmation from 'components/EmailConfirmation/EmailConfirmation';
+// import IdensicComp from 'components/IdensicComp/IdensicComp';
+import {
+	getSumsubData,
+	setSumsubVerificationToStarted,
+	setDbUserEmail,
+	updateDbUserProfile,
+	getSumsubExternalLink,
+	requestConfirmUserEmail,
+} from 'lib/api';
+import { successNotification, warningNotification } from 'lib/notifications';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -19,8 +27,8 @@ import Select from '@material-ui/core/Select';
 
 import Blockies from 'react-blockies';
 
-import ValueCounter from '../../components/ValueCounter/ValueCounter';
-import { Web3Context } from '../../context/Web3Context';
+import ValueCounter from 'components/ValueCounter/ValueCounter';
+import { Web3Context } from 'context/Web3Context';
 
 import snsWebSdk from '@sumsub/websdk';
 import { useTranslation, Translation } from 'react-i18next';
@@ -30,7 +38,7 @@ import Help from '@material-ui/icons/Help';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import i18n from 'i18next';
-import { getCurrentLocale } from '../../i18n';
+import { getCurrentLocale } from 'i18n';
 
 import ReactGA from 'react-ga';
 let isMobile = window.innerWidth < 860;
@@ -87,6 +95,40 @@ const ProfileLayout = () => {
 	const [isClaimed, setClaimed] = useState(true);
 	const [claimInfo, setClaimInfo] = useState(null);
 
+	const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone, publicAddress, t) => {
+		let sumsubLang = 'en';
+		if (getCurrentLocale().includes('zh')) {
+			sumsubLang = 'zh';
+		}
+		if (publicAddress) {
+			let snsWebSdkInstance = snsWebSdk
+				.Builder(apiUrl, flowName)
+				.withAccessToken(accessToken, (newAccessTokenCallback) => {
+					// Access token expired
+					// get a new one and pass it to the callback to re-initiate the WebSDK
+					let newAccessToken = '...'; // get a new token from your backend
+					newAccessTokenCallback(newAccessToken);
+				})
+				.withConf({
+					lang: sumsubLang,
+					email: applicantEmail,
+					phone: applicantPhone,
+					metadata: [{ key: 'walletAddress', value: publicAddress }],
+					onMessage: (type, payload) => {
+						console.log('WebSDK onMessage', type, payload);
+					},
+					customCss: 'url',
+					onError: (error) => {
+						console.error('WebSDK onError', error);
+					},
+				})
+				.build();
+			snsWebSdkInstance.launch('#sumsub-websdk-container');
+		} else {
+			warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
+		}
+	};
+
 	React.useEffect(() => {
 		if (user != undefined && user.balance != undefined) {
 			setBalance(user.balance.toFixed(2));
@@ -95,7 +137,7 @@ const ProfileLayout = () => {
 
 	React.useEffect(() => {
 		if (user != undefined && user.allowance != undefined && user.allowance != false) {
-			console.log('user.allowance',user.allowance)
+			console.log('user.allowance', user.allowance);
 			setAllowance(user.allowance.toFixed(2));
 		}
 	}, [user.allowance]);
@@ -105,16 +147,24 @@ const ProfileLayout = () => {
 		setUserCountry(user.country);
 		setIsConfirmedEmail(user.isConfirmedEmail);
 		setUserEmail(user.email);
-		setIsProfileCompleted(user.isProfileCompleted)
-		console.log('user.isConfirmedEmail in profile',user.isConfirmedEmail)
-		console.log('reacteffect in profile', user.email)
-		console.log('reacteffect in profile - isConfirmedEmail', isConfirmedEmail)
-	}, [user.publicAddress, user.firstName, user.email, user.lastName, user.country, user.isConfirmedEmail, user.isProfileCompleted]);
+		setIsProfileCompleted(user.isProfileCompleted);
+		console.log('user.isConfirmedEmail in profile', user.isConfirmedEmail);
+		console.log('reacteffect in profile', user.email);
+		console.log('reacteffect in profile - isConfirmedEmail', isConfirmedEmail);
+	}, [
+		user.publicAddress,
+		user.firstName,
+		user.email,
+		user.lastName,
+		user.country,
+		user.isConfirmedEmail,
+		user.isProfileCompleted,
+	]);
 
 	React.useEffect(() => {
 		setIsConfirmedEmail(user.isConfirmedEmail);
-		console.log('user.isConfirmedEmail', user)
-	}, [user.isConfirmedEmail])
+		console.log('user.isConfirmedEmail', user);
+	}, [user.isConfirmedEmail]);
 
 	// Sumsub and ImWallet
 	React.useEffect(() => {
@@ -142,7 +192,15 @@ const ProfileLayout = () => {
 			getSumsubData()
 				.then((response) => {
 					if (response.data.result === true) {
-						launchWebSdk(config.apis.sumsubApi, 'basic-kyc', response.data.content.token, user.email, null, user.publicAddress, t);
+						launchWebSdk(
+							config.apis.sumsubApi,
+							'basic-kyc',
+							response.data.content.token,
+							user.email,
+							null,
+							user.publicAddress,
+							t,
+						);
 					}
 				})
 				.catch((error) => {});
@@ -202,10 +260,10 @@ const ProfileLayout = () => {
 	};
 
 	const requestConfirmEmail = async () => {
-		requestConfirmUserEmail().then((response)=>{
+		requestConfirmUserEmail().then((response) => {
 			successNotification(t('Generic.congrats.label'), t('Email.resend.verification.tile'));
 		});
-	}
+	};
 
 	const updateUserEmail = (e) => {
 		if (userEmail === '') {
@@ -241,8 +299,7 @@ const ProfileLayout = () => {
 		} else {
 			setUserFullNameValid(true);
 		}
-		
-	}
+	};
 
 	const handleAddProfileInfos = (e) => {
 		setIsNamesLoading(true);
@@ -253,7 +310,6 @@ const ProfileLayout = () => {
 					userContext.actions.setUserCountry(userCountry);
 					// userContext.actions.setIsProfileCompleted(true);
 					successNotification(t('Generic.congrats.label'), t('Signup.profile.saved.title'));
-
 				}
 			})
 			.catch((error) => {});
@@ -297,6 +353,27 @@ const ProfileLayout = () => {
 		} catch (error) {
 			console.log(error);
 		}
+	};
+
+	const renderBadge = (status, t) => {
+		let badge = <div>&nbsp;</div>;
+		switch (status) {
+			case -1:
+				badge = <div className="c-status-badge  --open">{t('Profile.not.started')}</div>;
+				break;
+			case -10:
+				badge = <div className="c-status-badge  --open">{t('Profile.started')}</div>;
+				break;
+			case 1:
+				badge = <div className="c-status-badge  --open">{t('Profile.completed')}</div>;
+				break;
+			case 0:
+				badge = <div className="c-status-badge  --open">{t('Profile.failed')}</div>;
+				break;
+			default:
+				badge = <div>&nbsp;</div>;
+		}
+		return badge;
 	};
 
 	return (
@@ -372,7 +449,15 @@ const ProfileLayout = () => {
 								<h4 className="p-content-title">Email Verification</h4>
 								<div className="p-tiny-message">
 									<div className="p-tiny-message">
-										{user.kycReviewAnswer == 1 ? '' : <>{t('Profile.whitelisted.no.ok')}<br></br><br></br></>}
+										{user.kycReviewAnswer == 1 ? (
+											''
+										) : (
+											<>
+												{t('Profile.whitelisted.no.ok')}
+												<br></br>
+												<br></br>
+											</>
+										)}
 										{t('Profile.ovr.profile.desc')}
 										<br></br>
 									</div>
@@ -391,13 +476,16 @@ const ProfileLayout = () => {
 												value={user.email}
 												disabled
 											/>
-											{!isConfirmedEmail ? <HexButton
+											{!isConfirmedEmail ? (
+												<HexButton
 													url="#"
-													className='--blue --small'
+													className="--blue --small"
 													text={t('Email.resend.verification')}
 													onClick={requestConfirmEmail}
 												></HexButton>
-											: <div className="c-status-badge  --open --email-badge">{t('Profille.email.verified')}</div>}
+											) : (
+												<div className="c-status-badge  --open --email-badge">{t('Profille.email.verified')}</div>
+											)}
 										</div>
 									) : (
 										<div className="p-balance-value p-profile-form">
@@ -430,8 +518,8 @@ const ProfileLayout = () => {
 								<br></br>
 								<br></br>
 								<div className="p-section-content p-profile-form">
-								<div className="p-balance-value">
-									{/* <TextField
+									<div className="p-balance-value">
+										{/* <TextField
 										id="quantity"
 										label={t("Profile.info.firstname")}
 										type="text"
@@ -451,15 +539,14 @@ const ProfileLayout = () => {
 										onChange={updateUserLastName}
 										onKeyUp={updateUserLastName}
 									/> */}
-									<div className="Signup__nationality_holder"> 
-										<InputLabel id="user-country-label">{t("Profile.info.country")}</InputLabel>
-										<Select
+										<div className="Signup__nationality_holder">
+											<InputLabel id="user-country-label">{t('Profile.info.country')}</InputLabel>
+											<Select
 												labelId="user-country-label"
 												id="demo-simple-select"
 												value={userCountry}
 												onChange={updateUserCountry}
-												
-										>		
+											>
 												<MenuItem value="AF">Afghanistan</MenuItem>
 												<MenuItem value="AX">Åland Islands</MenuItem>
 												<MenuItem value="AL">Albania</MenuItem>
@@ -703,21 +790,21 @@ const ProfileLayout = () => {
 												<MenuItem value="YE">Yemen</MenuItem>
 												<MenuItem value="ZM">Zambia</MenuItem>
 												<MenuItem value="ZW">Zimbabwe</MenuItem>
-										</Select>
-									</div>
+											</Select>
+										</div>
 
-									<div>
-										{!isNamesLoading && (
-											<HexButton
-												url="#"
-												className={`--blue ${userFullNameValid ? '' : '--disabled'}`}
-												text={t('Email.add')}
-												onClick={handleAddProfileInfos}
-											></HexButton>
-										)}
-										{isNamesLoading && <CircularProgress />}
+										<div>
+											{!isNamesLoading && (
+												<HexButton
+													url="#"
+													className={`--blue ${userFullNameValid ? '' : '--disabled'}`}
+													text={t('Email.add')}
+													onClick={handleAddProfileInfos}
+												></HexButton>
+											)}
+											{isNamesLoading && <CircularProgress />}
+										</div>
 									</div>
-								</div>
 								</div>
 								<br></br>
 								<br></br>
@@ -841,61 +928,6 @@ const ProfileLayout = () => {
 			</div>
 		</div>
 	);
-};
-
-const renderBadge = (status, t) => {
-	let badge = <div>&nbsp;</div>;
-	switch (status) {
-		case -1:
-			badge = <div className="c-status-badge  --open">{t('Profile.not.started')}</div>;
-			break;
-		case -10:
-			badge = <div className="c-status-badge  --open">{t('Profile.started')}</div>;
-			break;
-		case 1:
-			badge = <div className="c-status-badge  --open">{t('Profile.completed')}</div>;
-			break;
-		case 0:
-			badge = <div className="c-status-badge  --open">{t('Profile.failed')}</div>;
-			break;
-		default:
-			badge = <div>&nbsp;</div>;
-	}
-	return badge;
-};
-
-const launchWebSdk = (apiUrl, flowName, accessToken, applicantEmail, applicantPhone, publicAddress, t) => {
-	let sumsubLang = 'en';
-	if (getCurrentLocale().includes('zh')) {
-		sumsubLang = 'zh';
-	}
-	if (publicAddress) {
-		let snsWebSdkInstance = snsWebSdk
-			.Builder(apiUrl, flowName)
-			.withAccessToken(accessToken, (newAccessTokenCallback) => {
-				// Access token expired
-				// get a new one and pass it to the callback to re-initiate the WebSDK
-				let newAccessToken = '...'; // get a new token from your backend
-				newAccessTokenCallback(newAccessToken);
-			})
-			.withConf({
-				lang: sumsubLang,
-				email: applicantEmail,
-				phone: applicantPhone,
-				metadata: [{ key: 'walletAddress', value: publicAddress }],
-				onMessage: (type, payload) => {
-					console.log('WebSDK onMessage', type, payload);
-				},
-				customCss: 'url',
-				onError: (error) => {
-					console.error('WebSDK onError', error);
-				},
-			})
-			.build();
-		snsWebSdkInstance.launch('#sumsub-websdk-container');
-	} else {
-		warningNotification(t('Warning.metamask.not.detected.title'), t('Warning.metamask.not.detected.desc'));
-	}
 };
 
 const Profile = () => {

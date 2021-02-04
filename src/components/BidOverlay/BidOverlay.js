@@ -1,28 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { withMapContext } from '../../context/MapContext';
-import { withUserContext } from '../../context/UserContext';
-import { withWeb3Context } from '../../context/Web3Context';
+import { withMapContext } from 'context/MapContext';
+import { withUserContext } from 'context/UserContext';
+import { withWeb3Context } from 'context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import config from '../../lib/config';
-import { warningNotification, dangerNotification } from '../../lib/notifications';
+import config from 'lib/config';
+import { warningNotification, dangerNotification } from 'lib/notifications';
 import PropTypes from 'prop-types';
-import { auctionBid } from '../../lib/api';
+import { auctionBid } from 'lib/api';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
-import { useTranslation } from 'react-i18next'
-
+import { useTranslation } from 'react-i18next';
 
 const BidOverlay = (props) => {
-	const { t, i18n } = useTranslation()
-	
+	const { t, i18n } = useTranslation();
+
 	const userState = props.userProvider.state.user;
 	const { refreshBalanceAndAllowance } = props.userProvider.actions;
-	
-	const { participateBid, approveOvrTokens,authorizeOvrExpense,getUSDValueInOvr } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
+
+	const { participateBid, approveOvrTokens, authorizeOvrExpense, getUSDValueInOvr } = props.web3Provider.actions;
+	const {
+		lastTransaction,
+		ovr,
+		dai,
+		tether,
+		usdc,
+		ico,
+		perEth,
+		perUsd,
+		setupComplete,
+		gasLandCost,
+	} = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -34,7 +44,7 @@ const BidOverlay = (props) => {
 	const [currentBid, setCurrentBid] = useState(props.currentBid);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
-	const [gasProjection, setGasProjection]  = useState(0);
+	const [gasProjection, setGasProjection] = useState(0);
 
 	const [userBalance, setUserBalance] = useState(0);
 	const [userAllowance, setUserAllowance] = useState(0);
@@ -61,9 +71,56 @@ const BidOverlay = (props) => {
 	}
 
 	const getUserExpenseProjection = () => {
-		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
-		return projection
-	} 
+		let projection =
+			bidProjection +
+			' ' +
+			bidProjectionCurrency.toUpperCase() +
+			' ( + ' +
+			gasProjection +
+			' ' +
+			bidProjectionCurrency.toUpperCase() +
+			' of GAS )';
+		return projection;
+	};
+
+	const updateBidProjectionCurrency = (type) => {
+		setBidProjection(bid);
+		setBidProjectionCurrency('ovr');
+		// switch (type) {
+		// 	case 'ovr':
+		// 		setBidProjection(bid);
+		// 		setBidProjectionCurrency('ovr');
+		// 		break;
+		// 	case 'eth':
+		// 		setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
+		// 		setBidProjectionCurrency('eth');
+		// 		break;
+		// 	case 'usdt':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('usdt');
+		// 		break;
+		// 	case 'usdc':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('usdc');
+		// 		break;
+		// 	case 'dai':
+		// 		setBidProjection((bid / 10) * 2);
+		// 		setBidProjectionCurrency('dai');
+		// 		break;
+		// }
+	};
+
+	const setNextBidSelectedLand = async () => {
+		if (!setupComplete) {
+			return false;
+		}
+		// const landId = parseInt(hexId, 16);
+		// const land = await ico.landsAsync(landId);
+		// const currentBid = String(window.web3.fromWei(land[2]));
+
+		setCurrentBid(parseFloat(props.currentBid));
+		setNextBid(props.currentBid * 2);
+	};
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
@@ -85,26 +142,13 @@ const BidOverlay = (props) => {
 	}, [bid]);
 
 	useEffect(() => {
-		setGasProjection(gasLandCost)
+		setGasProjection(gasLandCost);
 	}, [gasLandCost]);
-	
 
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
 	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
-
-	const setNextBidSelectedLand = async () => {
-		if (!setupComplete) {
-			return false;
-		}
-		// const landId = parseInt(hexId, 16);
-		// const land = await ico.landsAsync(landId);
-		// const currentBid = String(window.web3.fromWei(land[2]));
-
-		setCurrentBid(parseFloat(props.currentBid));
-		setNextBid(props.currentBid * 2);
-	};
 
 	// Toggle bidding menu of selection currencies
 	const handleClose = (event) => {
@@ -154,57 +198,38 @@ const BidOverlay = (props) => {
 	};
 
 	// Change the bid projection on selection
-	const updateBidProjectionCurrency = (type) => {
-		setBidProjection(bid);
-		setBidProjectionCurrency('ovr');
-		// switch (type) {
-		// 	case 'ovr':
-		// 		setBidProjection(bid);
-		// 		setBidProjectionCurrency('ovr');
-		// 		break;
-		// 	case 'eth':
-		// 		setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
-		// 		setBidProjectionCurrency('eth');
-		// 		break;
-		// 	case 'usdt':
-		// 		setBidProjection((bid / 10) * 2);
-		// 		setBidProjectionCurrency('usdt');
-		// 		break;
-		// 	case 'usdc':
-		// 		setBidProjection((bid / 10) * 2);
-		// 		setBidProjectionCurrency('usdc');
-		// 		break;
-		// 	case 'dai':
-		// 		setBidProjection((bid / 10) * 2);
-		// 		setBidProjectionCurrency('dai');
-		// 		break;
-		// }
-	};
 
 	const ensureBalanceAndAllowance = async (cost) => {
-		let floatCost = parseFloat(cost)
+		let floatCost = parseFloat(cost);
 		// Check balance
-		if( floatCost > userBalance){
+		if (floatCost > userBalance) {
 			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
 			return false;
 		}
 		// Check Allowance
-		if( floatCost > userAllowance || userAllowance < 2000 ){
-			await authorizeOvrExpense("1000000");
+		if (floatCost > userAllowance || userAllowance < 2000) {
+			await authorizeOvrExpense('1000000');
 			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
 		// Ensure balance with projection of others open auctions
-		if( userBalanceProjection - cost < 0){
-			warningNotification(t('Warning.no.token.title'), t('Auctions.total.projection', {OVRTotal: userBalance.toFixed(2), OVRPending: userPendingOnBalance.toFixed(2)}), 10000);
+		if (userBalanceProjection - cost < 0) {
+			warningNotification(
+				t('Warning.no.token.title'),
+				t('Auctions.total.projection', {
+					OVRTotal: userBalance.toFixed(2),
+					OVRPending: userPendingOnBalance.toFixed(2),
+				}),
+				10000,
+			);
 			return false;
 		}
 		return true;
-	}
+	};
 
 	const ensureDoubleBid = async () => {
-		if(props.auction && props.auction.bestBidder){
-			if(props.auction.bestBidder === userState.uuid){
-				if(	window.confirm(t('Auction.double.bidder.confirmation'))){
+		if (props.auction && props.auction.bestBidder) {
+			if (props.auction.bestBidder === userState.uuid) {
+				if (window.confirm(t('Auction.double.bidder.confirmation'))) {
 					return true;
 				} else {
 					return false;
@@ -215,51 +240,50 @@ const BidOverlay = (props) => {
 		} else {
 			return true;
 		}
-	}
-	
+	};
+
 	useEffect(() => {
-		setUserBalance(userState.balance)
-		setUserAllowance(userState.allowance)
-		setUserBalanceProjection(userState.balanceProjection)
-		setUserPendingOnBalance(userState.pendingOnBalance)
+		setUserBalance(userState.balance);
+		setUserAllowance(userState.allowance);
+		setUserBalanceProjection(userState.balanceProjection);
+		setUserPendingOnBalance(userState.pendingOnBalance);
 	}, []);
 
 	useEffect(() => {
-		setUserBalance(userState.balance)
-		setUserAllowance(userState.allowance)
-		setUserBalanceProjection(userState.balanceProjection)
-		setUserPendingOnBalance(userState.pendingOnBalance)
+		setUserBalance(userState.balance);
+		setUserAllowance(userState.allowance);
+		setUserBalanceProjection(userState.balanceProjection);
+		setUserPendingOnBalance(userState.pendingOnBalance);
 	}, [userState, userState.balance, userState.allowance, userState.balanceProjection, userState.pendingOnBalance]);
 
 	const participateInAuction = async (type) => {
-		if (bid < nextBid)
-			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
+		if (bid < nextBid) return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
 		await refreshBalanceAndAllowance();
 		// Ensure balance and allowance
-		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
-		if( !checkOnBal ) return;
+		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid) + parseFloat(gasProjection));
+		if (!checkOnBal) return;
 		// Ask for confirmation if best bid is from same user
 		let checkOnDoubleBid = await ensureDoubleBid();
-		if( !checkOnDoubleBid ) return;
+		if (!checkOnDoubleBid) return;
 
 		// Centralized
 		auctionBid(hexId, bid, gasProjection)
-		.then((response) => {
-			if (response.data.result === true) {
-				setActiveStep(2);
-				console.log('sendConfirmAuctionStart - response true', response.data);
-			} else {
-				// setActiveStep(0);
-				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
-				setActiveStep(0);
-			}
-		})
-		.catch((error) => {
-			console.log(error);
-		});
+			.then((response) => {
+				if (response.data.result === true) {
+					setActiveStep(2);
+					console.log('sendConfirmAuctionStart - response true', response.data);
+				} else {
+					// setActiveStep(0);
+					dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+					setActiveStep(0);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 
 		// Decentralized
 		// setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -401,15 +425,10 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__expense_projection">
-								{bidValid &&
-									props.userProvider.state.isLoggedIn && getUserExpenseProjection()}
+								{bidValid && props.userProvider.state.isLoggedIn && getUserExpenseProjection()}
 								{bidValid && props.userProvider.state.isLoggedIn && (
 									<Tooltip
-										title={
-											<React.Fragment>
-												{t('Generic.bid.tooltip')}
-											</React.Fragment>
-										}
+										title={<React.Fragment>{t('Generic.bid.tooltip')}</React.Fragment>}
 										aria-label="info"
 										placement="bottom"
 									>
@@ -426,7 +445,12 @@ const BidOverlay = (props) => {
 									ariaHaspopup="true"
 									onClick={() => participateInAuction(bidProjectionCurrency)}
 								></HexButton>
-								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.cancel.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
@@ -491,7 +515,8 @@ const BidOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>{t('BidOverlay.request.sent')}
+								<br></br>
+								{t('BidOverlay.request.sent')}
 								{/* <div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('BidOverlay.view.status')}
@@ -511,7 +536,12 @@ const BidOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.close.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
