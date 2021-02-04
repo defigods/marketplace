@@ -1,18 +1,17 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { withUserContext } from '../../context/UserContext';
-import { UserContext } from '../../context/UserContext';
+import { withUserContext } from 'context/UserContext';
+import { UserContext } from 'context/UserContext';
 
 import * as moment from 'moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
-import HexButton from '../../components/HexButton/HexButton';
+import HexButton from 'components/HexButton/HexButton';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import config from '../../lib/config';
-import { Trans, useTranslation } from 'react-i18next'
-import { confirmUserEmail, requestConfirmUserEmail } from '../../lib/api';
-
+import config from 'lib/config';
+import { Trans, useTranslation } from 'react-i18next';
+import { confirmUserEmail, requestConfirmUserEmail } from 'lib/api';
 
 /**
  * Confirm Email component
@@ -29,17 +28,9 @@ const ConfirmEmail = () => {
 
 	let history = useHistory();
 
-	useEffect(() => {
-		checkTokenAndConfirmEmail();
-	}, []);
-
-	function handleProfile() {
-		history.push('profile');
-	}
-
 	const checkTokenAndConfirmEmail = async () => {
-		confirmUserEmail(token).then((response)=>{
-			if( response.data.result === false ){
+		confirmUserEmail(token).then((response) => {
+			if (response.data.result === false) {
 				setRespStatus(2);
 				setErrorCopy(response.data.errors[0].message);
 			} else {
@@ -48,6 +39,14 @@ const ConfirmEmail = () => {
 			}
 		});
 	};
+
+	useEffect(() => {
+		checkTokenAndConfirmEmail();
+	}, []);
+
+	function handleProfile() {
+		history.push('profile');
+	}
 
 	function respContent() {
 		if (respStatus == 0) {
@@ -58,7 +57,7 @@ const ConfirmEmail = () => {
 							<CircularProgress />
 						</div>
 						<div className="Signup__section">
-							 <br></br>
+							<br></br>
 						</div>
 					</div>
 				</div>
@@ -71,9 +70,7 @@ const ConfirmEmail = () => {
 						<div className="Signup__section">
 							<CheckCircleIcon className="CheckCircleIcon" />
 						</div>
-						<div className="Signup__section">
-							{t('ConfirmEmail.success')}
-						</div>
+						<div className="Signup__section">{t('ConfirmEmail.success')}</div>
 						<div className="Signup__section --small">
 							{/* Account info are stored privately off the blockchain. <Link to="#">Read more</Link>. */}
 						</div>
@@ -87,7 +84,7 @@ const ConfirmEmail = () => {
 			return (
 				<div>
 					<div className="o-centered-box">
-						<h2>{t("ConfirmEmail.try.again")}</h2>
+						<h2>{t('ConfirmEmail.try.again')}</h2>
 						<div className="Signup__section">
 							<CancelIcon className="CancelIcon" />
 						</div>

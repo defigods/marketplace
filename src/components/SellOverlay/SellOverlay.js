@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { withMapContext } from '../../context/MapContext';
-import { withUserContext } from '../../context/UserContext';
-import { withWeb3Context } from '../../context/Web3Context';
+import { withMapContext } from 'context/MapContext';
+import { withUserContext } from 'context/UserContext';
+import { withWeb3Context } from 'context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import { networkError, warningNotification, dangerNotification } from '../../lib/notifications';
-import { sellLand } from '../../lib/api';
+import { networkError, warningNotification, dangerNotification } from 'lib/notifications';
+import { sellLand } from 'lib/api';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next'
-
+import { useTranslation } from 'react-i18next';
 
 const SellOverlay = (props) => {
-	const { t, i18n } = useTranslation()
+	const { t, i18n } = useTranslation();
 	const { approveErc721Token, putLandOnSale } = props.web3Provider.actions;
 	const { ico, setupComplete } = props.web3Provider.state;
 
@@ -26,6 +25,16 @@ const SellOverlay = (props) => {
 	const [metamaskMessage, setMetamaskMessage] = useState(t('MetamaskMessage.set.waiting'));
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
+
+	const setNextBidSelectedLand = async () => {
+		if (!setupComplete || !ico) {
+			return false;
+		}
+		const landId = parseInt(hexId, 16);
+		const land = await ico.landsAsync(landId);
+		const paid = String(window.web3.fromWei(land[2]));
+		setBoughtAt(paid);
+	};
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
@@ -46,16 +55,6 @@ const SellOverlay = (props) => {
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
 	}, [setupComplete, ico, hexId, marketStatus]);
-
-	const setNextBidSelectedLand = async () => {
-		if (!setupComplete || !ico) {
-			return false;
-		}
-		const landId = parseInt(hexId, 16);
-		const land = await ico.landsAsync(landId);
-		const paid = String(window.web3.fromWei(land[2]));
-		setBoughtAt(paid);
-	};
 
 	// Update bid value in state
 	const updateNewSellWorth = (sellAt) => {
@@ -116,7 +115,7 @@ const SellOverlay = (props) => {
 			})
 			.catch(() => {
 				// Notify user if network error
-				console.log("NetworkErrorCode: 143")
+				console.log('NetworkErrorCode: 143');
 				networkError();
 			});
 	}
@@ -172,7 +171,12 @@ const SellOverlay = (props) => {
 									className={`--purple ${bidValid ? '' : '--disabled'}`}
 									onClick={handleNext}
 								></HexButton>
-								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.cancel.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
@@ -237,7 +241,8 @@ const SellOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>{t('SellOverlay.sell.placed')}
+								<br></br>
+								{t('SellOverlay.sell.placed')}
 							</div>
 							<div className="Overlay__land_title">{props.land.name.sentence}</div>
 							<div className="Overlay__land_hex">{props.land.location}</div>
@@ -283,7 +288,12 @@ const SellOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.close.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>

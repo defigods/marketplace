@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { withMapContext } from '../../context/MapContext';
-import { withUserContext } from '../../context/UserContext';
-import { withWeb3Context } from '../../context/Web3Context';
+import { withMapContext } from 'context/MapContext';
+import { withUserContext } from 'context/UserContext';
+import { withWeb3Context } from 'context/Web3Context';
 import ValueCounter from '../ValueCounter/ValueCounter';
 import HexButton from '../HexButton/HexButton';
-import config from '../../lib/config';
-import { warningNotification, dangerNotification } from '../../lib/notifications';
+import config from 'lib/config';
+import { warningNotification, dangerNotification } from 'lib/notifications';
 import PropTypes from 'prop-types';
-import { auctionCreate } from '../../lib/api';
-
-
+import { auctionCreate } from 'lib/api';
 
 import Tooltip from '@material-ui/core/Tooltip';
 import Help from '@material-ui/icons/Help';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 import { parse } from 'date-fns';
 
-
 const MintOverlay = (props) => {
-	const { t, i18n } = useTranslation()
+	const { t, i18n } = useTranslation();
 
 	const userState = props.userProvider.state.user;
 	const { refreshBalanceAndAllowance } = props.userProvider.actions;
 
 	const { authorizeOvrExpense, getUSDValueInOvr } = props.web3Provider.actions;
-	const { lastTransaction, ovr, dai, tether, usdc, ico, perEth, perUsd, setupComplete, gasLandCost } = props.web3Provider.state;
+	const {
+		lastTransaction,
+		ovr,
+		dai,
+		tether,
+		usdc,
+		ico,
+		perEth,
+		perUsd,
+		setupComplete,
+		gasLandCost,
+	} = props.web3Provider.state;
 	const { hexId } = props.land;
 	const { marketStatus } = props.land;
 
@@ -37,7 +45,7 @@ const MintOverlay = (props) => {
 	const [bid, setBid] = useState(0);
 	const [bidProjection, setBidProjection] = useState(0);
 	const [bidProjectionCurrency, setBidProjectionCurrency] = useState('ovr');
-	const [gasProjection, setGasProjection]  = useState(0);
+	const [gasProjection, setGasProjection] = useState(0);
 	const [showOverlay, setShowOverlay] = useState(false);
 	const [classShowOverlay, setClassShowOverlay] = useState(false);
 
@@ -62,9 +70,51 @@ const MintOverlay = (props) => {
 	}
 
 	const getUserExpenseProjection = () => {
-		let projection = bidProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' ( + ' + gasProjection + ' ' + bidProjectionCurrency.toUpperCase() + ' of GAS )'
-		return projection
-	} 
+		let projection =
+			bidProjection +
+			' ' +
+			bidProjectionCurrency.toUpperCase() +
+			' ( + ' +
+			gasProjection +
+			' ' +
+			bidProjectionCurrency.toUpperCase() +
+			' of GAS )';
+		return projection;
+	};
+
+	// Change the bid projection on selection
+	const updateBidProjectionCurrency = (type) => {
+		switch (type) {
+			case 'ovr':
+				setBidProjection(bid);
+				setBidProjectionCurrency('ovr');
+				break;
+			case 'eth':
+				setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
+				setBidProjectionCurrency('eth');
+				break;
+			case 'usdt':
+				setBidProjection((bid / 10) * 2);
+				setBidProjectionCurrency('usdt');
+				break;
+			case 'usdc':
+				setBidProjection((bid / 10) * 2);
+				setBidProjectionCurrency('usdc');
+				break;
+			case 'dai':
+				setBidProjection((bid / 10) * 2);
+				setBidProjectionCurrency('dai');
+				break;
+		}
+	};
+
+	const setNextBidSelectedLand = async () => {
+		if (!setupComplete) {
+			return false;
+		}
+		setNextBid(parseFloat(props.currentBid));
+		setCurrentBid(props.currentBid);
+	};
 
 	// Listener for fadein and fadeout animation of overlay
 	useEffect(() => {
@@ -86,37 +136,29 @@ const MintOverlay = (props) => {
 	}, [bid]);
 
 	useEffect(() => {
-		console.log('userState.balance.onload',userState.balance)
-		setUserBalance(userState.balance)
-		setUserAllowance(userState.allowance)
-		setUserBalanceProjection(userState.balanceProjection)
-		setUserPendingOnBalance(userState.pendingOnBalance)
+		console.log('userState.balance.onload', userState.balance);
+		setUserBalance(userState.balance);
+		setUserAllowance(userState.allowance);
+		setUserBalanceProjection(userState.balanceProjection);
+		setUserPendingOnBalance(userState.pendingOnBalance);
 	}, []);
 
 	useEffect(() => {
-		console.log('userState.balance.onUpdate',userState.balance)
-		setUserBalance(userState.balance)
-		setUserAllowance(userState.allowance)
-		setUserBalanceProjection(userState.balanceProjection)
-		setUserPendingOnBalance(userState.pendingOnBalance)
+		console.log('userState.balance.onUpdate', userState.balance);
+		setUserBalance(userState.balance);
+		setUserAllowance(userState.allowance);
+		setUserBalanceProjection(userState.balanceProjection);
+		setUserPendingOnBalance(userState.pendingOnBalance);
 	}, [userState, userState.balance, userState.allowance, userState.balanceProjection, userState.pendingOnBalance]);
 
 	useEffect(() => {
-		setGasProjection(gasLandCost)
+		setGasProjection(gasLandCost);
 	}, [gasLandCost]);
 
 	// Init helpers web3
 	useEffect(() => {
 		if (setupComplete) setNextBidSelectedLand();
 	}, [setupComplete, ico, ovr, hexId, marketStatus, props.currentBid]);
-
-	const setNextBidSelectedLand = async () => {
-		if (!setupComplete) {
-			return false;
-		}
-		setNextBid(parseFloat(props.currentBid));
-		setCurrentBid(props.currentBid);
-	};
 
 	// Toggle bidding menu of selection currencies
 	const handleClose = (event) => {
@@ -164,81 +206,60 @@ const MintOverlay = (props) => {
 		return true;
 	};
 
-	// Change the bid projection on selection
-	const updateBidProjectionCurrency = (type) => {
-		switch (type) {
-			case 'ovr':
-				setBidProjection(bid);
-				setBidProjectionCurrency('ovr');
-				break;
-			case 'eth':
-				setBidProjection(((1 / perEth) * (bid / 10) * 2).toFixed(4));
-				setBidProjectionCurrency('eth');
-				break;
-			case 'usdt':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('usdt');
-				break;
-			case 'usdc':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('usdc');
-				break;
-			case 'dai':
-				setBidProjection((bid / 10) * 2);
-				setBidProjectionCurrency('dai');
-				break;
-		}
-	};
-
 	const ensureBalanceAndAllowance = async (cost) => {
-		let floatCost = parseFloat(cost)
+		let floatCost = parseFloat(cost);
 		// Check balance
-		console.log('userBalance',userBalance)
-		if( floatCost > userBalance){
+		console.log('userBalance', userBalance);
+		if (floatCost > userBalance) {
 			warningNotification(t('Warning.no.token.title'), t('Warning.no.ovrtokens.desc'));
 			return false;
 		}
 		// Check Allowance
-		if( floatCost > userAllowance || userAllowance < 2000 ){
-			await authorizeOvrExpense("1000000");
+		if (floatCost > userAllowance || userAllowance < 2000) {
+			await authorizeOvrExpense('1000000');
 			warningNotification(t('Auctions.allowance.waiting.title'), t('Auctions.allowance.waiting.desc'));
 		}
 		// Ensure balance with projection of others open auctions
-		if( userBalanceProjection - cost < 0){
-			warningNotification(t('Warning.no.token.title'), t('Auctions.total.projection', {OVRTotal: userBalance.toFixed(2), OVRPending: userPendingOnBalance.toFixed(2)}), 10000);
+		if (userBalanceProjection - cost < 0) {
+			warningNotification(
+				t('Warning.no.token.title'),
+				t('Auctions.total.projection', {
+					OVRTotal: userBalance.toFixed(2),
+					OVRPending: userPendingOnBalance.toFixed(2),
+				}),
+				10000,
+			);
 			return false;
 		}
 		return true;
-	}
+	};
 
 	const participateInAuction = async (type) => {
-		if (bid < nextBid)
-			return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
+		if (bid < nextBid) return warningNotification(t('Warning.invalid.bid.title'), t('Warning.invalid.bid.desc'));
 		// Ensure user is logged in
 		if (!checkUserLoggedIn()) return;
 		// Refresh balance and allowance
 		await refreshBalanceAndAllowance();
-		
+
 		// Ensure balance and allowance
-		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid)+parseFloat(gasProjection));
-		if( !checkOnBal ) return;
+		let checkOnBal = await ensureBalanceAndAllowance(parseFloat(bid) + parseFloat(gasProjection));
+		if (!checkOnBal) return;
 
 		// Start centralized auction
 		auctionCreate(hexId, bid, gasProjection)
-		.then((response) => {
-			if (response.data.result === true) {
-				setActiveStep(2);
-			} else {
-				// console.log('responseFalse');
-				dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
-				setActiveStep(0);
-			}
-		})
-		.catch((error) => {
-			console.log(error);
-		});
+			.then((response) => {
+				if (response.data.result === true) {
+					setActiveStep(2);
+				} else {
+					// console.log('responseFalse');
+					dangerNotification(t('Danger.error.processing.title'), response.data.errors[0].message);
+					setActiveStep(0);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 
-		
 		// Decentralized
 
 		// setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -348,16 +369,10 @@ const MintOverlay = (props) => {
 									</div>
 								</div>
 								<div className="Overlay__expense_projection">
-									{bidValid &&
-										props.userProvider.state.isLoggedIn &&
-									  getUserExpenseProjection()}
+									{bidValid && props.userProvider.state.isLoggedIn && getUserExpenseProjection()}
 									{bidValid && props.userProvider.state.isLoggedIn && (
 										<Tooltip
-											title={
-												<React.Fragment>
-													{t('Generic.bid.tooltip')}
-												</React.Fragment>
-											}
+											title={<React.Fragment>{t('Generic.bid.tooltip')}</React.Fragment>}
 											aria-label="info"
 											placement="bottom"
 										>
@@ -375,7 +390,12 @@ const MintOverlay = (props) => {
 									ariaHaspopup="true"
 									onClick={() => participateInAuction(bidProjectionCurrency)}
 								></HexButton>
-								<HexButton url="#" text={t('Generic.cancel.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.cancel.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
@@ -409,7 +429,8 @@ const MintOverlay = (props) => {
 						<div className="Overlay__upper">
 							<div className="Overlay__congrat_title">
 								<span>{t('Generic.congrats.label')}</span>
-								<br></br>{t('MintOverlay.about.to.start')}
+								<br></br>
+								{t('MintOverlay.about.to.start')}
 								{/* <div className="Overlay__etherscan_link">
 									<a href={config.apis.etherscan + '/tx/' + lastTransaction} rel="noopener noreferrer" target="_blank">
 										{t('MintOverlay.view.status')}
@@ -429,7 +450,12 @@ const MintOverlay = (props) => {
 								</div>
 							</div>
 							<div className="Overlay__close-button_container">
-								<HexButton url="#" text={t('Generic.close.label')} className="--orange-light" onClick={setDeactiveOverlay}></HexButton>
+								<HexButton
+									url="#"
+									text={t('Generic.close.label')}
+									className="--orange-light"
+									onClick={setDeactiveOverlay}
+								></HexButton>
 							</div>
 						</div>
 					</div>
