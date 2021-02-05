@@ -15,7 +15,7 @@ let apis;
 if (environment === 'PRODUCTION') {
 	apis = {
 		hostname: 'https://mws.ovr.ai/api/v1',
-		merkleHostname: 'http://staging-merkle.ovr.ai/v1',
+		merkleHostname: 'https://staging-merkle.ovr.ai/v1',
 		merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
 		socket: 'wss://mws.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper.ovr.ai/indacoin',
@@ -55,7 +55,7 @@ if (environment === 'PRODUCTION') {
 } else if (environment === 'STAGING') {
 	apis = {
 		hostname: 'https://mws-staging.ovr.ai/api/v1',
-		merkleHostname: 'http://staging-merkle.ovr.ai/v1',
+		merkleHostname: 'https://staging-merkle.ovr.ai/v1',
 		merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
 		socket: 'wss://mws-staging.ovr.ai/cable',
 		indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
@@ -94,7 +94,7 @@ if (environment === 'PRODUCTION') {
 } else {
 	apis = {
 		hostname: 'http://localhost:3000/api/v1',
-		merkleHostname: 'http://staging-merkle.ovr.ai/v1',
+		merkleHostname: 'https://staging-merkle.ovr.ai/v1',
 		merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
 		socket: 'ws://localhost:3000/cable',
 		indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
