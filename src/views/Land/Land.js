@@ -15,7 +15,12 @@ import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { warningNotification } from '../../lib/notifications';
 
-import { getLand, sendAuctionCheckClose, checkLandOnMerkle } from '../../lib/api';
+import {
+	getLand,
+	sendAuctionCheckClose,
+	checkLandOnMerkle,
+	updateLandMarketStatusIfHasBeenMinted,
+} from '../../lib/api';
 import { networkError, successNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
@@ -114,7 +119,6 @@ const Land = (props) => {
 			.then((response) => {
 				let data = response.data;
 
-				console.log('data', data);
 				if (data.error && data.error == 'h3_not_valid') {
 					setIsNotValidH3(true);
 				} else {
@@ -222,12 +226,13 @@ const Land = (props) => {
 
 	const redeemLand = async (e) => {
 		e.preventDefault();
-		// let resultRedeem = await mintLightMintedLand(hexId);
-		if (Object.keys(proofInfo).length === 0) {
+		if (isRedeemingLand || Object.keys(proofInfo).length === 0) {
 			return;
 		}
 
 		try {
+			setIsRedeemingLand(true);
+			sendAuctionCheckClose(hexId);
 			await LightMintV2Signer.claim(
 				proofInfo.index,
 				proofInfo.owner,
@@ -235,8 +240,11 @@ const Land = (props) => {
 				proofInfo.tokenUri,
 				proofInfo.proof,
 			);
+			updateLandMarketStatusIfHasBeenMinted(hexId);
+			setIsRedeemingLand(false);
 			successNotification(t('Success.action.title'), t('Success.request.process.desc'));
 		} catch (error) {
+			setIsRedeemingLand(false);
 			console.log(error);
 		}
 	};
