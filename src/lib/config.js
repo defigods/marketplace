@@ -48,6 +48,8 @@ if (environment === 'PRODUCTION') {
 		// cashback
 		merkleDistributor: '0x352F1ff322a0dAb72E81AffeEba8316cf96d2180',
 		merkleInfo: mainnetMerkle,
+		// OVRLand LightMint2.0
+		lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
 	};
 } else if (environment === 'STAGING') {
 	apis = {
@@ -84,6 +86,8 @@ if (environment === 'PRODUCTION') {
 		// cashback
 		merkleDistributor: '0xaa4F46934cbaf38C1A1AE42E4cF1d3f6854a2256',
 		merkleInfo: rinkebyMerkle,
+		// OVRLand LightMint2.0
+		lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
 	};
 } else {
 	apis = {
@@ -129,6 +133,8 @@ if (environment === 'PRODUCTION') {
 		// cashback
 		merkleDistributor: '0xaa4F46934cbaf38C1A1AE42E4cF1d3f6854a2256',
 		merkleInfo: rinkebyMerkle,
+		// OVRLand LightMint2.0
+		lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
 	};
 }
 
@@ -216,7 +222,6 @@ export function isPositiveFloat(s) {
 	return !isNaN(s) && Number(s) > 0 && s != '';
 }
 
-
 export function isEmpty(str) {
-    return (!str || 0 === str.length);
+	return !str || 0 === str.length;
 }

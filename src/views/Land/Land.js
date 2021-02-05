@@ -16,13 +16,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { warningNotification } from '../../lib/notifications';
 
 import { getLand, sendAuctionCheckClose, checkLandOnMerkle } from '../../lib/api';
-import { networkError } from '../../lib/notifications';
+import { networkError, successNotification } from '../../lib/notifications';
 import PropTypes from 'prop-types';
 
 import config from '../../lib/config';
 import { Textfit } from 'react-textfit';
 import ActionCable from 'actioncable';
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next';
 
 import _ from 'lodash';
 // import { ca } from 'date-fns/esm/locale';
@@ -39,8 +39,8 @@ const Land = (props) => {
 		changeActiveBuyOverlay,
 		changeActiveBuyOfferOverlay,
 	} = props.mapProvider.actions;
-	const { mintLightMintedLand, getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions;
-	const { ovr, ico, setupComplete } = props.web3Provider.state;
+	const { getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions;
+	const { ovr, ico, setupComplete, LightMintV2Signer } = props.web3Provider.state;
 	const { isLoggedIn } = props.userProvider.state;
 
 	const [hexId, setHexId] = useState(props.mapProvider.state);
@@ -58,7 +58,7 @@ const Land = (props) => {
 	const [isNotValidH3, setIsNotValidH3] = useState(false);
 	const [isUnavailable, setIsUnavailable] = useState(false);
 	const [isMintable, setIsMintable] = useState(false);
-	
+	const [proofInfo, setProofInfo] = useState({});
 
 	// First load
 	useEffect(() => {
@@ -113,7 +113,8 @@ const Land = (props) => {
 		getLand(hex_id)
 			.then((response) => {
 				let data = response.data;
-				// console.log('data', data);
+
+				console.log('data', data);
 				if (data.error && data.error == 'h3_not_valid') {
 					setIsNotValidH3(true);
 				} else {
@@ -131,26 +132,27 @@ const Land = (props) => {
 					// Centralized
 					setValue(data.value);
 					// If it's unminted take 10
-					if(data.value < 50){
+					if (data.value < 50) {
 						let val = getUSDValueInOvr(10);
 						setValue(val);
 					}
-					setMarketStatus(data.marketStatus)
-					if(data.auction){
-						if(data.auction.status === 1 && Date.parse(data.auction.closeAt) < Date.now()){
-							setMarketStatus(10)
-						} 
-					}	
+					setMarketStatus(data.marketStatus);
+					if (data.auction) {
+						if (data.auction.status === 1 && Date.parse(data.auction.closeAt) < Date.now()) {
+							setMarketStatus(10);
+						}
+					}
 
 					// If you are owner and land has been assigned on merkle, give the possibility to mint land
-					if(data.marketStatus === 11 && data.userPerspective == 1){
-						checkLandOnMerkle(integerId).then((response) =>{
-							if (!(_.isEmpty(response.data))){
+					if (data.marketStatus === 11 && data.userPerspective == 1) {
+						checkLandOnMerkle(data.intId).then((response) => {
+							if (!_.isEmpty(response.data)) {
 								setIsMintable(true);
+								setProofInfo(response.data);
 							}
-						})
+						});
 					}
-					
+
 					// Update state for MapContext
 					let state = {
 						key: data.hexId,
@@ -209,7 +211,7 @@ const Land = (props) => {
 		setOpenBuyOffers(offers);
 	};
 
-	// OLD // 
+	// OLD //
 	// const redeemLand = async (e) => {
 	// 	e.preventDefault();
 	// 	setIsRedeemingLand(true);
@@ -220,11 +222,27 @@ const Land = (props) => {
 
 	const redeemLand = async (e) => {
 		e.preventDefault();
-		let resultRedeem = await mintLightMintedLand(hexId);
+		// let resultRedeem = await mintLightMintedLand(hexId);
+		if (Object.keys(proofInfo).length === 0) {
+			return;
+		}
+
+		try {
+			await LightMintV2Signer.claim(
+				proofInfo.index,
+				proofInfo.owner,
+				proofInfo.tokenId,
+				proofInfo.tokenUri,
+				proofInfo.proof,
+			);
+			successNotification(t('Success.action.title'), t('Success.request.process.desc'));
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	function setActiveBidOverlay(e) {
-		if(!isLoggedIn){
+		if (!isLoggedIn) {
 			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
@@ -233,7 +251,7 @@ const Land = (props) => {
 	}
 
 	function setActiveMintOverlay(e) {
-		if(!isLoggedIn){
+		if (!isLoggedIn) {
 			warningNotification(t('Warning.invalid.auth.title'), t('Warning.invalid.auth.desc'));
 			return false;
 		}
@@ -274,32 +292,49 @@ const Land = (props) => {
 	}
 
 	const handleEtherscan = (e) => {
-		e.preventDefault()
+		e.preventDefault();
 		let etherscanLink = 'https://etherscan.io/token/0x56b80bbee68932a8d739315c79bc7b125341098a?a=' + integerId;
-		window.open(etherscanLink, "_blank")
+		window.open(etherscanLink, '_blank');
 	};
-	
-	function renderVisitOnEtherscan () {
-		let rend = <></>
-		if(mintTxHash !== undefined && mintTxHash !== "" && mintTxHash !== null){
+
+	function renderVisitOnEtherscan() {
+		let rend = <></>;
+		if (mintTxHash !== undefined && mintTxHash !== '' && mintTxHash !== null) {
 			// If land has been minted
-			if(marketStatus == 2){
-				rend = <a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>{t('ActivityTile.view.ether')}</a>
-			} 
-			// If land has been assigned but not minted
-			if(marketStatus == 11){
-				rend = <div className="l-light-minted-copy">{t("Land.has.been.assigned")}<br></br>
-				 <a to="" href="#" onClick={(e) => {e.preventDefault();window.open('https://www.ovr.ai/blog/introducing-light-minting/', "_blank")}}>{t("BuyTokens.read.more")}</a>.</div>
+			if (marketStatus == 2) {
+				rend = (
+					<a to="" href="#" className="l-check-on-etherscan" onClick={handleEtherscan}>
+						{t('ActivityTile.view.ether')}
+					</a>
+				);
 			}
-				
+			// If land has been assigned but not minted
+			if (marketStatus == 11) {
+				rend = (
+					<div className="l-light-minted-copy">
+						{t('Land.has.been.assigned')}
+						<br></br>
+						<a
+							to=""
+							href="#"
+							onClick={(e) => {
+								e.preventDefault();
+								window.open('https://www.ovr.ai/blog/introducing-light-minting/', '_blank');
+							}}
+						>
+							{t('BuyTokens.read.more')}
+						</a>
+						.
+					</div>
+				);
+			}
 		}
-		return rend
+		return rend;
 	}
 
 	function renderBadge() {
 		let badge = <div>&nbsp;</div>;
 
-		
 		switch (marketStatus) {
 			case 1:
 				badge = (
@@ -358,23 +393,25 @@ const Land = (props) => {
 				break;
 		}
 
-		if(isUnavailable == true){
+		if (isUnavailable == true) {
 			badge = (
-			<div>
-				<h3 className="o-small-title">{t('Land.status.label')}</h3>
-				<div className="c-status-badge  --outbidded">{t('Land.unvabilable')}</div>
-			</div>
+				<div>
+					<h3 className="o-small-title">{t('Land.status.label')}</h3>
+					<div className="c-status-badge  --outbidded">{t('Land.unvabilable')}</div>
+				</div>
 			);
-		} 
+		}
 
-		if(marketStatus == 10){
+		if (marketStatus == 10) {
 			badge = (
-			<div>
-				<h3 className="o-small-title">{t('Land.status.label')}</h3>
-				<div className="c-status-badge  --open">{t('Land.closing')} <CircularProgress /></div>
-			</div>
+				<div>
+					<h3 className="o-small-title">{t('Land.status.label')}</h3>
+					<div className="c-status-badge  --open">
+						{t('Land.closing')} <CircularProgress />
+					</div>
+				</div>
 			);
-		} 
+		}
 
 		return badge;
 	}
@@ -383,45 +420,57 @@ const Land = (props) => {
 		let button = <div>&nbsp;</div>;
 		switch (marketStatus) {
 			case 0:
-				if(isUnavailable == false){
-				button = (
-					<HexButton
-						url="/"
-						text={t('Land.init.auction')}
-						className="--blue"
-						onClick={(e) => setActiveMintOverlay(e)}
-					></HexButton>
-				);} else {
-					button = (<HexButton
-						url={`mailto:info@ovr.ai?subject=Interested in ${hexId}`}
-						target="_blank"
-						text={t('Generic.contactus.interested')}
-						className="--blue"
-					></HexButton>)
+				if (isUnavailable == false) {
+					button = (
+						<HexButton
+							url="/"
+							text={t('Land.init.auction')}
+							className="--blue"
+							onClick={(e) => setActiveMintOverlay(e)}
+						></HexButton>
+					);
+				} else {
+					button = (
+						<HexButton
+							url={`mailto:info@ovr.ai?subject=Interested in ${hexId}`}
+							target="_blank"
+							text={t('Generic.contactus.interested')}
+							className="--blue"
+						></HexButton>
+					);
 				}
 				break;
 			case 1:
 				button = (
-					<HexButton url="/" text={t('Land.place.bid')} className="--purple" onClick={(e) => setActiveBidOverlay(e)}></HexButton>
+					<HexButton
+						url="/"
+						text={t('Land.place.bid')}
+						className="--purple"
+						onClick={(e) => setActiveBidOverlay(e)}
+					></HexButton>
 				);
 				break;
 			case 10:
-				button = <div></div>
+				button = <div></div>;
 				break;
 			case 11:
 				// If land has been assigned, check if you are owner
-				
-				if( userPerspective == 1){
-					if(isMintable === true){
+
+				if (userPerspective == 1) {
+					if (isMintable === true) {
 						button = (
-							<HexButton url="/" text={t('Land.redeem.land')} className="--purple" onClick={(e) => redeemLand(e)}></HexButton>
+							<HexButton
+								url="/"
+								text={t('Land.redeem.land')}
+								className="--purple"
+								onClick={(e) => redeemLand(e)}
+							></HexButton>
 						);
 					} else {
-						button = <div className="l-light-minted-copy">Waiting writing on Merkle tree</div>
+						button = <div className="l-light-minted-copy">Waiting writing on Merkle tree</div>;
 					}
-					
 				}
-				
+
 				break;
 			// case 2:
 			// 	button = <></>;
@@ -439,7 +488,7 @@ const Land = (props) => {
 			// 			<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
 			// 		);
 			// 	}
-				
+
 			// 	break;
 			// case 3:
 			// 	button = (
@@ -475,13 +524,27 @@ const Land = (props) => {
 			case 2:
 				return (
 					<>
-						{isLoggedIn ? <><h3 className="o-small-title">{t('Land.closing.price')}</h3><ValueCounter value={value}></ValueCounter></> : <></>}
+						{isLoggedIn ? (
+							<>
+								<h3 className="o-small-title">{t('Land.closing.price')}</h3>
+								<ValueCounter value={value}></ValueCounter>
+							</>
+						) : (
+							<></>
+						)}
 					</>
 				);
 			default:
 				return (
 					<>
-						{isLoggedIn ? <><h3 className="o-small-title">{t('Land.price.label')}</h3><ValueCounter value={value}></ValueCounter></> : <></>}
+						{isLoggedIn ? (
+							<>
+								<h3 className="o-small-title">{t('Land.price.label')}</h3>
+								<ValueCounter value={value}></ValueCounter>
+							</>
+						) : (
+							<></>
+						)}
 					</>
 				);
 		}
@@ -495,26 +558,27 @@ const Land = (props) => {
 						<h3 className="o-small-title"></h3>
 					</div>
 					<div className="c-dialog --centered">
-						{!isUnavailable ? <>
-						<div className="c-dialog-main-title">
-							{t('Land.be.the.one')}{' '}
-								<span role="img" aria-label="fire-emoji">
-									🔥
-								</span>
-						</div>
-						<div className="c-dialog-sub-title">
-							<Trans i18nKey="Land.no.active.auction">
-								The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own it.
-							</Trans>
-						</div>
-						</> : <>
-						<div className="c-dialog-main-title">
-						</div>
-						<div className="c-dialog-sub-title">
-						{t('Lands.not.available.liquidity.mining')}{' '}
-						</div>
-						</>
-						}
+						{!isUnavailable ? (
+							<>
+								<div className="c-dialog-main-title">
+									{t('Land.be.the.one')}{' '}
+									<span role="img" aria-label="fire-emoji">
+										🔥
+									</span>
+								</div>
+								<div className="c-dialog-sub-title">
+									<Trans i18nKey="Land.no.active.auction">
+										The land has no active Auction at the moment. <br></br>Click on "Init Auction" and be the one to own
+										it.
+									</Trans>
+								</div>
+							</>
+						) : (
+							<>
+								<div className="c-dialog-main-title"></div>
+								<div className="c-dialog-sub-title">{t('Lands.not.available.liquidity.mining')} </div>
+							</>
+						)}
 					</div>
 				</div>
 			);
@@ -543,9 +607,11 @@ const Land = (props) => {
 											<TimeCounter date_end={bid.when}></TimeCounter>
 										</td>
 										<td>{bid.from}</td>
-										{bid.status === "-99" ? <td>
-											<div class="c-status-badge  --outbidded">FAILED</div>
-										</td> : <></>}
+										{bid.status === '-99' && (
+											<td>
+												<div className="c-status-badge  --outbidded">FAILED</div>
+											</td>
+										)}
 									</tr>
 								))}
 							</tbody>
@@ -652,9 +718,7 @@ const Land = (props) => {
 						<div className="Land__heading__2">
 							<div className="o-fourth">{renderPrice()}</div>
 							<div className="o-fourth">{renderTimer()}</div>
-							<div className="o-fourth">
-								{renderBadge()} 
-							</div>
+							<div className="o-fourth">{renderBadge()}</div>
 							<div className="o-fourth">
 								{renderVisitOnEtherscan()}
 								{renderOverlayButton()}
@@ -671,11 +735,10 @@ const Land = (props) => {
 					<div className="o-container">
 						<div className="c-dialog --centered --not-found">
 							<h1>404</h1>
-							<div className="c-dialog-main-title">
-								Land not found
-							</div>
+							<div className="c-dialog-main-title">Land not found</div>
 							<div className="c-dialog-sub-title">
-								The requested land name was not found. <br></br>Click anywhere in the map or go to "Marketplace" and start from there.
+								The requested land name was not found. <br></br>Click anywhere in the map or go to "Marketplace" and
+								start from there.
 							</div>
 						</div>
 					</div>

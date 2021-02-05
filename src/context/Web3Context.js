@@ -32,12 +32,11 @@ const vestingABI = require('../contract/vestingABI');
 const stakingABI = require('../contract/stakingABI');
 const lightMintingABI = require('../contract/lightMintingABI');
 const merkleDistributorABI = require('../contract/merkleDistributorABI');
+const lightMintV2ABI = require('../contract/lightMintV2ABI');
 
 const premine = BigNumber.from(81688155);
 const initialVirtualBalance = BigNumber.from(371681).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)));
 const mantissa = new bn(1e18);
-
-
 
 export const Web3Context = createContext();
 
@@ -179,6 +178,8 @@ export class Web3Provider extends Component {
 			lightMintingSigner: data.lightMintingSigner,
 			MerkleDistributorSigner: data.merkleDistributorSigner,
 			MerkleDistributorViewer: data.merkleDistributorViewer,
+			LightMintV2Signer: data.lightMintV2Signer,
+			LightMintV2Viewer: data.lightMintV2Viewer,
 		});
 		this.initializeStore();
 	};
@@ -227,14 +228,14 @@ export class Web3Provider extends Component {
 		let TotalOVRSupply = await this.state.ibcoRewardViewer.totalSupply();
 		let CurveOVRSupply = TotalOVRSupply.sub(premine.mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9))));
 
-		let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)))
-		let vsBancorFormula = doublePremine.add(CurveOVRSupply)
-		
+		let doublePremine = premine.mul(BigNumber.from(2)).mul(BigNumber.from(10 ** 9).mul(BigNumber.from(10 ** 9)));
+		let vsBancorFormula = doublePremine.add(CurveOVRSupply);
+
 		// Fallback bug
-		if( CurveOVRSupply.isNegative() ){
-			CurveOVRSupply = (parseFloat(ethers.utils.formatEther(reserve).toString()) / 0.07).toFixed(2)
+		if (CurveOVRSupply.isNegative()) {
+			CurveOVRSupply = (parseFloat(ethers.utils.formatEther(reserve).toString()) / 0.07).toFixed(2);
 		} else {
-			CurveOVRSupply =  parseFloat(ethers.utils.formatEther(CurveOVRSupply).toString()).toFixed(2)
+			CurveOVRSupply = parseFloat(ethers.utils.formatEther(CurveOVRSupply).toString()).toFixed(2);
 		}
 
 		this.setState({
@@ -292,7 +293,7 @@ export class Web3Provider extends Component {
 		}
 		await this.historicData(fromBlock + 1, nowBlock);
 
-		console.log('this.state.ibcoClaims',this.state.ibcoClaims)
+		console.log('this.state.ibcoClaims', this.state.ibcoClaims);
 		// Setup final state
 		this.setState({
 			ibcoLoadedHistory: true,
@@ -427,6 +428,10 @@ export class Web3Provider extends Component {
 			this.state.provider,
 		);
 
+		let lightMintV2Signer = new ethers.Contract(config.apis.lightMintV2, lightMintV2ABI, this.state.signer);
+
+		let lightMintV2Viewer = new ethers.Contract(config.apis.lightMintV2, lightMintV2ABI, this.state.provider);
+
 		let data = {
 			controllerSigner,
 			controllerViewer,
@@ -459,6 +464,8 @@ export class Web3Provider extends Component {
 			lightMintingSigner,
 			merkleDistributorSigner,
 			merkleDistributorViewer,
+			lightMintV2Signer,
+			lightMintV2Viewer,
 		};
 		return data;
 	};
