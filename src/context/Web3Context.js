@@ -1136,7 +1136,7 @@ export class Web3Provider extends Component {
     this.refreshGasPrice()
     setInterval(() => {
       this.refreshGasPrice()
-    }, 30000)
+    }, 120000)
   }
 
   mintLightMintedLand = async (hexId) => {
