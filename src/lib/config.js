@@ -8,13 +8,15 @@ import rinkebyMerkle from '../contract/merkle/rinkeby_merkleinfo.json'
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'PRODUCTION'
+const environment = 'STAGING'
 
 let apis
 
 if (environment === 'PRODUCTION') {
   apis = {
     hostname: 'https://mws.ovr.ai/api/v1',
+    merkleHostname: 'https://staging-merkle.ovr.ai/v1',
+    merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
     socket: 'wss://mws.ovr.ai/cable',
     indacoinHelperApi: 'https://web3-helper.ovr.ai/indacoin',
     etherscan: 'https://etherscan.io/',
@@ -47,10 +49,14 @@ if (environment === 'PRODUCTION') {
     // cashback
     merkleDistributor: '0x352F1ff322a0dAb72E81AffeEba8316cf96d2180',
     merkleInfo: mainnetMerkle,
+    // OVRLand LightMint2.0
+    lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
   }
 } else if (environment === 'STAGING') {
   apis = {
     hostname: 'https://mws-staging.ovr.ai/api/v1',
+    merkleHostname: 'https://staging-merkle.ovr.ai/v1',
+    merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
     socket: 'wss://mws-staging.ovr.ai/cable',
     indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
     etherscan: 'https://rinkeby.etherscan.io/',
@@ -82,10 +88,14 @@ if (environment === 'PRODUCTION') {
     // cashback
     merkleDistributor: '0xaa4F46934cbaf38C1A1AE42E4cF1d3f6854a2256',
     merkleInfo: rinkebyMerkle,
+    // OVRLand LightMint2.0
+    lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
   }
 } else {
   apis = {
     hostname: 'http://localhost:3000/api/v1',
+    merkleHostname: 'https://staging-merkle.ovr.ai/v1',
+    merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
     socket: 'ws://localhost:3000/cable',
     indacoinHelperApi: 'https://web3-helper-staging.ovr.ai/indacoin',
     etherscan: 'https://rinkeby.etherscan.io/',
@@ -126,6 +136,8 @@ if (environment === 'PRODUCTION') {
     // cashback
     merkleDistributor: '0xaa4F46934cbaf38C1A1AE42E4cF1d3f6854a2256',
     merkleInfo: rinkebyMerkle,
+    // OVRLand LightMint2.0
+    lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
   }
 }
 

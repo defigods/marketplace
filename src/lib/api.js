@@ -22,12 +22,12 @@ export function example(user) {
  * @param {*}
  */
 export function signIn(publicAddress, singedNonce) {
-  console.log('signIn')
-  return request(
-    { url: '/authentication/login', method: 'POST' },
-    { public_address: publicAddress, signed_nonce: singedNonce },
-    null
-  )
+	console.log('signIn')
+	return request(
+		{ url: '/authentication/login', method: 'POST' },
+		{ public_address: publicAddress, signed_nonce: singedNonce },
+		null,
+	);
 }
 
 export function getUserNonce(publicAddress) {
@@ -100,11 +100,11 @@ export function signUpPublicAddress(publicAddress) {
 }
 
 export function signUpLoginMetamask(publicAddress) {
-  return request(
-    { url: '/authentication/metamask', method: 'POST' },
-    { public_address: publicAddress },
-    null
-  )
+	return request(
+		{ url: '/authentication/metamask', method: 'POST' },
+		{ public_address: publicAddress },
+		null,
+	);
 }
 
 export function setDbUserEmail(email = null) {
@@ -118,13 +118,13 @@ export function setDbUserEmail(email = null) {
 }
 
 export function updateDbUserProfile(country = null) {
-  return request(
-    { url: '/user/update/profile', method: 'POST' },
-    {
-      country: country,
-    },
-    null
-  )
+	return request(
+		{ url: '/user/update/profile', method: 'POST' },
+		{
+			country: country
+		},
+		null,
+	);
 }
 
 export function confirmUserEmail(token = null) {
@@ -138,7 +138,10 @@ export function confirmUserEmail(token = null) {
 }
 
 export function requestConfirmUserEmail(token = null) {
-  return request({ url: '/user/request_confirm_email', method: 'GET' }, null)
+	return request(
+		{ url: '/user/request_confirm_email', method: 'GET' },
+		null,
+	);
 }
 
 // AUCTIONS
@@ -163,58 +166,68 @@ export function indexMyOpenAuctions(sort = null, page = 1) {
 }
 
 export function getAuctionsTotals() {
-  return request({ url: '/auctions/totals', method: 'GET' }, null)
+	return request(
+		{ url: '/auctions/totals', method: 'GET' },
+		null,
+	);
 }
 
 export function getCounters() {
-  return request({ url: '/lands/get_counters', method: 'GET' }, null)
+	return request(
+		{ url: '/lands/get_counters', method: 'GET' },
+		null,
+	);
 }
 
 export function auctionCreate(landUuid = null, worth = 10, gas = 10) {
-  return request(
-    { url: '/auction/start', method: 'POST' },
-    {
-      hex_id: landUuid,
-      worth: worth,
-      gas: gas,
-    },
-    null
-  )
+	return request(
+		{ url: '/auction/start', method: 'POST' },
+		{
+			hex_id: landUuid,
+			worth: worth,
+			gas: gas
+		},
+		null,
+	);
 }
 
 export function auctionBid(hexId = null, worth = 10, gas = 10) {
-  return request(
-    { url: '/auction/bid', method: 'POST' },
-    {
-      hex_id: hexId,
-      worth: worth,
-      gas: gas,
-    },
-    null
-  )
+	return request(
+		{ url: '/auction/bid', method: 'POST' },
+		{
+			hex_id: hexId,
+			worth: worth,
+			gas: gas
+		},
+		null,
+	);
 }
 
 export function getGasPrice() {
-  return request({ url: '/auctions/lands_gas_cost', method: 'GET' }, {}, null)
+	return request(
+		{ url: '/auctions/lands_gas_cost', method: 'GET' },
+		{},
+		null,
+	);
 }
 
 export function participateMultipleAuctions(hexIds, singleMintWorth) {
-  return request(
-    { url: '/auctions/multi/participate', method: 'POST' },
-    {
-      hex_ids: hexIds,
-      single_mint_worth: singleMintWorth,
-    },
-    null
-  )
+	return request(
+		{ url: '/auctions/multi/participate', method: 'POST' },
+		{
+			hex_ids: hexIds,
+			single_mint_worth: singleMintWorth
+		},
+		null,
+	);
 }
 
 export function getCachedOpenLandsGeojson() {
-  return request(
-    { url: '/lands/geojson/cached/open/array', method: 'GET' },
-    {},
-    null
-  )
+	return request(
+		{ url: '/lands/geojson/cached/open/array', method: 'GET' },
+		{},
+		null,
+	);
 }
 
 // export function auctionBidPre(landUuid = null, worth = 10, txHash = null) {
@@ -334,6 +347,16 @@ export function indexInterestingLands(hex_id) {
     },
     null
   )
+}
+
+export function checkLandOnMerkle(int_id) {
+	return requestMerkleAPI(
+		{ url: '/merkle/token', method: 'GET' },
+		{
+			id: int_id,
+		},
+		null,
+	);
 }
 
 // SELL
@@ -479,14 +502,14 @@ export function sendAuctionBidConfirm(landId, nextBid) {
 }
 
 export function sendAuctionCheckClose(landId) {
-  // 	auctionCheckClose(landId)
-  // 		.then((response) => {
-  // 			// console.log(response);
-  // 		})
-  // 		.catch((error) => {
-  // 			// Notify user if network error
-  // 			// console.log(error);
-  // 		});
+// 	auctionCheckClose(landId)
+// 		.then((response) => {
+// 			// console.log(response);
+// 		})
+// 		.catch((error) => {
+// 			// Notify user if network error
+// 			// console.log(error);
+// 		});
 }
 
 // Activities
@@ -507,14 +530,14 @@ export function setSumsubVerificationToStarted() {
   )
 }
 
-export function getSumsubExternalLink(language = 'en') {
-  return request(
-    { url: '/user/sumsub/external_link', method: 'GET' },
-    {
-      language: language,
-    },
-    null
-  )
+export function getSumsubExternalLink(language = "en") {
+	return request(
+		{ url: '/user/sumsub/external_link', method: 'GET' },
+		{
+			language: language,
+		},
+		null,
+	);
 }
 
 // GENERAL REQUEST
@@ -526,41 +549,61 @@ export function getSumsubExternalLink(language = 'en') {
  * @param {object} params
  * @param {string} token
  */
-export function request(
-  endpoint,
-  params,
-  req_config = { headers: { 'Content-Type': 'application/json' } }
-) {
-  const token = getToken('userToken')
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = token // eslint-disable-line
-  }
-  if (req_config && req_config.headers) {
-    req_config.headers['Content-Language'] = localStorage.getItem('i18nextLng')
-  } else {
-    req_config = {
-      headers: { 'Content-Language': localStorage.getItem('i18nextLng') },
-    }
-  }
+export function request(endpoint, params, req_config = { headers: { 'Content-Type': 'application/json' } }) {
+	const token = getToken('userToken');
+	if (token) {
+		axios.defaults.headers.common['Authorization'] = token; // eslint-disable-line
+	}
+	if(req_config && req_config.headers){
+		req_config.headers['Content-Language'] = localStorage.getItem('i18nextLng');
+	}else{
+		req_config = { headers: { 'Content-Language': localStorage.getItem('i18nextLng') } }
+	}
 
-  return new Promise((resolve, reject) => {
-    let req
-    if (endpoint.method === 'POST') {
-      req = axios.post(
-        `${config.apis.hostname}${endpoint.url}`,
-        params,
-        req_config
-      )
-    } else {
-      req = axios.get(`${config.apis.hostname}${endpoint.url}`, { params })
-    }
-    req
-      .then((response) => {
-        resolve(camelCaseKeys(response))
-      })
-      .catch((err) => {
-        reject(err)
-        console.log('error', err)
-      })
-  })
+	return new Promise((resolve, reject) => {
+		let req;
+		if (endpoint.method === 'POST') {
+			req = axios.post(`${config.apis.hostname}${endpoint.url}`, params, req_config);
+		} else {
+			req = axios.get(`${config.apis.hostname}${endpoint.url}`, { params });
+		}
+		req
+			.then((response) => {
+				resolve(camelCaseKeys(response));
+			})
+			.catch((err) => {
+				reject(err);
+				console.log('error',err);
+			});
+	});
+}
+
+export function requestMerkleAPI(endpoint, params, req_config = { headers: { 'Content-Type': 'application/json' } }) {
+	const token = getToken('userToken');
+	if (token) {
+		axios.defaults.headers.common['x-api-key'] = config.apis.merkleApiKey; // eslint-disable-line
+	}
+	axios.defaults.headers.common['Authorization'] = token;
+	if (req_config && req_config.headers) {
+		req_config.headers['Content-Language'] = localStorage.getItem('i18nextLng');
+	} else {
+		req_config = { headers: { 'Content-Language': localStorage.getItem('i18nextLng') } };
+	}
+
+	return new Promise((resolve, reject) => {
+		let req;
+		if (endpoint.method === 'POST') {
+			req = axios.post(`${config.apis.merkleHostname}${endpoint.url}`, params, req_config);
+		} else {
+			req = axios.get(`${config.apis.merkleHostname}${endpoint.url}`, { params });
+		}
+		req
+			.then((response) => {
+				resolve(camelCaseKeys(response));
+			})
+			.catch((err) => {
+				reject(err);
+				console.log('error', err);
+			});
+	});
 }

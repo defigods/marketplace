@@ -1,5 +1,6 @@
 {
   "files": {
+<<<<<<< HEAD
     "main.css": "./static/css/main.7e44ad3c.chunk.css",
     "main.js": "./static/js/main.185fb956.chunk.js",
     "main.js.map": "./static/js/main.185fb956.chunk.js.map",
@@ -27,5 +28,36 @@
     "static/js/2.ba0e5b5b.chunk.js",
     "static/css/main.7e44ad3c.chunk.css",
     "static/js/main.185fb956.chunk.js"
+=======
+    "main.css": "./static/css/main.cc2daf38.chunk.css",
+    "main.js": "./static/js/main.f851f70b.chunk.js",
+    "main.js.map": "./static/js/main.f851f70b.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.cf21d683.js",
+    "runtime-main.js.map": "./static/js/runtime-main.cf21d683.js.map",
+    "static/css/2.e30f93f1.chunk.css": "./static/css/2.e30f93f1.chunk.css",
+    "static/js/2.2e60504b.chunk.js": "./static/js/2.2e60504b.chunk.js",
+    "static/js/2.2e60504b.chunk.js.map": "./static/js/2.2e60504b.chunk.js.map",
+    "index.html": "./index.html",
+    "precache-manifest.cc752cfc00dae058f3df560988a68a41.js": "./precache-manifest.cc752cfc00dae058f3df560988a68a41.js",
+    "service-worker.js": "./service-worker.js",
+    "static/css/2.e30f93f1.chunk.css.map": "./static/css/2.e30f93f1.chunk.css.map",
+    "static/css/main.cc2daf38.chunk.css.map": "./static/css/main.cc2daf38.chunk.css.map",
+    "static/js/2.2e60504b.chunk.js.LICENSE.txt": "./static/js/2.2e60504b.chunk.js.LICENSE.txt",
+    "static/media/icone-marketplace-01.png": "./static/media/icone-marketplace-01.b71b842b.png",
+    "static/media/icone-marketplace-04.png": "./static/media/icone-marketplace-04.aca9f9d4.png",
+    "static/media/icone-marketplace-05.png": "./static/media/icone-marketplace-05.10551744.png",
+    "static/media/icone-marketplace-07.png": "./static/media/icone-marketplace-07.594c2e67.png",
+    "static/media/icone-marketplace-09.png": "./static/media/icone-marketplace-09.7b8ceb3e.png",
+    "static/media/icone-marketplace-10.png": "./static/media/icone-marketplace-10.90143188.png",
+    "static/media/ovr-outline.svg": "./static/media/ovr-outline.168b3353.svg",
+    "static/media/ovr.png": "./static/media/ovr.ee984550.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.cf21d683.js",
+    "static/css/2.e30f93f1.chunk.css",
+    "static/js/2.2e60504b.chunk.js",
+    "static/css/main.cc2daf38.chunk.css",
+    "static/js/main.f851f70b.chunk.js"
+>>>>>>> merkle
   ]
 }

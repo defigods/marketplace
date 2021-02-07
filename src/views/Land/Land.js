@@ -1,30 +1,35 @@
-/* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from 'react'
-import { withMapContext } from 'context/MapContext'
-import { withUserContext } from 'context/UserContext'
-import { withWeb3Context } from 'context/Web3Context'
-import ValueCounter from 'components/ValueCounter/ValueCounter'
-import TimeCounter from 'components/TimeCounter/TimeCounter'
-import HexButton from 'components/HexButton/HexButton'
-import BidOverlay from 'components/BidOverlay/BidOverlay'
-import MintOverlay from 'components/MintOverlay/MintOverlay'
-import SellOverlay from 'components/SellOverlay/SellOverlay'
-import BuyOfferOverlay from 'components/BuyOfferOverlay/BuyOfferOverlay'
-// import OpenSellOrder from 'components/OpenSellOrder/OpenSellOrder';
-import BuyOfferOrder from 'components/BuyOfferOrder/BuyOfferOrder'
-import BuyLandOverlay from 'components/BuyLandOverlay/BuyLandOverlay'
+import { withMapContext } from '../../context/MapContext'
+import { withUserContext } from '../../context/UserContext'
+import { withWeb3Context } from '../../context/Web3Context'
+import ValueCounter from '../../components/ValueCounter/ValueCounter'
+import TimeCounter from '../../components/TimeCounter/TimeCounter'
+import HexButton from '../../components/HexButton/HexButton'
+import BidOverlay from '../../components/BidOverlay/BidOverlay'
+import MintOverlay from '../../components/MintOverlay/MintOverlay'
+import SellOverlay from '../../components/SellOverlay/SellOverlay'
+import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay'
+// import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
+import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder'
+import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { warningNotification } from 'lib/notifications'
+import { warningNotification } from '../../lib/notifications'
 
-import { getLand, sendAuctionCheckClose } from 'lib/api'
-import { networkError } from 'lib/notifications'
+import {
+  getLand,
+  sendAuctionCheckClose,
+  checkLandOnMerkle,
+  updateLandMarketStatusIfHasBeenMinted,
+} from '../../lib/api'
+import { networkError, successNotification } from '../../lib/notifications'
 import PropTypes from 'prop-types'
 
-import config from 'lib/config'
+import config from '../../lib/config'
 import { Textfit } from 'react-textfit'
 import ActionCable from 'actioncable'
 import { Trans, useTranslation } from 'react-i18next'
 
+import _ from 'lodash'
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
@@ -39,12 +44,13 @@ const Land = (props) => {
     changeActiveBuyOverlay,
     changeActiveBuyOfferOverlay,
   } = props.mapProvider.actions
+  const { getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions
   const {
-    mintLightMintedLand,
-    getOffersToBuyLand,
-    getUSDValueInOvr,
-  } = props.web3Provider.actions
-  const { ovr, ico, setupComplete } = props.web3Provider.state
+    ovr,
+    ico,
+    setupComplete,
+    LightMintV2Signer,
+  } = props.web3Provider.state
   const { isLoggedIn } = props.userProvider.state
 
   const [hexId, setHexId] = useState(props.mapProvider.state)
@@ -64,20 +70,8 @@ const Land = (props) => {
   const [isRedeemingLand, setIsRedeemingLand] = useState(false)
   const [isNotValidH3, setIsNotValidH3] = useState(false)
   const [isUnavailable, setIsUnavailable] = useState(false)
-
-  const getBuyOffers = async () => {
-    let offers = await getOffersToBuyLand(hexId)
-    setOpenBuyOffers(offers)
-  }
-
-  const decentralizedSetup = async () => {
-    if (!setupComplete || !ico || !ovr) {
-      return false
-    }
-    getBuyOffers()
-    // updateMarketStatusFromSmartContract(hexId);
-    // setContractPrice(hexId);
-  }
+  const [isMintable, setIsMintable] = useState(false)
+  const [proofInfo, setProofInfo] = useState({})
 
   // First load
   useEffect(() => {
@@ -118,12 +112,21 @@ const Land = (props) => {
     if (setupComplete) decentralizedSetup()
   }, [setupComplete, ico, ovr, hexId, marketStatus])
 
+  const decentralizedSetup = async () => {
+    if (!setupComplete || !ico || !ovr) {
+      return false
+    }
+    getBuyOffers()
+    // updateMarketStatusFromSmartContract(hexId);
+    // setContractPrice(hexId);
+  }
+
   // Call API function
   function loadLandStateFromApi(hex_id) {
     getLand(hex_id)
       .then((response) => {
         let data = response.data
-        // console.log('data', data);
+
         if (data.error && data.error == 'h3_not_valid') {
           setIsNotValidH3(true)
         } else {
@@ -155,10 +158,14 @@ const Land = (props) => {
             }
           }
 
-          // If you are owner and land has been assigned give a check to land market status
-          if (marketStatus === 11 && userPerspective == 1) {
-            // commented because it's already recursive
-            // updateLandMarketStatusIfHasBeenMinted(hexId).then((response) => {});
+          // If you are owner and land has been assigned on merkle, give the possibility to mint land
+          if (data.marketStatus === 11 && data.userPerspective == 1) {
+            checkLandOnMerkle(data.intId).then((response) => {
+              if (!_.isEmpty(response.data)) {
+                setIsMintable(true)
+                setProofInfo(response.data)
+              }
+            })
           }
 
           // Update state for MapContext
@@ -217,6 +224,11 @@ const Land = (props) => {
     }
   }
 
+  const getBuyOffers = async () => {
+    let offers = await getOffersToBuyLand(hexId)
+    setOpenBuyOffers(offers)
+  }
+
   // OLD //
   // const redeemLand = async (e) => {
   // 	e.preventDefault();
@@ -228,7 +240,30 @@ const Land = (props) => {
 
   const redeemLand = async (e) => {
     e.preventDefault()
-    let resultRedeem = await mintLightMintedLand(hexId)
+    if (isRedeemingLand || Object.keys(proofInfo).length === 0) {
+      return
+    }
+
+    try {
+      setIsRedeemingLand(true)
+      sendAuctionCheckClose(hexId)
+      await LightMintV2Signer.claim(
+        proofInfo.index,
+        proofInfo.owner,
+        proofInfo.tokenId,
+        proofInfo.tokenUri,
+        proofInfo.proof
+      )
+      updateLandMarketStatusIfHasBeenMinted(hexId)
+      setIsRedeemingLand(false)
+      successNotification(
+        t('Success.action.title'),
+        t('Success.request.process.desc')
+      )
+    } catch (error) {
+      setIsRedeemingLand(false)
+      console.log(error)
+    }
   }
 
   function setActiveBidOverlay(e) {
@@ -473,15 +508,24 @@ const Land = (props) => {
         break
       case 11:
         // If land has been assigned, check if you are owner
+
         if (userPerspective == 1) {
-          button = (
-            <HexButton
-              url="/"
-              text={t('Land.redeem.land')}
-              className="--purple"
-              onClick={(e) => redeemLand(e)}
-            ></HexButton>
-          )
+          if (isMintable === true) {
+            button = (
+              <HexButton
+                url="/"
+                text={t('Land.redeem.land')}
+                className="--purple"
+                onClick={(e) => redeemLand(e)}
+              ></HexButton>
+            )
+          } else {
+            button = (
+              <div className="l-light-minted-copy">
+                {t('Merkle.waiting.update')}
+              </div>
+            )
+          }
         }
 
         break
@@ -622,14 +666,12 @@ const Land = (props) => {
                       <TimeCounter date_end={bid.when}></TimeCounter>
                     </td>
                     <td>{bid.from}</td>
-                    {bid.status === '-99' ? (
+                    {bid.status === '-99' && (
                       <td>
                         <div className="c-status-badge  --outbidded">
                           FAILED
                         </div>
                       </td>
-                    ) : (
-                      <></>
                     )}
                   </tr>
                 ))}

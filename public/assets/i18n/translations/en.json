@@ -192,7 +192,7 @@
 	"MintOverlay.use.direct" : "Using directly OVR will grant you the double purchase power.",
 	"MintOverlay.click.to.buy" : "Click to buy OVR.",
 	"MintOverlay.bidding.land" : "Bidding the OVRLand",
-	"MintOverlay.about.to.start" : "The auction is about to start",
+	"MintOverlay.about.to.start" : "The auction has started",
 	"MintOverlay.view.status": "View transaction status",
 	"MintOverlay.current.bid":"Current bid",
 	"MintOverlay.place.bid" : "Place bid",
@@ -206,7 +206,7 @@
 	"Generic.delete.label" : "Delete",
 	"Generic.external.link" : "External link",
 	"Generic.back.link" : "Back",
-	"Generic.bid.tooltip" : "The GAS amount will be used to pay for the light minting gas fees on the ethereum network. This total OVR amount will be withdrawn from your wallet only if you win the auction.",
+	"Generic.bid.tooltip" : "Light minting GAS costs are covered by OVR. The requested GAS costs - paid in OVR - will be used to pay for token transfer from your to our wallet only if you’re the action winner.",
 	"Generic.contactus.interested" : "Contact us if interested",
 	"BuyOfferOverlay.place.offer" : "Place Buy Offer for",
 	"BuyOfferOverlay.current.value":"Current value",
@@ -503,7 +503,9 @@
 	"Warning.profile.not.completed.title": "Complete your profile",
 	"Warning.profile.not.completed.desc": "Complete your profile information with your Country to proceed",
 	"Warning.profile.country.missing.desc": "Add your Country in your Profile informations to proceed",
-	"Profille.email.verified": "Verified"
+	"Profille.email.verified": "Verified",
+
+	"Merkle.waiting.update": "Including the transaction on the Merkle Tree batch..."
 }
 
 

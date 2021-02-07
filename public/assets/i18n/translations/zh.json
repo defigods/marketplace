@@ -387,7 +387,7 @@
 	"Land.has.been.assigned": "这块OVR土地已经被轻度铸造",
 	"Warning.action.already.done.title":"已经提出交易请求",
 	"Warning.action.already.done.desc":"你可以在钱包管理中查看交易状态，在交易被通过的几分钟后你可以在界面上看到更新的信息",
-	"Generic.bid.tooltip" : "这个矿工费用于支付以太坊主网上的轻度铸币费。只有当你赢得这块土地的竞拍的时候，OVR才会从你的钱包里被扣取。",
+	"Generic.bid.tooltip" : "轻铸币的矿工费由OVR来支付。所要求的矿工费是： 当（并且只有当）你赢得了拍卖，从你的钱包转账到OVR钱包的手续费， 将由OVR来支付。",
 	"Profile.cashback.title": "现金返还",
 	"Profile.cashback.button": "申领现金返还",
 	"Profile.cashback.description": "点击申领现金返还并且确认交易，即可获得12月进行的土地拍卖的返还奖励",
@@ -422,5 +422,6 @@
 	"MiniNav.le": "OVRLive现场活动",
 	"MiniNav.howto.ovrlive": "如何使用OVRLive",
 	"Warning.profile.country.missing.desc": "请将您的国籍添加到您的用户信息",
-	"Profille.email.verified": "已验证"
+	"Profille.email.verified": "已验证",
+	"Merkle.waiting.update": "包括在Merkle Tree区块上的交易"
 }
