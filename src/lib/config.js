@@ -8,7 +8,7 @@ import rinkebyMerkle from '../contract/merkle/rinkeby_merkleinfo.json'
 //
 
 // Possible values are STAGING, DEVELOPMENT, PRODUCTION
-const environment = 'STAGING'
+const environment = 'PRODUCTION'
 
 let apis
 
@@ -50,7 +50,7 @@ if (environment === 'PRODUCTION') {
     merkleDistributor: '0x352F1ff322a0dAb72E81AffeEba8316cf96d2180',
     merkleInfo: mainnetMerkle,
     // OVRLand LightMint2.0
-    lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
+    lightMintV2: '0x919347bc7c439AAC92ecc502d4054eC2C3955084',
   }
 } else if (environment === 'STAGING') {
   apis = {

@@ -1,48 +1,19 @@
 {
   "files": {
-<<<<<<< HEAD
-    "main.css": "./static/css/main.7e44ad3c.chunk.css",
-    "main.js": "./static/js/main.185fb956.chunk.js",
-    "main.js.map": "./static/js/main.185fb956.chunk.js.map",
-    "runtime-main.js": "./static/js/runtime-main.313f156c.js",
-    "runtime-main.js.map": "./static/js/runtime-main.313f156c.js.map",
-    "static/css/2.5099e684.chunk.css": "./static/css/2.5099e684.chunk.css",
-    "static/js/2.ba0e5b5b.chunk.js": "./static/js/2.ba0e5b5b.chunk.js",
-    "static/js/2.ba0e5b5b.chunk.js.map": "./static/js/2.ba0e5b5b.chunk.js.map",
-    "index.html": "./index.html",
-    "static/css/2.5099e684.chunk.css.map": "./static/css/2.5099e684.chunk.css.map",
-    "static/css/main.7e44ad3c.chunk.css.map": "./static/css/main.7e44ad3c.chunk.css.map",
-    "static/js/2.ba0e5b5b.chunk.js.LICENSE.txt": "./static/js/2.ba0e5b5b.chunk.js.LICENSE.txt",
-    "static/media/icone-marketplace-01.a7afd8c1.png": "./static/media/icone-marketplace-01.a7afd8c1.png",
-    "static/media/icone-marketplace-04.06adc245.png": "./static/media/icone-marketplace-04.06adc245.png",
-    "static/media/icone-marketplace-05.0488b214.png": "./static/media/icone-marketplace-05.0488b214.png",
-    "static/media/icone-marketplace-07.50f0c8ed.png": "./static/media/icone-marketplace-07.50f0c8ed.png",
-    "static/media/icone-marketplace-09.9b5edc94.png": "./static/media/icone-marketplace-09.9b5edc94.png",
-    "static/media/icone-marketplace-10.a7990f2b.png": "./static/media/icone-marketplace-10.a7990f2b.png",
-    "static/media/ovr-outline.02761969.svg": "./static/media/ovr-outline.02761969.svg",
-    "static/media/ovr.b185a50a.png": "./static/media/ovr.b185a50a.png"
-  },
-  "entrypoints": [
-    "static/js/runtime-main.313f156c.js",
-    "static/css/2.5099e684.chunk.css",
-    "static/js/2.ba0e5b5b.chunk.js",
-    "static/css/main.7e44ad3c.chunk.css",
-    "static/js/main.185fb956.chunk.js"
-=======
-    "main.css": "./static/css/main.cc2daf38.chunk.css",
-    "main.js": "./static/js/main.f851f70b.chunk.js",
-    "main.js.map": "./static/js/main.f851f70b.chunk.js.map",
+    "main.css": "./static/css/main.64600461.chunk.css",
+    "main.js": "./static/js/main.89544b91.chunk.js",
+    "main.js.map": "./static/js/main.89544b91.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.cf21d683.js",
     "runtime-main.js.map": "./static/js/runtime-main.cf21d683.js.map",
     "static/css/2.e30f93f1.chunk.css": "./static/css/2.e30f93f1.chunk.css",
-    "static/js/2.2e60504b.chunk.js": "./static/js/2.2e60504b.chunk.js",
-    "static/js/2.2e60504b.chunk.js.map": "./static/js/2.2e60504b.chunk.js.map",
+    "static/js/2.8acc7a3c.chunk.js": "./static/js/2.8acc7a3c.chunk.js",
+    "static/js/2.8acc7a3c.chunk.js.map": "./static/js/2.8acc7a3c.chunk.js.map",
     "index.html": "./index.html",
-    "precache-manifest.cc752cfc00dae058f3df560988a68a41.js": "./precache-manifest.cc752cfc00dae058f3df560988a68a41.js",
+    "precache-manifest.5163cc7024a2aeb4b7be37f1da6df893.js": "./precache-manifest.5163cc7024a2aeb4b7be37f1da6df893.js",
     "service-worker.js": "./service-worker.js",
     "static/css/2.e30f93f1.chunk.css.map": "./static/css/2.e30f93f1.chunk.css.map",
-    "static/css/main.cc2daf38.chunk.css.map": "./static/css/main.cc2daf38.chunk.css.map",
-    "static/js/2.2e60504b.chunk.js.LICENSE.txt": "./static/js/2.2e60504b.chunk.js.LICENSE.txt",
+    "static/css/main.64600461.chunk.css.map": "./static/css/main.64600461.chunk.css.map",
+    "static/js/2.8acc7a3c.chunk.js.LICENSE.txt": "./static/js/2.8acc7a3c.chunk.js.LICENSE.txt",
     "static/media/icone-marketplace-01.png": "./static/media/icone-marketplace-01.b71b842b.png",
     "static/media/icone-marketplace-04.png": "./static/media/icone-marketplace-04.aca9f9d4.png",
     "static/media/icone-marketplace-05.png": "./static/media/icone-marketplace-05.10551744.png",
@@ -55,9 +26,8 @@
   "entrypoints": [
     "static/js/runtime-main.cf21d683.js",
     "static/css/2.e30f93f1.chunk.css",
-    "static/js/2.2e60504b.chunk.js",
-    "static/css/main.cc2daf38.chunk.css",
-    "static/js/main.f851f70b.chunk.js"
->>>>>>> merkle
+    "static/js/2.8acc7a3c.chunk.js",
+    "static/css/main.64600461.chunk.css",
+    "static/js/main.89544b91.chunk.js"
   ]
 }
