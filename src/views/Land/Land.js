@@ -475,27 +475,27 @@ const Land = (props) => {
 							></HexButton>
 						);
 					} else {
-						button = <div className="l-light-minted-copy">Waiting writing on Merkle tree</div>;
+						button = <div className="l-light-minted-copy">{t('Merkle.waiting.update')}</div>;
 					}
 				}
 
 				break;
-			// case 2:
-			// 	button = <></>;
-			// 	if (userPerspective == 0) {
-			// 		button = (
-			// 			<HexButton
-			// 				url="/"
-			// 				text={t('Land.buy.offer')}
-			// 				className="--blue"
-			// 				onClick={(e) => setActiveBuyOfferOverlay(e)}
-			// 			></HexButton>
-			// 		);
-			// 	} else if (userPerspective == 1) {
-			// 		button = (
-			// 			<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
-			// 		);
-			// 	}
+				// case 2:
+				// 	button = <></>;
+				// 	if (userPerspective == 0) {
+				// 		button = (
+				// 			<HexButton
+				// 				url="/"
+				// 				text={t('Land.buy.offer')}
+				// 				className="--blue"
+				// 				onClick={(e) => setActiveBuyOfferOverlay(e)}
+				// 			></HexButton>
+				// 		);
+				// 	} else if (userPerspective == 1) {
+				// 		button = (
+				// 			<HexButton url="/" text={t('Land.sell.land')} className="--purple --disabled" onClick={(e) => setActiveSellOverlay(e)}></HexButton>
+				// 		);
+				// 	}
 
 			// 	break;
 			// case 3:
