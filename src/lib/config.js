@@ -15,7 +15,7 @@ let apis
 if (environment === 'PRODUCTION') {
   apis = {
     hostname: 'https://mws.ovr.ai/api/v1',
-    merkleHostname: 'https://staging-merkle.ovr.ai/v1',
+    merkleHostname: 'https://merkle.ovr.ai/v1',
     merkleApiKey: 'eRBs90xeLfWUWp5xNIx1p42gqgPBi27Q',
     socket: 'wss://mws.ovr.ai/cable',
     indacoinHelperApi: 'https://web3-helper.ovr.ai/indacoin',
