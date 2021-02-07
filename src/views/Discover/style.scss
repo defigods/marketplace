@@ -1,19 +1,19 @@
-.Discover{
-    .Map{
-        margin-top: 20px;
-    }
+.Discover {
+  .Map {
+    margin-top: 20px;
+  }
 }
-.--hidden{
-    display: none;
+.--hidden {
+  display: none;
 }
 
-.o-pagination{
+.o-pagination {
   width: 100%;
   clear: both;
-  .MuiPagination-ul{
+  .MuiPagination-ul {
     justify-content: center;
   }
 }
-.MuiPaginationItem-root{
+.MuiPaginationItem-root {
   font-weight: 200;
 }

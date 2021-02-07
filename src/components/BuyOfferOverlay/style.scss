@@ -1,22 +1,21 @@
-.BuyOfferOverlay{
+.BuyOfferOverlay {
   background: #fff;
-  .Overlay__hex_cont{
+  .Overlay__hex_cont {
     position: relative;
   }
-  .Overlay__cont{
+  .Overlay__cont {
     display: inherit;
   }
-  .MuiFormControl-root{
+  .MuiFormControl-root {
     float: left;
     display: inline;
   }
-  .Overlay__input{
+  .Overlay__input {
     display: inline-flex;
   }
-  .MuiFormControl-marginNormal{
+  .MuiFormControl-marginNormal {
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 20px;
   }
 }
-

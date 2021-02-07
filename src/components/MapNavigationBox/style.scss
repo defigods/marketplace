@@ -1,20 +1,20 @@
 .map-navigation-box {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	background-color: #fff;
-	padding: 1rem;
-	.map-navigation-box--current {
-		line-height: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 1rem;
+  .map-navigation-box--current {
+    line-height: 1.3rem;
 
-		.map-navigation-box--current--location {
-			color: rgba(40, 45, 50, 0.5);
-			font-size: 0.8rem;
-		}
+    .map-navigation-box--current--location {
+      color: rgba(40, 45, 50, 0.5);
+      font-size: 0.8rem;
+    }
 
-		.map-navigation-box--current--name {
-			color: rgba(40, 45, 50, 1);
-			font-size: 0.95rem;
-		}
-	}
+    .map-navigation-box--current--name {
+      color: rgba(40, 45, 50, 1);
+      font-size: 0.95rem;
+    }
+  }
 }

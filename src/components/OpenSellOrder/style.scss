@@ -1,29 +1,28 @@
-
-.SellOrderTile{
+.SellOrderTile {
   padding: 15px 50px;
   background: linear-gradient(138deg, #1d0333, #805e9d);
-  
+
   margin-bottom: 10px;
   display: inline-block;
   width: 100%;
 
-  .section{
+  .section {
     margin-left: 10%;
     float: left;
-    &:first-child{
+    &:first-child {
       margin-left: 0px;
     }
   }
-  .ValueCounter{
+  .ValueCounter {
     position: relative;
     // font-weight: 400;
-    .ValueCounter__icon, .ValueCounter__value{
+    .ValueCounter__icon,
+    .ValueCounter__value {
       z-index: 1;
       position: relative;
       color: #fff;
-      
     }
-    
+
     // &::before{
     //   position: absolute;
     //   background-color: #fff;
@@ -36,12 +35,13 @@
     //   border-radius: 3px;
     // }
   }
-  .TimeCounter, b{
+  .TimeCounter,
+  b {
     color: #fff;
   }
 }
 
-.SellOrderModal{
+.SellOrderModal {
   position: absolute;
   width: 400px;
   top: 50%;
@@ -51,13 +51,12 @@
   padding: 20px 50px;
   background: linear-gradient(138deg, #1d0333, #805e9d);
   color: #fff;
-  &:focus{
+  &:focus {
     outline: none;
   }
 }
 
-
-.orderTileButton{
+.orderTileButton {
   padding: 5px 15px;
   font-size: 10px;
   font-weight: 800;
@@ -69,18 +68,18 @@
   text-transform: uppercase;
   background: #1d0333;
   border: none;
-  &:focus{
+  &:focus {
     outline: none;
   }
 }
 
-.Modal__buttons_container{
+.Modal__buttons_container {
   margin-top: 30px;
-  .HexButton{
-      margin-right: 25px;
+  .HexButton {
+    margin-right: 25px;
   }
 }
 
-.Overlay__bid_title{
+.Overlay__bid_title {
   margin-bottom: 10px;
 }

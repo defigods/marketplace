@@ -1,111 +1,112 @@
-.o-fifth{
-    display: inline-block;
+.o-fifth {
+  display: inline-block;
 }
-.Land{
-    .o-container{
-        overflow: hidden;
+.Land {
+  .o-container {
+    overflow: hidden;
+  }
+  h2,
+  h3 {
+    margin-bottom: 5px;
+    margin-top: 30px;
+  }
+
+  time {
+    font-size: 16px;
+  }
+  .c-status-badge {
+    margin-top: 10px;
+    width: fit-content;
+  }
+  .Land__heading__1 .--nft-id {
+    font-size: 0.5em;
+    color: $ovr-grey;
+  }
+  .Land__heading__2 {
+    .HexButton {
+      margin-top: 50px;
+      float: right;
     }
-    h2, h3{
-        margin-bottom: 5px;
-        margin-top: 30px;
+    .ValueCounter {
+      margin-top: 10px;
     }
-    
-    time{
-        font-size: 16px;
+    .TimeCounter {
+      margin-top: 5px;
     }
-    .c-status-badge{
-        margin-top: 10px;
-        width: fit-content;
-		}
-		.Land__heading__1 .--nft-id{
-			font-size: 0.5em;
-			color: $ovr-grey;
-		}
-    .Land__heading__2{
-        .HexButton{
-          margin-top:50px;
-          float: right;
-        }
-        .ValueCounter{
-            margin-top: 10px;
-        }
-        .TimeCounter{
-            margin-top: 5px;
-        }
-    }
-    .Title__container .o-small-title{
-      margin-bottom: 30px;
-    }
+  }
+  .Title__container .o-small-title {
+    margin-bottom: 30px;
+  }
 }
-.o-detail-container{
-    max-width: 220px;
-    margin: 0 auto;
+.o-detail-container {
+  max-width: 220px;
+  margin: 0 auto;
 }
 
-
-.Table__container,.Title__container{
-    width: 100%;
-    clear: both;
+.Table__container,
+.Title__container {
+  width: 100%;
+  clear: both;
 }
-.Table__container{
-    margin-top: 20px;
-    background: #fff;
-    padding: 30px 50px;
-    border-radius: 3px;
+.Table__container {
+  margin-top: 20px;
+  background: #fff;
+  padding: 30px 50px;
+  border-radius: 3px;
 }
-.Table{
-    width: 80%;
-    text-align: left;
-    border-collapse: collapse; 
-    th{
-        text-transform: uppercase;
-        font-weight: 400;
-        color:#9B9B9B;
-        padding-bottom: 10px;
-        border-bottom: 8px solid #fff;
+.Table {
+  width: 80%;
+  text-align: left;
+  border-collapse: collapse;
+  th {
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #9b9b9b;
+    padding-bottom: 10px;
+    border-bottom: 8px solid #fff;
+  }
+  .Table__line {
+    border-bottom: 5px solid #fff;
+    &:last-child {
+      border-bottom: none;
     }
-    .Table__line{
-        border-bottom: 5px solid #fff;
-        &:last-child{
-            border-bottom: none;
-        }
-    }
+  }
 }
 
 .redeem-land-map-button {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
-	.Overlay__message__container {
-		margin-top: 10px;
-	}
+  .Overlay__message__container {
+    margin-top: 10px;
+  }
 }
 
-.l-light-minted-copy{
-	margin-top: 35px;
-	font-size: 14px;
+.l-light-minted-copy {
+  margin-top: 35px;
+  font-size: 14px;
 }
 
-.c-status-badge .MuiCircularProgress-root{
-	width: 10px!important;
-	height: 10px!important;
-	float: right;
-	color: $ovr-purple!important;
-	right: -5px!important;
-	position: relative;
-	path{
-		stroke-width: 6.4;
-	}
+.c-status-badge .MuiCircularProgress-root {
+  width: 10px !important;
+  height: 10px !important;
+  float: right;
+  color: $ovr-purple !important;
+  right: -5px !important;
+  position: relative;
+  path {
+    stroke-width: 6.4;
+  }
 }
 
-.l-check-on-etherscan{
-	margin-top: 40px;
-	display: inline-block;
-	font-size: 14px;
-	color: $ovr-sideral-grey;
+.l-check-on-etherscan {
+  margin-top: 40px;
+  display: inline-block;
+  font-size: 14px;
+  color: $ovr-sideral-grey;
 }
-.l-light-minted-copy{
-	color: $ovr-sideral-grey;
+.l-light-minted-copy {
+  color: $ovr-sideral-grey;
 }

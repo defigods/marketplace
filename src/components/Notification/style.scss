@@ -1,4 +1,4 @@
-.Notification{
+.Notification {
   font-size: 14px;
   position: relative;
   padding: 18px 25px;
@@ -6,64 +6,63 @@
   line-height: 20px;
   text-align: left;
   cursor: pointer;
-  .MuiButtonBase-root{
+  .MuiButtonBase-root {
     opacity: 0;
   }
-  .TimeCounter{
+  .TimeCounter {
     color: $ovr-grey;
   }
-  &:hover{
+  &:hover {
     background-color: rgba($ovr-light-grey, 0.4);
-    .Notification__content{
+    .Notification__content {
       // text-decoration: underline;
     }
-    .MuiButtonBase-root{
+    .MuiButtonBase-root {
       opacity: 1;
     }
   }
-  &.--new{
-    &:after{
-      background-color: #7521C8;
-      width:6px;
-      height:6px;
+  &.--new {
+    &:after {
+      background-color: #7521c8;
+      width: 6px;
+      height: 6px;
       border-radius: 10px;
-      content: " ";
+      content: ' ';
       display: block;
       position: absolute;
       top: 26px;
     }
   }
-  button{
+  button {
     position: absolute;
     right: 14px;
     top: 14px;
   }
 }
-.Notification__body{
+.Notification__body {
   padding-left: 18px;
 }
-.Notification__content{
+.Notification__content {
   clear: both;
-  span{
+  span {
     font-weight: 400;
   }
 }
-.Notification__time{
+.Notification__time {
   clear: both;
 }
 
-.MuiPaper-elevation8{
-  box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.15)!important;
+.MuiPaper-elevation8 {
+  box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.15) !important;
 }
-.MuiButtonBase-root{
-  font-size: 14px!important;
+.MuiButtonBase-root {
+  font-size: 14px !important;
 }
-
 
 .notification-danger {
-	background-color: $ovr-red !important;
+  background-color: $ovr-red !important;
 }
 .notification-warning {
-	border-left: #1d0333 !important;
-	background: linear-gradient(138deg, #1d0333, #805e9d) !important;
+  border-left: #1d0333 !important;
+  background: linear-gradient(138deg, #1d0333, #805e9d) !important;
 }

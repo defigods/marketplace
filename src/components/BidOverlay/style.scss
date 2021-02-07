@@ -1,28 +1,28 @@
-.Overlay{
-    position: fixed;
-    width: 100%;
-    height: calc(100% - 70px);
-    top: 70px;
-    z-index: 9;
-    display: flex;
-    align-items: center;
-    transition: all 350ms ease-in-out;
-    // opacity: 0;
-    // pointer-events: none;
-    // &.--active{
-    //     opacity: 1;
-    //     pointer-events: all;
-    // }
-    .ValueCounter{
-      margin-top: 10px;
-		}
-		.Overlay__cont{
+.Overlay {
+  position: fixed;
+  width: 100%;
+  height: calc(100% - 70px);
+  top: 70px;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  transition: all 350ms ease-in-out;
+  // opacity: 0;
+  // pointer-events: none;
+  // &.--active{
+  //     opacity: 1;
+  //     pointer-events: all;
+  // }
+  .ValueCounter {
+    margin-top: 10px;
+  }
+  .Overlay__cont {
     width: 600px;
     margin: 0 auto;
     color: #fff;
     // height: 300px;
     display: flex;
-	}
+  }
 }
 
 // #mint-fade-menu{
@@ -34,296 +34,293 @@
 // 	}
 // }
 
-
-.OverlayContainer{
-	.RightOverlay__backpanel{
-		opacity: 0;
-		transition: all 350ms ease-in-out;
-		transition-delay: 250ms;
-	}
-	.RightOverlay{
-	 transform: translateX(400px);
-	 transition: all 250ms ease-in-out;
-	}
-	&.--js-show{
-		.RightOverlay__backpanel{
-			opacity: 1;
-		}
-		.RightOverlay{
-		transform: translateX(0px);
-		}
-	}
+.OverlayContainer {
+  .RightOverlay__backpanel {
+    opacity: 0;
+    transition: all 350ms ease-in-out;
+    transition-delay: 250ms;
+  }
+  .RightOverlay {
+    transform: translateX(400px);
+    transition: all 250ms ease-in-out;
+  }
+  &.--js-show {
+    .RightOverlay__backpanel {
+      opacity: 1;
+    }
+    .RightOverlay {
+      transform: translateX(0px);
+    }
+  }
 }
 
-.RightOverlay{
-	position: fixed;
-	width: auto;
-	min-width: 380px;
-	max-width: 380px;
-	height: calc(100% - 70px);
-	top: 70px;
-	z-index: 9;
-	display: flex;
-	align-items: center;
-	float: right;
-	right: 0px;
-	// transform: translateX(380px);
-	.Overlay__cont{
-		width: auto;
-		color: #000;
-		display: flex;
-		margin: 0px 50px;
-		position: relative;
-	}
-	.Overlay__close_button{
-		top: -80px;
-	}
-	.c-currency-selector{
-		line-height: 11px;
-		font-weight: 400;
-		font-size: 12px;
-		padding: 6px 10px;
-		margin-right: 12px;
-		border-radius: 5px;
-	}
+.RightOverlay {
+  position: fixed;
+  width: auto;
+  min-width: 380px;
+  max-width: 380px;
+  height: calc(100% - 70px);
+  top: 70px;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  float: right;
+  right: 0px;
+  // transform: translateX(380px);
+  .Overlay__cont {
+    width: auto;
+    color: #000;
+    display: flex;
+    margin: 0px 50px;
+    position: relative;
+  }
+  .Overlay__close_button {
+    top: -80px;
+  }
+  .c-currency-selector {
+    line-height: 11px;
+    font-weight: 400;
+    font-size: 12px;
+    padding: 6px 10px;
+    margin-right: 12px;
+    border-radius: 5px;
+  }
 }
-.Overlay__currency_cont{
-	margin-top: 20px;
+.Overlay__currency_cont {
+  margin-top: 20px;
 }
 .RightOverlay__backpanel {
-			width: 100vw;
-			height: 100vh;
-			position: fixed;
-			left: 0px;
-			top: 0px;
-			background-color: rgba(0,0,0,0.2);
-			z-index: 8;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 8;
 }
-.Overlay__etherscan_link{
-	a{
-		font-size: 12px;
-		color: rgba(40, 45, 50, 0.5);
-		font-weight: 400;
-		&:hover{
-			color: rgba(40, 45, 50, 1);
-		}
-	}
-}
-.BidOverlay{
-	background-color:#fff;
-	&.RightOverlay .Overlay__cont{
-		top: -50px;
-		max-height: 350px;
-	}
-	.Overlay__expense_projection{
-		margin-bottom: 15px;
-	}
-}
-.Overlay__title{
-    font-size: 24px;
-    font-weight: 300;
-}
-
-.Overlay__congrat_title{
-	padding-bottom: 20px;
-	margin-bottom: 20px;
-	border-bottom: 1px solid $ovr-light-grey;
-	line-height: 25px;
-	span{
-		font-size: 25px;
-		font-weight: bold;
-		background:linear-gradient(to right, $ovr-orange,$ovr-yellow);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-	}
-}
-
-.Overlay__expense_projection{
-	width: 100%;
-	font-size: 12px;
-	margin-top: 20px;
-	display: inline-block;
-	.Help{
-		width: 12px;
-		height: 12px;
-		line-height: 12px;
-		display: inline;
-		margin-left: 5px;
-		top: 2px;
-		position: relative;
-		color: #ccc;
-		&:hover{
-			color: $ovr-grey;
-		}
-	}
-}
-
-.Overlay__land_title{
-    margin-top: 15px;
-    font-size: 22px;
-    font-weight: 800;
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-}
-.Overlay__land_hex{
-    font-size: 18px;
-    font-weight: 300;
-    margin-top: 5px;
-}
-.Overlay__body_cont{
-  float: left;
-}
-.Overlay__current_bid, .Overlay__minimum_bid{
-  float: left;
-}
-.Overlay__bid_title{
-    font-size: 14px;
-}
-.Overlay__bid_cont{
-    background: #fff;
-    border-radius: 3px;
-    width: max-content;
-    padding-right: 5px;
-
-    .ValueCounter{
-				padding: 8px 15px;
-				background: #ffffff;
-				border-radius: 5px;
-				box-shadow:  8px 8px 16px rgba(#d9d9d9, 0.3), 
-																-8px -8px 16px #ffffff;
+.Overlay__etherscan_link {
+  a {
+    font-size: 12px;
+    color: rgba(40, 45, 50, 0.5);
+    font-weight: 400;
+    &:hover {
+      color: rgba(40, 45, 50, 1);
     }
+  }
 }
-.Overlay__your_bid{
-	width: 100%;
-	clear: both;
-	margin-top: 20px;
+.BidOverlay {
+  background-color: #fff;
+  &.RightOverlay .Overlay__cont {
+    top: -50px;
+    max-height: 350px;
+  }
+  .Overlay__expense_projection {
+    margin-bottom: 15px;
+  }
 }
-.Overlay__close_button{
-    position: absolute;
-    transition: 350ms ease-in-out all;
-    z-index: 9;
-    cursor: pointer;
-    &:hover{
-        transform: scale(0.9);
-    }
+.Overlay__title {
+  font-size: 24px;
+  font-weight: 300;
 }
-.Overlay__arrow{
-    float: left;
-    margin-left: 20px;
-    margin-right: 20px;
+
+.Overlay__congrat_title {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid $ovr-light-grey;
+  line-height: 25px;
+  span {
+    font-size: 25px;
+    font-weight: bold;
+    background: linear-gradient(to right, $ovr-orange, $ovr-yellow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.Overlay__expense_projection {
+  width: 100%;
+  font-size: 12px;
+  margin-top: 20px;
+  display: inline-block;
+  .Help {
+    width: 12px;
+    height: 12px;
+    line-height: 12px;
+    display: inline;
+    margin-left: 5px;
+    top: 2px;
     position: relative;
-    top:  37px;
-}
-.Overlay__lower, .Overlay__buttons_container{
-    display: inline-block;
-		position: relative;
-		width: 100%;
-}
-
-.Overlay__lower{
-	margin-top: 20px;
+    color: #ccc;
+    &:hover {
+      color: $ovr-grey;
+    }
+  }
 }
 
-.Overlay__buttons_container{
-		width: 100%;
-    .HexButton{
-        margin-right: 25px;
-		}
+.Overlay__land_title {
+  margin-top: 15px;
+  font-size: 22px;
+  font-weight: 800;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+}
+.Overlay__land_hex {
+  font-size: 18px;
+  font-weight: 300;
+  margin-top: 5px;
+}
+.Overlay__body_cont {
+  float: left;
+}
+.Overlay__current_bid,
+.Overlay__minimum_bid {
+  float: left;
+}
+.Overlay__bid_title {
+  font-size: 14px;
+}
+.Overlay__bid_cont {
+  background: #fff;
+  border-radius: 3px;
+  width: max-content;
+  padding-right: 5px;
+
+  .ValueCounter {
+    padding: 8px 15px;
+    background: #ffffff;
+    border-radius: 5px;
+    box-shadow: 8px 8px 16px rgba(#d9d9d9, 0.3), -8px -8px 16px #ffffff;
+  }
+}
+.Overlay__your_bid {
+  width: 100%;
+  clear: both;
+  margin-top: 20px;
+}
+.Overlay__close_button {
+  position: absolute;
+  transition: 350ms ease-in-out all;
+  z-index: 9;
+  cursor: pointer;
+  &:hover {
+    transform: scale(0.9);
+  }
+}
+.Overlay__arrow {
+  float: left;
+  margin-left: 20px;
+  margin-right: 20px;
+  position: relative;
+  top: 37px;
+}
+.Overlay__lower,
+.Overlay__buttons_container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
 }
 
-.Overlay__message__container{
-    margin-top: 40px;
-    animation: 1s blink infinite 1550ms;
+.Overlay__lower {
+  margin-top: 20px;
 }
 
-.Overlay__input{
-    margin-top: 20px;
+.Overlay__buttons_container {
+  width: 100%;
+  .HexButton {
+    margin-right: 25px;
+  }
 }
 
-.Overlay__close-button_container{
-	margin-top: 25px;
-	padding-top: 25px;
-	border-top: 1px solid $ovr-light-grey;
+.Overlay__message__container {
+  margin-top: 40px;
+  animation: 1s blink infinite 1550ms;
+}
+
+.Overlay__input {
+  margin-top: 20px;
+}
+
+.Overlay__close-button_container {
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid $ovr-light-grey;
 }
 
 .Overlay__bid_container {
-	display: inline-block;
+  display: inline-block;
 }
-
 
 .Overlay__bids_container {
-	float: left;
-	margin-bottom: 20px;
-	margin-top: 10px;
-	.Overlay__bid_container{
-		float: left;
-		display: inline-block;
-	}
-	.Overlay__arrow{
-		    display: inline-block;
-	}
-	.my-bid {
-		margin-left: 20px;
-		max-width: 100px;
-	}
+  float: left;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  .Overlay__bid_container {
+    float: left;
+    display: inline-block;
+  }
+  .Overlay__arrow {
+    display: inline-block;
+  }
+  .my-bid {
+    margin-left: 20px;
+    max-width: 100px;
+  }
 }
 
-.Overlay__lower__cont{
-	display: inline-block;
-	margin-bottom: 15px;
+.Overlay__lower__cont {
+  display: inline-block;
+  margin-bottom: 15px;
 }
 
-.MintOverlay{
+.MintOverlay {
   background: #fff;
   background-size: 400% 400%;
   box-shadow: -20px 10px 20px 0 rgba(30, 30, 30, 0.05);
- 
 }
 
-
 .WhiteInputs {
-	.MuiFormLabel-root {
-		color: #d9d9d9 !important;
-		font-weight: 200 !important;
-	}
-	.MuiInput-underline:before {
-		border-bottom: 1px solid #d9d9d9 !important;
-	}
-	.MuiInputBase-input {
-		color: #fff !important;
-	}
-	.MuiInput-underline:after {
-		border-bottom: 2px solid #fff !important;
-	}
+  .MuiFormLabel-root {
+    color: #d9d9d9 !important;
+    font-weight: 200 !important;
+  }
+  .MuiInput-underline:before {
+    border-bottom: 1px solid #d9d9d9 !important;
+  }
+  .MuiInputBase-input {
+    color: #fff !important;
+  }
+  .MuiInput-underline:after {
+    border-bottom: 2px solid #fff !important;
+  }
 }
 
 .NormalInputs {
-	.MuiFormLabel-root {
-		color: #000 !important;
-		font-weight: 200 !important;
-	}
-	.MuiInput-underline:before {
-		border-bottom: 1px solid #d9d9d9 !important;
-	}
-	.MuiInputBase-input {
-		color: #000 !important;
-	}
-	.MuiInput-underline:after {
-		border-bottom: 2px solid #ccc !important;
-	}
+  .MuiFormLabel-root {
+    color: #000 !important;
+    font-weight: 200 !important;
+  }
+  .MuiInput-underline:before {
+    border-bottom: 1px solid #d9d9d9 !important;
+  }
+  .MuiInputBase-input {
+    color: #000 !important;
+  }
+  .MuiInput-underline:after {
+    border-bottom: 2px solid #ccc !important;
+  }
 }
 
 .MuiFormLabel-root {
-	color: $ovr-sideral-grey !important;
-	font-weight: 200 !important;
+  color: $ovr-sideral-grey !important;
+  font-weight: 200 !important;
 }
 .MuiInput-underline:before {
-	border-bottom: 1px solid $ovr-sideral-grey !important;
+  border-bottom: 1px solid $ovr-sideral-grey !important;
 }
 .MuiInputBase-input {
-	color: $ovr-sideral-grey !important;
+  color: $ovr-sideral-grey !important;
 }
 .MuiInput-underline:after {
-	border-bottom: 2px solid #000 !important;
+  border-bottom: 2px solid #000 !important;
 }

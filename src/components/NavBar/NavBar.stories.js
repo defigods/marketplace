@@ -1,11 +1,11 @@
-import '../../../.storybook/config.js';
+import '../../../.storybook/config.js'
 
-import React from 'react';
-import NavBar from './NavBar';
+import React from 'react'
+import NavBar from './NavBar'
 
 export default {
-	title: 'NavBar',
-	component: NavBar,
-};
+  title: 'NavBar',
+  component: NavBar,
+}
 
-export const Text = () => <NavBar></NavBar>;
+export const Text = () => <NavBar></NavBar>

@@ -24,7 +24,6 @@
 
 // import { useTranslation } from 'react-i18next'
 
-
 // /**
 //  * Signup page component
 //  */
@@ -384,7 +383,7 @@
 // 				);
 // 			case 1:
 // 				return (
-					
+
 // 					<div className="o-container">
 // 						<div className="o-box">
 // 							<h1>{t('Signup.first.things')}</h1>

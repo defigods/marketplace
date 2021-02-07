@@ -1,62 +1,61 @@
 .Login {
-	text-align: center;
-	padding-top: 50px;
-	min-height: 60vh;
-	h2 {
-		color: $ovr-purple;
-	}
+  text-align: center;
+  padding-top: 50px;
+  min-height: 60vh;
+  h2 {
+    color: $ovr-purple;
+  }
 }
 .Login__sub-title {
-	font-size: 16px;
-	margin-top: 5px;
-	margin: 0 auto;
-	max-width: 350px;
+  font-size: 16px;
+  margin-top: 5px;
+  margin: 0 auto;
+  max-width: 350px;
 }
 .Login__form-container {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 .Login__input {
-	margin-top: 10px;
-	text-align: center;
-	.HexButton {
-		margin-top: 20px;
-	}
-	&:first-child {
-		margin-top: 0px;
-	}
+  margin-top: 10px;
+  text-align: center;
+  .HexButton {
+    margin-top: 20px;
+  }
+  &:first-child {
+    margin-top: 0px;
+  }
 }
 .Login__signup,
 .Login__forgot {
-	margin-top: 30px;
-	font-size: 12px;
-	font-weight: 400;
-	color: $ovr-grey;
-	a {
-		color: $ovr-grey;
-	}
+  margin-top: 30px;
+  font-size: 12px;
+  font-weight: 400;
+  color: $ovr-grey;
+  a {
+    color: $ovr-grey;
+  }
 }
 .Login__forgot {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
 .Login__footer {
-	margin-top: 50px;
-	a {
-		color: #000;
-		text-decoration: none;
-		font-weight: 400;
-	}
+  margin-top: 50px;
+  a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 400;
+  }
 }
 
-
-.--install-imtoken{
-	margin-left: 15px;
+.--install-imtoken {
+  margin-left: 15px;
 }
 
-.Signup__section__small-link{
-	margin-top: 15px;
-	font-size: 14px;
-	display: block;
-	color: $ovr-sideral-grey;
-	text-decoration: underline;
+.Signup__section__small-link {
+  margin-top: 15px;
+  font-size: 14px;
+  display: block;
+  color: $ovr-sideral-grey;
+  text-decoration: underline;
 }

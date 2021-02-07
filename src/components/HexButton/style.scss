@@ -1,45 +1,45 @@
 .HexButton {
   display: inline-block;
   text-transform: uppercase;
-	text-decoration: none;
+  text-decoration: none;
   font-size: 10px;
-	font-weight: bold;
-	letter-spacing: 1px;
+  font-weight: bold;
+  letter-spacing: 1px;
   border-radius: 50px;
   padding: 10px 20px;
-	border: 0px;
-	color: #fff;
-  transition: 350ms all cubic-bezier(0.190,  1.000, 0.220, 1.000);
-	transform: scale(1);
-	text-align: center;
-	&.--small{
-		padding: 10px 10px;
-		width: fit-content;
-		font-size: 8px;
-		min-width: 80px;
-	}
-  &.--white{
+  border: 0px;
+  color: #fff;
+  transition: 350ms all cubic-bezier(0.19, 1, 0.22, 1);
+  transform: scale(1);
+  text-align: center;
+  &.--small {
+    padding: 10px 10px;
+    width: fit-content;
+    font-size: 8px;
+    min-width: 80px;
+  }
+  &.--white {
     border: 2px solid #fff;
     color: white;
-    &:hover{
-      background-color: rgba(#2D245B,0.5);
+    &:hover {
+      background-color: rgba(#2d245b, 0.5);
     }
   }
-  &:hover{
+  &:hover {
     transform: scale(0.98);
     cursor: pointer;
   }
-  &.--full-white{
+  &.--full-white {
     border: 2px solid #fff;
     background-color: #fff;
     color: $ovr-purple;
-	}
-	&.--large{
-		padding:18px 0px;
-		width: -webkit-fill-available;
-		border-radius: 5px;
-		font-size: 13px;
-	}
+  }
+  &.--large {
+    padding: 18px 0px;
+    width: -webkit-fill-available;
+    border-radius: 5px;
+    font-size: 13px;
+  }
 }
 
 // .HexButton__text {
@@ -54,98 +54,106 @@
 // }
 
 .HexButton.--purple {
-	background-image: linear-gradient(90deg,rgba(163, 84, 177,1), rgba(#1d0333,1));
-	border: 0px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(163, 84, 177, 1),
+    rgba(#1d0333, 1)
+  );
+  border: 0px;
 }
 
 .HexButton.--blue {
-	background-image: linear-gradient(138deg, #022136, #0081DD);
-	border: 0px;
+  background-image: linear-gradient(138deg, #022136, #0081dd);
+  border: 0px;
 }
 .HexButton.--orange {
-	background-color: $ovr-orange;
-	background-image: linear-gradient(90deg,$ovr-orange,$ovr-yellow);
-	background: linear-gradient(90deg,$ovr-orange,$ovr-yellow);
-	border: 0px;
+  background-color: $ovr-orange;
+  background-image: linear-gradient(90deg, $ovr-orange, $ovr-yellow);
+  background: linear-gradient(90deg, $ovr-orange, $ovr-yellow);
+  border: 0px;
 }
-.HexButton.--hollow-orange{
-	background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
-	background-clip: padding-box; /* !importanté */
-	border: solid 2px transparent; /* !importanté */
-	box-sizing: border-box;
-	color: $ovr-orange;
-	&:before {
-			content: '';
-			position: absolute;
-			top: 0; right: 0; bottom: 0; left: 0;
-			z-index: -1;
-			margin: 2px;
-			border-radius: inherit;
-			background: #fff;
-	}
+.HexButton.--hollow-orange {
+  background: linear-gradient(to right, $ovr-orange, $ovr-yellow);
+  background-clip: padding-box; /* !importanté */
+  border: solid 2px transparent; /* !importanté */
+  box-sizing: border-box;
+  color: $ovr-orange;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: 2px;
+    border-radius: inherit;
+    background: #fff;
+  }
 }
 .HexButton.--orange {
 }
 .HexButton.--outline {
-
 }
-.HexButton.--orange-light{
-	background: linear-gradient(to right, $ovr-orange,$ovr-yellow);
-	background-clip: padding-box; /* !importanté */
-	border: solid 2px transparent; /* !importanté */
-	box-sizing: border-box;
-	color: $ovr-orange;
-	opacity: 0.8;
-	&:before {
-			content: '';
-			position: absolute;
-			top: 0; right: 0; bottom: 0; left: 0;
-			z-index: -1;
-			margin: 2px;
-			border-radius: inherit;
-			background: #fff;
-	}
+.HexButton.--orange-light {
+  background: linear-gradient(to right, $ovr-orange, $ovr-yellow);
+  background-clip: padding-box; /* !importanté */
+  border: solid 2px transparent; /* !importanté */
+  box-sizing: border-box;
+  color: $ovr-orange;
+  opacity: 0.8;
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    margin: 2px;
+    border-radius: inherit;
+    background: #fff;
+  }
 }
-.--orange-link{
-	padding: 0;
-	text-decoration: underline;
-	text-transform: uppercase;
-	color: #282d32;
-	margin-left: 0;
-	font-weight: 400;
-	font-size: 14px;
-	color: $ovr-orange;
-	cursor: pointer;
+.--orange-link {
+  padding: 0;
+  text-decoration: underline;
+  text-transform: uppercase;
+  color: #282d32;
+  margin-left: 0;
+  font-weight: 400;
+  font-size: 14px;
+  color: $ovr-orange;
+  cursor: pointer;
 }
 .HexButton.--hollow {
-
 }
 .HexButton.--disabled {
-	opacity: 0.5;
-	pointer-events: none;
-	cursor: not-allowed;
-	filter: grayscale(100%);
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  filter: grayscale(100%);
 }
 
 .HexButton.--warning {
-	opacity:1;
-	pointer-events: none;
-	cursor: not-allowed;
-	background: linear-gradient(-141deg, #F5515F 0%, #9F041B 100%);
+  opacity: 1;
+  pointer-events: none;
+  cursor: not-allowed;
+  background: linear-gradient(-141deg, #f5515f 0%, #9f041b 100%);
 }
 
-.Overlay__buttons_container{
-	margin-top: 10px;
-	// display: grid;
-	// grid-gap: 5px;
-	
-    .HexButton{
-        margin-right: 25px;
-    }
+.Overlay__buttons_container {
+  margin-top: 10px;
+  // display: grid;
+  // grid-gap: 5px;
+
+  .HexButton {
+    margin-right: 25px;
+  }
 }
 
-.bid-fade-menu{
-	&.--cons-option{	
-		color: $ovr-orange;
-	}
+.bid-fade-menu {
+  &.--cons-option {
+    color: $ovr-orange;
+  }
 }

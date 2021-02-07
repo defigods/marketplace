@@ -1,51 +1,49 @@
-
-.LandCard{
-    background: #FFFFFF;
-    display: block;
-    box-shadow: -6px 7px 21px 0 rgba(30,30,30,0.05);
-    @include column(1/4, $cycle: 4);
-    border-radius: 5px;
-    overflow: hidden;
+.LandCard {
+  background: #ffffff;
+  display: block;
+  box-shadow: -6px 7px 21px 0 rgba(30, 30, 30, 0.05);
+  @include column(1/4, $cycle: 4);
+  border-radius: 5px;
+  overflow: hidden;
+  float: left;
+  transition: 350ms all cubic-bezier(0.19, 1, 0.22, 1);
+  background-position: center center;
+  background-size: 100%;
+  &:hover {
+    box-shadow: 0px 0px 20px rgba(30, 30, 30, 0.05);
+    transform: scale(0.97);
+  }
+  .LandCard__body {
     float: left;
-    transition: 350ms all cubic-bezier(0.190,  1.000, 0.220, 1.000);
-    background-position: center center;
-    background-size: 100%;
-    &:hover{
-      box-shadow: 0px 0px 20px rgba(30,30,30,0.05);
-      transform: scale(0.97);
-    }
-    .LandCard__body{
-      float: left;
-      padding: 20px;
-    }
-    .TimeCounter{
-      margin-top: 10px;
-    }
-    margin-bottom: 40px;
-    .ola0{
-      fill:none;stroke:#56c0e6
-    }
+    padding: 20px;
+  }
+  .TimeCounter {
+    margin-top: 10px;
+  }
+  margin-bottom: 40px;
+  .ola0 {
+    fill: none;
+    stroke: #56c0e6;
+  }
 
-    position: relative;
+  position: relative;
 }
 
-.LandCard__header{
+.LandCard__header {
   height: 120px;
   width: 100%;
   background-position: center center;
   background-size: 120%;
 }
-.LandCard__cont{
-  
+.LandCard__cont {
   display: flow-root;
 }
 
-.o-land-list{
-  .o-container{
+.o-land-list {
+  .o-container {
     flex-flow: row wrap;
   }
 }
-
 
 // .LandCard{
 //     background: #FFFFFF;
@@ -58,7 +56,7 @@
 //     .TimeCounter{
 //       text-align: right;
 //       float: right;
-      
+
 //     }
 
 //     &:hover{
@@ -67,42 +65,40 @@
 //     }
 // }
 
-
-@media screen and (max-width: 1000px){
-  .LandCard{
-      @include column(1/2, $cycle: 2);
+@media screen and (max-width: 1000px) {
+  .LandCard {
+    @include column(1/2, $cycle: 2);
   }
 }
 
-@media screen and (max-width: 780px){
-  .LandCard{
-      @include column(1/1, $cycle: 1);
+@media screen and (max-width: 780px) {
+  .LandCard {
+    @include column(1/1, $cycle: 1);
   }
 }
 
-
-.LandCard__art_holder{
-	width: 60px;
-	height: 60px;
-	position: relative;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%,-50%);
-	border-radius: 50%;
-	overflow: hidden;
-	svg{
-		position: absolute;
-		width: 60px;
-		height: 60px;
-		z-index: 1;
-	}
-	canvas{
-		width: 100%;
-		height: 100%;
-		top: 0px;
-		opacity: 1;
-		left: 0px;
-		position: relative;
-		transform: scale(0.7)
-	}
+.LandCard__art_holder {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  overflow: hidden;
+  svg {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 1;
+  }
+  canvas {
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    opacity: 1;
+    left: 0px;
+    position: relative;
+    transform: scale(0.7);
+  }
 }

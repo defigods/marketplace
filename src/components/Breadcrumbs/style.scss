@@ -1,18 +1,18 @@
 .breadcrumbs {
-	display: inline-flex;
-	align-items: center;
-	justify-content: space-between;
-	color: $ovr-grey;
-	margin: 1.5rem 0;
-	width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  color: $ovr-grey;
+  margin: 1.5rem 0;
+  width: 100%;
 }
 .breadcrumbs--items {
 }
 .breadcrumbs--prevlink {
-	text-decoration: none;
-	color: $ovr-grey;
+  text-decoration: none;
+  color: $ovr-grey;
 }
 .breadcrumbs--currentlabel {
-	font-weight: bold;
-	color: $ovr-sideral-grey;
+  font-weight: bold;
+  color: $ovr-sideral-grey;
 }

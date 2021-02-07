@@ -1,36 +1,35 @@
-.c-dialog{
+.c-dialog {
   background-color: #fff;
   padding: 25px;
   border-radius: 5px;
-  .c-status-badge{
+  .c-status-badge {
     display: inline;
     margin: 0px 5px;
   }
 }
 
-.c-dialog.--dark{
-  background-color: #1D0333;
+.c-dialog.--dark {
+  background-color: #1d0333;
   color: #fff;
 }
 
-.c-dialog.--centered{
+.c-dialog.--centered {
   text-align: center;
 }
 
-.c-dialog-main-title{
+.c-dialog-main-title {
   font-weight: 600;
   font-size: 20px;
   margin-top: 15px;
   margin-bottom: 10px;
 }
-.c-dialog-sub-title{
+.c-dialog-sub-title {
   font-size: 18px;
   margin-bottom: 15px;
 }
 
-
-.--not-found{
-  h1{
+.--not-found {
+  h1 {
     font-size: 50px;
     margin-bottom: 0px;
     line-height: 50px;

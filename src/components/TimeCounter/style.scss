@@ -1,15 +1,15 @@
-.TimeCounter{
-    line-height: 18px;
-    color: $ovr_sideral_grey;
-    font-size: 18px;
-    display: inline-block;
-    span{
-        font-weight: bold;
-        margin-right: 3px;
-        display: inline;
-    }
-    time{
-        font-size:12px;
-        line-height: 12px;
-    }
+.TimeCounter {
+  line-height: 18px;
+  color: $ovr_sideral_grey;
+  font-size: 18px;
+  display: inline-block;
+  span {
+    font-weight: bold;
+    margin-right: 3px;
+    display: inline;
+  }
+  time {
+    font-size: 12px;
+    line-height: 12px;
+  }
 }

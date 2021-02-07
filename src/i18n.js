@@ -1,9 +1,8 @@
-
 import i18n from 'i18next'
 import Backend from 'i18next-xhr-backend'
 import { initReactI18next } from 'react-i18next'
 
-const supportedLangs = ['en', 'zh'];
+const supportedLangs = ['en', 'zh']
 
 i18n
   .use(Backend)
@@ -12,7 +11,7 @@ i18n
     lng: localStorage.getItem('i18nextLng'),
     backend: {
       /* translation file path */
-      loadPath: '/assets/i18n/{{ns}}/{{lng}}.json'
+      loadPath: '/assets/i18n/{{ns}}/{{lng}}.json',
     },
     fallbackLng: 'en',
     debug: true,
@@ -22,15 +21,15 @@ i18n
     keySeparator: false,
     interpolation: {
       escapeValue: false,
-      formatSeparator: ','
+      formatSeparator: ',',
     },
     react: {
-      wait: true
-    }
-	})
-	
+      wait: true,
+    },
+  })
+
 export function getCurrentLocale() {
-  return i18n.language || window.localStorage.i18nextLng || '';
+  return i18n.language || window.localStorage.i18nextLng || ''
 }
 
 export default i18n

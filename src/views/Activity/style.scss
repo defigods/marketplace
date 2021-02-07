@@ -1,42 +1,41 @@
 .activity {
-	padding-top: 4%;
-	min-height: 60vh;
+  padding-top: 4%;
+  min-height: 60vh;
 
-	.o-container{
+  .o-container {
     width: 70%;
   }
-	.p-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		.p-header-title {
+  .p-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .p-header-title {
       font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
       font-size: 35px;
-		}
+    }
   }
-  .sub-title{
-		font-size: 18px;
-		color: $ovr-grey;
-	}
-	.p-header-datetime{
-		color: $ovr-grey;
-	}
+  .sub-title {
+    font-size: 18px;
+    color: $ovr-grey;
+  }
+  .p-header-datetime {
+    color: $ovr-grey;
+  }
 }
 
-.sub-title--black{
-	font-size: 18px;
-	h3{
-		margin-top: 40px;
-	}
+.sub-title--black {
+  font-size: 18px;
+  h3 {
+    margin-top: 40px;
+  }
 }
 
-.activity-content{
-	margin-top: 40px;
-	margin-bottom: 60px;
+.activity-content {
+  margin-top: 40px;
+  margin-bottom: 60px;
 }
 
-.c-active-currency__rate{
-	font-size: 16px;
-	margin-bottom: 10px;
+.c-active-currency__rate {
+  font-size: 16px;
+  margin-bottom: 10px;
 }
-

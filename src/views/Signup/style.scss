@@ -1,45 +1,46 @@
-.Signup{
+.Signup {
   text-align: center;
   padding-top: 50px;
   background-image: linear-gradient(90deg, #5e509d 0%, #724a93 100%);
-  min-height: calc( 100vh - 300px );
+  min-height: calc(100vh - 300px);
   padding-bottom: 50px;
-  .MuiCircularProgress-root{
-    width: 25px!important;
-    height: 25px!important;
+  .MuiCircularProgress-root {
+    width: 25px !important;
+    height: 25px !important;
     top: 8px;
     position: relative;
     left: 15px;
-    svg{
+    svg {
       color: rebeccapurple;
     }
   }
-  .o-box{
+  .o-box {
     background: #fff;
     border-radius: 5px;
     margin: 0 auto;
     max-width: 450px;
     padding: 45px;
-    .Logo{
+    .Logo {
       max-width: 100px;
       height: auto;
       margin-bottom: 20px;
     }
-    h1, h2{
+    h1,
+    h2 {
       margin-top: 0px;
       color: $ovr_purple;
     }
-    .HexButton{
+    .HexButton {
       margin-top: 25px;
     }
   }
-  .--left{
-		text-align: left;
-		white-space: pre-line;
+  .--left {
+    text-align: left;
+    white-space: pre-line;
   }
-  .o-list{
+  .o-list {
     line-height: 20px;
-    svg{
+    svg {
       margin-left: 5px;
       max-width: 18px;
       display: inline-block;
@@ -47,20 +48,20 @@
       top: 7px;
     }
   }
-  .CheckCircleSharpIcon{
-    fill: #00C8A1;
+  .CheckCircleSharpIcon {
+    fill: #00c8a1;
   }
-  .CancelIcon{
-    fill: #DC6A5B;
+  .CancelIcon {
+    fill: #dc6a5b;
   }
-  .Signup__msg{
-    &.--positive{
-      background: rgba(#00C8A1, 0.1);
-      border: 1px solid #00C8A1;
+  .Signup__msg {
+    &.--positive {
+      background: rgba(#00c8a1, 0.1);
+      border: 1px solid #00c8a1;
     }
-    &.--negative{
-      background: rgba(#DC6A5B, 0.1);
-      border: 1px solid #DC6A5B;
+    &.--negative {
+      background: rgba(#dc6a5b, 0.1);
+      border: 1px solid #dc6a5b;
     }
     border-radius: 5px;
     padding: 10px 25px;
@@ -68,7 +69,7 @@
     font-weight: 300;
   }
 }
-.Signup__section{
+.Signup__section {
   font-size: 16px;
   margin-top: 5px;
   margin: 0 auto;
@@ -76,69 +77,70 @@
   clear: both;
   display: inline-block;
   width: 100%;
-  &.--small{
+  &.--small {
     margin-top: 10px;
     font-size: 10px;
     color: $ovr-sideral-grey;
   }
 }
-.Signup__form-container{
+.Signup__form-container {
   margin-top: 20px;
 }
-.Signup__input{
+.Signup__input {
   margin-top: 10px;
   text-align: center;
-  .HexButton{
+  .HexButton {
     margin-top: 20px;
   }
-  &:first-child{
+  &:first-child {
     margin-top: 0px;
   }
 }
-.Signup__signup, .Signup__forgot{
+.Signup__signup,
+.Signup__forgot {
   margin-top: 30px;
   font-size: 12px;
   font-weight: 400;
   color: $ovr-grey;
-  a{
+  a {
     color: $ovr-grey;
   }
 }
-.Signup__forgot{
+.Signup__forgot {
   margin-top: 20px;
 }
 
-.Signup__footer{
+.Signup__footer {
   margin-top: 50px;
-  a{
+  a {
     color: #000;
     text-decoration: none;
     font-weight: 400;
   }
 }
-.Signup__email_textfield{
+.Signup__email_textfield {
   width: 80%;
 }
 
-.Signup__userpass_textfield{
+.Signup__userpass_textfield {
   width: 60%;
 }
-.Signup__pass_cont{
+.Signup__pass_cont {
   margin-top: 15px;
 }
-.MuiSvgIcon-root.CheckCircleIcon{
+.MuiSvgIcon-root.CheckCircleIcon {
   height: 80px;
   width: 80px;
-  fill: #00C8A1;
-  stroke: #00C8A1;
+  fill: #00c8a1;
+  stroke: #00c8a1;
   margin-bottom: 20px;
 }
 
-.kep-login-facebook{
+.kep-login-facebook {
   display: inline-block;
   border: none;
   border-radius: 20px;
-  background: #4267B2;
+  background: #4267b2;
   color: #fff;
   white-space: nowrap;
   min-height: 38px;
@@ -150,34 +152,33 @@
   &:active {
     background-color: #3c5a98;
   }
-  .fa{
+  .fa {
     margin-right: 15px;
-    padding-top:6px;
-    padding-bottom:5px;
+    padding-top: 6px;
+    padding-bottom: 5px;
     font-size: 17px;
   }
-  
 }
-.Social__section button{
+.Social__section button {
   font-size: 14px;
-  padding: 0px 15px!important;
-  border-radius: 20px!important;
+  padding: 0px 15px !important;
+  border-radius: 20px !important;
   float: left;
 
-  div{
-    padding: 0px!important;
+  div {
+    padding: 0px !important;
   }
-  span{
+  span {
     padding: 9px 10px 9px 0px;
   }
 }
 
-.Social__subtitle{
+.Social__subtitle {
   margin-bottom: 30px;
   margin-top: 15px;
 }
 
-.Social__or{
+.Social__or {
   margin-top: 20px;
   margin-bottom: 0px;
   clear: both;
@@ -185,11 +186,10 @@
   display: inline-block;
 }
 
-.Social__buttons{
+.Social__buttons {
   display: inline-block;
-	
 }
 
-.--tutorial .Signup__section{
-	font-size: 14px;
+.--tutorial .Signup__section {
+  font-size: 14px;
 }

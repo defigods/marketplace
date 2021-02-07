@@ -1,36 +1,36 @@
-.ValueCounter{
-    line-height: 22px;
-    display: block;
-    height: 20px;
-    // overflow: hidden;
-    .Icon{
-        margin-right: 4px;
-        float: left;
-    }
-    .ValueCounter__value{
-        color:$ovr-orange;
-    }
-    .ValueCounter__icon{
-      height: 20px;
-		}
-		span{
-			color: $ovr-grey;
-			text-transform: uppercase;
-			font-size: 10px;
-			font-weight: bold;
-			line-height: 20px;
-			position: relative;
-			top: -2px;
-		}
-}
-
-
-.ValueCounter__value, .ValueCounter__icon{
+.ValueCounter {
+  line-height: 22px;
+  display: block;
+  height: 20px;
+  // overflow: hidden;
+  .Icon {
+    margin-right: 4px;
     float: left;
+  }
+  .ValueCounter__value {
+    color: $ovr-orange;
+  }
+  .ValueCounter__icon {
+    height: 20px;
+  }
+  span {
+    color: $ovr-grey;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 20px;
+    position: relative;
+    top: -2px;
+  }
 }
-.Dai__icon__svg{
-	max-width: 21px;
-	height: auto;
+
+.ValueCounter__value,
+.ValueCounter__icon {
+  float: left;
+}
+.Dai__icon__svg {
+  max-width: 21px;
+  height: auto;
 }
 
 // height: auto;

@@ -1,17 +1,18 @@
-.TextCounter{
-    font-size: 2.5em;
-    color: $ovr-purple;
-    display: inline-block;
+.TextCounter {
+  font-size: 2.5em;
+  color: $ovr-purple;
+  display: inline-block;
 
-    .TextCounter__text, .TextCounter__label{
-        float: left;
-        line-height: 1;
-    }
-    .TextCounter__text{
-        font-weight: 800;
-    }
-    .TextCounter__label{
-        font-weight: 100;
-        margin-left: 8px;
-    }
+  .TextCounter__text,
+  .TextCounter__label {
+    float: left;
+    line-height: 1;
+  }
+  .TextCounter__text {
+    font-weight: 800;
+  }
+  .TextCounter__label {
+    font-weight: 100;
+    margin-left: 8px;
+  }
 }

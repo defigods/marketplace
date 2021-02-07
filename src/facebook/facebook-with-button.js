@@ -1,19 +1,19 @@
 // @flow
-import React from "react";
-import PropTypes from "prop-types";
-import FacebookLogin from "./facebook";
+import React from 'react'
+import PropTypes from 'prop-types'
+import FacebookLogin from './facebook'
 
 // https://www.w3.org/TR/html5/disabled-elements.html#disabled-elements
 const _shouldAddDisabledProp = (tag) =>
   [
-    "button",
-    "input",
-    "select",
-    "textarea",
-    "optgroup",
-    "option",
-    "fieldset",
-  ].indexOf((tag + "").toLowerCase()) >= 0;
+    'button',
+    'input',
+    'select',
+    'textarea',
+    'optgroup',
+    'option',
+    'fieldset',
+  ].indexOf((tag + '').toLowerCase()) >= 0
 
 class ReactFacebookLoginWithButton extends React.Component {
   static propTypes = {
@@ -25,25 +25,25 @@ class ReactFacebookLoginWithButton extends React.Component {
     containerStyle: PropTypes.object,
     buttonStyle: PropTypes.object,
     tag: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  };
+  }
 
   static defaultProps = {
-    textButton: "Facebook",
-    typeButton: "button",
-    size: "metro",
-    fields: "name",
-    cssClass: "kep-login-facebook",
-    tag: "button",
-  };
+    textButton: 'Facebook',
+    typeButton: 'button',
+    size: 'metro',
+    fields: 'name',
+    cssClass: 'kep-login-facebook',
+    tag: 'button',
+  }
 
   containerStyle(renderProps) {
-    const { isProcessing, isSdkLoaded, isDisabled } = renderProps;
+    const { isProcessing, isSdkLoaded, isDisabled } = renderProps
 
-    const style = { transition: "opacity 0.5s" };
+    const style = { transition: 'opacity 0.5s' }
     if (isProcessing || !isSdkLoaded || isDisabled) {
-      style.opacity = 0.6;
+      style.opacity = 0.6
     }
-    return Object.assign(style, this.props.containerStyle);
+    return Object.assign(style, this.props.containerStyle)
   }
 
   renderOwnButton(renderProps) {
@@ -54,14 +54,14 @@ class ReactFacebookLoginWithButton extends React.Component {
       textButton,
       typeButton,
       buttonStyle,
-    } = this.props;
+    } = this.props
 
-    const { onClick, isDisabled } = renderProps;
+    const { onClick, isDisabled } = renderProps
 
-    const isIconString = typeof icon === "string";
-    const optionalProps = {};
+    const isIconString = typeof icon === 'string'
+    const optionalProps = {}
     if (isDisabled && _shouldAddDisabledProp(this.props.tag)) {
-      optionalProps.disabled = true;
+      optionalProps.disabled = true
     }
     return (
       <span style={this.containerStyle(renderProps)}>
@@ -83,7 +83,7 @@ class ReactFacebookLoginWithButton extends React.Component {
           {textButton}
         </this.props.tag>
       </span>
-    );
+    )
   }
 
   render() {
@@ -92,8 +92,8 @@ class ReactFacebookLoginWithButton extends React.Component {
         {...this.props}
         render={(renderProps) => this.renderOwnButton(renderProps)}
       />
-    );
+    )
   }
 }
 
-export default ReactFacebookLoginWithButton;
+export default ReactFacebookLoginWithButton

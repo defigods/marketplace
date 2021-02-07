@@ -1,31 +1,29 @@
-
-.CtaCard{
-    background: #FFFFFF;
-    padding: 30px 35px;
-    display: inline-block;
-    box-shadow: -10px 10px 20px 0 rgba(30,30,30,0.05);
-    .HexButton{
-        float: left;
-    }
-    .ArrowLink{
-        float: right;
-    }
-    .Icon{
-        width: 65px;
-        height: 65px;
-        float: right;
-        margin-left: 50px;
-    }
+.CtaCard {
+  background: #ffffff;
+  padding: 30px 35px;
+  display: inline-block;
+  box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.05);
+  .HexButton {
+    float: left;
+  }
+  .ArrowLink {
+    float: right;
+  }
+  .Icon {
+    width: 65px;
+    height: 65px;
+    float: right;
+    margin-left: 50px;
+  }
 }
 
-.CtaCard__text_line{
-    line-height: 1;
-    margin-top: 5px;
+.CtaCard__text_line {
+  line-height: 1;
+  margin-top: 5px;
 }
-.CtaCard__button_line{
-    margin-top: 25px;
-    .ArrowLink{
-        margin-left: 35px;
-    }
+.CtaCard__button_line {
+  margin-top: 25px;
+  .ArrowLink {
+    margin-left: 35px;
+  }
 }
-

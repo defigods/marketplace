@@ -1,11 +1,11 @@
-import '../../../.storybook/config.js';
+import '../../../.storybook/config.js'
 
-import React from 'react';
-import ValueCounter from './ValueCounter';
+import React from 'react'
+import ValueCounter from './ValueCounter'
 
 export default {
-	title: 'ValueCounter',
-	component: ValueCounter,
-};
+  title: 'ValueCounter',
+  component: ValueCounter,
+}
 
-export const Text = () => <ValueCounter value="150"></ValueCounter>;
+export const Text = () => <ValueCounter value="150"></ValueCounter>
