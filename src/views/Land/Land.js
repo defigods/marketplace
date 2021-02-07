@@ -1,30 +1,32 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react'
-import { withMapContext } from '../../context/MapContext'
-import { withUserContext } from '../../context/UserContext'
-import { withWeb3Context } from '../../context/Web3Context'
-import ValueCounter from '../../components/ValueCounter/ValueCounter'
-import TimeCounter from '../../components/TimeCounter/TimeCounter'
-import HexButton from '../../components/HexButton/HexButton'
-import BidOverlay from '../../components/BidOverlay/BidOverlay'
-import MintOverlay from '../../components/MintOverlay/MintOverlay'
-import SellOverlay from '../../components/SellOverlay/SellOverlay'
-import BuyOfferOverlay from '../../components/BuyOfferOverlay/BuyOfferOverlay'
-// import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
-import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder'
-import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay'
+import { withMapContext } from 'context/MapContext'
+import { withUserContext } from 'context/UserContext'
+import { withWeb3Context } from 'context/Web3Context'
+import ValueCounter from 'components/ValueCounter/ValueCounter'
+import TimeCounter from 'components/TimeCounter/TimeCounter'
+import HexButton from 'components/HexButton/HexButton'
+import BidOverlay from 'components/BidOverlay/BidOverlay'
+import MintOverlay from 'components/MintOverlay/MintOverlay'
+import SellOverlay from 'components/SellOverlay/SellOverlay'
+import BuyOfferOverlay from 'components/BuyOfferOverlay/BuyOfferOverlay'
+// import OpenSellOrder from 'components/OpenSellOrder/OpenSellOrder';
+import BuyOfferOrder from 'components/BuyOfferOrder/BuyOfferOrder'
+import BuyLandOverlay from 'components/BuyLandOverlay/BuyLandOverlay'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { warningNotification } from '../../lib/notifications'
+import { warningNotification } from 'lib/notifications'
 
 import {
   getLand,
   sendAuctionCheckClose,
   checkLandOnMerkle,
   updateLandMarketStatusIfHasBeenMinted,
-} from '../../lib/api'
-import { networkError, successNotification } from '../../lib/notifications'
+} from 'lib/api'
+import { networkError, successNotification } from 'lib/notifications'
 import PropTypes from 'prop-types'
 
-import config from '../../lib/config'
+import config from 'lib/config'
 import { Textfit } from 'react-textfit'
 import ActionCable from 'actioncable'
 import { Trans, useTranslation } from 'react-i18next'
