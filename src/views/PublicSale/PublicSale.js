@@ -32,6 +32,8 @@ let scatterChart
 let chartData
 let gradientStroke
 
+let isMobile = window.innerWidth < 860
+
 function PublicSale() {
   const { t, i18n } = useTranslation()
   const [tab, setTab] = React.useState('buy')
@@ -1038,7 +1040,14 @@ function PublicSale() {
       '1.194',
     ]
     var dataXY = []
-    for (var i = 0; i < dataX.length; i++) {
+
+    let dataLength = dataX.length
+    console.log('dataLength', dataLength)
+    if (isMobile) {
+      dataLength = 60
+    }
+
+    for (var i = 0; i < dataLength; i++) {
       let dot = { x: dataX[i], y: dataY[i] }
       dataXY.push(dot)
     }
