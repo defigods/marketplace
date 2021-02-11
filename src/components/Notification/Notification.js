@@ -90,9 +90,13 @@ const Notification = (props) => {
             onClose={handleClose}
             TransitionComponent={Fade}
           >
-            <MenuItem onClick={handleGoTo}>
-              {t('Notification.go.to.land')}
-            </MenuItem>
+            {props.data.hexId != null ? (
+              <MenuItem onClick={handleGoTo}>
+                {t('Notification.go.to.land')}
+              </MenuItem>
+            ) : (
+              <></>
+            )}
             <MenuItem onClick={handleHide}>
               {t('Notification.hide.label')}
             </MenuItem>
