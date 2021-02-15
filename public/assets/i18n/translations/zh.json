@@ -389,7 +389,7 @@
   "Generic.bid.tooltip": "轻铸币的矿工费由OVR来支付。这里所要求的矿工费是： 当（并且只有当）你赢得了拍卖，从你的钱包转账到OVR钱包的手续费，由赢得拍卖的买家支付。",
   "Profile.cashback.title": "现金返还",
   "Profile.cashback.button": "申领现金返还",
-  "Profile.cashback.description": "点击申领现金返还并且确认交易，即可获得12月进行的土地拍卖的返还奖励",
+  "Profile.cashback.description": "点击申领现金返还并且确认交易，即可获得1月进行的土地拍卖的返还奖励",
   "Profile.cashback.error.title": "没有可以申领的现金返还",
   "Profile.cashback.error.desc": "此用户目前没有可以申领的现金返还，如果你没有收到返还的现金，请查看你的钱包交易记录中‘正在打包的交易’。",
   "BannerCounter.closed.auctions": "已结束的拍卖",
