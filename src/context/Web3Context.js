@@ -318,8 +318,8 @@ export class Web3Provider extends Component {
 
   startHistoricLoop = async () => {
     // Loop trough blocks
-    let fromBlock = this.state.ibcoBlock.toNumber() - 26584
-    let toBlock = this.state.ibcoBlock.toNumber() - 26584 + 9999
+    let fromBlock = this.state.ibcoBlock.toNumber() - 10000
+    let toBlock = this.state.ibcoBlock.toNumber() - 10000 + 9999
     let nowBlock = this.state.ibcoBlock.toNumber()
 
     while (toBlock <= nowBlock) {
