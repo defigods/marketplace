@@ -1,4 +1,4 @@
-.Stacking {
+.Staking {
   background-image: linear-gradient(to right, #5e539e, #4fbed5);
   padding-bottom: 50px;
   .MuiToggleButton-label {
@@ -250,7 +250,7 @@
     padding-bottom: 15px;
     padding-top: 20px;
   }
-  .Stacking .--value-header .o-one-label .o-value {
+  .Staking .--value-header .o-one-label .o-value {
     // float: left;
     display: flex;
     .ValueCounter {
@@ -260,19 +260,19 @@
 }
 
 @media screen and (max-width: 769px) {
-  .Stacking .o-half,
-  .Stacking .o-first,
-  .Stacking .o-second {
+  .Staking .o-half,
+  .Staking .o-first,
+  .Staking .o-second {
     width: 100%;
   }
-  .Stacking .o-card {
+  .Staking .o-card {
     margin-bottom: 20px;
   }
-  .Stacking .--value-header .o-one-label .o-label {
+  .Staking .--value-header .o-one-label .o-label {
     text-align: center;
     margin-top: 25px;
   }
-  .Stacking .MuiToggleButtonGroup-root {
+  .Staking .MuiToggleButtonGroup-root {
     margin-top: 15px;
     font-size: 12px;
     margin-left: 0px;

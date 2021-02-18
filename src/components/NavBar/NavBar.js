@@ -156,8 +156,8 @@ const NavBar = () => {
           <NavLink className="NavBar__link" to="/map/discover">
             {t('Navbar.marketplace.label')}
           </NavLink>
-          <NavLink className="NavBar__link" to="/stacking">
-            {t('Stacking.title')}
+          <NavLink className="NavBar__link" to="/staking">
+            {t('Staking.title')}
           </NavLink>
         </>
       )
@@ -300,10 +300,10 @@ const NavBar = () => {
               <MenuItem
                 onClick={(e) => {
                   handleClose(e)
-                  handleGoTo('/stacking')
+                  handleGoTo('/staking')
                 }}
               >
-                {t('Stacking.title')}
+                {t('Staking.title')}
               </MenuItem>
               <MenuItem
                 onClick={(e) => {
@@ -563,7 +563,7 @@ const NavBar = () => {
                       </li>
                       <li className="c-navbar__item">
                         <a href="https://www.ovr.ai/staking/">
-                          {t('MiniNav.stacking')}
+                          {t('MiniNav.staking')}
                         </a>
                       </li>
                     </ul>
