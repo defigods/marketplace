@@ -527,6 +527,12 @@ export function getSumsubExternalLink(language = 'en') {
   )
 }
 
+// Cached infos
+
+export function getCachedCirculatingSupply() {
+  return request({ url: '/cached/circulating_supply', method: 'GET' }, {}, null)
+}
+
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------
 

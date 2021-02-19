@@ -369,7 +369,7 @@
   "Navbar.activity.label": "Activity",
   "Navbar.ovr.pending.label": "Currently you secured {{OVRToken}} OVR in ongoing auctions.",
   "ActivityTile.view.ether": "View on Etherscan",
-  "Lands.not.available.liquidity.mining": "This OVRLand is not available for sale and is reserved for liquidity miners.\n Please give write us an e-mail and we will inform you as soon as the liquidity mining program starts or the land becomes available",
+  "Lands.not.available.liquidity.mining": "This OVRLand is not available for sale and is reserved for liquidity miners.\n Please write us an e-mail and we will inform you as soon as the liquidity mining program starts or the land becomes available",
   "IBCO.buyprice": "Buy Price",
   "IBCO.price": "Price",
   "IBCO.supply": "Supply",
@@ -503,5 +503,13 @@
   "Warning.profile.country.missing.desc": "Add your Country in your Profile informations to proceed",
   "Profille.email.verified": "Verified",
 
-  "Merkle.waiting.update": "Including the transaction on the Merkle Tree batch..."
+  "Merkle.waiting.update": "Including the transaction on the Merkle Tree batch...",
+  "IBCO.cs.pre": "Pre Minted",
+  "IBCO.cs.minted": "Minted by the IBCO",
+  "IBCO.cs.total": "Total Supply",
+  "IBCO.cs.staking": "Token locked in Staking",
+  "IBCO.cs.supply": "Circulating Supply",
+  "IBCO.cs.vesting": "Token locked in Vesting",
+  "IBCO.cs.more.information": "More information",
+  "IBCO.cs.more.information.tooltip": "This panel is updated once per hour"
 }
