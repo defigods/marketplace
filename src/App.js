@@ -99,6 +99,7 @@ function App() {
         {(t, { i18n }) => (
           <UserProvider t={t} i18n={i18n}>
             <Web3Provider t={t} i18n={i18n}>
+              {console.log('AAa t', t)}
               <MapProvider>
                 <UserContext.Consumer>
                   {(userValue) => {

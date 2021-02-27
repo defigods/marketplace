@@ -113,7 +113,10 @@ function PublicSale() {
     } else {
       setIbcoAreTermsAccepted(false)
     }
-  }, [userContext.state.user.kycReviewAnswer])
+  }, [
+    userContext.state.user.kycReviewAnswer,
+    userContext.state.user.ibcoAcceptedTerms,
+  ])
 
   React.useEffect(() => {
     if (ibcoIsReady === true && userAuthenticated) {
