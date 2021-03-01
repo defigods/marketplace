@@ -134,6 +134,10 @@ function App() {
                                           component={Discover}
                                         ></Route>
                                         <Route
+                                          path="/map/discover"
+                                          component={Discover}
+                                        ></Route>
+                                        <Route
                                           path="/map/overview"
                                           component={Overview}
                                         ></Route>
