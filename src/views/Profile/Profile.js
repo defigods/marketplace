@@ -997,6 +997,25 @@ const ProfileLayout = () => {
                   ></HexButton>
                 </div>
               </div>
+              {/* <div key="Invite" className="p-section --m-t">
+                <h3 className="p-section-title">{t('Profile.invite.title')}</h3>
+
+                <div className="p-tiny-message">
+                  <div className="p-tiny-message">
+                    {t('Profile.invite.description')}
+                  </div>
+                  <br></br>
+                  <br></br>
+                </div>
+                <div className="p-section-content">
+                  <HexButton
+                    url="#"
+                    className={'--orange'}
+                    text={t('Profile.invite.button')}
+                    onClick={handleClaimCashback}
+                  ></HexButton>
+                </div>
+              </div> */}
               <div className="p-tiny-message">
                 {/* Every account will need to verify it's identity in order to buy OVR. <br></br>
 								Start your verification now. */}

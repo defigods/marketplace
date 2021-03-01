@@ -11,7 +11,9 @@ import Pagination from '@material-ui/lab/Pagination'
 import { Trans, useTranslation } from 'react-i18next'
 import { HashRouter as Router, Route, Link } from 'react-router-dom'
 
-const Discover = () => {
+import { saveToken } from '../../lib/auth'
+
+const Discover = (props) => {
   const { t, i18n } = useTranslation()
 
   const [listAuctions, setListAuctions] = useState('')
@@ -126,10 +128,15 @@ const Discover = () => {
     setCurrentLandPage(number)
   }
 
+  function setupReferralUserCookie() {
+    saveToken('referred_by_user', props.match.params.ref)
+  }
+
   useEffect(() => {
     actions.disableSingleView()
     loadAuctionsByPage()
     loadLandsByPage()
+    setupReferralUserCookie()
   }, [])
 
   return (

@@ -102,7 +102,10 @@ export function signUpPublicAddress(publicAddress) {
 export function signUpLoginMetamask(publicAddress) {
   return request(
     { url: '/authentication/metamask', method: 'POST' },
-    { public_address: publicAddress },
+    {
+      public_address: publicAddress,
+      referred_by_user_uuid: getToken('referred_by_user'),
+    },
     null
   )
 }

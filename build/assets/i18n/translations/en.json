@@ -23,6 +23,9 @@
   "Profile.whitelisted.no.ok": "To Buy OVR, verify your identity.",
   "Profile.start.verification": "START VERIFICATION",
   "Profile.check.verification": "CHECK VERIFICATION",
+  "Profile.invite.title": "Referral Link",
+  "Profile.invite.description": "Clicking this button you will copy your Referral Link in your clipboard. You can share it everywhere and users that will register trough this link will be referred to you.",
+  "Profile.invite.button": "Copy to clipboard",
 
   "Profile.status.label": "KYC Verification",
   "Profile.emailPresence.label": "Email address",
