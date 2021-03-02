@@ -9,6 +9,12 @@ import {
   warningNotification,
   successNotification,
 } from '../../lib/notifications'
+import Stepper from '@material-ui/core/Stepper'
+import Step from '@material-ui/core/Step'
+import StepLabel from '@material-ui/core/StepLabel'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { ethers, BigNumber, utils } from 'ethers'
@@ -79,6 +85,8 @@ function PublicSale() {
     showTermsAndConditionsOverlay,
     setShowTermsAndConditionsOverlay,
   ] = React.useState(false)
+  const [activeStep, setActiveStep] = React.useState(0)
+  const steps = getSteps()
   const [classShowPanels, setClassShowPanels] = React.useState(false)
 
   // Check if anything changed from web3context
@@ -96,6 +104,10 @@ function PublicSale() {
   React.useEffect(() => {
     if (userContext.state.user.kycReviewAnswer === 1) {
       setIbcoIsKYCPassed(true)
+      // Tutorial Stepper
+      if (activeStep < 1) {
+        setActiveStep(1)
+      }
     }
   }, [userContext.state.user.kycReviewAnswer])
 
@@ -110,6 +122,10 @@ function PublicSale() {
   React.useEffect(() => {
     if (Boolean(userContext.state.user.ibcoAcceptedTerms) == true) {
       setIbcoAreTermsAccepted(true)
+      // Tutorial Stepper
+      if (activeStep < 2) {
+        setActiveStep(2)
+      }
     } else {
       setIbcoAreTermsAccepted(false)
     }
@@ -117,6 +133,15 @@ function PublicSale() {
     userContext.state.user.kycReviewAnswer,
     userContext.state.user.ibcoAcceptedTerms,
   ])
+
+  React.useEffect(() => {
+    if (web3Context.state.ibcoDAIAllowance > 1000000) {
+      // Tutorial Stepper
+      if (activeStep < 3) {
+        setActiveStep(4)
+      }
+    }
+  }, [web3Context.state.ibcoDAIAllowance])
 
   React.useEffect(() => {
     if (ibcoIsReady === true && userAuthenticated) {
@@ -1159,6 +1184,15 @@ function PublicSale() {
     }
   }
 
+  function getSteps() {
+    return [
+      t('IBCO.stepper.first'),
+      t('IBCO.stepper.second'),
+      t('IBCO.stepper.third'),
+      t('IBCO.stepper.fourth'),
+    ]
+  }
+
   function renderActionButtonSection() {
     if (ibcoIsKYCPassed !== true) {
       return (
@@ -1504,7 +1538,41 @@ function PublicSale() {
                 </div>
               </div>
               <div className="o-section">
-                <div className="o-card --card-3">
+                <div className="o-card --card-3 --card-stepp">
+                  <div>
+                    <Stepper activeStep={activeStep} alternativeLabel>
+                      {steps.map((label, index) => (
+                        <Step key={label}>
+                          <StepLabel>{label}</StepLabel>
+                          {index == 2 && activeStep == 2 ? (
+                            <Typography
+                              variant="caption"
+                              className="small-step-copy"
+                            >
+                              {t('IBCO.stepper.third.copy')}
+                            </Typography>
+                          ) : (
+                            <></>
+                          )}
+
+                          {index == 3 && activeStep == 4 ? (
+                            <Typography
+                              variant="caption"
+                              className="small-step-copy"
+                            >
+                              {t('IBCO.stepper.fourth.copy')}
+                            </Typography>
+                          ) : (
+                            <></>
+                          )}
+                        </Step>
+                      ))}
+                    </Stepper>
+                  </div>
+                </div>
+              </div>
+              <div className="o-section">
+                <div className="o-card --card-4">
                   <div className="o-row">
                     <h3 className="o-card-title">
                       {t('IBCO.pending.transactions')}
@@ -1515,7 +1583,7 @@ function PublicSale() {
                 </div>
               </div>
               <div className="o-section">
-                <div className="o-card --card-4">
+                <div className="o-card --card-5">
                   <div className="o-row">
                     <h3 className="o-card-title">
                       {t('IBCO.my.transactions')}
@@ -1535,7 +1603,7 @@ function PublicSale() {
                 </div>
               </div>
               <div className="o-section">
-                <div className="o-card --card-5">
+                <div className="o-card --no-pad --card-6">
                   <div className="o-row">
                     <h3 className="o-card-title">
                       {t('IBCO.cs.more.information')}

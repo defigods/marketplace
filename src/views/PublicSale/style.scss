@@ -426,6 +426,26 @@
   }
 }
 
+.MuiStepIcon-root.MuiStepIcon-active {
+  color: #724a93 !important;
+}
+
+.MuiStepIcon-root.MuiStepIcon-completed {
+  color: #5e509d !important;
+}
+.small-step-copy {
+  width: 80%;
+  display: inline-block;
+  text-align: center;
+  font-size: 10px !important;
+  margin-left: 10% !important;
+  margin-top: 10px !important;
+}
+.--no-pad {
+  padding: 0px;
+  overflow: hidden;
+}
+
 @media screen and (min-width: 1000px) {
   .s-f-curve {
     width: 62%;
@@ -433,6 +453,21 @@
   }
   .s-f-panel {
     width: 34%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .MuiStepper-root {
+    padding: 0px !important;
+  }
+  .--card-stepp {
+    padding: 25px 0px !important;
+  }
+  .MuiStepLabel-label.MuiStepLabel-alternativeLabel {
+    font-size: 9px !important;
+  }
+  .small-step-copy {
+    display: none !important;
   }
 }
 
