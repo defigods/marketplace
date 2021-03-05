@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import { UserContext } from 'context/UserContext'
 // import HexImage from 'components/HexImage/HexImage';
 import HexButton from 'components/HexButton/HexButton'
-import config, { isEmpty } from 'lib/config'
+import config, { isEmpty, isAndroid } from 'lib/config'
 // import {isiOS, isImToken} from 'lib/config';
 // import CheckBox from 'components/CheckBox/CheckBox';
 // import EmailConfirmation from 'components/EmailConfirmation/EmailConfirmation';
@@ -962,7 +962,11 @@ const ProfileLayout = () => {
                           target={'_blank'}
                           url={urlKyc}
                           className="--blue"
-                          text={t('Generic.external.link')}
+                          text={
+                            isAndroid == false
+                              ? t('Generic.external.link')
+                              : t('Profile.check.verification')
+                          }
                           onClick={toggleImWalletKycVerificationFrame}
                         ></HexButton>
                       )}

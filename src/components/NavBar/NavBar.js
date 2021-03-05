@@ -167,14 +167,6 @@ const NavBar = () => {
           <NavLink className="NavBar__link" to="/map/discover">
             {t('Navbar.marketplace.label')}
           </NavLink>
-          <a
-            href={'https://www.ovr.ai/'}
-            rel="noopener noreferrer"
-            target={'_blank'}
-            className="NavBar__link"
-          >
-            About Us
-          </a>
         </>
       )
     }
@@ -304,14 +296,6 @@ const NavBar = () => {
                 }}
               >
                 {t('Staking.title')}
-              </MenuItem>
-              <MenuItem
-                onClick={(e) => {
-                  handleClose(e)
-                  window.open('https://ovr.ai', '_blank')
-                }}
-              >
-                About Us
               </MenuItem>
               <MenuItem
                 onClick={(e) => {

@@ -59,7 +59,7 @@
   "Signup.web3.install.imtoken": "Install imToken",
   "Signup.imwallet.tutorial.title": "imToken tutorial",
   "Signup.imwallet.tutorial.link": "I already have imToken App",
-  "Signup.imwallet.tutorial.body": "Before you start the KYC, please make sure that you have given imToken app the access to camera. \n\nIf you are using iPhone, in the later step you need to copy the external link and open the link in Safari to continue the facial scan,\n\nStep 1: open imToken app, go to the browser inside the app\n\nStep 2: insert address: www.ovr.ai, click and enter the IBCO page, then click “Join the whitelist”\n\nStep 3: Click on the top of the page “Connect Wallet”\n\nStep 4: connect your imToken wallet, and insert your email address, starting the KYC.\n\nStep 5: upload pictures of your ID document, then do the facial scan (please note, when you place your face into the circle, you need to slowly move around your head)\n\n",
+  "Signup.imwallet.tutorial.body": "Before you start the KYC, please make sure that you have given imToken app the access to camera. \n\nIf you are using iPhone, in the later step you need to copy the external link and open the link in Safari to continue the facial scan,\n\nStep 1: open imToken app, go to the browser inside the app\n\nStep 2: Click on the top of the page “Connect Wallet”\n\nStep 3: connect your imToken wallet, and insert your email address, starting the KYC.\n\nStep 4: upload pictures of your ID document, then do the facial scan (please note, when you place your face into the circle, you need to slowly move around your head)\n\n",
 
   "Navbar.profile.label": "Profile",
   "Navbar.Login.label": "Login",
@@ -428,7 +428,7 @@
   "Success.order.confirm": "Confirm Order",
   "IBCO.available.on.etherscan": "Available on Etherscan",
   "PublicSale.login.required.title": "You have to log in to visit our IBCO",
-  "PublicSale.login.required.desc": "Check our Public Sale. Connect your wallet.",
+  "PublicSale.login.required.desc": "Connect your wallet to visit this page.",
   "Profile.ovr.profile.desc": "Why we need this: OVR will use your e-mail as primary means to contact you in case other users are interested in buying or renting OVRLands you own.",
   "Success.request.processing": "Your order request is being processed",
   "Lands.select.multiple.lands": "Multiple land selection",

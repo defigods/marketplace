@@ -233,3 +233,6 @@ export function isPositiveFloat(s) {
 export function isEmpty(str) {
   return !str || 0 === str.length
 }
+
+let ua = navigator.userAgent.toLowerCase()
+export let isAndroid = ua.indexOf('android') > -1
