@@ -13,7 +13,7 @@
 - Added control of KYC before buying OVR Token - PRODUCTION only
 - Fixed 3 word bugs, enhanced word list, and activated browse of land via 3 words name in URL
 - If I was watching a single land page before login, after login I'll be redirect to that same land
-- There is now a projection of the expense of a bid in all the aviable currencies - logged user only
+- There is now a projection of the expense of a bid in all the available currencies - logged user only
 - There is a silent fetch and save in our db of KYC's userdata when they passed the verification from Sumsub
 
 ### v0.1.21

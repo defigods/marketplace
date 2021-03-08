@@ -76,7 +76,7 @@
   "Overview.no.auctions.open": "There is currently no <1>OPEN</1> auction",
   "Overview.browse.ovr.lands": "Browse the OVRLands: search for a location or click a point in the map and mint a land now.",
   "Overview.no.lands": "There is currently no lands to display",
-  "Overview.browse.lands": "Browse the aviable OVRLands: mint a land and own it now.",
+  "Overview.browse.lands": "Browse the available OVRLands: mint a land and own it now.",
   "Overview.auctions.label": "Auctions",
   "Overview.my.ovrlands": "My OVR Lands",
   "Overview.login.required": "You have to log in to visit My Assets",
@@ -131,7 +131,7 @@
   "Discover.no.auctions.open": "There is currently no <1>OPEN</1> auction",
   "Discover.browse.lands": "Browse the OVRLands: search for a location or click a point in the map and mint a land now.",
   "Discover.no.lands": "There is currently no lands to display",
-  "Discover.browse.available": "Browse the aviable OVRLands: mint a land and own it now.",
+  "Discover.browse.available": "Browse the available OVRLands: mint a land and own it now.",
   "Discover.auctions.label": "Auctions",
   "Discover.closed.auctions": "Closed Auctions",
 
