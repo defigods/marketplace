@@ -218,7 +218,17 @@ function Staking() {
         web3Context.state.address,
         3
       )
-
+      console.log('staking values', [
+        stakeBalOVRHuman,
+        stakeBalOVRHuman3,
+        stakeBalOVRHuman6,
+        getRewOVRHuman,
+        getRewOVRHuman3,
+        getRewOVRHuman6,
+        stakeCrewOVRHuman,
+        stakeCrewOVRHuman3,
+        stakeCrewOVRHuman6,
+      ])
       setStakingValuesOVR([
         stakeBalOVRHuman,
         stakeBalOVRHuman3,

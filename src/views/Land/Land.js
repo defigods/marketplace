@@ -32,6 +32,7 @@ import ActionCable from 'actioncable'
 import { Trans, useTranslation } from 'react-i18next'
 
 import _ from 'lodash'
+import { checkToken } from 'lib/auth'
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
@@ -88,7 +89,7 @@ const Land = (props) => {
     if (setupComplete && isLoggedIn && hexId === props.match.params.id) {
       // liveSocket(props.match.params.id);
       // console.log('LIVESOCKET', hexId);
-      if (isLoggedIn) {
+      if (isLoggedIn && checkToken('userToken')) {
         // console.log('LIVESOCKET PASSED', hexId);
         if (window.landSocket) window.landSocket.unsubscribe() // unsubscribe precedent land
         var cable = ActionCable.createConsumer(config.apis.socket)
@@ -106,6 +107,7 @@ const Land = (props) => {
         )
       } else {
         // console.log('LIVESOCKET UHOH');
+        if (window.landSocket) window.landSocket.unsubscribe()
       }
     }
   }, [setupComplete, isLoggedIn, hexId])

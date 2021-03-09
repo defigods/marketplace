@@ -6,6 +6,7 @@ import {
   getToken,
   removeUser,
   getUser,
+  checkToken,
 } from '../lib/auth'
 import {
   successNotification,
@@ -264,11 +265,15 @@ export class UserProvider extends Component {
   // Sockets
 
   liveSocket = () => {
-    if (this.state.isLoggedIn && !this.state.subscribedToLiveSockets) {
+    if (
+      this.state.isLoggedIn &&
+      !this.state.subscribedToLiveSockets &&
+      checkToken('userToken')
+    ) {
       this.setState({ subscribedToLiveSockets: true })
+      if (window.userSocket) window.userSocket.unsubscribe()
       var cable = ActionCable.createConsumer(config.apis.socket)
-
-      cable.subscriptions.create(
+      window.userSocket = cable.subscriptions.create(
         { channel: 'UsersChannel', user_uuid: this.state.user.uuid },
         {
           received: (data) => {
@@ -304,6 +309,8 @@ export class UserProvider extends Component {
           },
         }
       )
+    } else {
+      if (window.userSocket) window.userSocket.unsubscribe()
     }
   }
 
