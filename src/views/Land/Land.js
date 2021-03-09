@@ -51,6 +51,7 @@ const Land = (props) => {
     ovr,
     ico,
     setupComplete,
+    ibcoCurrentOvrPrice,
     LightMintV2Signer,
   } = props.web3Provider.state
   const { isLoggedIn } = props.userProvider.state
@@ -114,6 +115,13 @@ const Land = (props) => {
     if (setupComplete) decentralizedSetup()
   }, [setupComplete, ico, ovr, hexId, marketStatus])
 
+  useEffect(() => {
+    if (marketStatus == 0) {
+      let val = getUSDValueInOvr(10)
+      setValue(val)
+    }
+  }, [ibcoCurrentOvrPrice])
+
   const decentralizedSetup = async () => {
     if (!setupComplete || !ico || !ovr) {
       return false
@@ -146,7 +154,7 @@ const Land = (props) => {
           // Centralized
           setValue(data.value)
           // If it's unminted take 10
-          if (data.value < 12 && data.marketStatus == 0) {
+          if (data.marketStatus == 0) {
             let val = getUSDValueInOvr(10)
             setValue(val)
           }
