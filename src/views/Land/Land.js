@@ -103,6 +103,9 @@ const Land = (props) => {
               loadLandStateFromApi(hexId)
               decentralizedSetup()
             },
+            unsubscribe: () => {
+              return this.perform('disconnect')
+            },
           }
         )
       } else {
