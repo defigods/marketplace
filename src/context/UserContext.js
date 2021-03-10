@@ -307,9 +307,9 @@ export class UserProvider extends Component {
               })
             }
           },
-          unsubscribe: () => {
-            return this.perform('disconnect')
-          },
+          // unsubscribe: () => {
+          //   return this.perform('disconnect')
+          // },
         }
       )
     } else {
