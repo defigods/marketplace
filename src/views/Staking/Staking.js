@@ -112,6 +112,19 @@ function Staking() {
       //let depOVRG = await web3Context.state.VestOVRGViewer.deposited(web3Context.state.address);
       //let bnValue=new bn(1).times(mantissa).toFixed(0)
       // no lockup
+      let getToClaimRewards = await web3Context.state.StakeOVRViewer.toClaimRewards(
+        web3Context.state.address,
+        1
+      )
+      let getToClaimRewards3 = await web3Context.state.StakeOVRViewer.toClaimRewards(
+        web3Context.state.address,
+        2
+      )
+      let getToClaimRewards6 = await web3Context.state.StakeOVRViewer.toClaimRewards(
+        web3Context.state.address,
+        3
+      )
+
       let stakeBalOVR = await web3Context.state.StakeOVRViewer.balances(
         web3Context.state.address,
         1
@@ -175,9 +188,11 @@ function Staking() {
         stakeBalOVR,
         1
       )
-      let getRewOVRHuman = parseFloat(
-        ethers.utils.formatEther(getRewOVR[0]).toString()
+      let getRewOVRHuman = (
+        parseFloat(ethers.utils.formatEther(getRewOVR[0]).toString()) +
+        parseFloat(ethers.utils.formatEther(getToClaimRewards).toString())
       ).toFixed(3)
+
       depositDate = await web3Context.state.StakeOVRGViewer.depositDates(
         web3Context.state.address,
         1
@@ -193,8 +208,9 @@ function Staking() {
         stakeBalOVR3,
         2
       )
-      let getRewOVRHuman3 = parseFloat(
-        ethers.utils.formatEther(getRewOVR3[0]).toString()
+      let getRewOVRHuman3 = (
+        parseFloat(ethers.utils.formatEther(getRewOVR3[0]).toString()) +
+        parseFloat(ethers.utils.formatEther(getToClaimRewards3).toString())
       ).toFixed(3)
       depositDate = await web3Context.state.StakeOVRGViewer.depositDates(
         web3Context.state.address,
@@ -211,8 +227,9 @@ function Staking() {
         stakeBalOVR6,
         3
       )
-      let getRewOVRHuman6 = parseFloat(
-        ethers.utils.formatEther(getRewOVR6[0]).toString()
+      let getRewOVRHuman6 = (
+        parseFloat(ethers.utils.formatEther(getRewOVR6[0]).toString()) +
+        parseFloat(ethers.utils.formatEther(getToClaimRewards6).toString())
       ).toFixed(3)
       depositDate = await web3Context.state.StakeOVRGViewer.depositDates(
         web3Context.state.address,

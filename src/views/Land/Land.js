@@ -23,6 +23,7 @@ import {
   checkLandOnMerkle,
   updateLandMarketStatusIfHasBeenMinted,
 } from 'lib/api'
+
 import { networkError, successNotification } from 'lib/notifications'
 import PropTypes from 'prop-types'
 
