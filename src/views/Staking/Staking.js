@@ -114,7 +114,7 @@ function Staking() {
       // no lockup
       let stakeBalOVR = await web3Context.state.StakeOVRViewer.balances(
         web3Context.state.address,
-        0
+        1
       )
       let stakeBalOVRHuman = parseFloat(
         ethers.utils.formatEther(stakeBalOVR).toString()
