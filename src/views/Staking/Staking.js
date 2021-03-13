@@ -112,6 +112,11 @@ function Staking() {
       //let depOVRG = await web3Context.state.VestOVRGViewer.deposited(web3Context.state.address);
       //let bnValue=new bn(1).times(mantissa).toFixed(0)
       // no lockup
+      let getToClaimRewards0 = await web3Context.state.StakeOVRViewer.toClaimRewards(
+        web3Context.state.address,
+        0
+      )
+      console.log('getToClaimRewards0', getToClaimRewards0)
       let getToClaimRewards = await web3Context.state.StakeOVRViewer.toClaimRewards(
         web3Context.state.address,
         1
@@ -125,12 +130,24 @@ function Staking() {
         3
       )
 
+      let stakeBalOVR0 = await web3Context.state.StakeOVRViewer.balances(
+        web3Context.state.address,
+        0
+      )
+      let stakeBalOVRHuman0 = parseFloat(
+        ethers.utils.formatEther(stakeBalOVR0).toString()
+      ).toFixed(2)
+
       let stakeBalOVR = await web3Context.state.StakeOVRViewer.balances(
         web3Context.state.address,
         1
       )
       let stakeBalOVRHuman = parseFloat(
         ethers.utils.formatEther(stakeBalOVR).toString()
+      ).toFixed(2)
+
+      stakeBalOVRHuman = (
+        parseFloat(stakeBalOVRHuman) + parseFloat(stakeBalOVRHuman0)
       ).toFixed(2)
 
       //3 months
@@ -183,13 +200,16 @@ function Staking() {
         web3Context.state.address,
         1
       )
+
       let getRewOVR = await web3Context.state.StakeOVRViewer.getAccruedEmission(
         depositDate,
         stakeBalOVR,
         1
       )
+
       let getRewOVRHuman = (
         parseFloat(ethers.utils.formatEther(getRewOVR[0]).toString()) +
+        parseFloat(ethers.utils.formatEther(getToClaimRewards0).toString()) +
         parseFloat(ethers.utils.formatEther(getToClaimRewards).toString())
       ).toFixed(3)
 

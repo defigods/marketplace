@@ -703,6 +703,7 @@ export class Web3Provider extends Component {
       this.state.address,
       config.apis.curveAddress
     )
+
     this.setState({
       ibcoDAIAllowance: allowance,
     })
