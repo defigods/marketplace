@@ -472,7 +472,7 @@
   "Vesting.allwance": "{{token}} Allowance",
   "Profile.cashback.title": "Cashback",
   "Profile.cashback.button": "Claim Cashback",
-  "Profile.cashback.description": "Click on Claim Cashback and confirm the transaction to obtain the auction cashback for January",
+  "Profile.cashback.description": "Click on Claim Cashback and confirm the transaction to obtain the auction cashback for February",
   "Profile.cashback.error.title": "No Cashback to claim",
   "Profile.cashback.error.desc": "There is no available Cashback for your wallet, if you didn't receive your amount check your wallet's pending transaction.",
 
