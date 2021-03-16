@@ -34,7 +34,6 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import _ from 'lodash'
 import { checkToken } from 'lib/auth'
-import OpenSellOrder from 'components/OpenSellOrder/OpenSellOrder'
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
@@ -840,26 +839,6 @@ const Land = (props) => {
             </div>
           </div>
           {/*  */}
-          <div className="o-container">
-            <OpenSellOrder
-              key={'1111'}
-              order={{
-                order_uuid: 'uuid',
-                user_uuid: 'user_uuid',
-                land_uuid: 'land_uuid',
-                nature: 0,
-                status: 'status',
-                worth: 10,
-                created_at: 'created_at',
-                expiration_date: 'expiration_date',
-              }}
-              isOwner={false}
-              userPerspective={2}
-              userProvider={props.userProvider}
-              web3Provide={props.web3Provider}
-              t={t}
-            ></OpenSellOrder>
-          </div>
           <div className="Land__section">{renderBidHistory()}</div>
         </div>
       )
