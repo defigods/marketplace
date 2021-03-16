@@ -49,56 +49,59 @@ export class BuyOfferOrder extends Component {
 
   // To delete/cancel a buy offer if you created it
   confirmDeleteBuyOffer = async (offerId) => {
-    const { t, i18n } = useTranslation()
     try {
       const tx = await this.props.web3Provider.actions.cancelBuyOffer(offerId)
       this.setState({
-        metamaskMessage: t('MetamaskMessage.cancel.buy'),
+        metamaskMessage: this.props.t('MetamaskMessage.cancel.buy'),
         transactionInProcess: true,
       })
       await this.props.web3Provider.actions.waitTx(tx)
     } catch (e) {
-      return dangerNotification(t('Danger.cancel.buy.title'), e.message)
+      return dangerNotification(
+        this.props.t('Danger.cancel.buy.title'),
+        e.message
+      )
     }
     successNotification(
-      t('Success.delete.title'),
-      t('Success.request.process.desc')
+      this.props.t('Success.delete.title'),
+      this.props.t('Success.request.process.desc')
     )
     this.handleClose()
   }
 
   // To decline a buy offer
   declineBuyOffer = async (offerId) => {
-    const { t, i18n } = useTranslation()
     try {
       const tx = await this.props.web3Provider.actions.declineBuyOffer(offerId)
       this.setState({
-        metamaskMessage: t('MetamaskMessage.decline.buy'),
+        metamaskMessage: this.props.t('MetamaskMessage.decline.buy'),
         transactionInProcess: true,
       })
       await this.props.web3Provider.actions.waitTx(tx)
     } catch (e) {
-      return dangerNotification(t('Danger.decline.buy.title'), e.message)
+      return dangerNotification(
+        this.props.t('Danger.decline.buy.title'),
+        e.message
+      )
     }
     successNotification(
-      t('Success.decline.title'),
-      t('Success.request.process.desc')
+      this.props.t('Success.decline.title'),
+      this.props.t('Success.request.process.desc')
     )
     this.handleClose()
   }
 
   // To accept a buy offer and sell your land
   confirmSell = async (offerId, landId) => {
-    const { t, i18n } = useTranslation()
     try {
       this.setState({
-        metamaskMessage: t('MetamaskMessage.approve.ovr'),
+        metamaskMessage: this.props.t('MetamaskMessage.approve.ovr'),
         transactionInProcess: true,
       })
       await this.props.web3Provider.actions.approveErc721Token(landId, true)
 
       this.setState({
-        metamaskMessage: t('MetamaskMessage.accept.sell'),
+        metamaskMessage: this.props.t('MetamaskMessage.accept.sell'),
       })
       const newTx = await this.props.web3Provider.actions.acceptBuyOffer(
         offerId,
@@ -106,35 +109,36 @@ export class BuyOfferOrder extends Component {
       )
       await this.props.web3Provider.actions.waitTx(newTx)
     } catch (e) {
-      return dangerNotification(t('Danger.accept.buy.title'), e.message)
+      return dangerNotification(
+        this.props.t('Danger.accept.buy.title'),
+        e.message
+      )
     }
     successNotification(
-      t('Success.land.sold.title'),
-      t('Success.request.process.desc')
+      this.props.t('Success.land.sold.title'),
+      this.props.t('Success.request.process.desc')
     )
     this.handleClose()
   }
 
   handleOpen() {
-    const { t, i18n } = useTranslation()
     if (this.props.userProvider.state.isLoggedIn) {
       this.setState({ openModal: true })
     } else {
       warningNotification(
-        t('Warning.invalid.auth.title'),
-        t('Warning.invalid.auth.desc.buy')
+        this.props.t('Warning.invalid.auth.title'),
+        this.props.t('Warning.invalid.auth.desc.buy')
       )
     }
   }
 
   openDeclineModal = () => {
-    const { t, i18n } = useTranslation()
     if (this.props.userProvider.state.isLoggedIn) {
       this.setState({ openDeclineBuyModal: true })
     } else {
       warningNotification(
-        t('Warning.invalid.auth.title'),
-        t('Warning.invalid.auth.desc.buy')
+        this.props.t('Warning.invalid.auth.title'),
+        this.props.t('Warning.invalid.auth.desc.buy')
       )
     }
   }
@@ -153,7 +157,6 @@ export class BuyOfferOrder extends Component {
   }
 
   buttonRender() {
-    const { t, i18n } = useTranslation()
     let customRender
     if (!this.props.isOwner) {
       customRender = (
@@ -164,14 +167,14 @@ export class BuyOfferOrder extends Component {
               className="orderTileButton"
               onClick={this.handleOpen}
             >
-              {t('BuyOfferOrder.accept.offer')}
+              {this.props.t('BuyOfferOrder.accept.offer')}
             </button>{' '}
             <button
               type="button"
               className="orderTileButton"
               onClick={this.openDeclineModal}
             >
-              {t('BuyOfferOrder.decline.offer')}
+              {this.props.t('BuyOfferOrder.decline.offer')}
             </button>
           </div>
           <div className="section"></div>
@@ -182,7 +185,7 @@ export class BuyOfferOrder extends Component {
             onClose={this.handleClose}
           >
             <div className="BuyOfferModal">
-              <h2>{t('BuyOfferOrder.sell.confirmation')}</h2>
+              <h2>{this.props.t('BuyOfferOrder.sell.confirmation')}</h2>
               <p>
                 <Trans i18nKey="BuyOfferOrder.sell.conf.ask">
                   Do you confirm the sell of this <b>OVRLand</b>?
@@ -191,7 +194,7 @@ export class BuyOfferOrder extends Component {
               <div className="Overlay__bid_container">
                 <div className="OrderModal__bid">
                   <div className="Overlay__bid_title">
-                    {t('BuyOfferOrder.sell.at')}
+                    {this.props.t('BuyOfferOrder.sell.at')}
                   </div>
                   <div className="Overlay__bid_cont">
                     <ValueCounter value={this.props.offer.price}></ValueCounter>
@@ -202,7 +205,7 @@ export class BuyOfferOrder extends Component {
               <div className="Modal__buttons_container">
                 <HexButton
                   url="#"
-                  text={t('Generic.confirm.label')}
+                  text={this.props.t('Generic.confirm.label')}
                   className={
                     this.state.transactionInProcess
                       ? '--purple --disabled'
@@ -217,7 +220,7 @@ export class BuyOfferOrder extends Component {
                 ></HexButton>
                 <HexButton
                   url="#"
-                  text={t('Generic.cancel.label')}
+                  text={this.props.t('Generic.cancel.label')}
                   className="--outline"
                   onClick={this.handleClose}
                 ></HexButton>
@@ -232,7 +235,7 @@ export class BuyOfferOrder extends Component {
             onClose={this.handleClose}
           >
             <div className="BuyOfferModal">
-              <h2>{t('BuyOfferOrder.decline.confirm')}</h2>
+              <h2>{this.props.t('BuyOfferOrder.decline.confirm')}</h2>
               <p>
                 <Trans i18nKey="BuyOfferOrder.decline.conf.ask">
                   Do you confirm to decline this buy offer for this{' '}
@@ -242,7 +245,7 @@ export class BuyOfferOrder extends Component {
               <div className="Overlay__bid_container">
                 <div className="OrderModal__bid">
                   <div className="Overlay__bid_title">
-                    {t('BuyOfferOrder.sell.at')}
+                    {this.props.t('BuyOfferOrder.sell.at')}
                   </div>
                   <div className="Overlay__bid_cont">
                     <ValueCounter value={this.props.offer.price}></ValueCounter>
@@ -253,7 +256,7 @@ export class BuyOfferOrder extends Component {
               <div className="Modal__buttons_container">
                 <HexButton
                   url="#"
-                  text={t('Generic.confirm.label')}
+                  text={this.props.t('Generic.confirm.label')}
                   className={
                     this.state.transactionInProcess
                       ? '--purple --disabled'
@@ -263,7 +266,7 @@ export class BuyOfferOrder extends Component {
                 ></HexButton>
                 <HexButton
                   url="#"
-                  text={t('Generic.cancel.label')}
+                  text={this.props.t('Generic.cancel.label')}
                   className="--outline"
                   onClick={this.handleClose}
                 ></HexButton>
@@ -292,7 +295,7 @@ export class BuyOfferOrder extends Component {
             onClose={this.handleClose}
           >
             <div className="BuyOfferModal">
-              <h2>{t('BuyOfferOrder.delete.confirmation')}</h2>
+              <h2>{this.props.t('BuyOfferOrder.delete.confirmation')}</h2>
               <p>
                 <Trans i18nKey="BuyOfferOrder.delete.ask">
                   Do you confirm the delete of this <b>Buy offer</b>?
@@ -302,7 +305,7 @@ export class BuyOfferOrder extends Component {
               <div className="Modal__buttons_container">
                 <HexButton
                   url="#"
-                  text={t('Generic.confirm.label')}
+                  text={this.props.t('Generic.confirm.label')}
                   className={
                     this.state.transactionInProcess
                       ? '--purple --disabled'
@@ -314,7 +317,7 @@ export class BuyOfferOrder extends Component {
                 ></HexButton>
                 <HexButton
                   url="#"
-                  text={t('Generic.cancel.label')}
+                  text={this.props.t('Generic.cancel.label')}
                   className="--outline"
                   onClick={this.handleClose}
                 ></HexButton>
@@ -328,18 +331,17 @@ export class BuyOfferOrder extends Component {
   }
 
   render() {
-    const { t, i18n } = useTranslation()
     return (
       <div className="BuyOfferTile">
         <div className="section">
           <ValueCounter value={this.props.offer.price}></ValueCounter>
         </div>
         <div className="section">
-          <b>{t('BuyOfferOrder.offer.order')}</b>
+          <b>{this.props.t('BuyOfferOrder.offer.order')}</b>
         </div>
         <div className="section">
           <span className="c-small-tile-text">
-            {t('BuyOfferOrder.expires.label')}
+            {this.props.t('BuyOfferOrder.expires.label')}
           </span>{' '}
           <TimeCounter
             date_end={new Date(this.props.offer.expirationDate * 1000)}

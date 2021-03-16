@@ -23,19 +23,18 @@ export class OpenSellOrder extends Component {
   }
 
   confirmDeleteSell = () => {
-    const { t, i18n } = useTranslation()
     deleteSellLand(this.props.order.landUuid) // Call API function
       .then((response) => {
         if (response.data.result === true) {
           successNotification(
-            t('Success.action.title'),
-            t('Success.delete.order.desc')
+            this.props.t('Success.action.title'),
+            this.props.t('Success.delete.order.desc')
           )
           // this.props.reloadLandStatefromApi(this.props.order.landUuid)
           this.handleClose()
         } else {
           dangerNotification(
-            t('Danger.unable.delete.sell.title'),
+            this.props.t('Danger.unable.delete.sell.title'),
             response.data.errors[0].message
           )
         }
@@ -48,19 +47,18 @@ export class OpenSellOrder extends Component {
   }
 
   confirmBuy = () => {
-    const { t, i18n } = useTranslation()
     buyLand(this.props.order.landUuid) // Call API function
       .then((response) => {
         if (response.data.result === true) {
           successNotification(
-            t('Success.action.title'),
-            t('Success.land.own.desc')
+            this.props.t('Success.action.title'),
+            this.props.t('Success.land.own.desc')
           )
           // this.props.reloadLandStatefromApi(this.props.order.landUuid)
           this.handleClose()
         } else {
           dangerNotification(
-            t('Danger.unable.buy.land.title'),
+            this.props.t('Danger.unable.buy.land.title'),
             response.data.errors[0].message
           )
         }
@@ -73,13 +71,12 @@ export class OpenSellOrder extends Component {
   }
 
   handleOpen = () => {
-    const { t, i18n } = useTranslation()
     if (this.props.userProvider.state.isLoggedIn) {
       this.setState({ openModal: true })
     } else {
       warningNotification(
-        t('Warning.invalid.auth.title'),
-        t('Warning.invalid.auth.desc.buy')
+        this.props.t('Warning.invalid.auth.title'),
+        this.props.t('Warning.invalid.auth.desc.buy')
       )
     }
   }
@@ -91,7 +88,6 @@ export class OpenSellOrder extends Component {
   componentDidMount() {}
 
   buttonRender = () => {
-    const { t, i18n } = useTranslation()
     let customRender
     if (this.props.userPerspective === 1) {
       customRender = (
@@ -102,7 +98,7 @@ export class OpenSellOrder extends Component {
               className="orderTileButton"
               onClick={this.handleOpen}
             >
-              {t('Generic.delete.label')}
+              {this.props.t('Generic.delete.label')}
             </button>
           </div>
           <div className="section"></div>
@@ -113,7 +109,7 @@ export class OpenSellOrder extends Component {
             onClose={this.handleClose}
           >
             <div className="SellOrderModal">
-              <h2>{t('OpenSellOrder.delete.confirm')}</h2>
+              <h2>{this.props.t('OpenSellOrder.delete.confirm')}</h2>
               <p>
                 <Trans i18nKey="OpenSellOrder.delete.ask">
                   Do you confirm the delete of this <b>Open Sell Order</b>?
@@ -122,13 +118,13 @@ export class OpenSellOrder extends Component {
               <div className="Modal__buttons_container">
                 <HexButton
                   url="#"
-                  text={t('OpenSellOrder.confirm.label')}
+                  text={this.props.t('OpenSellOrder.confirm.label')}
                   className={`--purple`}
                   onClick={this.confirmDeleteSell}
                 ></HexButton>
                 <HexButton
                   url="#"
-                  text={t('Generic.cancel.label')}
+                  text={this.props.t('Generic.cancel.label')}
                   className="--outline"
                   onClick={this.handleClose}
                 ></HexButton>
@@ -146,7 +142,7 @@ export class OpenSellOrder extends Component {
               className="orderTileButton"
               onClick={this.handleOpen}
             >
-              {t('OpenSellOrder.buy.now')}
+              {this.props.t('OpenSellOrder.buy.now')}
             </button>
           </div>
           <div className="section"></div>
@@ -157,7 +153,7 @@ export class OpenSellOrder extends Component {
             onClose={this.handleClose}
           >
             <div className="SellOrderModal">
-              <h2>{t('OpenSellOrder.buy.confirm')}</h2>
+              <h2>{this.props.t('OpenSellOrder.buy.confirm')}</h2>
               <p>
                 <Trans i18nKey="OpenSellOrder.buy.ask">
                   Do you confirm the buy of this <b>OVRLand</b>?
@@ -166,7 +162,7 @@ export class OpenSellOrder extends Component {
               <div className="Overlay__bid_container">
                 <div className="OrderModal__bid">
                   <div className="Overlay__bid_title">
-                    {t('OpenSellOrder.buy.for')}
+                    {this.props.t('OpenSellOrder.buy.for')}
                   </div>
                   <div className="Overlay__bid_cont">
                     <ValueCounter value={this.props.order.worth}></ValueCounter>
@@ -176,13 +172,13 @@ export class OpenSellOrder extends Component {
               <div className="Modal__buttons_container">
                 <HexButton
                   url="#"
-                  text={t('OpenSellOrder.confirm.label')}
+                  text={this.props.t('OpenSellOrder.confirm.label')}
                   className={`--purple`}
                   onClick={this.confirmBuy}
                 ></HexButton>
                 <HexButton
                   url="#"
-                  text={t('Generic.cancel.label')}
+                  text={this.props.t('Generic.cancel.label')}
                   className="--outline"
                   onClick={this.handleClose}
                 ></HexButton>
@@ -196,19 +192,16 @@ export class OpenSellOrder extends Component {
   }
 
   render() {
-    const { t, i18n } = useTranslation()
     return (
       <div className="SellOrderTile">
         <div className="section">
           <ValueCounter value={this.props.order.worth}></ValueCounter>
         </div>
         <div className="section">
-          <b>{t('OpenSellOrder.open.order')}</b>
+          <b>Open Order</b>
         </div>
         <div className="section">
-          <span className="c-small-tile-text">
-            {t('OpenSellOrder.placed.label')}
-          </span>{' '}
+          <span className="c-small-tile-text">Open Sell</span>{' '}
           <TimeCounter date_end={this.props.order.createdAt}></TimeCounter>
         </div>
         {this.buttonRender()}
