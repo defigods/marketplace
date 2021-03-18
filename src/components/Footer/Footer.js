@@ -65,6 +65,14 @@ class Footer extends Component {
             >
               Facebook
             </a>
+            <a
+              href={'https://twitter.com/OVRtheReality'}
+              rel="noopener noreferrer"
+              target={'_blank'}
+              className="Footer__link"
+            >
+              Twitter
+            </a>
           </div>
         </div>
       </div>

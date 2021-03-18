@@ -423,7 +423,7 @@
   "IBCO.stepper.fourth.copy": "After placing an order, Claim it from Pending Transactions",
   "Lands.number.of": "Number of OVRLands",
   "Lands.total.bidding": "Total Bidding",
-  "Lands.estimated.gas.expense": "Estimated Gas Expense",
+  "Lands.estimated.gas.expense": "Estimated Transfer Expense",
   "Lands.total.expense": "Total Expense",
   "Success.order.confirm": "Confirm Order",
   "IBCO.available.on.etherscan": "Available on Etherscan",
