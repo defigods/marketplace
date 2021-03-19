@@ -1115,9 +1115,15 @@ function PublicSale() {
               ) : (
                 <HexButton
                   url="#"
-                  text={transactionValueDescription}
+                  text={
+                    activeStep === 3
+                      ? t('IBCO.stepper.third')
+                      : transactionValueDescription
+                  }
                   className={`--orange --large --kyc-button ${
-                    transactionValueValid == false ? '--disabled' : ''
+                    transactionValueValid === false && activeStep === 4
+                      ? '--disabled'
+                      : ''
                   }`}
                   // ${bidValid ? '' : '--disabled'}
                   onClick={() => handleBuyOvr(transactionValue)}
@@ -1195,6 +1201,110 @@ function PublicSale() {
             </div>
             <div className="c-dialog-sub-title">
               {t('PublicSale.login.required.desc')}
+            </div>
+          </div>
+
+          <div className="o-section">
+            <div className="o-card --no-pad --card-6">
+              <div className="o-row">
+                <h3 className="o-card-title">
+                  {t('IBCO.cs.some.information')}
+                  <Tooltip
+                    title={
+                      <React.Fragment>
+                        {t('IBCO.cs.more.information.tooltip')}
+                      </React.Fragment>
+                    }
+                    aria-label="info"
+                    placement="bottom"
+                  >
+                    <Help className="Help" />
+                  </Tooltip>
+                </h3>
+              </div>
+              <div className="o-line --venti"></div>
+              <div className="o-row">
+                <div className="o-row --circulating-supply">
+                  <div className="o-one-label">
+                    <div className="o-label">{t('IBCO.cs.pre')}</div>
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value">
+                      <ValueCounter
+                        value={ibcoCirculatingSupply[3]}
+                        currency="ovr"
+                      ></ValueCounter>
+                    </div>
+                  </div>
+                  <div className="o-one-label">
+                    <div className="o-label">{t('IBCO.cs.minted')}</div>{' '}
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value">
+                      <ValueCounter
+                        value={ibcoCirculatingSupply[2]}
+                        currency="ovr"
+                      ></ValueCounter>
+                    </div>
+                  </div>
+                  <div className="o-one-label">
+                    <div className="o-label">{t('IBCO.cs.total')}</div>{' '}
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value">
+                      <ValueCounter
+                        value={ibcoCirculatingSupply[4]}
+                        currency="ovr"
+                      ></ValueCounter>
+                    </div>
+                  </div>
+                </div>
+                <div className="o-row --circulating-supply">
+                  <div className="o-one-label">
+                    <div className="o-label">{t('IBCO.cs.vesting')}</div>{' '}
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value">
+                      <ValueCounter
+                        value={ibcoCirculatingSupply[5]}
+                        currency="ovr"
+                      ></ValueCounter>
+                    </div>
+                  </div>
+                  <div className="o-one-label">
+                    <div className="o-label">{t('IBCO.cs.staking')}</div>{' '}
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value">
+                      <ValueCounter
+                        value={ibcoCirculatingSupply[1]}
+                        currency="ovr"
+                      ></ValueCounter>
+                    </div>
+                  </div>
+                  <div className="o-one-label">
+                    <div className="o-label"></div>
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value"></div>
+                  </div>
+                </div>
+                <div className="o-row --circulating-supply">
+                  <div className="o-one-label">
+                    <div className="o-label">{t('IBCO.cs.supply')}</div>{' '}
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value">
+                      <ValueCounter
+                        value={ibcoCirculatingSupply[0]}
+                        currency="ovr"
+                      ></ValueCounter>
+                    </div>
+                  </div>
+                  <div className="o-one-label">
+                    <div className="o-label"></div> {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value"></div>
+                  </div>
+                  <div className="o-one-label">
+                    <div className="o-label"></div>
+                    {/* {t('IBCO.buyprice')} */}
+                    <div className="o-value"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

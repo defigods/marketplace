@@ -520,5 +520,6 @@
   "IBCO.cs.supply": "Circulating Supply",
   "IBCO.cs.vesting": "Token locked in Vesting",
   "IBCO.cs.more.information": "More information",
+  "IBCO.cs.some.information": "Some information",
   "IBCO.cs.more.information.tooltip": "This panel is updated once per hour"
 }

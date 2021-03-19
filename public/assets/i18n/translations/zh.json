@@ -431,6 +431,7 @@
   "IBCO.cs.vesting": "被智能合约锁仓的代币",
   "IBCO.cs.more.information": "更多资讯",
   "IBCO.cs.more.information.tooltip": "信息数据每小时更新一次",
+  "IBCO.cs.some.information": "Some information",
 
   "IBCO.stepper.first": "在你的用户信息页面通过KYC实名认证",
   "IBCO.stepper.second": "接受条款和条件",
