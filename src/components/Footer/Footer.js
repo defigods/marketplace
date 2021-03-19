@@ -50,6 +50,14 @@ class Footer extends Component {
               Telegram
             </a>
             <a
+              href={'https://discord.com/invite/Ud7KNKJS'}
+              rel="noopener noreferrer"
+              target={'_blank'}
+              className="Footer__link"
+            >
+              Discord
+            </a>
+            <a
               href={'https://medium.com/ovrthereality/'}
               rel="noopener noreferrer"
               target={'_blank'}
@@ -64,6 +72,14 @@ class Footer extends Component {
               className="Footer__link"
             >
               Facebook
+            </a>
+            <a
+              href={'https://www.instagram.com/ovrplatform/'}
+              rel="noopener noreferrer"
+              target={'_blank'}
+              className="Footer__link"
+            >
+              Instagram
             </a>
             <a
               href={'https://twitter.com/OVRtheReality'}
