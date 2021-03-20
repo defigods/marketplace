@@ -933,12 +933,12 @@ function PublicSale() {
     // var dataY = data.map((x,i) => getY(x,i));
 
     var dataXY = []
-    var dataOffset = 17 + 5
-    let dataLength = 80 + 33
+    var dataOffset = 30
+    let dataLength = 310
 
     if (isMobile) {
-      dataLength = 290
-      dataOffset = 14
+      dataLength = 310
+      dataOffset = 20
     }
 
     for (var i = 0; i < dataLength; i++) {
