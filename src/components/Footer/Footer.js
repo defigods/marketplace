@@ -50,7 +50,7 @@ class Footer extends Component {
               Telegram
             </a>
             <a
-              href={'https://discord.com/invite/Ud7KNKJS'}
+              href={'https://discord.gg/g6VpgwjDSC'}
               rel="noopener noreferrer"
               target={'_blank'}
               className="Footer__link"
