@@ -660,7 +660,7 @@ const Map = (props) => {
         // Render general hexes
         renderHighZoomHexes(hexs)
         // Render owned Lands
-        // renderHighZoomInterestingHexes(hexs) TODO: Reactivate clustering
+        renderHighZoomInterestingHexes(hexs)
       } else {
         renderHighZoomHexes([])
       }
