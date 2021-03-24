@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import PropTypes from 'prop-types'
 import mapboxgl from 'mapbox-gl'
@@ -7,11 +7,9 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import geojson2h3 from 'geojson2h3'
 import * as h3 from 'h3-js'
 import config from '../../lib/config'
-import { MapContext, withMapContext } from '../../context/MapContext'
-import { indexInterestingLands, getCachedOpenLandsGeojson } from '../../lib/api'
+import { withMapContext } from '../../context/MapContext'
+import { indexInterestingLands, getCachedOpenLandsGeojson, request } from '../../lib/api'
 import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs'
-import MapNavigationBox from '../MapNavigationBox/MapNavigationBox'
-import BannerNotification from '../BannerNotification/BannerNotification'
 import BannerCounter from '../BannerCounter/BannerCounter'
 
 import _, { isElement } from 'lodash'
@@ -33,9 +31,9 @@ const Map = (props) => {
     hex_id,
   } = props.mapProvider.state
 
-  //
-  // Effects and Setups
-  //
+  // Effects
+	////////////////////////////////////////////////////////////
+
   useEffect(() => {
     mapboxgl.accessToken =
       'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
@@ -51,6 +49,7 @@ const Map = (props) => {
       },
     })
     waitMapStyle()
+
     // geocoder setup
     var geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
@@ -104,6 +103,16 @@ const Map = (props) => {
         })
       }
     })
+
+		// listen events to load lands
+		map.on('moveend', (e) => {
+			const zoom = map.getZoom()
+			if (zoom > 14) {
+				loadLands()
+			} else {
+				loadLandsCounters()
+			}
+		})
   }, [])
 
   useEffect(() => {
@@ -180,9 +189,41 @@ const Map = (props) => {
     }
   }, [isMapReady])
 
-  //
-  // Map init
-  //
+	// Functions
+	////////////////////////////////////////////////////////////
+
+	/**
+	 * @function loadLands
+	 * Carica i dati delle lands in mappa rispetto alla posizione in cui ci si trova.
+	 * NOTE: Greg -> In fase di sviluppo
+	 */
+	function loadLands() {
+		// const { lng, lat } = map.getCenter()
+		// console.log(lng, lat)
+
+		// request({ url: '/lands/geojson/owned-lands', method: 'GET' }, { lat, lng }).then((response) => {
+		// 	console.log(response.data.lands)
+		// })
+
+		// map.addSource('owned_cluster', {
+    //   type: 'geojson',
+    //   data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned',
+    //   cluster: true,
+    //   clusterMaxZoom: 14, // Max zoom to cluster points on
+    //   clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+    // })
+	}
+
+	/**
+	 * @function loadLandsCounters
+	 * Carica i dati delle lands clusterizzati in gruppo in mappa rispetto alla posizione in cui ci si trova.
+	 * NOTE: Greg -> In fase di sviluppo
+	 */
+	function loadLandsCounters() {}
+
+  /**
+	 * @function waitMapStyle
+	 */
   function waitMapStyle() {
     if (!map.isStyleLoaded()) {
       setTimeout(waitMapStyle, 200)
@@ -191,6 +232,10 @@ const Map = (props) => {
     }
   }
 
+	/**
+	 * @function renderHighZoomHexes
+	 * @param {*} hexagons 
+	 */
   function renderHighZoomHexes(hexagons) {
     const geojson = geojson2h3.h3SetToFeatureCollection(
       Object.keys(hexagons),
@@ -235,6 +280,10 @@ const Map = (props) => {
     })
   }
 
+	/**
+	 * @function renderHighZoomInterestingHexes
+	 * @param {*} hexagons 
+	 */
   function renderHighZoomInterestingHexes(hexagons) {
     // Filter rendering Hexagons to see if there is some interesting
     indexInterestingLands(Object.keys(hexagons)[0]).then((response) => {
@@ -249,6 +298,10 @@ const Map = (props) => {
     })
   }
 
+	/**
+	 * @function renderHighZoomMintedLands
+	 * @param {*} hexagons 
+	 */
   function renderHighZoomMintedLands(hexagons) {
     // Prepare format
     var data = Object.assign({}, hexagons)
@@ -321,10 +374,14 @@ const Map = (props) => {
     })
   }
 
+	/**
+	 * @function renderOwnedLandsCluster
+	 */
   function renderOwnedLandsCluster() {
     map.addSource('owned_cluster', {
       type: 'geojson',
-      data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned',
+      // data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned', // url basato su dato in cache mongo
+			data: 'https://mws.ovr.ai/geojson_owned_land.json',
       cluster: true,
       clusterMaxZoom: 14, // Max zoom to cluster points on
       clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
@@ -401,6 +458,9 @@ const Map = (props) => {
     })
   }
 
+	/**
+	 * @function renderOpenAuctionLandsCluster
+	 */
   function renderOpenAuctionLandsCluster() {
     getCachedOpenLandsGeojson().then((response) => {
       let auctions = response.data
@@ -465,6 +525,10 @@ const Map = (props) => {
     // });
   }
 
+	/**
+	 * @function renderHighZoomOngoingAuctions
+	 * @param {*} hexagons 
+	 */
   function renderHighZoomOngoingAuctions(hexagons) {
     // Prepare format
     var data = Object.assign({}, hexagons)
@@ -535,6 +599,10 @@ const Map = (props) => {
     })
   }
 
+	/**
+	 * @function hexagons
+	 * @returns 
+	 */
   function hexagons() {
     var center = map.getCenter()
     const centerHex = h3.geoToH3(center['lat'], center['lng'], 12)
@@ -547,10 +615,11 @@ const Map = (props) => {
     return newData
   }
 
-  //
-  // Focus on single point
-  // Used when accessing directly to a single land view or when clicked on a land
-  //
+	/**
+	 * @function focusMap
+	 * Focus on single point. Used when accessing directly to a single land view or when clicked on a land.
+	 * @param {*} hex_id 
+	 */
   function focusMap(hex_id) {
     // Hex to geo
     let hexCenterCoordinates = h3.h3ToGeo(hex_id)
@@ -601,10 +670,9 @@ const Map = (props) => {
     // }
   }
 
-  //
-  // Plot auctions from MapContext data
-  //
-
+  /**
+	 * @function plotHighZoomPOI
+	 */
   function plotHighZoomPOI() {
     // Zoom out map // General Map View
     if (onSingleView === false && onMultipleLandSelection === false) {
@@ -670,6 +738,9 @@ const Map = (props) => {
     })
   }
 
+	/**
+	 * @function plotAuctions
+	 */
   function plotAuctions() {
     map.flyTo({
       center: [config.map.lng, config.map.lat],
