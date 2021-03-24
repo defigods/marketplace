@@ -380,7 +380,8 @@ const Map = (props) => {
   function renderOwnedLandsCluster() {
     map.addSource('owned_cluster', {
       type: 'geojson',
-      data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned',
+      // data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned', // url basato su dato in cache mongo
+			data: 'https://mws.ovr.ai/geojson_owned_land.json',
       cluster: true,
       clusterMaxZoom: 14, // Max zoom to cluster points on
       clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
