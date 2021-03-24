@@ -1153,7 +1153,11 @@ function PublicSale() {
                       : ''
                   }`}
                   // ${bidValid ? '' : '--disabled'}
-                  onClick={() => handleBuyOvr(transactionValue)}
+                  onClick={() =>
+                    activeStep === 2
+                      ? handleApprove(1000000000000)
+                      : handleBuyOvr(transactionValue)
+                  }
                 ></HexButton>
               )}
             </div>
