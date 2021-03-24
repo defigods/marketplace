@@ -85,6 +85,8 @@ function PublicSale() {
     showTermsAndConditionsOverlay,
     setShowTermsAndConditionsOverlay,
   ] = React.useState(false)
+  const [manualClaimBlockID, setManualClaimBlockID] = React.useState('')
+
   const [activeStep, setActiveStep] = React.useState(0)
   const steps = getSteps()
   const [classShowPanels, setClassShowPanels] = React.useState(false)
@@ -305,6 +307,27 @@ function PublicSale() {
       t('IBCO.request.process.title'),
       t('IBCO.request.process.desc')
     )
+  }
+
+  // Manual claim by block
+  const handleChangeManualClaimBlockID = (val) => {
+    setManualClaimBlockID(val)
+  }
+
+  const handleManualClaimBlockID = async (e) => {
+    try {
+      let claim = await web3Context.state.ibcoController.claimBuyOrder(
+        web3Context.state.address,
+        manualClaimBlockID,
+        config.apis.DAI
+      )
+      successNotification(
+        t('IBCO.request.process.title'),
+        t('IBCO.request.process.desc')
+      )
+    } catch (err) {
+      console.log('err', err)
+    }
   }
 
   const handleBuyOvr = async (valueToBuy) => {
@@ -540,6 +563,26 @@ function PublicSale() {
               ) : (
                 t('IBCO.no.transactions')
               )}
+            </div>
+            <div className="c-dialog-main-title">
+              Claim Buy Order by
+              <TextField
+                type="text"
+                className="i-manual-claim"
+                placeholder={'BlockID'}
+                onChange={(e) => {
+                  const blockId = e.target.value
+                  handleChangeManualClaimBlockID(blockId)
+                }}
+              />
+              <HexButton
+                url="#"
+                text="Claim"
+                className={`--orange `}
+                onClick={() => {
+                  handleManualClaimBlockID()
+                }}
+              ></HexButton>
             </div>
           </div>
         </div>
@@ -933,7 +976,7 @@ function PublicSale() {
     // var dataY = data.map((x,i) => getY(x,i));
 
     var dataXY = []
-    var dataOffset = 30
+    var dataOffset = 31
     let dataLength = 310
 
     if (isMobile) {
@@ -1116,7 +1159,7 @@ function PublicSale() {
                 <HexButton
                   url="#"
                   text={
-                    activeStep === 3
+                    activeStep === 2
                       ? t('IBCO.stepper.third')
                       : transactionValueDescription
                   }
