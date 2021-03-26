@@ -37,6 +37,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Help from '@material-ui/icons/Help'
 
 import CircularProgress from '@material-ui/core/CircularProgress'
+import EditIcon from '@material-ui/icons/Edit'
 import i18n from 'i18next'
 import { getCurrentLocale } from 'i18n'
 
@@ -358,6 +359,7 @@ const ProfileLayout = () => {
       setDbUserEmail(userEmail)
         .then((response) => {
           if (response.data.result === true) {
+            setIsSignupLoading(false)
             userContext.actions.setUserEmail(userEmail)
             successNotification(
               t('Generic.congrats.label'),
@@ -378,6 +380,11 @@ const ProfileLayout = () => {
       setUserEmailInputError(t('Signup.email.not.valid'))
       setUserEmailValid(false)
     }
+  }
+
+  const handleToggleEditEmail = (e) => {
+    userContext.actions.setUserEmail('')
+    setIsConfirmedEmail(false)
   }
 
   const handleClaimCashback = async (e) => {
@@ -546,6 +553,17 @@ const ProfileLayout = () => {
                         value={user.email}
                         disabled
                       />
+                      {user.email !== '' ? (
+                        <div
+                          className="--resend-email"
+                          onClick={handleToggleEditEmail}
+                        >
+                          <EditIcon />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+
                       {!isConfirmedEmail ? (
                         <HexButton
                           url="#"
@@ -554,8 +572,10 @@ const ProfileLayout = () => {
                           onClick={requestConfirmEmail}
                         ></HexButton>
                       ) : (
-                        <div className="c-status-badge  --open --email-badge">
-                          {t('Profille.email.verified')}
+                        <div>
+                          <div className="c-status-badge  --open --email-badge">
+                            {t('Profille.email.verified')}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -579,14 +599,26 @@ const ProfileLayout = () => {
                       />
                       <div>
                         {!isSignupLoading && (
-                          <HexButton
-                            url="#"
-                            className={`--blue ${
-                              userEmailValid ? '' : '--disabled'
-                            }`}
-                            text={t('Email.add')}
-                            onClick={handleAddEmail}
-                          ></HexButton>
+                          <>
+                            {user.email !== '' ? (
+                              <div
+                                className="--resend-email"
+                                onClick={handleToggleEditEmail}
+                              >
+                                <EditIcon />
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                            <HexButton
+                              url="#"
+                              className={`--blue ${
+                                userEmailValid ? '' : '--disabled'
+                              }`}
+                              text={t('Email.add')}
+                              onClick={handleAddEmail}
+                            ></HexButton>
+                          </>
                         )}
                         {isSignupLoading && <CircularProgress />}
                       </div>

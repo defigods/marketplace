@@ -87,6 +87,15 @@
     .p-section-content {
       display: inline-block;
       width: 50%;
+      .--resend-email {
+        float: left;
+        left: 60%;
+        bottom: 0px;
+        position: absolute;
+        svg {
+          font-size: 20px;
+        }
+      }
     }
     .p-tiny-message {
       margin-top: 15px;
@@ -106,6 +115,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: relative;
     }
     // &:first-child .p-section-title {
     // 	margin-top: 0;

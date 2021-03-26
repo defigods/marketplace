@@ -575,6 +575,7 @@ export function request(
     }
     req
       .then((response) => {
+        console.log('reponse', response)
         resolve(camelCaseKeys(response))
       })
       .catch((err) => {
