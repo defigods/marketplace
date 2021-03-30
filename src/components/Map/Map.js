@@ -119,7 +119,7 @@ const Map = (props) => {
 				mapZoom
 			)
 
-			axios.post('http://localhost', { zoom, bounds }).then((response) => {
+			axios.post('https://map-cluster.ovr.ai', { zoom, bounds }).then((response) => {
 				if (!response.data) return
 
 				map.getSource('owned_cluster').setData(response.data)
