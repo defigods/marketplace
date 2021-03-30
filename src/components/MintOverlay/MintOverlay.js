@@ -230,6 +230,7 @@ const MintOverlay = (props) => {
     let floatCost = parseFloat(cost)
     // Check balance
     console.log('userBalance', userBalance)
+    console.log('floatCost', floatCost)
     if (floatCost > userBalance) {
       warningNotification(
         t('Warning.no.token.title'),
@@ -246,6 +247,17 @@ const MintOverlay = (props) => {
       )
     }
     // Ensure balance with projection of others open auctions
+    console.log('userBalanceProjection', userBalanceProjection)
+    console.log('cost', cost)
+    console.log('userBalanceProjection - cost', userBalanceProjection - cost)
+    console.log(
+      'userBalanceProjection - cost < 0',
+      userBalanceProjection - cost < 0
+    )
+    console.log(
+      'userBalanceProjection - cost < 0',
+      userBalanceProjection - cost < 0
+    )
     if (userBalanceProjection - cost < 0) {
       warningNotification(
         t('Warning.no.token.title'),

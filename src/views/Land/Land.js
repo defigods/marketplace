@@ -159,11 +159,6 @@ const Land = (props) => {
           setMintTxHash(data.mintTxHash)
           // Centralized
           setValue(data.value)
-          // If it's unminted take 10
-          if (data.marketStatus == 0) {
-            let val = getUSDValueInOvr(10)
-            setValue(val)
-          }
           setMarketStatus(data.marketStatus)
           if (data.auction) {
             if (

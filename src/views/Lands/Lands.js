@@ -87,7 +87,7 @@ const Lands = (props) => {
               <LandCard
                 key={obj.hexId}
                 url="/"
-                value={obj.value < 100 ? getUSDValueInOvr(10) : obj.value}
+                value={obj.value}
                 background_image={`url(${obj.mapTileUrl}`}
                 name={{ sentence: obj.sentenceId, hex: obj.hexId }}
                 location={obj.address.full}
@@ -112,10 +112,7 @@ const Lands = (props) => {
     if (listLandsObj) {
       listLandsObj.map((land) => {
         console.log('land', land)
-        let value =
-          land.value < 100
-            ? parseFloat(getUSDValueInOvr(10))
-            : parseFloat(land.value)
+        let value = land.value
         total = total + value
       })
     }
