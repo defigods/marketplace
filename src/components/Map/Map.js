@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import PropTypes from 'prop-types'
 import mapboxgl from 'mapbox-gl'
+import axios from 'axios'
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import geojson2h3 from 'geojson2h3'
@@ -104,14 +105,27 @@ const Map = (props) => {
       }
     })
 
-		// listen events to load lands
+		// listen events to load lands from cluster endpoint
 		map.on('moveend', (e) => {
-			const zoom = map.getZoom()
-			if (zoom > 14) {
-				loadLands()
-			} else {
-				loadLandsCounters()
-			}
+			const mapBounds = map.getBounds()
+			const mapZoom = map.getZoom()
+			const bounds = [
+				mapBounds.getWest(),
+				mapBounds.getSouth(),
+				mapBounds.getEast(),
+				mapBounds.getNorth()
+			]
+			const zoom = Math.round(
+				mapZoom
+			)
+
+			axios.post('http://localhost', { zoom, bounds }).then((response) => {
+				if (!response.data) return
+
+				map.getSource('owned_cluster').setData(response.data)
+			}).catch((err) => {
+				console.error(err)
+			})
 		})
   }, [])
 
@@ -191,35 +205,6 @@ const Map = (props) => {
 
 	// Functions
 	////////////////////////////////////////////////////////////
-
-	/**
-	 * @function loadLands
-	 * Carica i dati delle lands in mappa rispetto alla posizione in cui ci si trova.
-	 * NOTE: Greg -> In fase di sviluppo
-	 */
-	function loadLands() {
-		// const { lng, lat } = map.getCenter()
-		// console.log(lng, lat)
-
-		// request({ url: '/lands/geojson/owned-lands', method: 'GET' }, { lat, lng }).then((response) => {
-		// 	console.log(response.data.lands)
-		// })
-
-		// map.addSource('owned_cluster', {
-    //   type: 'geojson',
-    //   data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned',
-    //   cluster: true,
-    //   clusterMaxZoom: 14, // Max zoom to cluster points on
-    //   clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
-    // })
-	}
-
-	/**
-	 * @function loadLandsCounters
-	 * Carica i dati delle lands clusterizzati in gruppo in mappa rispetto alla posizione in cui ci si trova.
-	 * NOTE: Greg -> In fase di sviluppo
-	 */
-	function loadLandsCounters() {}
 
   /**
 	 * @function waitMapStyle
@@ -380,8 +365,7 @@ const Map = (props) => {
   function renderOwnedLandsCluster() {
     map.addSource('owned_cluster', {
       type: 'geojson',
-      // data: 'https://mws.ovr.ai/api/v1/lands/geojson/cached/owned', // url basato su dato in cache mongo
-			data: 'https://mws.ovr.ai/geojson_owned_land.json',
+			data: { type: 'FeatureCollection', features: [] },
       cluster: true,
       clusterMaxZoom: 14, // Max zoom to cluster points on
       clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
