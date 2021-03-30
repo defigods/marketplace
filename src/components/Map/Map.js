@@ -42,6 +42,7 @@ const Map = (props) => {
       container: 'Map',
       center: [config.map.lng, config.map.lat],
       zoom: config.map.zoom,
+			minZoom: 1,
       style: 'mapbox://styles/mapbox/light-v9',
       renderWorldCopies: false,
       tileLayer: {
