@@ -367,7 +367,7 @@ const Map = (props) => {
     map.addSource('owned_cluster', {
       type: 'geojson',
 			data: { type: 'FeatureCollection', features: [] },
-      cluster: true,
+      cluster: false,
       clusterMaxZoom: 14, // Max zoom to cluster points on
       clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
     })
