@@ -295,7 +295,7 @@ const MintOverlay = (props) => {
         if (response.data.result === true) {
           setActiveStep(2)
         } else {
-          // console.log('responseFalse');
+          console.log('response.data.errors', response.data)
           dangerNotification(
             t('Danger.error.processing.title'),
             response.data.errors[0].message

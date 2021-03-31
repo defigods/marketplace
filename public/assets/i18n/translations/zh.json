@@ -349,7 +349,7 @@
   "Auctions.allowance.waiting.desc": "请等待额度交易成功，过几分钟后再出价",
   "Auctions.please.reload": "请刷新页面看看是否有新的竞拍出价",
   "Auctions.please.patient": "当成功提交了购买要求时, 每一块土地大概需要一分钟的时间来执行。在你再次尝试操作之前请耐心等待一会儿让系统处理这个操作，以免重复购买",
-  "Cashback.banner.desc": "三月的现金返还政策适用于前500块成交的土地，起始时间为2021年3月1日UTC零点。目前本月土地成交数为：{{total}}",
+  "Cashback.banner.desc": "四月的现金返还政策适用于前500块成交的土地，起始时间为2021年4月1日UTC零点。目前本月土地成交数为：{{total}}",
   "Generic.login.required.title": "你必须先登录才能访问此页面",
   "Generic.login.required.desc": "发现 OVR. 连接你的钱包.",
   "Warning.amount.invalid.title": "输入的数量无效",

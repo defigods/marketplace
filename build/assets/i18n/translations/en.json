@@ -444,7 +444,7 @@
   "Auctions.please.reload": "Please reload the page to see the new auction values",
   "Auctions.please.patient": "While the request was successuful, it can take up to one minute PER LAND, before trying again please wait to verify this action has reflected in the system",
   "Auctions.total.projection": "While your OVR amount is of {{OVRTotal}}, you have a total of {{OVRPending}} OVR invested in currently ongoin auctions. \nBuy more OVR to participate.",
-  "Cashback.banner.desc": "March cashback applied to first 500 auctions from 2021/03/01 00:00 UTC. Current number of auctions: {{total}}.",
+  "Cashback.banner.desc": "April cashback applies to first 500 auctions from 2021/04/01 00:00 UTC. Current number of auctions: {{total}}.",
   "Generic.login.required.title": "You have to log in to visit this page",
   "Generic.login.required.desc": "Discover OVR. Connect your wallet.",
   "Staking.title": "Staking",
