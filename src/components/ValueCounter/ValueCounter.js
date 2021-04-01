@@ -77,21 +77,20 @@ const ValueCounter = ({ currency = 'ovr', value = 0, color = 'orange' }) => {
     console.debug('ValueCounter', { value, a: format(value) })
   }
 
-  const RenderValue = () => {
-    if (show_value == null) {
-      return <CircularProgress />
-    } else {
-      return show_value
-    }
-  }
   return (
-    <div className={`ValueCounter --${color}`}>
+    <div className={`ValueCounter --${color} `}>
       <div className="ValueCounter__icon">
         <div className="Icon">
           {currency == 'ovr' ? <CurrencyOVRLogo /> : <CurrencyDaiLogo />}
         </div>
       </div>
-      <div className="ValueCounter__value">{<RenderValue />}</div>
+      <div className="ValueCounter__value">
+        {show_value !== null ? (
+          show_value
+        ) : (
+          <CircularProgress size={20} style={{ top: 10, marginLeft: 10 }} />
+        )}
+      </div>
     </div>
   )
 }
