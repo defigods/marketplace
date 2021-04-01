@@ -60,14 +60,14 @@ const Land = (props) => {
 
   const [hexId, setHexId] = useState(props.mapProvider.state)
   const [integerId, setIntegerId] = useState()
-  const [value, setValue] = useState(10)
-  const [marketStatus, setMarketStatus] = useState(0)
+  const [value, setValue] = useState(null)
+  const [marketStatus, setMarketStatus] = useState(null)
   const [userPerspective, setUserPerspective] = useState(0)
   const [name, setName] = useState({
-    sentence: 'director.connect.overflow',
-    hex: '8cbcc350c0ab5ff',
+    sentence: null,
+    hex: null,
   })
-  const [location, setLocation] = useState('Venice, Italy')
+  const [location, setLocation] = useState(null)
   const [auction, setAuction] = useState(null)
   // const [openSellOrder, setOpenSellOrder] = useState(null);
   const [openBuyOffers, setOpenBuyOffers] = useState([])
@@ -83,7 +83,7 @@ const Land = (props) => {
     const hex_id = props.match.params.id
     changeHexId(hex_id) // Focus map on hex_id
     loadLandStateFromApi(hex_id) // Load data from API
-  }, [undefined, props.match.params.id])
+  }, [props.match.params.id])
 
   // Sockets
   useEffect(() => {
@@ -122,9 +122,11 @@ const Land = (props) => {
   }, [setupComplete, ico, ovr, hexId, marketStatus])
 
   useEffect(() => {
-    if (marketStatus == 0) {
+    if (marketStatus == null) {
       let val = getUSDValueInOvr(10)
-      setValue(val)
+      if (val != null || ibcoCurrentOvrPrice === null) {
+        setValue(() => val)
+      }
     }
   }, [ibcoCurrentOvrPrice])
 
@@ -158,7 +160,7 @@ const Land = (props) => {
           setIsUnavailable(data.isUnavailable)
           setMintTxHash(data.mintTxHash)
           // Centralized
-          setValue(data.value)
+          setValue(() => data.value)
           setMarketStatus(data.marketStatus)
           if (data.auction) {
             if (
@@ -502,7 +504,7 @@ const Land = (props) => {
               text={t('Land.init.auction')}
               className="--blue"
               onClick={(e) => setActiveMintOverlay(e)}
-            ></HexButton>
+            />
           )
         } else {
           button = (
@@ -511,7 +513,7 @@ const Land = (props) => {
               target="_blank"
               text={t('Generic.contactus.interested')}
               className="--blue"
-            ></HexButton>
+            />
           )
         }
         break
@@ -522,7 +524,7 @@ const Land = (props) => {
             text={t('Land.place.bid')}
             className="--purple"
             onClick={(e) => setActiveBidOverlay(e)}
-          ></HexButton>
+          />
         )
         break
       case 10:
@@ -598,35 +600,20 @@ const Land = (props) => {
     setValue(currentBid)
   }
 
-  function renderPrice() {
-    switch (marketStatus) {
-      case 2:
-        return (
-          <>
-            {isLoggedIn ? (
-              <>
-                <h3 className="o-small-title">{t('Land.closing.price')}</h3>
-                <ValueCounter value={value}></ValueCounter>
-              </>
-            ) : (
-              <></>
-            )}
-          </>
-        )
-      default:
-        return (
-          <>
-            {isLoggedIn ? (
-              <>
-                <h3 className="o-small-title">{t('Land.price.label')}</h3>
-                <ValueCounter value={value}></ValueCounter>
-              </>
-            ) : (
-              <></>
-            )}
-          </>
-        )
-    }
+  const LandPrice = ({ price = null }) => {
+    const label =
+      marketStatus === 2 ? t('Land.closing.price') : t('Land.price.label')
+
+    const thePrice = marketStatus === null ? null : value
+
+    if (isLoggedIn) {
+      return (
+        <>
+          <h3 className="o-small-title">{label}</h3>
+          <ValueCounter value={thePrice}></ValueCounter>
+        </>
+      )
+    } else return null
   }
 
   function renderBidHistory() {
@@ -824,7 +811,9 @@ const Land = (props) => {
               <div className="Land__location">{location}</div>
             </div>
             <div className="Land__heading__2">
-              <div className="o-fourth">{renderPrice()}</div>
+              <div className="o-fourth">
+                <LandPrice price={value} />
+              </div>
               <div className="o-fourth">{renderTimer()}</div>
               <div className="o-fourth">{renderBadge()}</div>
               <div className="o-fourth">
