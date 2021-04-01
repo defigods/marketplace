@@ -79,9 +79,9 @@ const ValueCounter = ({ currency = 'ovr', value = 0, color = 'orange' }) => {
 
   const RenderValue = () => {
     if (show_value == null) {
-      ;<CircularProgress />
+      return <CircularProgress />
     } else {
-      show_value
+      return show_value
     }
   }
   return (
