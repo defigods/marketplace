@@ -263,6 +263,7 @@ const Land = (props) => {
   // };
 
   const redeemLand = async (e) => {
+    console.debug('redeemLand', e)
     e.preventDefault()
     if (isRedeemingLand || Object.keys(proofInfo).length === 0) {
       return
@@ -303,6 +304,7 @@ const Land = (props) => {
   }
 
   function setActiveMintOverlay(e) {
+    console.debug('setActiveMintOverlay')
     if (!isLoggedIn) {
       warningNotification(
         t('Warning.invalid.auth.title'),
@@ -494,6 +496,7 @@ const Land = (props) => {
   }
 
   function renderOverlayButton() {
+    console.debug('renderOverlayButton')
     let button = <div>&nbsp;</div>
     switch (marketStatus) {
       case 0:
@@ -503,7 +506,7 @@ const Land = (props) => {
               url="/"
               text={t('Land.init.auction')}
               className="--blue"
-              onClick={(e) => setActiveMintOverlay(e)}
+              onClick={(e) => setActiveMintOverlay(e)} // open drawer
             />
           )
         } else {
@@ -541,7 +544,7 @@ const Land = (props) => {
                 text={t('Land.redeem.land')}
                 className="--purple"
                 onClick={(e) => redeemLand(e)}
-              ></HexButton>
+              />
             )
           } else {
             button = (
