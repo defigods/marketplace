@@ -435,7 +435,7 @@
 
   "IBCO.stepper.first": "在你的用户信息页面通过KYC实名认证",
   "IBCO.stepper.second": "接受条款和条件",
-  "IBCO.stepper.third": "点击允许交易额度",
+  "IBCO.stepper.third": "通过批准额度的交易",
   "IBCO.stepper.fourth": "你就可以购买OVR了",
   "IBCO.stepper.third.copy": "允许交易额度只需要操作一次，这是为了允许dapp使用你钱包里的token",
   "IBCO.stepper.fourth.copy": "购买之后，在正在处理的交易中点击“申领”按钮来申领OVR"
