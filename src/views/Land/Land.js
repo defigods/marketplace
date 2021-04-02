@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-use-before-define */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { withMapContext } from 'context/MapContext'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
@@ -34,10 +34,13 @@ import { Trans, useTranslation } from 'react-i18next'
 
 import _ from 'lodash'
 import { checkToken } from 'lib/auth'
+
+import { NewMapContext } from 'context/NewMapContext'
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
 
   const {
     changeHexId,
@@ -48,6 +51,7 @@ const Land = (props) => {
     changeActiveBuyOverlay,
     changeActiveBuyOfferOverlay,
   } = props.mapProvider.actions
+
   const { getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions
   const {
     ovr,
@@ -84,6 +88,11 @@ const Land = (props) => {
     changeHexId(hex_id) // Focus map on hex_id
     loadLandStateFromApi(hex_id) // Load data from API
   }, [props.match.params.id])
+
+  console.debug('TESTTTTTTTT', {
+    myContext: { mapState, setMapState, actions },
+    oldContext: props.mapProvider,
+  })
 
   // Sockets
   useEffect(() => {
