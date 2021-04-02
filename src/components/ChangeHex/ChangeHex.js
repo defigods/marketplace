@@ -1,9 +1,12 @@
 import React, { useState, useContext } from 'react'
-import { withMapContext } from '../../context/MapContext'
 import { useTranslation } from 'react-i18next'
+
+import { NewMapContext } from 'context/NewMapContext'
 
 const ChangeHex = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { changeHexId } = actions
 
   const [hex, setHex] = useState('')
 
@@ -13,7 +16,7 @@ const ChangeHex = (props) => {
 
   const changeHex = (e) => {
     e.preventDefault()
-    props.mapProvider.actions.changeHexId(hex)
+    changeHexId(hex)
   }
 
   return (
@@ -24,4 +27,4 @@ const ChangeHex = (props) => {
   )
 }
 
-export default withMapContext(ChangeHex)
+export default ChangeHex
