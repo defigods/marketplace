@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import './style.scss'
-import { MapContext } from '../../context/MapContext'
+import { NewMapContext } from 'context/NewMapContext'
+
 import AuctionCard from '../../components/AuctionCard/AuctionCard'
 import LandCard from '../../components/LandCard/LandCard'
 
@@ -24,14 +25,15 @@ const Discover = (props) => {
   const [numberOfLandPages, setNumberOfLandPages] = useState(0)
   const [currentLandPage, setCurrentLandPage] = useState(1)
 
-  const { actions } = useContext(MapContext)
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { changeAuctionList, disableSingleView } = actions
 
   function loadAuctionsByPage(page) {
     // Call API function
     indexOpenAuctions(null, page)
       .then((response) => {
         // Load Auctions in MapContext
-        actions.changeAuctionList(response.data.auctions)
+        changeAuctionList(response.data.auctions)
         // console.log(response.data.auctions);
 
         if (response.data.auctions.length > 0) {
@@ -134,7 +136,7 @@ const Discover = (props) => {
   }
 
   useEffect(() => {
-    actions.disableSingleView()
+    disableSingleView()
     loadAuctionsByPage()
     loadLandsByPage()
     setupReferralUserCookie()

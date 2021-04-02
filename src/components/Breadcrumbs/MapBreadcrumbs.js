@@ -2,14 +2,15 @@ import React, { useContext } from 'react'
 
 import Breadcrumbs from './Breadcrumbs'
 
-import { MapContext } from '../../context/MapContext'
+import { NewMapContext } from 'context/NewMapContext'
 import { useLocation } from 'react-router-dom'
 
 const MapBreadcrumbs = () => {
-  const { state } = useContext(MapContext)
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+
   const { pathname } = useLocation()
 
-  const { hex_id, landData: data } = state
+  const { hex_id, landData: data } = mapState
 
   let currentPageLabel = pathname.split('/')[2]
   currentPageLabel =
