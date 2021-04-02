@@ -19,6 +19,7 @@ const SellOverlay = (props) => {
   const { t, i18n } = useTranslation()
   const [mapState, setMapState, actions] = useContext(NewMapContext)
   const { activeSellOverlay } = mapState
+  const { changeActiveSellOverlay } = actions
 
   const { approveErc721Token, putLandOnSale } = props.web3Provider.actions
   const { ico, setupComplete } = props.web3Provider.state
@@ -141,9 +142,9 @@ const SellOverlay = (props) => {
 
   function setDeactiveOverlay(e) {
     e.preventDefault()
-    props.mapProvider.actions.changeActiveSellOverlay(false)
+    changeActiveSellOverlay(false)
     // Bring the step at 0
-    setTimeout(function () {
+    setTimeout(() => {
       setActiveStep(0)
       setNewSellWorth('')
     }, 200)
