@@ -1,9 +1,9 @@
 import Cookies from 'js-cookie'
 import config from './config'
 
-// Cookies.set(tokenName, tokenValue, { domain: config.apis.cookieDomain }) TODO
+// Cookies.set(tokenName, tokenValue)
 export function saveToken(tokenName = 'token', tokenValue) {
-  Cookies.set(tokenName, tokenValue)
+  Cookies.set(tokenName, tokenValue, { domain: config.apis.cookieDomain })
 }
 
 export function getToken(tokenName = 'token') {
