@@ -27,17 +27,17 @@ export const BannerCounterContextProvider = ({ children }) => {
       .then((response) => {
         const { data } = response
         const { closedAuctionSize, openAuctionSize, highestBid } = data
+        const parsedHighestBidWorth = parseFloat(highestBid.worth)
         setBannerState((s) => ({
           ...s,
           closedAuctionCount: closedAuctionSize,
           openAuctionCount: openAuctionSize,
           highestBidHexId: highestBid.hexId,
-          highestBidWorth: parseFloat(highestBid.worth),
+          highestBidWorth: parsedHighestBidWorth,
         }))
       })
       .catch((error) => {
-        // console.log(error);
-        console.error('ERROR', error)
+        console.error('getCounters.error', error)
       })
   }
 
