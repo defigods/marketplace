@@ -47,8 +47,8 @@ export const NewMapContextProvider = ({ children }) => {
     setMapState((s) => ({ ...s, onSingleView: false }))
   }
 
-  const changeLandData = (landData) => {
-    setMapState((s) => ({ ...s, landData }))
+  const changeLandData = (data) => {
+    setMapState((s) => ({ ...s, landData: data }))
   }
 
   const changeAuctionList = (list) => {

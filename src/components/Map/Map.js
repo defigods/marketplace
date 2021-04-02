@@ -199,7 +199,6 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
-    console.debug('MAPSTATE', mapState)
     if (isMapReady == true) {
       //   if (auctionList.length > 0) {
       //     plotAuctions()
@@ -780,6 +779,8 @@ const Map = (props) => {
       })
     }
   }
+
+  console.debug('MAPSTATE', mapState)
 
   return (
     <>

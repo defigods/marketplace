@@ -31,7 +31,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom'
-import { MapProvider, MapContext } from './context/MapContext'
+
 import { UserProvider, UserContext } from './context/UserContext'
 import { Web3Provider, Web3Context } from './context/Web3Context'
 
