@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { withMapContext } from 'context/MapContext'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
@@ -17,8 +17,14 @@ import MenuList from '@material-ui/core/MenuList'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
+import { NewMapContext } from 'context/NewMapContext'
+
 const BuyLandOverlay = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { activeBuyOverlay } = mapState
+  const { changeActiveBuyOverlay } = actions
+
   const { approveOvrTokens, buy, buyLand } = props.web3Provider.actions
   const { ovr, ico, setupComplete } = props.web3Provider.state
 
@@ -38,7 +44,7 @@ const BuyLandOverlay = (props) => {
 
   // Listener for fadein and fadeout animation of overlay
   useEffect(() => {
-    if (props.mapProvider.state.activeBuyOverlay) {
+    if (activeBuyOverlay) {
       setShowOverlay(true)
       setTimeout(() => {
         setClassShowOverlay(true)
@@ -49,7 +55,7 @@ const BuyLandOverlay = (props) => {
         setShowOverlay(false)
       }, 500)
     }
-  }, [props.mapProvider.state.activeBuyOverlay])
+  }, [activeBuyOverlay])
 
   // Toggle bidding menu of selection currencies
   const handleClose = (event) => {
@@ -75,17 +81,11 @@ const BuyLandOverlay = (props) => {
   // Init helpers web3
   useEffect(() => {
     if (setupComplete) setNextBidSelectedLand()
-  }, [
-    setupComplete,
-    ico,
-    hexId,
-    marketStatus,
-    props.mapProvider.state.activeBuyOverlay,
-  ])
+  }, [setupComplete, ico, hexId, marketStatus, activeBuyOverlay])
 
   function setDeactiveOverlay(e) {
     e.preventDefault()
-    props.mapProvider.actions.changeActiveBuyOverlay(false)
+    changeActiveBuyOverlay(false)
     // Bring the step at 0
     setTimeout(function () {
       setActiveStep(0)
@@ -424,11 +424,10 @@ BuyLandOverlay.propTypes = {
   props: PropTypes.object,
   reloadLandStatefromApi: PropTypes.func,
   userProvider: PropTypes.object,
-  mapProvider: PropTypes.object,
   web3Provider: PropTypes.object,
   land: PropTypes.object,
   className: PropTypes.string,
   url: PropTypes.string,
 }
 
-export default withUserContext(withWeb3Context(withMapContext(BuyLandOverlay)))
+export default withUserContext(withWeb3Context(BuyLandOverlay))
