@@ -1,57 +1,50 @@
-import React, { Component } from 'react'
+/* eslint-disable no-use-before-define */
+import React, { useEffect, useContext, useState } from 'react'
 import ValueCounter from '../ValueCounter/ValueCounter'
 import TimeCounter from '../TimeCounter/TimeCounter'
 import HexButton from '../HexButton/HexButton'
 import Modal from '@material-ui/core/Modal'
-import { withMapContext } from '../../context/MapContext'
-import { withUserContext } from '../../context/UserContext'
-import { withWeb3Context } from '../../context/Web3Context'
+import { withUserContext } from 'context/UserContext'
+import { withWeb3Context } from 'context/Web3Context'
 
-import { deleteBuyOffer, hitBuyOffer } from '../../lib/api'
+import { deleteBuyOffer, hitBuyOffer } from 'lib/api'
 import {
   networkError,
   dangerNotification,
   successNotification,
   warningNotification,
-} from '../../lib/notifications'
+} from 'lib/notifications'
 import './style.scss'
 import { Trans, useTranslation } from 'react-i18next'
 
-export class BuyOfferOrder extends Component {
-  constructor(props) {
-    super(props)
-    const pathHexId = window.location.pathname.split('/')[3]
-    this.state = {
-      openModal: false,
-      offerId: this.props.offer.id,
-      openDeclineBuyModal: false,
-      metamaskMessage: '',
-      transactionInProcess: false,
-      hexId:
-        pathHexId && pathHexId.length === 15
-          ? pathHexId
-          : this.props.mapProvider.state.hex_id,
-    }
+import { NewMapContext } from 'context/NewMapContext'
 
-    this.confirmDeleteBuyOffer = this.confirmDeleteBuyOffer.bind(this)
-    this.confirmSell = this.confirmSell.bind(this)
-    this.handleOpen = this.handleOpen.bind(this)
-    this.handleClose = this.handleClose.bind(this)
-    this.buttonRender = this.buttonRender.bind(this)
-    this.setupComplete = this.props.web3Provider.state.setupComplete
-  }
+const pathHexId = window.location.pathname.split('/')[3]
 
-  setupListeners() {
+const BuyOfferOrder = (props) => {
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { hex_id } = mapState
+
+  const [state, setState] = useState({
+    openModal: false,
+    offerId: this.props.offer.id,
+    openDeclineBuyModal: false,
+    metamaskMessage: '',
+    transactionInProcess: false,
+    hexId: pathHexId && pathHexId.length === 15 ? pathHexId : hex_id,
+  })
+
+  const setupListeners = () => {
     document.addEventListener('land-selected', (event) => {
-      this.setState({ hexId: event.detail.hex_id })
+      setState((s) => ({ ...s, hexId: event.detail.hex_id }))
     })
   }
 
   // To delete/cancel a buy offer if you created it
-  confirmDeleteBuyOffer = async (offerId) => {
+  const confirmDeleteBuyOffer = async (offerId) => {
     try {
       const tx = await this.props.web3Provider.actions.cancelBuyOffer(offerId)
-      this.setState({
+      setState({
         metamaskMessage: this.props.t('MetamaskMessage.cancel.buy'),
         transactionInProcess: true,
       })
@@ -66,14 +59,14 @@ export class BuyOfferOrder extends Component {
       this.props.t('Success.delete.title'),
       this.props.t('Success.request.process.desc')
     )
-    this.handleClose()
+    handleClose()
   }
 
   // To decline a buy offer
-  declineBuyOffer = async (offerId) => {
+  const declineBuyOffer = async (offerId) => {
     try {
       const tx = await this.props.web3Provider.actions.declineBuyOffer(offerId)
-      this.setState({
+      setState({
         metamaskMessage: this.props.t('MetamaskMessage.decline.buy'),
         transactionInProcess: true,
       })
@@ -88,19 +81,19 @@ export class BuyOfferOrder extends Component {
       this.props.t('Success.decline.title'),
       this.props.t('Success.request.process.desc')
     )
-    this.handleClose()
+    handleClose()
   }
 
   // To accept a buy offer and sell your land
-  confirmSell = async (offerId, landId) => {
+  const confirmSell = async (offerId, landId) => {
     try {
-      this.setState({
+      setState({
         metamaskMessage: this.props.t('MetamaskMessage.approve.ovr'),
         transactionInProcess: true,
       })
       await this.props.web3Provider.actions.approveErc721Token(landId, true)
 
-      this.setState({
+      setState({
         metamaskMessage: this.props.t('MetamaskMessage.accept.sell'),
       })
       const newTx = await this.props.web3Provider.actions.acceptBuyOffer(
@@ -118,12 +111,12 @@ export class BuyOfferOrder extends Component {
       this.props.t('Success.land.sold.title'),
       this.props.t('Success.request.process.desc')
     )
-    this.handleClose()
+    handleClose()
   }
 
-  handleOpen() {
+  const handleOpen = () => {
     if (this.props.userProvider.state.isLoggedIn) {
-      this.setState({ openModal: true })
+      setState({ openModal: true })
     } else {
       warningNotification(
         this.props.t('Warning.invalid.auth.title'),
@@ -132,9 +125,9 @@ export class BuyOfferOrder extends Component {
     }
   }
 
-  openDeclineModal = () => {
+  const openDeclineModal = () => {
     if (this.props.userProvider.state.isLoggedIn) {
-      this.setState({ openDeclineBuyModal: true })
+      setState({ openDeclineBuyModal: true })
     } else {
       warningNotification(
         this.props.t('Warning.invalid.auth.title'),
@@ -143,8 +136,8 @@ export class BuyOfferOrder extends Component {
     }
   }
 
-  handleClose() {
-    this.setState({
+  const handleClose = () => {
+    setState({
       openModal: false,
       openDeclineBuyModal: false,
       metamaskMessage: '',
@@ -152,11 +145,13 @@ export class BuyOfferOrder extends Component {
     })
   }
 
-  componentDidMount() {
-    if (this.setupComplete) this.setupListeners()
-  }
+  useEffect(() => {
+    if (setupComplete) {
+      setupListeners()
+    }
+  }, [])
 
-  buttonRender() {
+  const buttonRender = () => {
     let customRender
     if (!this.props.isOwner) {
       customRender = (
@@ -165,14 +160,14 @@ export class BuyOfferOrder extends Component {
             <button
               type="button"
               className="orderTileButton"
-              onClick={this.handleOpen}
+              onClick={handleOpen}
             >
               {this.props.t('BuyOfferOrder.accept.offer')}
             </button>{' '}
             <button
               type="button"
               className="orderTileButton"
-              onClick={this.openDeclineModal}
+              onClick={openDeclineModal}
             >
               {this.props.t('BuyOfferOrder.decline.offer')}
             </button>
@@ -181,8 +176,8 @@ export class BuyOfferOrder extends Component {
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
-            open={this.state.openModal}
-            onClose={this.handleClose}
+            open={state.openModal}
+            onClose={handleClose}
           >
             <div className="BuyOfferModal">
               <h2>{this.props.t('BuyOfferOrder.sell.confirmation')}</h2>
@@ -330,27 +325,25 @@ export class BuyOfferOrder extends Component {
     return customRender
   }
 
-  render() {
-    return (
-      <div className="BuyOfferTile">
-        <div className="section">
-          <ValueCounter value={this.props.offer.price}></ValueCounter>
-        </div>
-        <div className="section">
-          <b>{this.props.t('BuyOfferOrder.offer.order')}</b>
-        </div>
-        <div className="section">
-          <span className="c-small-tile-text">
-            {this.props.t('BuyOfferOrder.expires.label')}
-          </span>{' '}
-          <TimeCounter
-            date_end={new Date(this.props.offer.expirationDate * 1000)}
-          ></TimeCounter>
-        </div>
-        {this.buttonRender()}
+  return (
+    <div className="BuyOfferTile">
+      <div className="section">
+        <ValueCounter value={this.props.offer.price}></ValueCounter>
       </div>
-    )
-  }
+      <div className="section">
+        <b>{this.props.t('BuyOfferOrder.offer.order')}</b>
+      </div>
+      <div className="section">
+        <span className="c-small-tile-text">
+          {this.props.t('BuyOfferOrder.expires.label')}
+        </span>{' '}
+        <TimeCounter
+          date_end={new Date(this.props.offer.expirationDate * 1000)}
+        />
+      </div>
+      {buttonRender()}
+    </div>
+  )
 }
 
-export default withUserContext(withWeb3Context(withMapContext(BuyOfferOrder)))
+export default withUserContext(withWeb3Context(BuyOfferOrder))

@@ -35,7 +35,6 @@ import _ from 'lodash'
 import { checkToken } from 'lib/auth'
 
 import { NewMapContext } from 'context/NewMapContext'
-// import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
   const { t } = useTranslation()
