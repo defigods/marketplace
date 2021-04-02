@@ -7,19 +7,17 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import geojson2h3 from 'geojson2h3'
 import * as h3 from 'h3-js'
-import config from '../../lib/config'
-import { withMapContext } from '../../context/MapContext'
+import config from 'lib/config'
+import { withMapContext } from 'context/MapContext'
 import {
   indexInterestingLands,
   getCachedOpenLandsGeojson,
   request,
-} from '../../lib/api'
+} from 'lib/api'
 import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs'
 import BannerCounter from '../BannerCounter/BannerCounter'
 
-import _, { isElement } from 'lodash'
-
-// @ts-check
+import _ from 'lodash'
 
 let map
 
@@ -781,7 +779,7 @@ const Map = (props) => {
   return (
     <>
       {/* <BannerNotification></BannerNotification> */}
-      <BannerCounter></BannerCounter>
+      <BannerCounter />
       <Breadcrumbs />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
