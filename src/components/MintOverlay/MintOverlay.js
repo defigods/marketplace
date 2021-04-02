@@ -6,7 +6,11 @@ import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from '../ValueCounter/ValueCounter'
 import HexButton from '../HexButton/HexButton'
 import config from 'lib/config'
-import { warningNotification, dangerNotification } from 'lib/notifications'
+import {
+  warningNotification,
+  dangerNotification,
+  successNotification,
+} from 'lib/notifications'
 import PropTypes from 'prop-types'
 import { auctionCreate } from 'lib/api'
 
@@ -52,7 +56,10 @@ const MintOverlay = (props) => {
   const [classShowOverlay, setClassShowOverlay] = useState(false)
 
   const [userBalance, setUserBalance] = useState(0)
+
   const [userAllowance, setUserAllowance] = useState(0)
+  const [allowanceButtonActive, setAllowanceButtonActive] = useState(true)
+
   const [userBalanceProjection, setUserBalanceProjection] = useState(0)
   const [userPendingOnBalance, setUserPendingOnBalance] = useState(0)
 
@@ -272,6 +279,24 @@ const MintOverlay = (props) => {
     return true
   }
 
+  const allowanceTransaction = async () => {
+    // Ensure user is logged in
+    if (!checkUserLoggedIn()) return
+    // Refresh balance and allowance
+    const resp = await authorizeOvrExpense('1000000')
+
+    setAllowanceButtonActive(false)
+
+    successNotification(
+      t('IBCO.request.process.title'),
+      t('IBCO.request.process.desc')
+    )
+
+    setTimeout(() => {
+      refreshBalanceAndAllowance()
+    }, 40000)
+  }
+
   const participateInAuction = async (type) => {
     if (bid < nextBid)
       return warningNotification(
@@ -399,30 +424,36 @@ const MintOverlay = (props) => {
 								</div>
 							</div>} */}
               <div className="Overlay__bids_container">
-                <div className="Overlay__bid_container">
-                  <div className="Overlay__minimum_bid">
-                    <div className="Overlay__bid_title">
-                      {t('MintOverlay.min.bid')}
+                {userAllowance < 2000 || userAllowance == null ? null : (
+                  <>
+                    <div className="Overlay__bid_container">
+                      <div className="Overlay__minimum_bid">
+                        <div className="Overlay__bid_title">
+                          {t('MintOverlay.min.bid')}
+                        </div>
+                        <div className="Overlay__bid_cont">
+                          <ValueCounter value={currentBid}></ValueCounter>
+                        </div>
+                      </div>
                     </div>
-                    <div className="Overlay__bid_cont">
-                      <ValueCounter value={currentBid}></ValueCounter>
+
+                    <div className="Overlay__minimum_bid my-bid">
+                      <div className="Overlay__bid_title">
+                        {t('MintOverlay.your.bid')}
+                      </div>
+                      <div>
+                        <TextField
+                          type="number"
+                          onChange={(e) => {
+                            const eventBid = e.target.value
+                            if (eventBid > 0) updateNewBidValue(eventBid)
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="Overlay__minimum_bid my-bid">
-                  <div className="Overlay__bid_title">
-                    {t('MintOverlay.your.bid')}
-                  </div>
-                  <div>
-                    <TextField
-                      type="number"
-                      onChange={(e) => {
-                        const eventBid = e.target.value
-                        if (eventBid > 0) updateNewBidValue(eventBid)
-                      }}
-                    />
-                  </div>
-                </div>
+                  </>
+                )}
+
                 <div className="Overlay__expense_projection">
                   {bidValid &&
                     props.userProvider.state.isLoggedIn &&
@@ -443,20 +474,48 @@ const MintOverlay = (props) => {
                 </div>
               </div>
               <div className="Overlay__buttons_container">
-                <HexButton
-                  url="#"
-                  text={t('MintOverlay.place.bid')}
-                  className={`--orange ${bidValid ? '' : '--disabled'}`}
-                  ariaControls={open ? 'mint-fade-menu' : undefined}
-                  ariaHaspopup="true"
-                  onClick={() => participateInAuction(bidProjectionCurrency)}
-                ></HexButton>
-                <HexButton
-                  url="#"
-                  text={t('Generic.cancel.label')}
-                  className="--orange-light"
-                  onClick={setDeactiveOverlay}
-                ></HexButton>
+                {userAllowance < 2000 || userAllowance == null ? (
+                  <>
+                    <HexButton
+                      url="#"
+                      text={t('IBCO.stepper.third')}
+                      className={`--orange ${
+                        allowanceButtonActive === false ? '--disabled' : ''
+                      }`}
+                      ariaControls={open ? 'mint-fade-menu' : undefined}
+                      ariaHaspopup="true"
+                      onClick={() => allowanceTransaction()}
+                    />
+
+                    <div style={{ marginTop: 10 }}>
+                      <HexButton
+                        url="#"
+                        text={t('Generic.cancel.label')}
+                        className="--orange-light"
+                        onClick={setDeactiveOverlay}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <HexButton
+                      url="#"
+                      text={t('MintOverlay.place.bid')}
+                      className={`--orange ${bidValid ? '' : '--disabled'}`}
+                      ariaControls={open ? 'mint-fade-menu' : undefined}
+                      ariaHaspopup="true"
+                      onClick={() =>
+                        participateInAuction(bidProjectionCurrency)
+                      }
+                    />
+                    <HexButton
+                      url="#"
+                      text={t('Generic.cancel.label')}
+                      className="--orange-light"
+                      onClick={setDeactiveOverlay}
+                    />
+                  </>
+                )}
               </div>
             </div>
           </div>
