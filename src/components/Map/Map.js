@@ -8,7 +8,7 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import geojson2h3 from 'geojson2h3'
 import * as h3 from 'h3-js'
 import config from 'lib/config'
-import { withMapContext } from 'context/MapContext'
+
 import {
   indexInterestingLands,
   getCachedOpenLandsGeojson,
@@ -800,4 +800,4 @@ Map.propTypes = {
   props: PropTypes.object,
 }
 
-export default withMapContext(Map)
+export default Map
