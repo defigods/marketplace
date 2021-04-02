@@ -39,7 +39,7 @@ import { NewMapContext } from 'context/NewMapContext'
 // import { ca } from 'date-fns/esm/locale';
 
 const Land = (props) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [mapState, setMapState, actions] = useContext(NewMapContext)
 
   const {
@@ -50,7 +50,7 @@ const Land = (props) => {
     changeActiveSellOverlay,
     changeActiveBuyOverlay,
     changeActiveBuyOfferOverlay,
-  } = props.mapProvider.actions
+  } = actions
 
   const { getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions
   const {
@@ -62,7 +62,7 @@ const Land = (props) => {
   } = props.web3Provider.state
   const { isLoggedIn } = props.userProvider.state
 
-  const [hexId, setHexId] = useState(props.mapProvider.state)
+  const [hexId, setHexId] = useState(mapState)
   const [integerId, setIntegerId] = useState()
   const [value, setValue] = useState(null)
   const [marketStatus, setMarketStatus] = useState(null)
@@ -89,27 +89,16 @@ const Land = (props) => {
     loadLandStateFromApi(hex_id) // Load data from API
   }, [props.match.params.id])
 
-  console.debug('TESTTTTTTTT', {
-    myContext: { mapState, setMapState, actions },
-    oldContext: props.mapProvider,
-  })
-
   // Sockets
   useEffect(() => {
     if (setupComplete && isLoggedIn && hexId === props.match.params.id) {
-      // liveSocket(props.match.params.id);
-      // console.log('LIVESOCKET', hexId);
       if (isLoggedIn && checkToken('userToken')) {
-        // console.log('LIVESOCKET PASSED', hexId);
         if (window.landSocket) window.landSocket.unsubscribe() // unsubscribe precedent land
         var cable = ActionCable.createConsumer(config.apis.socket)
-        // console.log('hexId', hexId);
         window.landSocket = cable.subscriptions.create(
           { channel: 'LandsChannel', hex_id: hexId },
           {
             received: (data) => {
-              // console.log('LIVESOCKET data incoming', hexId);
-              // console.log('LAND SOCKET data', data);
               loadLandStateFromApi(hexId)
               decentralizedSetup()
             },
@@ -119,7 +108,6 @@ const Land = (props) => {
           }
         )
       } else {
-        // console.log('LIVESOCKET UHOH');
         if (window.landSocket) window.landSocket.unsubscribe()
       }
     }
@@ -262,15 +250,6 @@ const Land = (props) => {
     setOpenBuyOffers(offers)
   }
 
-  // OLD //
-  // const redeemLand = async (e) => {
-  // 	e.preventDefault();
-  // 	setIsRedeemingLand(true);
-  // 	sendAuctionCheckClose(hexId);
-  // 	await mintLightMintedLand(hexId);
-  // 	setIsRedeemingLand(false);
-  // };
-
   const redeemLand = async (e) => {
     console.debug('redeemLand', e)
     e.preventDefault()
@@ -343,7 +322,6 @@ const Land = (props) => {
   //
   // Render elements
   //
-
   function renderTimer() {
     if (marketStatus === 1) {
       return (
@@ -611,11 +589,11 @@ const Land = (props) => {
     setValue(currentBid)
   }
 
-  const LandPrice = ({ price = null }) => {
+  const LandPrice = ({ price }) => {
     const label =
       marketStatus === 2 ? t('Land.closing.price') : t('Land.price.label')
 
-    const thePrice = marketStatus === null ? null : value
+    const thePrice = marketStatus === null ? null : price
 
     if (isLoggedIn) {
       return (
@@ -870,4 +848,4 @@ Land.propTypes = {
   url: PropTypes.string,
 }
 
-export default withWeb3Context(withUserContext(withMapContext(Land)))
+export default withWeb3Context(withUserContext(Land))
