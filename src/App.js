@@ -38,6 +38,8 @@ import { Web3Provider, Web3Context } from './context/Web3Context'
 import ReactGA from 'react-ga'
 import { createBrowserHistory } from 'history'
 
+import CircularProgress from '@material-ui/core/CircularProgress'
+
 //TODO
 import i18next from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
@@ -92,12 +94,28 @@ function App() {
   }
   window.historyPush = historyPush
 
+  const Preloading = () => {
+    return (
+      <div
+        style={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <CircularProgress color="#2d245b" />
+      </div>
+    )
+  }
+
   return (
-    <Suspense fallback="loading">
+    <Suspense fallback={<Preloading />}>
       <Translation>
         {(t, { i18n }) => (
-          <UserProvider t={t} i18n={i18n}>
-            <Web3Provider t={t} i18n={i18n}>
+          <UserProvider>
+            <Web3Provider>
               <MapProvider>
                 <UserContext.Consumer>
                   {(userValue) => {
@@ -111,81 +129,68 @@ function App() {
                                   <Router history={history}>
                                     <div className="App">
                                       <ReactNotification />
-                                      <NavBar></NavBar>
+                                      <NavBar />
                                       <div className="o-container">
-                                        <Route
-                                          path="/map/"
-                                          component={Map}
-                                        ></Route>
+                                        <Route path="/map/" component={Map} />
                                       </div>
                                       <Switch>
-                                        {/* <Route exact path="/">
-																				{userValue.state.isLoggedIn ? (
-																					<Redirect to="/profile" />
-																				) : (
-																					<Redirect to="/login" />
-																				)}
-																			</Route> */}
                                         <Route exact path="/">
                                           <Redirect to="/map/discover" />
                                         </Route>
                                         <Route
                                           path="/map/discover/:ref"
                                           component={Discover}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/map/discover"
                                           component={Discover}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/map/overview"
                                           component={Overview}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/map/lands"
                                           component={Lands}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/map/land/:id"
                                           component={Land}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/profile"
                                           component={Profile}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/activity"
                                           component={Activity}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/login"
                                           component={Login}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/login-helper"
                                           component={LoginHelper}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/public-sale"
                                           component={PublicSale}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/staking"
                                           component={Staking}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/confirm-email"
                                           component={ConfirmEmail}
-                                        ></Route>
+                                        />
                                         <Route
                                           path="/staking-vesting-ovrg"
                                           component={StakingVestingOvrg}
-                                        ></Route>
-
-                                        {/* <Route path="/buy-tokens" component={BuyTokens}></Route>
-																			<Route path="/indacoin-response" component={IndacoinResponse}></Route>  TODO: KYC - Remove comment */}
+                                        />
                                       </Switch>
-                                      <Footer></Footer>
+                                      <Footer />
                                     </div>
                                   </Router>
                                 )
