@@ -1,38 +1,34 @@
 import React, { useState, useEffect } from 'react'
-import { withMapContext } from '../../context/MapContext'
-import { withUserContext } from '../../context/UserContext'
-import { withWeb3Context } from '../../context/Web3Context'
-import HexButton from '../../components/HexButton/HexButton'
-import ValueCounter from '../../components/ValueCounter/ValueCounter'
+
+import { withUserContext } from 'context/UserContext'
+import { withWeb3Context } from 'context/Web3Context'
+import HexButton from 'components/HexButton/HexButton'
+import ValueCounter from 'components/ValueCounter/ValueCounter'
 import {
   warningNotification,
   dangerNotification,
   successNotification,
-} from '../../lib/notifications'
+} from 'lib/notifications'
 
-// import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
-// import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
-// import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
-
-import { participateMultipleAuctions } from '../../lib/api'
-import { getLands } from '../../lib/api'
+import { participateMultipleAuctions } from 'lib/api'
+import { getLands } from 'lib/api'
 import PropTypes from 'prop-types'
-import LandCard from '../../components/LandCard/LandCard'
+import LandCard from 'components/LandCard/LandCard'
 import { useTranslation } from 'react-i18next'
 
-// import config from '../../lib/config';
-
-// import { ca } from 'date-fns/esm/locale';
+import { NewMapContext } from 'context/NewMapContext'
 
 const Lands = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+
   const {
     enableMultipleLandSelection,
     disableMultipleLandSelection,
     resetMultipleLandSelectionList,
-  } = props.mapProvider.actions
-  const { multipleLandSelectionList } = props.mapProvider.state
-  const { refreshBalanceAndAllowance } = props.userProvider.actions
+  } = actions
+  const { multipleLandSelectionList } = mapState
+  const { refreshBalanceAndAllowance } = actions
 
   const [listLands, setListLands] = useState('')
   const [gasProjection, setGasProjection] = useState(0)
@@ -330,4 +326,4 @@ Lands.propTypes = {
   url: PropTypes.string,
 }
 
-export default withWeb3Context(withUserContext(withMapContext(Lands)))
+export default withWeb3Context(withUserContext(Lands))
