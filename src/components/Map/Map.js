@@ -289,10 +289,6 @@ const Map = (props) => {
     })
   }
 
-  /**
-   * @function renderHighZoomMintedLands
-   * @param {*} hexagons
-   */
   function renderHighZoomMintedLands(hexagons) {
     // Prepare format
     var data = Object.assign({}, hexagons)
@@ -365,9 +361,6 @@ const Map = (props) => {
     })
   }
 
-  /**
-   * @function renderOwnedLandsCluster
-   */
   function renderOwnedLandsCluster() {
     map.addSource('owned_cluster', {
       type: 'geojson',
@@ -448,9 +441,6 @@ const Map = (props) => {
     })
   }
 
-  /**
-   * @function renderOpenAuctionLandsCluster
-   */
   function renderOpenAuctionLandsCluster() {
     getCachedOpenLandsGeojson().then((response) => {
       let auctions = response.data
@@ -515,10 +505,6 @@ const Map = (props) => {
     // });
   }
 
-  /**
-   * @function renderHighZoomOngoingAuctions
-   * @param {*} hexagons
-   */
   function renderHighZoomOngoingAuctions(hexagons) {
     // Prepare format
     var data = Object.assign({}, hexagons)
@@ -589,10 +575,6 @@ const Map = (props) => {
     })
   }
 
-  /**
-   * @function hexagons
-   * @returns
-   */
   function hexagons() {
     var center = map.getCenter()
     const centerHex = h3.geoToH3(center['lat'], center['lng'], 12)
@@ -660,9 +642,6 @@ const Map = (props) => {
     // }
   }
 
-  /**
-   * @function plotHighZoomPOI
-   */
   function plotHighZoomPOI() {
     // Zoom out map // General Map View
     if (onSingleView === false && onMultipleLandSelection === false) {
@@ -728,9 +707,6 @@ const Map = (props) => {
     })
   }
 
-  /**
-   * @function plotAuctions
-   */
   function plotAuctions() {
     map.flyTo({
       center: [config.map.lng, config.map.lat],
