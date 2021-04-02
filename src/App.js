@@ -114,8 +114,8 @@ function App() {
     <Suspense fallback={<Preloading />}>
       <Translation>
         {(t, { i18n }) => (
-          <UserProvider>
-            <Web3Provider>
+          <UserProvider t={t} i18n={i18n}>
+            <Web3Provider t={t} i18n={i18n}>
               <MapProvider>
                 <UserContext.Consumer>
                   {(userValue) => {
