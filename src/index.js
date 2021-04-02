@@ -5,11 +5,15 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 
 import { BannerCounterContextProvider } from 'context/BannerCounterContext'
+import { NewMapContextProvider } from 'context/NewMapContext'
 
 ReactDOM.render(
-  <BannerCounterContextProvider>
-    <App />
-  </BannerCounterContextProvider>,
+  <NewMapContextProvider>
+    <BannerCounterContextProvider>
+      <App />
+    </BannerCounterContextProvider>
+  </NewMapContextProvider>,
+
   document.getElementById('root')
 )
 
