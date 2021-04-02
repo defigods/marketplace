@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import PropTypes from 'prop-types'
 import mapboxgl from 'mapbox-gl'
@@ -19,20 +19,24 @@ import BannerCounter from '../BannerCounter/BannerCounter'
 
 import _ from 'lodash'
 
+import { NewMapContext } from 'context/NewMapContext'
+
 let map
 
 const Map = (props) => {
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+
   const [lastSelectedLand, setLastSelectedLand] = useState(null)
   const [isMapReady, setIsMapReady] = useState(false)
 
-  const { changeMultipleLandSelectionList } = props.mapProvider.actions
+  const { changeMultipleLandSelectionList } = actions
   const {
     onSingleView,
     onMultipleLandSelection,
     multipleLandSelectionList,
     auctionList,
     hex_id,
-  } = props.mapProvider.state
+  } = mapState
 
   // Effects
   ////////////////////////////////////////////////////////////
@@ -195,10 +199,11 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
+    console.debug('MAPSTATE', mapState)
     if (isMapReady == true) {
-      if (auctionList.length > 0) {
-        // plotAuctions();
-      }
+      //   if (auctionList.length > 0) {
+      //     plotAuctions()
+      //   }
       // Fetch and render clustered Owned Lands
       renderOwnedLandsCluster()
       // Fetch and render clustered Open Auctions
