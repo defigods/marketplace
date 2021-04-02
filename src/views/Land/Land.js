@@ -135,8 +135,8 @@ const Land = (props) => {
   }
 
   // Call API function
-  function loadLandStateFromApi(hex_id) {
-    getLand(hex_id)
+  async function loadLandStateFromApi(hex_id) {
+    return await getLand(hex_id)
       .then((response) => {
         let data = response.data
 
@@ -184,8 +184,12 @@ const Land = (props) => {
             userPerspective: data.userPerspective,
             openSellOrder: data.openSellOrder,
             auction: data.auction,
+            marketStatus: data.marketStatus,
           }
-          changeLandData(state)
+
+          console.debug('statestate', state)
+
+          return changeLandData(state)
         }
       })
       .catch((error) => {

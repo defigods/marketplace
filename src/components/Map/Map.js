@@ -786,7 +786,7 @@ const Map = (props) => {
     <>
       {/* <BannerNotification></BannerNotification> */}
       <BannerCounter />
-      <Breadcrumbs />
+      <Breadcrumbs contextState={mapState} />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
         {/* <MapNavigationBox /> */}
