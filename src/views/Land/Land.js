@@ -496,7 +496,6 @@ const Land = (props) => {
   }
 
   function renderOverlayButton() {
-    console.debug('renderOverlayButton')
     let button = <div>&nbsp;</div>
     switch (marketStatus) {
       case 0:
