@@ -6,7 +6,11 @@ import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from '../ValueCounter/ValueCounter'
 import HexButton from '../HexButton/HexButton'
 import config from 'lib/config'
-import { warningNotification, dangerNotification } from 'lib/notifications'
+import {
+  warningNotification,
+  dangerNotification,
+  successNotification,
+} from 'lib/notifications'
 import PropTypes from 'prop-types'
 import { auctionBid } from 'lib/api'
 
@@ -54,7 +58,10 @@ const BidOverlay = (props) => {
   const [gasProjection, setGasProjection] = useState(0)
 
   const [userBalance, setUserBalance] = useState(0)
+
   const [userAllowance, setUserAllowance] = useState(0)
+  const [allowanceButtonActive, setAllowanceButtonActive] = useState(true)
+
   const [userBalanceProjection, setUserBalanceProjection] = useState(0)
   const [userPendingOnBalance, setUserPendingOnBalance] = useState(0)
 
@@ -287,6 +294,24 @@ const BidOverlay = (props) => {
     userState.pendingOnBalance,
   ])
 
+  const allowanceTransaction = async () => {
+    // Ensure user is logged in
+    if (!checkUserLoggedIn()) return
+    // Refresh balance and allowance
+    const resp = await authorizeOvrExpense('1000000')
+
+    setAllowanceButtonActive(false)
+
+    successNotification(
+      t('IBCO.request.process.title'),
+      t('IBCO.request.process.desc')
+    )
+
+    setTimeout(() => {
+      refreshBalanceAndAllowance()
+    }, 40000)
+  }
+
   const participateInAuction = async (type) => {
     if (bid < nextBid)
       return warningNotification(
@@ -413,71 +438,76 @@ const BidOverlay = (props) => {
 									</div>
 								</div>
 							</div> */}
-              <div className="Overlay__bids_container">
-                <div className="Overlay__bid_container">
-                  <div className="Overlay__current_bid">
-                    <div className="Overlay__bid_title">
-                      {t('BidOverlay.current.bid')}
-                    </div>
-                    <div className="Overlay__bid_cont">
-                      <ValueCounter value={currentBid}></ValueCounter>
+
+              {userAllowance < 2000 || userAllowance == null ? null : (
+                <div className="Overlay__bids_container">
+                  <div className="Overlay__bid_container">
+                    <div className="Overlay__current_bid">
+                      <div className="Overlay__bid_title">
+                        {t('BidOverlay.current.bid')}
+                      </div>
+                      <div className="Overlay__bid_cont">
+                        <ValueCounter value={currentBid}></ValueCounter>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="Overlay__arrow">
-                  <div className="Icon">
-                    <svg
-                      width="10px"
-                      height="17px"
-                      viewBox="0 0 10 17"
-                      version="1.1"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g
-                        id="Dashboards"
-                        stroke="none"
-                        strokeWidth="1"
-                        fill="none"
-                        fillRule="evenodd"
+                  <div className="Overlay__arrow">
+                    <div className="Icon">
+                      <svg
+                        width="10px"
+                        height="17px"
+                        viewBox="0 0 10 17"
+                        version="1.1"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <g
-                          id="Biddign-Single-Auction"
-                          transform="translate(-792.000000, -469.000000)"
-                          fill="#FFFFFF"
-                          stroke="#D4CDD9"
+                          id="Dashboards"
+                          stroke="none"
+                          strokeWidth="1"
+                          fill="none"
+                          fillRule="evenodd"
                         >
-                          <path
-                            d="M793.132554,484.641214 C793.210784,484.719949 793.317088,484.764519 793.428175,484.765159 C793.5396,484.7662 793.646532,484.721367 793.723796,484.641214 L800.694533,477.682613 C800.773611,477.604705 800.818124,477.498417 800.818124,477.387507 C800.818124,477.276596 800.773611,477.170308 800.694533,477.0924 L793.723796,470.132323 C793.61943,470.02095 793.462544,469.975232 793.314547,470.013063 C793.16655,470.050895 793.050984,470.16626 793.013086,470.313999 C792.975188,470.461739 793.020987,470.618352 793.132554,470.722535 L799.807671,477.387507 L793.132554,484.051002 C793.053844,484.129106 793.009585,484.23532 793.009585,484.346108 C793.009585,484.456896 793.053844,484.56311 793.132554,484.641214 Z"
-                            id="Path"
-                          ></path>
+                          <g
+                            id="Biddign-Single-Auction"
+                            transform="translate(-792.000000, -469.000000)"
+                            fill="#FFFFFF"
+                            stroke="#D4CDD9"
+                          >
+                            <path
+                              d="M793.132554,484.641214 C793.210784,484.719949 793.317088,484.764519 793.428175,484.765159 C793.5396,484.7662 793.646532,484.721367 793.723796,484.641214 L800.694533,477.682613 C800.773611,477.604705 800.818124,477.498417 800.818124,477.387507 C800.818124,477.276596 800.773611,477.170308 800.694533,477.0924 L793.723796,470.132323 C793.61943,470.02095 793.462544,469.975232 793.314547,470.013063 C793.16655,470.050895 793.050984,470.16626 793.013086,470.313999 C792.975188,470.461739 793.020987,470.618352 793.132554,470.722535 L799.807671,477.387507 L793.132554,484.051002 C793.053844,484.129106 793.009585,484.23532 793.009585,484.346108 C793.009585,484.456896 793.053844,484.56311 793.132554,484.641214 Z"
+                              id="Path"
+                            ></path>
+                          </g>
                         </g>
-                      </g>
-                    </svg>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="Overlay__minimum_bid">
+                    <div className="Overlay__bid_title">
+                      {t('BidOverlay.min.bid')}
+                    </div>
+                    <div className="Overlay__bid_cont">
+                      <ValueCounter value={nextBid}></ValueCounter>
+                    </div>
+                  </div>
+
+                  <div className="Overlay__your_bid">
+                    <div className="Overlay__bid_title">
+                      {t('BidOverlay.your.bid')}
+                    </div>
+                    <div>
+                      <TextField
+                        type="number"
+                        onChange={(e) => {
+                          const eventBid = e.target.value
+                          if (eventBid > 0) updateNewBidValue(eventBid)
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="Overlay__minimum_bid">
-                  <div className="Overlay__bid_title">
-                    {t('BidOverlay.min.bid')}
-                  </div>
-                  <div className="Overlay__bid_cont">
-                    <ValueCounter value={nextBid}></ValueCounter>
-                  </div>
-                </div>
-              </div>
-              <div className="Overlay__your_bid">
-                <div className="Overlay__bid_title">
-                  {t('BidOverlay.your.bid')}
-                </div>
-                <div>
-                  <TextField
-                    type="number"
-                    onChange={(e) => {
-                      const eventBid = e.target.value
-                      if (eventBid > 0) updateNewBidValue(eventBid)
-                    }}
-                  />
-                </div>
-              </div>
+              )}
+
               <div className="Overlay__expense_projection">
                 {bidValid &&
                   props.userProvider.state.isLoggedIn &&
@@ -497,20 +527,48 @@ const BidOverlay = (props) => {
                 )}
               </div>
               <div className="Overlay__buttons_container">
-                <HexButton
-                  url="#"
-                  text={t('BidOverlay.place.bid.label')}
-                  className={`--orange ${bidValid ? '' : '--disabled'}`}
-                  ariaControls={open ? 'mint-fade-menu' : undefined}
-                  ariaHaspopup="true"
-                  onClick={() => participateInAuction(bidProjectionCurrency)}
-                ></HexButton>
-                <HexButton
-                  url="#"
-                  text={t('Generic.cancel.label')}
-                  className="--orange-light"
-                  onClick={setDeactiveOverlay}
-                ></HexButton>
+                {userAllowance < 2000 || userAllowance == null ? (
+                  <>
+                    <HexButton
+                      url="#"
+                      text={t('IBCO.stepper.third')}
+                      className={`--orange ${
+                        allowanceButtonActive === false ? '--disabled' : ''
+                      }`}
+                      ariaControls={open ? 'mint-fade-menu' : undefined}
+                      ariaHaspopup="true"
+                      onClick={() => allowanceTransaction()}
+                    />
+
+                    <div style={{ marginTop: 10 }}>
+                      <HexButton
+                        url="#"
+                        text={t('Generic.cancel.label')}
+                        className="--orange-light"
+                        onClick={setDeactiveOverlay}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <HexButton
+                      url="#"
+                      text={t('BidOverlay.place.bid.label')}
+                      className={`--orange ${bidValid ? '' : '--disabled'}`}
+                      ariaControls={open ? 'mint-fade-menu' : undefined}
+                      ariaHaspopup="true"
+                      onClick={() =>
+                        participateInAuction(bidProjectionCurrency)
+                      }
+                    />
+                    <HexButton
+                      url="#"
+                      text={t('Generic.cancel.label')}
+                      className="--orange-light"
+                      onClick={setDeactiveOverlay}
+                    />
+                  </>
+                )}
               </div>
             </div>
           </div>

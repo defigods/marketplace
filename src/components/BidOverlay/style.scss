@@ -176,6 +176,7 @@
 .Overlay__current_bid,
 .Overlay__minimum_bid {
   float: left;
+  margin-bottom: 30px;
 }
 .Overlay__bid_title {
   font-size: 14px;
@@ -196,7 +197,6 @@
 .Overlay__your_bid {
   width: 100%;
   clear: both;
-  margin-top: 20px;
 }
 .Overlay__close_button {
   position: absolute;
