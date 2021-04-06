@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import * as R from 'ramda'
 
 import PropTypes from 'prop-types'
 import mapboxgl from 'mapbox-gl'
@@ -25,11 +26,6 @@ let map
 
 const Map = (props) => {
   const [mapState, setMapState, actions] = useContext(NewMapContext)
-
-  const [lastSelectedLand, setLastSelectedLand] = useState(null)
-  const [isMapReady, setIsMapReady] = useState(false)
-
-  const { changeMultipleLandSelectionList } = actions
   const {
     onSingleView,
     onMultipleLandSelection,
@@ -37,6 +33,11 @@ const Map = (props) => {
     auctionList,
     hex_id,
   } = mapState
+
+  const [lastSelectedLand, setLastSelectedLand] = useState(null)
+  const [isMapReady, setIsMapReady] = useState(false)
+
+  const { changeMultipleLandSelectionList } = actions
 
   // Effects
   ////////////////////////////////////////////////////////////
@@ -180,7 +181,7 @@ const Map = (props) => {
         map.off('click', onClickMap)
       }
     }
-  }, [onMultipleLandSelection, lastSelectedLand, map])
+  }, [onMultipleLandSelection, lastSelectedLand, map, hex_id])
 
   useEffect(() => {
     if (isMapReady == true) {
@@ -210,6 +211,12 @@ const Map = (props) => {
       //renderOpenAuctionLandsCluster();
     }
   }, [isMapReady])
+
+  useEffect(() => {
+    if (!R.isNil(hex_id) && !R.isEmpty(hex_id)) {
+      addFocusToHexId(hex_id)
+    }
+  }, [mapState.hex_id])
 
   // Functions
   ////////////////////////////////////////////////////////////
@@ -606,6 +613,8 @@ const Map = (props) => {
     // Plot graphic point into map
     let singleHexGeojson = geojson2h3.h3ToFeature(hex_id)
 
+    console.debug('focusMapfocusMap', singleHexGeojson)
+
     const selected_sourceId = 'h3-hexes_selected'
     const selected_layerId = `${selected_sourceId}-layer`
     let selected_source = map.getSource(selected_sourceId)
@@ -642,6 +651,23 @@ const Map = (props) => {
     //     .setLngLat([hexCenterCoordinates[1], hexCenterCoordinates[0]])
     //     .addTo(map);
     // }
+  }
+
+  function addFocusToHexId(hexId) {
+    let hexCenterCoordinates = h3.h3ToGeo(hexId)
+    const selectedSourceId = 'h3-hexes_selected'
+    const selectedLayerId = `${selectedSourceId}-layer`
+    const selectedSource = map.getSource(selectedSourceId)
+
+    let singleHexGeojson = geojson2h3.h3ToFeature(hexId)
+
+    console.debug('addFocusToHexId', { hexCenterCoordinates, selectedSource })
+
+    map.flyTo({
+      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]],
+      zoom: 18,
+      speed: 2.2,
+    })
   }
 
   function plotHighZoomPOI() {

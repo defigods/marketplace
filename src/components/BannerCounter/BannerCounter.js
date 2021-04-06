@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 
 import { useTranslation } from 'react-i18next'
 import { BannerCounterContext } from 'context/BannerCounterContext'
+import { NewMapContext } from 'context/NewMapContext'
 
 import ArrowLink from 'components/ArrowLink/ArrowLink'
 import { useHistory } from 'react-router-dom'
@@ -11,6 +12,8 @@ const BannerCounter = () => {
   let history = useHistory()
 
   const [bannerState] = useContext(BannerCounterContext)
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { changeHexId } = actions
 
   const {
     closedAuctionCount,
@@ -19,6 +22,13 @@ const BannerCounter = () => {
     highestBidWorth,
     cashbackAuctionCount,
   } = bannerState
+
+  const onClickHighestBidLand = () => {
+    changeHexId(highestBidHexId)
+
+    // mapState
+    history.push('/map/land/' + highestBidHexId)
+  }
 
   return (
     <>
@@ -40,9 +50,7 @@ const BannerCounter = () => {
               <div className="o-link">
                 <ArrowLink
                   text={t('BannerCounter.visit.ovrland')}
-                  onClick={() => {
-                    history.push('/map/land/' + highestBidHexId)
-                  }}
+                  onClick={onClickHighestBidLand}
                 />
               </div>
             </div>
