@@ -74,7 +74,6 @@ const ValueCounter = ({ currency = 'ovr', value = 0, color = 'orange' }) => {
   let show_value = value
   if (parseFloat(value) > 1000) {
     show_value = format(value)
-    console.debug('ValueCounter', { value, a: format(value) })
   }
 
   return (
