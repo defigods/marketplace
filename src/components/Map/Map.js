@@ -669,7 +669,7 @@ const Map = (props) => {
 
   function plotHighZoomPOI() {
     // Zoom out map // General Map View
-    if (onSingleView === false) {
+    if (onSingleView === false && onMultipleLandSelection === false) {
       map.flyTo({
         center: [config.map.lng, config.map.lat],
         zoom: config.map.zoom,
@@ -803,7 +803,7 @@ const Map = (props) => {
     }
   }
 
-  //   console.debug('MAPSTATE', mapState)
+  console.debug('MAPSTATE', mapState)
 
   return (
     <>

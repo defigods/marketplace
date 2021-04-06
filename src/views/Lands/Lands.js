@@ -93,7 +93,7 @@ const Lands = (props) => {
                 location={obj.address.full}
                 date_end={null}
                 is_minimal={true}
-              ></LandCard>
+              />
             ))
           )
         })
@@ -224,7 +224,10 @@ const Lands = (props) => {
 
   function renderLand() {
     let custom_return
-    if (multipleLandSelectionList.length > 0) {
+    if (
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
+    ) {
       custom_return = (
         <div className="Lands">
           <div className="o-container">
