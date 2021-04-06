@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import * as R from 'ramda'
 import PropTypes from 'prop-types'
 
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -70,7 +71,12 @@ const CurrencyOVRLogo = () => (
   </svg>
 )
 
-const ValueCounter = ({ currency = 'ovr', value = 0, color = 'orange' }) => {
+const ValueCounter = ({
+  currency = 'ovr',
+  value = 0,
+  text = '',
+  color = 'orange',
+}) => {
   let show_value = value
   if (parseFloat(value) > 1000) {
     show_value = format(value)
@@ -85,7 +91,9 @@ const ValueCounter = ({ currency = 'ovr', value = 0, color = 'orange' }) => {
       </div>
       <div className="ValueCounter__value">
         {show_value !== null ? (
-          show_value
+          <>
+            {show_value} {!R.isEmpty(text) ? <span>{text}</span> : null}
+          </>
         ) : (
           <CircularProgress size={20} style={{ top: 10, marginLeft: 10 }} />
         )}
@@ -98,6 +106,7 @@ ValueCounter.propTypes = {
   currency: PropTypes.string,
   value: PropTypes.number,
   color: PropTypes.string,
+  text: PropTypes.string,
 }
 
 export default ValueCounter
