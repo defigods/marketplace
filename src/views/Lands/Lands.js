@@ -239,7 +239,7 @@ const Lands = (props) => {
               <div className="o-fourth">&nbsp;</div>
               <div className="o-fourth">
                 <h3 className="o-small-title">{t('Lands.selected.label')}</h3>
-                <div>{multipleLandSelectionList.length}/15</div>
+                <div>{multipleLandSelectionList.length}</div>
               </div>
               <div className="o-fourth">&nbsp;</div>
               <div className="o-fourth"></div>
@@ -282,10 +282,7 @@ const Lands = (props) => {
               <br />
               <div className="o-row">
                 <span>{t('Lands.total.expense')}</span>
-                <ValueCounter
-                  value={calculateTotal()}
-                  currency="ovr"
-                ></ValueCounter>
+                <ValueCounter value={calculateTotal()} currency="ovr" />
               </div>
               <br />
               <div className="o-row lands__button_holder">
@@ -295,7 +292,7 @@ const Lands = (props) => {
                   className={`--orange ${!isProcessing ? '' : '--disabled'}`}
                   ariaHaspopup="true"
                   onClick={() => participateInAuctions()}
-                ></HexButton>
+                />
               </div>
               <br />
             </div>
