@@ -805,8 +805,6 @@ const Map = (props) => {
     }
   }
 
-  console.debug('MAPSTATE', mapState)
-
   return (
     <>
       {/* <BannerNotification></BannerNotification> */}

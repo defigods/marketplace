@@ -27,6 +27,7 @@ export const NewMapContextProvider = ({ children }) => {
   const changeHexId = (hex_id) => {
     if (h3.h3IsValid(hex_id)) {
       setMapState((s) => ({
+        ...s,
         onSingleView: true,
         hex_id: hex_id,
         integer_id: parseInt(hex_id, 16),
