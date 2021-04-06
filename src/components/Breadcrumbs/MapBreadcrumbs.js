@@ -16,18 +16,13 @@ const MapBreadcrumbs = ({ contextState }) => {
   const { pathname } = useLocation()
 
   let currentPageLabel = pathname.split('/')[2]
-  console.debug('currentPageLabel1', currentPageLabel)
   currentPageLabel =
     currentPageLabel.charAt(0).toUpperCase() + currentPageLabel.slice(1)
-
-  console.debug('currentPageLabel2', currentPageLabel)
 
   const prevLinks = []
 
   const isAuction = marketStatus === 1
   const isUserRelated = userPerspective !== 0
-
-  // console.log('This is the data', data);
 
   if (currentPageLabel === 'Land') {
     const dataIsEmpty =
