@@ -1,4 +1,11 @@
 .ovr-footer {
+  @media screen and (max-width: 767px) {
+    .o-fourth {
+      width: 50%;
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  }
   padding-top: 50px;
 
   .footer-logo img {
@@ -33,9 +40,6 @@
       margin-bottom: 10px;
       display: block;
     }
-  }
-
-  .ovr-footer-link {
   }
 
   .ovr-footer-title {
