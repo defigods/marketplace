@@ -161,9 +161,7 @@ const Map = (props) => {
             let list = multipleLandSelectionList
             if (R.includes(clicked_hex_id, list) && !R.isNil(list)) {
               // Remove Land
-              _.remove(list, function (el) {
-                return el === clicked_hex_id
-              })
+              _.remove(list, (el) => el === clicked_hex_id)
               changeMultipleLandSelectionList(list)
             } else {
               // Add Land
@@ -657,9 +655,6 @@ const Map = (props) => {
   function addFocusToHexId(hexId) {
     let hexCenterCoordinates = h3.h3ToGeo(hexId)
     const selectedSourceId = 'h3-hexes_selected'
-    const selectedSource = map.getSource(selectedSourceId)
-
-    console.debug('addFocusToHexId', { hexCenterCoordinates, selectedSource })
 
     map.flyTo({
       center: [hexCenterCoordinates[1], hexCenterCoordinates[0]],
