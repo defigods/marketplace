@@ -187,8 +187,6 @@ const Land = (props) => {
             marketStatus: data.marketStatus,
           }
 
-          console.debug('statestate', state)
-
           return changeLandData(state)
         }
       })
