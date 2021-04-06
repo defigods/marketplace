@@ -157,8 +157,9 @@ const Map = (props) => {
           // At click add in list if on Multiple Land Selection Mode
           focusMap(clicked_hex_id)
           if (lastSelectedLand == clicked_hex_id) {
+            console.debug('STATEEE', mapState)
             let list = multipleLandSelectionList
-            if (list.includes(clicked_hex_id)) {
+            if (R.includes(clicked_hex_id, list) && !R.isNil(list)) {
               // Remove Land
               _.remove(list, function (el) {
                 return el === clicked_hex_id
@@ -683,7 +684,8 @@ const Map = (props) => {
     // View multiple selected Land
     if (
       onMultipleLandSelection === true &&
-      multipleLandSelectionList.length > 0
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
     ) {
       let featureOfSelectedLands = geojson2h3.h3SetToFeatureCollection(
         multipleLandSelectionList
