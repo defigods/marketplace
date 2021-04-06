@@ -44,7 +44,10 @@ export const NewMapContextProvider = ({ children }) => {
   }
 
   const disableSingleView = () => {
-    setMapState((s) => ({ ...s, onSingleView: false }))
+    setMapState((s) => ({
+      ...s,
+      onSingleView: false,
+    }))
   }
 
   const changeLandData = (data) => {
@@ -59,7 +62,7 @@ export const NewMapContextProvider = ({ children }) => {
     setMapState((s) => ({ ...s, multipleLandSelectionList: _.uniq(list) }))
   }
 
-  const resetMultipleLandSelectionList = (list) => {
+  const resetMultipleLandSelectionList = () => {
     setMapState((s) => ({ ...s, multipleLandSelectionList: [] }))
   }
 
