@@ -656,10 +656,7 @@ const Map = (props) => {
   function addFocusToHexId(hexId) {
     let hexCenterCoordinates = h3.h3ToGeo(hexId)
     const selectedSourceId = 'h3-hexes_selected'
-    const selectedLayerId = `${selectedSourceId}-layer`
     const selectedSource = map.getSource(selectedSourceId)
-
-    let singleHexGeojson = geojson2h3.h3ToFeature(hexId)
 
     console.debug('addFocusToHexId', { hexCenterCoordinates, selectedSource })
 
@@ -806,7 +803,7 @@ const Map = (props) => {
     }
   }
 
-  console.debug('MAPSTATE', mapState)
+  //   console.debug('MAPSTATE', mapState)
 
   return (
     <>
