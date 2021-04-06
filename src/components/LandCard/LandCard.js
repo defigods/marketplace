@@ -7,6 +7,7 @@ import { Textfit } from 'react-textfit'
 import Blockies from 'react-blockies'
 
 const LandCard = (props) => {
+  console.debug('LandCard.props', props)
   let card
   if (props.is_minimal) {
     card = (
@@ -15,7 +16,7 @@ const LandCard = (props) => {
           <div className="LandCard__body">
             <div className="LandName">
               <div className="LandName__name">
-                <Textfit mode="single" max={17}>
+                <Textfit mode="single" max={14}>
                   {props.name.sentence}
                 </Textfit>
               </div>
