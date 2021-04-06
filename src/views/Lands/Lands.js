@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import * as R from 'ramda'
 
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
@@ -74,7 +75,10 @@ const Lands = (props) => {
 
   // On Change of list
   useEffect(() => {
-    if (multipleLandSelectionList.length > 0) {
+    if (
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
+    ) {
       getLands(multipleLandSelectionList.join(','))
         .then((response) => {
           setListLandsObj(response.data.lands)
