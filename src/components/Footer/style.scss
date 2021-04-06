@@ -35,5 +35,14 @@
   &.--large {
     font-size: 12px;
     max-width: 153px;
+    line-height: 18px;
+  }
+
+  &.license {
+    margin-top: 10px;
+  }
+
+  &.col-extended {
+    max-width: inherit;
   }
 }

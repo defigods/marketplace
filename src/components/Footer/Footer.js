@@ -8,7 +8,7 @@ class Footer extends Component {
     return (
       <div className="Footer">
         <div className="o-fourth">
-          <div className="Footer__container">
+          <div className="Footer__container ">
             <Link to="/" className="Logo__footer_link">
               <div className="Footer__logo Icon">
                 <img src={OvrLogo} />
@@ -18,11 +18,16 @@ class Footer extends Component {
           </div>
         </div>
         <div className="o-fourth">
-          <div className="Footer__container --large">
+          <div className="Footer__container --large col-extended">
             OVRGLOBAL OÜ<br></br>
             Registry Code: 14721068<br></br>
             Harju maakond, Tallinn, Kesklinna linnaosa, Roseni tn 12-85, 10111
             Estonia
+          </div>
+
+          <div className="Footer__container --large license col-extended">
+            OVR is regulated by the Estonian Financial Intelligence Unit and has
+            a valid virtual currency services license FVT000345
           </div>
         </div>
         <div className="o-fourth">
