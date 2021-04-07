@@ -9,7 +9,7 @@ export const NewMapContext = React.createContext()
 export const NewMapContextProvider = ({ children }) => {
   const [mapState, setMapState] = useState({
     onSingleView: false,
-    hex_id: '8c81326dda43dff',
+    hex_id: null,
     integer_id: 632776805293768200,
     isAuction: false,
     isUserRelated: false,

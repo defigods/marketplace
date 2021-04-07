@@ -41,6 +41,7 @@ const Map = (props) => {
 
   // Effect []
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-1', '[]')
     mapboxgl.accessToken =
       'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
     map = new mapboxgl.Map({
@@ -137,6 +138,12 @@ const Map = (props) => {
   }, [])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-2', [
+      onMultipleLandSelection,
+      lastSelectedLand,
+      map,
+      hex_id,
+    ])
     let onClickMap
     if (map) {
       onClickMap = (e) => {
@@ -178,9 +185,15 @@ const Map = (props) => {
         map.off('click', onClickMap)
       }
     }
-  }, [onMultipleLandSelection, lastSelectedLand, map, hex_id])
+  }, [onMultipleLandSelection, lastSelectedLand])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-3', [
+      isMapReady,
+      onSingleView,
+      onMultipleLandSelection,
+      multipleLandSelectionList,
+    ])
     if (isMapReady == true) {
       plotHighZoomPOI()
       if (onMultipleLandSelection == true) {
@@ -197,19 +210,14 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-4', [isMapReady])
     if (isMapReady == true) {
-      //   if (auctionList.length > 0) {
-      //     plotAuctions()
-      //   }
-      // Fetch and render clustered Owned Lands
       renderOwnedLandsCluster()
-      // Fetch and render clustered Open Auctions
-      // Temporary disabled
-      //renderOpenAuctionLandsCluster();
     }
   }, [isMapReady])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-5', [hex_id])
     if (!R.isNil(hex_id) && !R.isEmpty(hex_id)) {
       addFocusToHexId(hex_id)
     }
