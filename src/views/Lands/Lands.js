@@ -81,7 +81,7 @@ const Lands = (props) => {
           value={single.value}
           background_image={`url(${single.mapTileUrl}`}
           name={{ sentence: single.sentenceId, hex: single.hexId }}
-          location={single.address.full}
+          //   location={single.address.full}
           date_end={null}
           is_minimal={true}
         />
@@ -89,24 +89,65 @@ const Lands = (props) => {
     } else return null
   }
 
+  /*
+  @params: ["8c3e8a05e0a2bff", ...]
+  @return: [Promise, ...]
+  */
+  const promiseListCreator = (landList) =>
+    R.map((single) => getLands(single))(landList)
+
+  const promiseListResponseHandler = (responses) =>
+    R.map((single) => {
+      return R.path(['data', 'lands', 0], single)
+    })(responses)
+
   // On Change of list
   useEffect(() => {
     if (
       R.length(multipleLandSelectionList) > 0 &&
       !R.isNil(multipleLandSelectionList)
     ) {
-      console.debug('EFFETTO - multipleLandSelectionList', {
-        context_MultipleLandSelectionList: multipleLandSelectionList,
-        list_LandsObj: listLandsObj,
-      })
-      getLands(multipleLandSelectionList.join(','))
-        .then((response) => {
-          console.debug('EFFETTO - multipleLandSelectionList.RESP', response)
-          setListLandsObj(response.data.lands)
-        })
-        .catch((error) => {
-          // console.log(error);
-        })
+      let plucckedList = R.pluck('hexId', listLandsObj)
+      let diffAdd = []
+      let diffRemove = []
+
+      if (R.length(multipleLandSelectionList) > R.length(plucckedList)) {
+        diffAdd = R.difference(multipleLandSelectionList, plucckedList)
+        console.debug('DIFFS.diffAdd', diffAdd)
+      } else {
+        diffRemove = R.difference(plucckedList, multipleLandSelectionList)
+        console.debug('DIFFS.diffRemove', diffRemove)
+      }
+
+      if (!R.isEmpty(diffAdd) && !R.isNil(diffAdd)) {
+        const promises = promiseListCreator(diffAdd)
+        console.debug('PROMISES', promises)
+
+        Promise.all(promises)
+          .then((response) => {
+            const handledLands = promiseListResponseHandler(response)
+            console.debug('handledLands', handledLands)
+            console.log('TESTTTT.X', listLandsObj)
+            setListLandsObj(R.flatten(R.append(handledLands, listLandsObj)))
+            console.debug('TEST-ListLandsObj', listLandsObj)
+          })
+          .catch((e) => console.log('getLands.error', e))
+      }
+
+      if (!R.isEmpty(diffRemove) && !R.isNil(diffRemove)) {
+        console.debug('diffRemovediffRemove', diffRemove)
+        plucckedList = R.pluck('hexId', listLandsObj)
+        let final
+        for (let i = 0; i < R.length(diffRemove); i++) {
+          final = R.filter(
+            R.compose(R.not, R.propEq('hexId', diffRemove[i])),
+            listLandsObj
+          )
+        }
+        console.debug('FINALLLL', final)
+
+        setListLandsObj(final)
+      }
     }
   }, [multipleLandSelectionList])
 
@@ -131,7 +172,6 @@ const Lands = (props) => {
     let total = 0
     if (listLandsObj) {
       listLandsObj.map((land) => {
-        console.log('land', land)
         let value =
           land.value < 100
             ? parseFloat(getUSDValueInOvr(10))
