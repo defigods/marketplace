@@ -82,7 +82,6 @@ const Discover = (props) => {
     // Call API function
     indexLands(null, page)
       .then((response) => {
-        console.log('ooo', response.data.lands)
         // Load Lands in MapContext
         if (response.data.lands.length > 0) {
           // Load user data in context store
