@@ -43,6 +43,29 @@
     float: right;
     margin-top: 10px;
   }
+
+  table {
+    width: 100%;
+    font-size: 20px;
+    text-align: left;
+    tr {
+      line-height: 35px;
+      td {
+        text-align: left;
+        .ValueCounter {
+          float: inherit;
+          margin-left: 0;
+        }
+      }
+    }
+    tfoot {
+      tr {
+        td:first-child {
+          font-weight: 500;
+        }
+      }
+    }
+  }
 }
 
 @media screen and (min-width: 790px) {

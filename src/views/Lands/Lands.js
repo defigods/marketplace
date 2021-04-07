@@ -256,34 +256,41 @@ const Lands = (props) => {
               <div className="o-land-list__total__title">
                 <h2>{t('Lands.selected.checkout.title')}</h2>
               </div>
-              <div className="o-row">
-                <span>{t('Lands.number.of')}</span>
-                <span className="o-para-value">
-                  {multipleLandSelectionList.length}
-                </span>
-              </div>
-              <br />
-              <div className="o-row">
-                <span>{t('Lands.total.bidding')}</span>
-                {renderTotalEstimate()}
-              </div>{' '}
-              <br />
-              <div className="o-row">
-                <span>{t('Lands.estimated.gas.expense')}</span>
-                <ValueCounter
-                  value={(
-                    gasProjection * multipleLandSelectionList.length
-                  ).toFixed(2)}
-                  currency="ovr"
-                ></ValueCounter>
-              </div>
-              <br />
-              <br />
-              <br />
-              <div className="o-row">
-                <span>{t('Lands.total.expense')}</span>
-                <ValueCounter value={calculateTotal()} currency="ovr" />
-              </div>
+              {/* NEW CODE */}
+              <table>
+                <tbody>
+                  <tr>
+                    <td>{t('Lands.number.of')}</td>
+                    <td>{multipleLandSelectionList.length}</td>
+                  </tr>
+
+                  <tr>
+                    <td>{t('Lands.total.bidding')}</td>
+                    <td>{renderTotalEstimate()}</td>
+                  </tr>
+
+                  <tr>
+                    <td>{t('Lands.estimated.gas.expense')}</td>
+                    <td>
+                      <ValueCounter
+                        value={(
+                          gasProjection * multipleLandSelectionList.length
+                        ).toFixed(2)}
+                        currency="ovr"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>{t('Lands.total.expense')}</td>
+                    <td>
+                      <ValueCounter value={calculateTotal()} currency="ovr" />
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+
               <br />
               <div className="o-row lands__button_holder">
                 <HexButton
