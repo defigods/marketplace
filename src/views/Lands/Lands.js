@@ -81,6 +81,8 @@ const Lands = (props) => {
     if (multipleLandSelectionList.length > 0) {
       getLands(multipleLandSelectionList.join(','))
         .then((response) => {
+					if (!response.data.result) return
+
           setListLandsObj(response.data.lands)
           setListLands(
             response.data.lands.map((obj) => (

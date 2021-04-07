@@ -16,7 +16,6 @@ import {
 } from 'lib/api'
 import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs'
 import BannerCounter from '../BannerCounter/BannerCounter'
-
 import _ from 'lodash'
 
 let map
@@ -38,8 +37,7 @@ const Map = (props) => {
   ////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    mapboxgl.accessToken =
-      'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
+    mapboxgl.accessToken = config.apis.mapboxAccessToken
     map = new mapboxgl.Map({
       container: 'Map',
       center: [config.map.lng, config.map.lat],
@@ -121,7 +119,7 @@ const Map = (props) => {
       const zoom = Math.round(mapZoom)
 
       axios
-        .post('https://map-cluster.ovr.ai', { zoom, bounds })
+        .post(config.apis.mapboxCluster, { zoom, bounds })
         .then((response) => {
           if (!response.data) return
 

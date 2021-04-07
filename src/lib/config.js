@@ -50,6 +50,9 @@ if (environment === 'PRODUCTION') {
     merkleInfo: mainnetMerkle,
     // OVRLand LightMint2.0
     lightMintV2: '0x919347bc7c439AAC92ecc502d4054eC2C3955084',
+		// mapbox
+		mapboxCluster: 'https://map-cluster.ovr.ai',
+		mapboxAccessToken: 'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
   }
 } else if (environment === 'STAGING') {
   apis = {
@@ -89,6 +92,9 @@ if (environment === 'PRODUCTION') {
     merkleInfo: rinkebyMerkle,
     // OVRLand LightMint2.0
     lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
+		// mapbox
+		mapboxCluster: 'https://map-cluster.ovr.ai',
+		mapboxAccessToken: 'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
   }
 } else {
   apis = {
@@ -137,6 +143,9 @@ if (environment === 'PRODUCTION') {
     merkleInfo: rinkebyMerkle,
     // OVRLand LightMint2.0
     lightMintV2: '0xbA4A19FA18EA79aeF83Cb95cA9539F5792C39B5C',
+		// mapbox
+		mapboxCluster: 'https://map-cluster.ovr.ai',
+		mapboxAccessToken: 'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
   }
 }
 
