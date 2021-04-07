@@ -73,12 +73,23 @@ const Lands = (props) => {
     userState.pendingOnBalance,
   ])
 
+  const renderLandsObj = () => {
+    if (!R.isNil(listLandsObj)) {
+      return
+    }
+  }
+
   // On Change of list
   useEffect(() => {
     if (
       R.length(multipleLandSelectionList) > 0 &&
       !R.isNil(multipleLandSelectionList)
     ) {
+      console.debug('EFFETTO - multipleLandSelectionList', {
+        context_MultipleLandSelectionList: multipleLandSelectionList,
+        list_LandsObj: listLandsObj,
+        list_Lands: listLands,
+      })
       getLands(multipleLandSelectionList.join(','))
         .then((response) => {
           setListLandsObj(response.data.lands)
