@@ -31,7 +31,6 @@ const Lands = (props) => {
   const { multipleLandSelectionList } = mapState
   const { refreshBalanceAndAllowance } = actions
 
-  const [listLands, setListLands] = useState('')
   const [gasProjection, setGasProjection] = useState(0)
   const [listLandsObj, setListLandsObj] = useState([])
   const { getUSDValueInOvr, authorizeOvrExpense } = props.web3Provider.actions
@@ -73,10 +72,21 @@ const Lands = (props) => {
     userState.pendingOnBalance,
   ])
 
-  const renderLandsObj = () => {
-    if (!R.isNil(listLandsObj)) {
-      return
-    }
+  const renderSelectedLands = () => {
+    if (!R.isNil(listLandsObj && !R.isEmpty(listLandsObj))) {
+      return R.map((single) => (
+        <LandCard
+          key={single.hexId}
+          url="/"
+          value={single.value}
+          background_image={`url(${single.mapTileUrl}`}
+          name={{ sentence: single.sentenceId, hex: single.hexId }}
+          location={single.address.full}
+          date_end={null}
+          is_minimal={true}
+        />
+      ))(listLandsObj)
+    } else return null
   }
 
   // On Change of list
@@ -88,25 +98,11 @@ const Lands = (props) => {
       console.debug('EFFETTO - multipleLandSelectionList', {
         context_MultipleLandSelectionList: multipleLandSelectionList,
         list_LandsObj: listLandsObj,
-        list_Lands: listLands,
       })
       getLands(multipleLandSelectionList.join(','))
         .then((response) => {
+          console.debug('EFFETTO - multipleLandSelectionList.RESP', response)
           setListLandsObj(response.data.lands)
-          setListLands(
-            response.data.lands.map((obj) => (
-              <LandCard
-                key={obj.hexId}
-                url="/"
-                value={obj.value}
-                background_image={`url(${obj.mapTileUrl}`}
-                name={{ sentence: obj.sentenceId, hex: obj.hexId }}
-                location={obj.address.full}
-                date_end={null}
-                is_minimal={true}
-              />
-            ))
-          )
         })
         .catch((error) => {
           // console.log(error);
@@ -261,7 +257,7 @@ const Lands = (props) => {
           <div className="o-container ls-container">
             <div className="ls-land__display">
               <div className="o-land-list__cont">
-                <div className="o-land-list">{listLands}</div>
+                <div className="o-land-list">{renderSelectedLands()}</div>
               </div>
             </div>
             <div className="ls-land__total">
