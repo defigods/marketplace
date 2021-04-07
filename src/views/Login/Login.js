@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 import { useHistory } from 'react-router-dom'
 import { withWeb3Context, Web3Context } from '../../context/Web3Context'
-import { MapContext } from '../../context/MapContext'
 import { useTranslation } from 'react-i18next'
 import { UserContext } from '../../context/UserContext'
 import ReactGA from 'react-ga'
@@ -15,7 +14,6 @@ import ReactGA from 'react-ga'
 const Login = (props) => {
   const { t, i18n } = useTranslation()
   const web3Context = useContext(Web3Context)
-  const mapContext = useContext(MapContext)
   const userContext = useContext(UserContext)
   let history = props.history
 

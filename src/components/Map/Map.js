@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import * as R from 'ramda'
 
 import PropTypes from 'prop-types'
 import mapboxgl from 'mapbox-gl'
@@ -8,7 +9,7 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import geojson2h3 from 'geojson2h3'
 import * as h3 from 'h3-js'
 import config from 'lib/config'
-import { withMapContext } from 'context/MapContext'
+
 import {
   indexInterestingLands,
   getCachedOpenLandsGeojson,
@@ -18,24 +19,26 @@ import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs'
 import BannerCounter from '../BannerCounter/BannerCounter'
 import _ from 'lodash'
 
+import { NewMapContext } from 'context/NewMapContext'
+
 let map
 
 const Map = (props) => {
-  const [lastSelectedLand, setLastSelectedLand] = useState(null)
-  const [isMapReady, setIsMapReady] = useState(false)
-
-  const { changeMultipleLandSelectionList } = props.mapProvider.actions
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
   const {
     onSingleView,
     onMultipleLandSelection,
     multipleLandSelectionList,
     auctionList,
     hex_id,
-  } = props.mapProvider.state
+  } = mapState
 
-  // Effects
-  ////////////////////////////////////////////////////////////
+  const [lastSelectedLand, setLastSelectedLand] = useState(null)
+  const [isMapReady, setIsMapReady] = useState(false)
 
+  const { changeMultipleLandSelectionList } = actions
+
+  // Effect []
   useEffect(() => {
     mapboxgl.accessToken = config.apis.mapboxAccessToken
     map = new mapboxgl.Map({
@@ -132,6 +135,12 @@ const Map = (props) => {
   }, [])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-2', [
+      onMultipleLandSelection,
+      lastSelectedLand,
+      map,
+      hex_id,
+    ])
     let onClickMap
     if (map) {
       onClickMap = (e) => {
@@ -150,12 +159,11 @@ const Map = (props) => {
           // At click add in list if on Multiple Land Selection Mode
           focusMap(clicked_hex_id)
           if (lastSelectedLand == clicked_hex_id) {
+            console.debug('STATEEE', mapState)
             let list = multipleLandSelectionList
-            if (list.includes(clicked_hex_id)) {
+            if (R.includes(clicked_hex_id, list) && !R.isNil(list)) {
               // Remove Land
-              _.remove(list, function (el) {
-                return el === clicked_hex_id
-              })
+              _.remove(list, (el) => el === clicked_hex_id)
               changeMultipleLandSelectionList(list)
             } else {
               // Add Land
@@ -174,9 +182,15 @@ const Map = (props) => {
         map.off('click', onClickMap)
       }
     }
-  }, [onMultipleLandSelection, lastSelectedLand, map])
+  }, [onMultipleLandSelection, lastSelectedLand])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-3', [
+      isMapReady,
+      onSingleView,
+      onMultipleLandSelection,
+      multipleLandSelectionList,
+    ])
     if (isMapReady == true) {
       plotHighZoomPOI()
       if (onMultipleLandSelection == true) {
@@ -193,17 +207,18 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
+    console.debug('MAP-COMPONENTS-4', [isMapReady])
     if (isMapReady == true) {
-      if (auctionList.length > 0) {
-        // plotAuctions();
-      }
-      // Fetch and render clustered Owned Lands
       renderOwnedLandsCluster()
-      // Fetch and render clustered Open Auctions
-      // Temporary disabled
-      //renderOpenAuctionLandsCluster();
     }
   }, [isMapReady])
+
+  useEffect(() => {
+    console.debug('MAP-COMPONENTS-5', [hex_id])
+    if (!R.isNil(hex_id) && !R.isEmpty(hex_id)) {
+      addFocusToHexId(hex_id)
+    }
+  }, [mapState.hex_id])
 
   // Functions
   ////////////////////////////////////////////////////////////
@@ -600,6 +615,8 @@ const Map = (props) => {
     // Plot graphic point into map
     let singleHexGeojson = geojson2h3.h3ToFeature(hex_id)
 
+    console.debug('focusMapfocusMap', singleHexGeojson)
+
     const selected_sourceId = 'h3-hexes_selected'
     const selected_layerId = `${selected_sourceId}-layer`
     let selected_source = map.getSource(selected_sourceId)
@@ -638,6 +655,17 @@ const Map = (props) => {
     // }
   }
 
+  function addFocusToHexId(hexId) {
+    let hexCenterCoordinates = h3.h3ToGeo(hexId)
+    const selectedSourceId = 'h3-hexes_selected'
+
+    map.flyTo({
+      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]],
+      zoom: 18,
+      speed: 2.2,
+    })
+  }
+
   function plotHighZoomPOI() {
     // Zoom out map // General Map View
     if (onSingleView === false && onMultipleLandSelection === false) {
@@ -654,7 +682,8 @@ const Map = (props) => {
     // View multiple selected Land
     if (
       onMultipleLandSelection === true &&
-      multipleLandSelectionList.length > 0
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
     ) {
       let featureOfSelectedLands = geojson2h3.h3SetToFeatureCollection(
         multipleLandSelectionList
@@ -778,7 +807,7 @@ const Map = (props) => {
     <>
       {/* <BannerNotification></BannerNotification> */}
       <BannerCounter />
-      <Breadcrumbs />
+      <Breadcrumbs contextState={mapState} />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
         {/* <MapNavigationBox /> */}
@@ -793,4 +822,4 @@ Map.propTypes = {
   props: PropTypes.object,
 }
 
-export default withMapContext(Map)
+export default Map

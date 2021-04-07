@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import TextField from '@material-ui/core/TextField'
-import { withMapContext } from 'context/MapContext'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from '../ValueCounter/ValueCounter'
@@ -14,8 +13,14 @@ import { sellLand } from 'lib/api'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
+import { NewMapContext } from 'context/NewMapContext'
+
 const SellOverlay = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { activeSellOverlay } = mapState
+  const { changeActiveSellOverlay } = actions
+
   const { approveErc721Token, putLandOnSale } = props.web3Provider.actions
   const { ico, setupComplete } = props.web3Provider.state
 
@@ -44,7 +49,7 @@ const SellOverlay = (props) => {
 
   // Listener for fadein and fadeout animation of overlay
   useEffect(() => {
-    if (props.mapProvider.state.activeSellOverlay) {
+    if (activeSellOverlay) {
       setShowOverlay(true)
       setTimeout(() => {
         setClassShowOverlay(true)
@@ -55,7 +60,7 @@ const SellOverlay = (props) => {
         setShowOverlay(false)
       }, 500)
     }
-  }, [props.mapProvider.state.activeSellOverlay])
+  }, [activeSellOverlay])
 
   // Init helpers web3
   useEffect(() => {
@@ -137,9 +142,9 @@ const SellOverlay = (props) => {
 
   function setDeactiveOverlay(e) {
     e.preventDefault()
-    props.mapProvider.actions.changeActiveSellOverlay(false)
+    changeActiveSellOverlay(false)
     // Bring the step at 0
-    setTimeout(function () {
+    setTimeout(() => {
       setActiveStep(0)
       setNewSellWorth('')
     }, 200)
@@ -414,4 +419,4 @@ SellOverlay.propTypes = {
   url: PropTypes.string,
 }
 
-export default withUserContext(withWeb3Context(withMapContext(SellOverlay)))
+export default withUserContext(withWeb3Context(SellOverlay))

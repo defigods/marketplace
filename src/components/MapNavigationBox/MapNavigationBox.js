@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { NavigateNext, NavigateBefore } from '@material-ui/icons'
 import { grey } from '@material-ui/core/colors'
 
-import { MapContext } from '../../context/MapContext'
+import { NewMapContext } from 'context/NewMapContext'
 import { UserContext } from '../../context/UserContext'
 
 class CircularList {
@@ -46,8 +46,8 @@ class CircularList {
 }
 
 const MapNavigationBox = () => {
-  const { state } = useContext(MapContext)
-  const { auctionList } = state
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { auctionList } = mapState
 
   const items = new CircularList(
     auctionList.map((item) => item.land),

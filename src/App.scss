@@ -71,12 +71,15 @@ body {
 }
 .Land__heading__1 {
   @include column(2/5);
+  margin-bottom: 20px;
 }
 .Land__heading__2 {
   @include column(3/5);
+  margin-bottom: 20px;
 }
 
 .o-container {
+  overflow: hidden;
   margin: 0 auto;
   width: calc(100% - 140px);
   @media only screen and (max-width: bk('desk')) {

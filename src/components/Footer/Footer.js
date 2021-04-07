@@ -1,99 +1,72 @@
-import React, { Component } from 'react'
+import React from 'react'
+import * as R from 'ramda'
 import { Link } from 'react-router-dom'
 
 import OvrLogo from 'assets/img/ovr.png'
 
-class Footer extends Component {
-  render() {
-    return (
-      <div className="Footer">
+const Footer = () => {
+  const socials = [
+    { name: 'Telegram', url: 'https://t.me/OVRtheReality' },
+    { name: 'Discord', url: 'https://discord.gg/g6VpgwjDSC' },
+    { name: 'Medium', url: 'https://medium.com/ovrthereality/' },
+    { name: 'Facebook', url: 'https://www.facebook.com/OVRtheReality' },
+    { name: 'Instagram', url: 'https://www.instagram.com/ovrplatform/' },
+    { name: 'Twitter', url: 'https://twitter.com/OVRtheReality' },
+  ]
+
+  return (
+    <div className="ovr-footer">
+      <div className="o-container">
         <div className="o-fourth">
-          <div className="Footer__container">
-            <Link to="/" className="Logo__footer_link">
-              <div className="Footer__logo Icon">
-                <img src={OvrLogo} />
-              </div>
-            </Link>
-            <div className="Footer__copyright">Over Holding Srl © 2020</div>
-          </div>
+          <Link to="/" className="Logo__footer_link">
+            <div className="footer-logo">
+              <img src={OvrLogo} />
+            </div>
+          </Link>
         </div>
         <div className="o-fourth">
-          <div className="Footer__container --large">
-            OVRGLOBAL OÜ<br></br>
+          <span className="ovr-footer-title">OVRGLOBAL OÜ</span>
+          <p>
             Registry Code: 14721068<br></br>
             Harju maakond, Tallinn, Kesklinna linnaosa, Roseni tn 12-85, 10111
-            Estonia
-          </div>
+          </p>
         </div>
-        <div className="o-fourth">
-          <div className="Footer__container">
-            <div className="Footer__title">Legal</div>
-            <a
-              href={'https://www.ovr.ai/privacy-policy/'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Privacy policy
-            </a>
-          </div>
+
+        <div className="o-fourth legal">
+          <span className="ovr-footer-title">Legal</span>
+          <a
+            href={'https://www.ovr.ai/privacy-policy/'}
+            rel="noopener noreferrer"
+            target={'_blank'}
+            className="ovr-footer-link"
+          >
+            Privacy policy
+          </a>
+          <p>
+            OVR is regulated by the Estonian Financial Intelligence Unit and has
+            a valid virtual currency services license FVT000345
+          </p>
         </div>
+
         <div className="o-fourth">
-          <div className="Footer__container">
-            <div className="Footer__title">Community</div>
-            <a
-              href={'https://t.me/OVRtheReality'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Telegram
-            </a>
-            <a
-              href={'https://discord.gg/g6VpgwjDSC'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Discord
-            </a>
-            <a
-              href={'https://medium.com/ovrthereality/'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Medium
-            </a>
-            <a
-              href={'https://www.facebook.com/OVRtheReality'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Facebook
-            </a>
-            <a
-              href={'https://www.instagram.com/ovrplatform/'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Instagram
-            </a>
-            <a
-              href={'https://twitter.com/OVRtheReality'}
-              rel="noopener noreferrer"
-              target={'_blank'}
-              className="Footer__link"
-            >
-              Twitter
-            </a>
-          </div>
+          <span className="ovr-footer-title">Community</span>
+          <ul>
+            {R.map((single) => (
+              <li key={single.name}>
+                <a
+                  href={single.url}
+                  rel="noopener noreferrer"
+                  target={'_blank'}
+                >
+                  {single.name}
+                </a>
+              </li>
+            ))(socials)}
+          </ul>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default Footer

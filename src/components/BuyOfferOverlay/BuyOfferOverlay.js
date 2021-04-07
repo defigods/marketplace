@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import TextField from '@material-ui/core/TextField'
-import { withMapContext } from 'context/MapContext'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from '../ValueCounter/ValueCounter'
@@ -20,12 +19,18 @@ import Popper from '@material-ui/core/Popper'
 import MenuList from '@material-ui/core/MenuList'
 import { useTranslation } from 'react-i18next'
 
+import { NewMapContext } from 'context/NewMapContext'
+
 const today = new Date()
 const tomorrow = new Date(today)
 tomorrow.setDate(tomorrow.getDate() + 1)
 
 const BuyOfferOverlay = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { activeBuyOfferOverlay } = mapState
+  const { changeActiveBuyOfferOverlay } = actions
+
   const { approveOvrTokens, participateBuyOffer } = props.web3Provider.actions
   const {
     lastTransaction,
@@ -55,9 +60,9 @@ const BuyOfferOverlay = (props) => {
 
   function setDeactiveOverlay(e) {
     e.preventDefault()
-    props.mapProvider.actions.changeActiveBuyOfferOverlay(false)
+    changeActiveBuyOfferOverlay(false)
     // Bring the step at 0
-    setTimeout(function () {
+    setTimeout(() => {
       setOpen(false)
       setActiveStep(0)
       setProposedValue('')
@@ -66,7 +71,7 @@ const BuyOfferOverlay = (props) => {
 
   // Listener for fadein and fadeout animation of overlay
   useEffect(() => {
-    if (props.mapProvider.state.activeBuyOfferOverlay) {
+    if (activeBuyOfferOverlay) {
       setShowOverlay(true)
       setTimeout(() => {
         setClassShowOverlay(true)
@@ -77,7 +82,7 @@ const BuyOfferOverlay = (props) => {
         setShowOverlay(false)
       }, 500)
     }
-  }, [props.mapProvider.state.activeBuyOfferOverlay])
+  }, [activeBuyOfferOverlay])
 
   const setNextBidSelectedLand = async () => {
     if (!setupComplete || !ico || !ovr) {
@@ -523,4 +528,4 @@ BuyOfferOverlay.propTypes = {
   url: PropTypes.string,
 }
 
-export default withUserContext(withWeb3Context(withMapContext(BuyOfferOverlay)))
+export default withUserContext(withWeb3Context(BuyOfferOverlay))

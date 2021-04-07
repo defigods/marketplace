@@ -1,40 +1,36 @@
-import React, { useState, useEffect } from 'react'
-import { withMapContext } from '../../context/MapContext'
-import { withUserContext } from '../../context/UserContext'
-import { withWeb3Context } from '../../context/Web3Context'
-import HexButton from '../../components/HexButton/HexButton'
-import ValueCounter from '../../components/ValueCounter/ValueCounter'
+import React, { useState, useEffect, useContext } from 'react'
+import * as R from 'ramda'
+
+import { withUserContext } from 'context/UserContext'
+import { withWeb3Context } from 'context/Web3Context'
+import HexButton from 'components/HexButton/HexButton'
+import ValueCounter from 'components/ValueCounter/ValueCounter'
 import {
   warningNotification,
   dangerNotification,
   successNotification,
-} from '../../lib/notifications'
+} from 'lib/notifications'
 
-// import OpenSellOrder from '../../components/OpenSellOrder/OpenSellOrder';
-// import BuyOfferOrder from '../../components/BuyOfferOrder/BuyOfferOrder';
-// import BuyLandOverlay from '../../components/BuyLandOverlay/BuyLandOverlay';
-
-import { participateMultipleAuctions } from '../../lib/api'
-import { getLands } from '../../lib/api'
+import { participateMultipleAuctions } from 'lib/api'
+import { getLands } from 'lib/api'
 import PropTypes from 'prop-types'
-import LandCard from '../../components/LandCard/LandCard'
+import LandCard from 'components/LandCard/LandCard'
 import { useTranslation } from 'react-i18next'
 
-// import config from '../../lib/config';
-
-// import { ca } from 'date-fns/esm/locale';
+import { NewMapContext } from 'context/NewMapContext'
 
 const Lands = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+
   const {
     enableMultipleLandSelection,
     disableMultipleLandSelection,
     resetMultipleLandSelectionList,
-  } = props.mapProvider.actions
-  const { multipleLandSelectionList } = props.mapProvider.state
-  const { refreshBalanceAndAllowance } = props.userProvider.actions
+  } = actions
+  const { multipleLandSelectionList } = mapState
+  const { refreshBalanceAndAllowance } = actions
 
-  const [listLands, setListLands] = useState('')
   const [gasProjection, setGasProjection] = useState(0)
   const [listLandsObj, setListLandsObj] = useState([])
   const { getUSDValueInOvr, authorizeOvrExpense } = props.web3Provider.actions
@@ -76,32 +72,82 @@ const Lands = (props) => {
     userState.pendingOnBalance,
   ])
 
+  const renderSelectedLands = () => {
+    if (!R.isNil(listLandsObj && !R.isEmpty(listLandsObj))) {
+      return R.map((single) => (
+        <LandCard
+          key={single.hexId}
+          url="/"
+          value={single.value}
+          background_image={`url(${single.mapTileUrl}`}
+          name={{ sentence: single.sentenceId, hex: single.hexId }}
+          //   location={single.address.full}
+          date_end={null}
+          is_minimal={true}
+        />
+      ))(listLandsObj)
+    } else return null
+  }
+
+  /*
+  @params: ["8c3e8a05e0a2bff", ...]
+  @return: [Promise, ...]
+  */
+  const promiseListCreator = (landList) =>
+    R.map((single) => getLands(single))(landList)
+
+  const promiseListResponseHandler = (responses) =>
+    R.map((single) => {
+      return R.path(['data', 'lands', 0], single)
+    })(responses)
+
   // On Change of list
   useEffect(() => {
-    if (multipleLandSelectionList.length > 0) {
-      getLands(multipleLandSelectionList.join(','))
-        .then((response) => {
-					if (!response.data.result) return
+    if (
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
+    ) {
+      let plucckedList = R.pluck('hexId', listLandsObj)
+      let diffAdd = []
+      let diffRemove = []
 
-          setListLandsObj(response.data.lands)
-          setListLands(
-            response.data.lands.map((obj) => (
-              <LandCard
-                key={obj.hexId}
-                url="/"
-                value={obj.value}
-                background_image={`url(${obj.mapTileUrl}`}
-                name={{ sentence: obj.sentenceId, hex: obj.hexId }}
-                location={obj.address.full}
-                date_end={null}
-                is_minimal={true}
-              ></LandCard>
-            ))
+      if (R.length(multipleLandSelectionList) > R.length(plucckedList)) {
+        diffAdd = R.difference(multipleLandSelectionList, plucckedList)
+        console.debug('DIFFS.diffAdd', diffAdd)
+      } else {
+        diffRemove = R.difference(plucckedList, multipleLandSelectionList)
+        console.debug('DIFFS.diffRemove', diffRemove)
+      }
+
+      if (!R.isEmpty(diffAdd) && !R.isNil(diffAdd)) {
+        const promises = promiseListCreator(diffAdd)
+        console.debug('PROMISES', promises)
+
+        Promise.all(promises)
+          .then((response) => {
+            const handledLands = promiseListResponseHandler(response)
+            console.debug('handledLands', handledLands)
+            console.log('TESTTTT.X', listLandsObj)
+            setListLandsObj(R.flatten(R.append(handledLands, listLandsObj)))
+            console.debug('TEST-ListLandsObj', listLandsObj)
+          })
+          .catch((e) => console.log('getLands.error', e))
+      }
+
+      if (!R.isEmpty(diffRemove) && !R.isNil(diffRemove)) {
+        console.debug('diffRemovediffRemove', diffRemove)
+        plucckedList = R.pluck('hexId', listLandsObj)
+        let final
+        for (let i = 0; i < R.length(diffRemove); i++) {
+          final = R.filter(
+            R.compose(R.not, R.propEq('hexId', diffRemove[i])),
+            listLandsObj
           )
-        })
-        .catch((error) => {
-          // console.log(error);
-        })
+        }
+        console.debug('FINALLLL', final)
+
+        setListLandsObj(final)
+      }
     }
   }, [multipleLandSelectionList])
 
@@ -110,22 +156,22 @@ const Lands = (props) => {
   }, [gasLandCost])
 
   const renderTotalEstimate = () => {
-    let total = 0
-    if (listLandsObj) {
-      listLandsObj.map((land) => {
-        console.log('land', land)
-        let value = land.value
-        total = total + value
-      })
+    let tot = 0
+    if (!R.isNil(listLandsObj) && !R.isEmpty(listLandsObj)) {
+      tot = R.reduce(
+        (acc, single) => R.sum([acc, R.prop('value', single)]),
+        0,
+        listLandsObj
+      ).toFixed(4)
     }
-    return <ValueCounter value={total} currency="ovr"></ValueCounter>
+
+    return <ValueCounter value={tot} currency="ovr" />
   }
 
   const calculateTotal = () => {
     let total = 0
     if (listLandsObj) {
       listLandsObj.map((land) => {
-        console.log('land', land)
         let value =
           land.value < 100
             ? parseFloat(getUSDValueInOvr(10))
@@ -226,7 +272,10 @@ const Lands = (props) => {
 
   function renderLand() {
     let custom_return
-    if (multipleLandSelectionList.length > 0) {
+    if (
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
+    ) {
       custom_return = (
         <div className="Lands">
           <div className="o-container">
@@ -238,7 +287,7 @@ const Lands = (props) => {
               <div className="o-fourth">&nbsp;</div>
               <div className="o-fourth">
                 <h3 className="o-small-title">{t('Lands.selected.label')}</h3>
-                <div>{multipleLandSelectionList.length}/15</div>
+                <div>{multipleLandSelectionList.length}</div>
               </div>
               <div className="o-fourth">&nbsp;</div>
               <div className="o-fourth"></div>
@@ -248,44 +297,47 @@ const Lands = (props) => {
           <div className="o-container ls-container">
             <div className="ls-land__display">
               <div className="o-land-list__cont">
-                <div className="o-land-list">{listLands}</div>
+                <div className="o-land-list">{renderSelectedLands()}</div>
               </div>
             </div>
             <div className="ls-land__total">
               <div className="o-land-list__total__title">
                 <h2>{t('Lands.selected.checkout.title')}</h2>
               </div>
-              <div className="o-row">
-                <span>{t('Lands.number.of')}</span>
-                <span className="o-para-value">
-                  {multipleLandSelectionList.length}
-                </span>
-              </div>
-              <br />
-              <div className="o-row">
-                <span>{t('Lands.total.bidding')}</span>
-                {renderTotalEstimate()}
-              </div>{' '}
-              <br />
-              <div className="o-row">
-                <span>{t('Lands.estimated.gas.expense')}</span>
-                <ValueCounter
-                  value={(
-                    gasProjection * multipleLandSelectionList.length
-                  ).toFixed(2)}
-                  currency="ovr"
-                ></ValueCounter>
-              </div>
-              <br />
-              <br />
-              <br />
-              <div className="o-row">
-                <span>{t('Lands.total.expense')}</span>
-                <ValueCounter
-                  value={calculateTotal()}
-                  currency="ovr"
-                ></ValueCounter>
-              </div>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>{t('Lands.number.of')}</td>
+                    <td>{multipleLandSelectionList.length}</td>
+                  </tr>
+
+                  <tr>
+                    <td>{t('Lands.total.bidding')}</td>
+                    <td>{renderTotalEstimate()}</td>
+                  </tr>
+
+                  <tr>
+                    <td>{t('Lands.estimated.gas.expense')}</td>
+                    <td>
+                      <ValueCounter
+                        value={(
+                          gasProjection * multipleLandSelectionList.length
+                        ).toFixed(2)}
+                        currency="ovr"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>{t('Lands.total.expense')}</td>
+                    <td>
+                      <ValueCounter value={calculateTotal()} currency="ovr" />
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+
               <br />
               <div className="o-row lands__button_holder">
                 <HexButton
@@ -294,7 +346,7 @@ const Lands = (props) => {
                   className={`--orange ${!isProcessing ? '' : '--disabled'}`}
                   ariaHaspopup="true"
                   onClick={() => participateInAuctions()}
-                ></HexButton>
+                />
               </div>
               <br />
             </div>
@@ -332,4 +384,4 @@ Lands.propTypes = {
   url: PropTypes.string,
 }
 
-export default withWeb3Context(withUserContext(withMapContext(Lands)))
+export default withWeb3Context(withUserContext(Lands))
