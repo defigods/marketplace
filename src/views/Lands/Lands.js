@@ -108,15 +108,16 @@ const Lands = (props) => {
   }, [gasLandCost])
 
   const renderTotalEstimate = () => {
-    let total = 0
-    if (listLandsObj) {
-      listLandsObj.map((land) => {
-        console.log('land', land)
-        let value = land.value
-        total = total + value
-      })
+    let tot = 0
+    if (!R.isNil(listLandsObj) && !R.isEmpty(listLandsObj)) {
+      tot = R.reduce(
+        (acc, single) => R.sum([acc, R.prop('value', single)]),
+        0,
+        listLandsObj
+      ).toFixed(4)
     }
-    return <ValueCounter value={total} currency="ovr"></ValueCounter>
+
+    return <ValueCounter value={tot} currency="ovr" />
   }
 
   const calculateTotal = () => {
