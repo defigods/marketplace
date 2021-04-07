@@ -80,7 +80,6 @@ const ValueCounter = ({
   let show_value = value
   if (parseFloat(value) > 1000) {
     show_value = format(value)
-    console.log('ValueCounter.valuessss', show_value)
   }
 
   return (
