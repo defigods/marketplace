@@ -39,9 +39,7 @@ const Map = (props) => {
 
   const { changeMultipleLandSelectionList } = actions
 
-  // Effects
-  ////////////////////////////////////////////////////////////
-
+  // Effect []
   useEffect(() => {
     mapboxgl.accessToken =
       'pk.eyJ1IjoibWFudG9uZWxsaSIsImEiOiJjam9hNmljdHkwY2Y0M3JuejJrenhmMWE1In0.dC9b8oqj24iiSfm-qbNqmw'
