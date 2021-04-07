@@ -20,7 +20,7 @@
   }
   p {
     margin: 0;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 20px;
   }
 
@@ -32,21 +32,22 @@
     margin-bottom: 50px;
     li {
       margin-bottom: 6px;
+      font-size: 14px;
     }
   }
 
   .legal {
     a {
+      font-size: 14px;
       margin-bottom: 10px;
       display: block;
     }
   }
 
   .ovr-footer-title {
-    font-weight: 600;
+    font-weight: 500;
     color: $ovr-sideral-grey;
     opacity: 0.3;
-    letter-spacing: 2px;
     margin-bottom: 10px;
     display: block;
   }
