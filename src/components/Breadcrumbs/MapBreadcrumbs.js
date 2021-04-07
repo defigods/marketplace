@@ -1,9 +1,8 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import * as R from 'ramda'
 
 import Breadcrumbs from './Breadcrumbs'
 
-import { NewMapContext } from 'context/NewMapContext'
 import { useLocation } from 'react-router-dom'
 
 const MapBreadcrumbs = ({ contextState }) => {

@@ -257,7 +257,6 @@ const Lands = (props) => {
               <div className="o-land-list__total__title">
                 <h2>{t('Lands.selected.checkout.title')}</h2>
               </div>
-              {/* NEW CODE */}
               <table>
                 <tbody>
                   <tr>
