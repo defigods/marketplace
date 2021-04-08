@@ -240,9 +240,14 @@
   "MintOverlay.use.direct": "直接用于OVR购买就能享受双倍购买力",
   "MintOverlay.view.status": "查看交易状态",
   "MintOverlay.your.bid": "你的出价",
+
+  "NotificationCenter.view.title": "通知中心",
+  "NotificationCenter.view.subtitle": "这是您的通知列表。",
+
   "Notification.go.to.land": "去到OVR土地",
   "Notification.hide.label": "隐藏",
   "NotificationCenter.mark.all": "标记全部已读",
+  "NotificationCenter.view.all": "看到他们全部",
   "NotificationCenter.no.notifications": "目前 <1></1>没有可显示的通知.",
   "NotificationCenter.notifications.label": "通知",
   "Overview.auctions.label": "竞拍",

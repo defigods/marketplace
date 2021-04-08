@@ -3,16 +3,17 @@ import React, { useRef, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import Notification from '../Notification/Notification'
 
-import { UserContext, withUserContext } from '../../context/UserContext'
-import { readAllNotifications } from '../../lib/api'
+import { UserContext, withUserContext } from 'context/UserContext'
+import { readAllNotifications } from 'lib/api'
 import { Trans, useTranslation } from 'react-i18next'
+
+import HexButton from 'components/HexButton/HexButton'
 
 const NotificationCenterContent = () => {
   const { t, i18n } = useTranslation()
   const { state, actions } = useContext(UserContext)
+  const { toggleShowNotificationCenter } = actions
   const wrapperRef = useRef(null)
-
-  useEffect(() => {}, [state.user.notifications])
 
   const renderNotifications = () => {
     let notifications
@@ -26,10 +27,10 @@ const NotificationCenterContent = () => {
           key={obj.uuid}
           data={obj}
           actions={{
-            toggleNotificationCenter: actions.toggleShowNotificationCenter,
+            toggleNotificationCenter: toggleShowNotificationCenter,
             setAsReaded: actions.notification.setAsReaded,
           }}
-        ></Notification>
+        />
       ))
       return notifications
     } else {
@@ -80,6 +81,11 @@ const NotificationCenterContent = () => {
     }, [ref])
   }
 
+  const hadleClickAllNotifications = () => {
+    setAllAsReaded()
+    toggleShowNotificationCenter()
+  }
+
   return (
     <div ref={wrapperRef} className="NotificationCenter">
       {useOutsideAlerter(wrapperRef)}
@@ -92,6 +98,13 @@ const NotificationCenterContent = () => {
         <Link to={'#'} onClick={setAllAsReaded}>
           {t('NotificationCenter.mark.all')}
         </Link>
+
+        <HexButton
+          url="/notifications-center"
+          text={t('NotificationCenter.view.all')}
+          className="--orange-light --small"
+          onClick={hadleClickAllNotifications}
+        />
       </div>
     </div>
   )
