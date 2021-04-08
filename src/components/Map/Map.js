@@ -135,12 +135,12 @@ const Map = (props) => {
   }, [])
 
   useEffect(() => {
-    console.debug('MAP-COMPONENTS-2', [
-      onMultipleLandSelection,
-      lastSelectedLand,
-      map,
-      hex_id,
-    ])
+    // console.debug('MAP-COMPONENTS-2', [
+    //   onMultipleLandSelection,
+    //   lastSelectedLand,
+    //   map,
+    //   hex_id,
+    // ])
     let onClickMap
     if (map) {
       onClickMap = (e) => {
@@ -159,7 +159,11 @@ const Map = (props) => {
           // At click add in list if on Multiple Land Selection Mode
           focusMap(clicked_hex_id)
           if (lastSelectedLand == clicked_hex_id) {
-            console.debug('STATEEE', mapState)
+            console.debug('TESTTT-CLICK', {
+              lastSelectedLand,
+              clicked_hex_id,
+              multipleLandSelectionList,
+            })
             let list = multipleLandSelectionList
             if (R.includes(clicked_hex_id, list) && !R.isNil(list)) {
               // Remove Land
