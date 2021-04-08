@@ -305,11 +305,86 @@ const Map = (props) => {
       if (response.data.result === true) {
         let lands = response.data.lands
         renderHighZoomMintedLands(lands.minted)
+        renderHighZoomUserMintedLands(lands.user.minted)
+
         //renderClosingAuctions(lands.auctionClosing);
         renderHighZoomOngoingAuctions(
           lands.auctionStarted.concat(lands.auctionClosing)
         )
       }
+    })
+  }
+
+  function renderHighZoomUserMintedLands(userExagons) {
+    // Prepare format
+    var data = Object.assign({}, userExagons)
+    var newData = Object.keys(data).reduce(function (obj, key) {
+      obj[data[key]] = Math.random()
+      return obj
+    }, {})
+
+    // Plot hexes
+    const geojson = geojson2h3.h3SetToFeatureCollection(
+      Object.keys(newData),
+      (hex) => ({
+        value: userExagons[hex],
+      })
+    )
+    const sourceId = 'h3-user-interesting-hexes'
+    const layerId = `${sourceId}-user-interesting-layer`
+    let source = map.getSource(sourceId)
+
+    if (!source) {
+      map.addSource(sourceId, {
+        type: 'geojson',
+        data: geojson,
+      })
+      map.addLayer({
+        id: layerId,
+        source: sourceId,
+        type: 'fill',
+        interactive: false,
+        paint: {
+          'fill-outline-color': '#3d948d',
+          'fill-color': 'rgba(73, 182, 174, 0.5)',
+          'fill-opacity': 1,
+        },
+      })
+      source = map.getSource(sourceId)
+    }
+
+    // Update the geojson data
+    source.setData(geojson)
+    // Add markers
+    geojson.features.forEach(function (marker) {
+      // create a DOM element for the marker
+
+      var el = document.createElement('div')
+      el.className = 'sold-marker'
+      el.style.backgroundImage =
+        'url(https://ovr-assets.oss-accelerate.aliyuncs.com/images/owner-label.png)'
+      el.style.width = '53px'
+      el.style.height = '52px'
+
+      map.on('zoom', () => {
+        if (map.getZoom() < 17) {
+          var paras = document.getElementsByClassName('sold-marker')
+
+          while (paras[0]) {
+            paras[0].parentNode.removeChild(paras[0])
+          }
+        }
+      })
+
+      // add marker to map
+      // console.log('marker.geometry.id',marker.id)
+      let coordi = h3.h3ToGeo(marker.id)
+
+      new mapboxgl.Marker(el, {
+        anchor: 'center',
+      })
+        .setLngLat([coordi[1], coordi[0]])
+        .addTo(map)
     })
   }
 
@@ -357,7 +432,6 @@ const Map = (props) => {
     geojson.features.forEach(function (marker) {
       // create a DOM element for the marker
 
-      console.debug('TESTTTTT', { marker })
       var el = document.createElement('div')
       el.className = 'sold-marker'
       el.style.backgroundImage =

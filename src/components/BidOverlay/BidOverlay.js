@@ -145,7 +145,6 @@ const BidOverlay = (props) => {
 
   // Listener for fadein and fadeout animation of overlay
   useEffect(() => {
-    console.debug('EFFETTTO', mapState)
     if (activeBidOverlay) {
       setShowOverlay(true)
       setTimeout(() => {
