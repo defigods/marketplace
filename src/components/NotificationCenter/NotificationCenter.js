@@ -81,6 +81,11 @@ const NotificationCenterContent = () => {
     }, [ref])
   }
 
+  const hadleClickAllNotifications = () => {
+    setAllAsReaded()
+    toggleShowNotificationCenter()
+  }
+
   return (
     <div ref={wrapperRef} className="NotificationCenter">
       {useOutsideAlerter(wrapperRef)}
@@ -98,7 +103,7 @@ const NotificationCenterContent = () => {
           url="/notifications-center"
           text={t('NotificationCenter.view.all')}
           className="--orange-light --small"
-          onClick={toggleShowNotificationCenter}
+          onClick={hadleClickAllNotifications}
         />
       </div>
     </div>

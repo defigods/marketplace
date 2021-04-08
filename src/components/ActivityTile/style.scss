@@ -24,6 +24,19 @@
     }
   }
 
+  &.--new {
+    // &:after {
+    //   background-color: #7521c8;
+    //   width: 6px;
+    //   height: 6px;
+    //   border-radius: 10px;
+    //   content: ' ';
+    //   display: block;
+    //   position: absolute;
+    //   top: 26px;
+    // }
+  }
+
   button {
     position: absolute;
     right: 14px;
