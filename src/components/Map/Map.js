@@ -166,11 +166,6 @@ const Map = (props) => {
           // At click add in list if on Multiple Land Selection Mode
           focusMap(clicked_hex_id)
           if (lastSelectedLand == clicked_hex_id) {
-            console.debug('TESTTT-CLICK', {
-              lastSelectedLand,
-              clicked_hex_id,
-              multipleLandSelectionList,
-            })
             let list = multipleLandSelectionList
             if (R.includes(clicked_hex_id, list) && !R.isNil(list)) {
               // Remove Land
@@ -182,7 +177,6 @@ const Map = (props) => {
                 list.push(clicked_hex_id)
                 changeMultipleLandSelectionList(list)
               } else {
-                // add warning
                 warningNotification(
                   t('Land.unavailable.notification.title'),
                   t('Land.unavailable.notification.subtitle')
@@ -362,6 +356,8 @@ const Map = (props) => {
     // Add markers
     geojson.features.forEach(function (marker) {
       // create a DOM element for the marker
+
+      console.debug('TESTTTTT', { marker })
       var el = document.createElement('div')
       el.className = 'sold-marker'
       el.style.backgroundImage =
