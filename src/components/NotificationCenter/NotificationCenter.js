@@ -12,9 +12,8 @@ import HexButton from 'components/HexButton/HexButton'
 const NotificationCenterContent = () => {
   const { t, i18n } = useTranslation()
   const { state, actions } = useContext(UserContext)
+  const { toggleShowNotificationCenter } = actions
   const wrapperRef = useRef(null)
-
-  useEffect(() => {}, [state.user.notifications])
 
   const renderNotifications = () => {
     let notifications
@@ -28,7 +27,7 @@ const NotificationCenterContent = () => {
           key={obj.uuid}
           data={obj}
           actions={{
-            toggleNotificationCenter: actions.toggleShowNotificationCenter,
+            toggleNotificationCenter: toggleShowNotificationCenter,
             setAsReaded: actions.notification.setAsReaded,
           }}
         />
@@ -99,7 +98,7 @@ const NotificationCenterContent = () => {
           url="/notifications-center"
           text={t('NotificationCenter.view.all')}
           className="--orange-light"
-          // onClick={setDeactiveOverlay}
+          onClick={toggleShowNotificationCenter}
         />
       </div>
     </div>
