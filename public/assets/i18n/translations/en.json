@@ -108,6 +108,8 @@
   "Land.bid.history": "Bid History",
   "Land.when.label": "When",
   "Land.from.label": "From",
+  "Land.unavailable.notification.title": "Unavailable OVRLand",
+  "Land.unavailable.notification.subtitle": "The selected land is reserved",
 
   "Lands.selected.lands": "Select Lands",
   "Lands.click.to.remove": "Click again on a selected land to remove",

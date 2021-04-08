@@ -10,6 +10,10 @@ import geojson2h3 from 'geojson2h3'
 import * as h3 from 'h3-js'
 import config from 'lib/config'
 
+import { unavailableH3 } from 'assets/constants'
+
+import { warningNotification } from 'lib/notifications'
+
 import {
   indexInterestingLands,
   getCachedOpenLandsGeojson,
@@ -21,9 +25,12 @@ import _ from 'lodash'
 
 import { NewMapContext } from 'context/NewMapContext'
 
+import { useTranslation } from 'react-i18next'
+
 let map
 
 const Map = (props) => {
+  const { t } = useTranslation()
   const [mapState, setMapState, actions] = useContext(NewMapContext)
   const {
     onSingleView,
@@ -171,8 +178,16 @@ const Map = (props) => {
               changeMultipleLandSelectionList(list)
             } else {
               // Add Land
-              list.push(clicked_hex_id)
-              changeMultipleLandSelectionList(list)
+              if (!R.includes(clicked_hex_id, unavailableH3)) {
+                list.push(clicked_hex_id)
+                changeMultipleLandSelectionList(list)
+              } else {
+                // add warning
+                warningNotification(
+                  t('Land.unavailable.notification.title'),
+                  t('Land.unavailable.notification.subtitle')
+                )
+              }
             }
           }
           setLastSelectedLand(clicked_hex_id)
