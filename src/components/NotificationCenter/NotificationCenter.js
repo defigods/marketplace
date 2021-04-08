@@ -3,9 +3,11 @@ import React, { useRef, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import Notification from '../Notification/Notification'
 
-import { UserContext, withUserContext } from '../../context/UserContext'
-import { readAllNotifications } from '../../lib/api'
+import { UserContext, withUserContext } from 'context/UserContext'
+import { readAllNotifications } from 'lib/api'
 import { Trans, useTranslation } from 'react-i18next'
+
+import HexButton from 'components/HexButton/HexButton'
 
 const NotificationCenterContent = () => {
   const { t, i18n } = useTranslation()
@@ -29,7 +31,7 @@ const NotificationCenterContent = () => {
             toggleNotificationCenter: actions.toggleShowNotificationCenter,
             setAsReaded: actions.notification.setAsReaded,
           }}
-        ></Notification>
+        />
       ))
       return notifications
     } else {
@@ -92,6 +94,13 @@ const NotificationCenterContent = () => {
         <Link to={'#'} onClick={setAllAsReaded}>
           {t('NotificationCenter.mark.all')}
         </Link>
+
+        <HexButton
+          url="/notification-center"
+          text={t('NotificationCenter.view.all')}
+          className="--orange-light"
+          // onClick={setDeactiveOverlay}
+        />
       </div>
     </div>
   )

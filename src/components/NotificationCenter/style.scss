@@ -21,6 +21,10 @@
 .NotificationCenter__footer {
   padding: 18px 25px;
   text-align: left;
+  border-top: 1px solid rgba(43, 48, 52, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   a {
     font-size: 14px;
     color: $ovr-sideral-grey;
