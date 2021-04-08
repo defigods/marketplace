@@ -14,7 +14,7 @@ const ArrowLink = ({
   if (target) {
     return (
       <div className="ArrowLink">
-        <a className="ArrowLink__text" href={url}>
+        <a target={target} className="ArrowLink__text" href={url}>
           {text} <span>→</span>
         </a>
       </div>

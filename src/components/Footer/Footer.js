@@ -1,6 +1,7 @@
 import React from 'react'
 import * as R from 'ramda'
 import { Link } from 'react-router-dom'
+import moment from 'moment'
 
 import OvrLogo from 'assets/img/ovr.png'
 
@@ -14,6 +15,7 @@ const Footer = () => {
     { name: 'Twitter', url: 'https://twitter.com/OVRtheReality' },
   ]
 
+  const year = moment().format('YYYY')
   return (
     <div className="ovr-footer">
       <div className="o-container">
@@ -21,6 +23,7 @@ const Footer = () => {
           <Link to="/" className="Logo__footer_link">
             <div className="footer-logo">
               <img src={OvrLogo} />
+              <div className="Footer__copyright">Over Holding Srl © {year}</div>
             </div>
           </Link>
         </div>
