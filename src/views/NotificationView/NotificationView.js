@@ -121,7 +121,6 @@ const NotificationsContent = () => {
 
   useEffect(() => {
     getUserNotifications(notificationsPage).then((response) => {
-      console.debug('PAGEEEE', response)
       const notificationData = R.pathOr(
         [],
         ['data', 'user', 'content'],

@@ -97,7 +97,7 @@ const NotificationCenterContent = () => {
         <HexButton
           url="/notifications-center"
           text={t('NotificationCenter.view.all')}
-          className="--orange-light"
+          className="--orange-light --small"
           onClick={toggleShowNotificationCenter}
         />
       </div>
