@@ -185,12 +185,12 @@ const Map = (props) => {
   }, [onMultipleLandSelection, lastSelectedLand])
 
   useEffect(() => {
-    console.debug('MAP-COMPONENTS-3', [
-      isMapReady,
-      onSingleView,
-      onMultipleLandSelection,
-      multipleLandSelectionList,
-    ])
+    // console.debug('MAP-COMPONENTS-3', [
+    //   isMapReady,
+    //   onSingleView,
+    //   onMultipleLandSelection,
+    //   multipleLandSelectionList,
+    // ])
     if (isMapReady == true) {
       plotHighZoomPOI()
       if (onMultipleLandSelection == true) {
@@ -207,14 +207,14 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
-    console.debug('MAP-COMPONENTS-4', [isMapReady])
+    // console.debug('MAP-COMPONENTS-4', [isMapReady])
     if (isMapReady == true) {
       renderOwnedLandsCluster()
     }
   }, [isMapReady])
 
   useEffect(() => {
-    console.debug('MAP-COMPONENTS-5', [hex_id])
+    // console.debug('MAP-COMPONENTS-5', [hex_id])
     if (!R.isNil(hex_id) && !R.isEmpty(hex_id)) {
       addFocusToHexId(hex_id)
     }
