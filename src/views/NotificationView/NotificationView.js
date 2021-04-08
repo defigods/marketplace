@@ -106,7 +106,7 @@ const ActivityContent = () => {
   )
 }
 
-const Activity = () => {
+const NotificationView = () => {
   const { state } = useContext(UserContext)
   const { isLoggedIn: userAuthenticated } = state
 
@@ -116,4 +116,4 @@ const Activity = () => {
   return <ActivityLayout state={state} />
 }
 
-export default Activity
+export default NotificationView

@@ -9,7 +9,7 @@ import Overview from './views/Overview/Overview'
 import Land from './views/Land/Land'
 import Lands from './views/Lands/Lands'
 import Profile from './views/Profile/Profile'
-import Activity from './views/Activity/Activity'
+import NotificationView from './views/NotificationView/NotificationView'
 import Login from './views/Login/Login'
 import LoginHelper from './views/LoginHelper/LoginHelper'
 import Signup from './views/Signup/Signup'
@@ -148,7 +148,10 @@ function App() {
                                 <Route path="/map/lands" component={Lands} />
                                 <Route path="/map/land/:id" component={Land} />
                                 <Route path="/profile" component={Profile} />
-                                <Route path="/activity" component={Activity} />
+                                <Route
+                                  path="/notifications-center"
+                                  component={NotificationView}
+                                />
                                 <Route path="/login" component={Login} />
                                 <Route
                                   path="/login-helper"

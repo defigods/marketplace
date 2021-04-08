@@ -96,7 +96,7 @@ const NotificationCenterContent = () => {
         </Link>
 
         <HexButton
-          url="/notification-center"
+          url="/notifications-center"
           text={t('NotificationCenter.view.all')}
           className="--orange-light"
           // onClick={setDeactiveOverlay}
