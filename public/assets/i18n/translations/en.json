@@ -185,6 +185,7 @@
   "NotificationCenter.no.notifications": "There are currently <1></1>no notifications to display.",
   "NotificationCenter.notifications.label": "Notifications",
   "NotificationCenter.mark.all": "Mark all as read",
+  "NotificationCenter.view.all": "See all",
 
   "Notification.go.to.land": "Go to OVRLand",
   "Notification.hide.label": "Hide",
