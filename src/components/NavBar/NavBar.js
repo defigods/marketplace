@@ -102,7 +102,7 @@ const NavBar = () => {
           removeToken('lastVisitedPage')
           history.push(cookie)
         } else {
-          history.push('/profile')
+          history.push('/map/discover')
         }
       }
       setIsConnecting(false)
