@@ -114,6 +114,7 @@ const ActivityContent = () => {
 
 const NotificationsContent = () => {
   const { t, i18n } = useTranslation()
+
   //   Notifications states
   const [notificationsList, setNotificationsList] = useState([])
   const [notificationsPage, setNotificationsPage] = useState(1)
@@ -147,6 +148,7 @@ const NotificationsContent = () => {
 
   const handlePaginationChange = (event, value) => {
     setNotificationsPage(value)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
