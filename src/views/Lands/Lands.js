@@ -113,23 +113,17 @@ const Lands = (props) => {
 
       if (R.length(multipleLandSelectionList) > R.length(plucckedList)) {
         diffAdd = R.difference(multipleLandSelectionList, plucckedList)
-        console.debug('DIFFS.diffAdd', diffAdd)
       } else {
         diffRemove = R.difference(plucckedList, multipleLandSelectionList)
-        console.debug('DIFFS.diffRemove', diffRemove)
       }
 
       if (!R.isEmpty(diffAdd) && !R.isNil(diffAdd)) {
         const promises = promiseListCreator(diffAdd)
-        console.debug('PROMISES', promises)
 
         Promise.all(promises)
           .then((response) => {
             const handledLands = promiseListResponseHandler(response)
-            console.debug('handledLands', handledLands)
-            console.log('TESTTTT.X', listLandsObj)
             setListLandsObj(R.flatten(R.append(handledLands, listLandsObj)))
-            console.debug('TEST-ListLandsObj', listLandsObj)
           })
           .catch((e) => console.log('getLands.error', e))
       }
@@ -162,7 +156,7 @@ const Lands = (props) => {
         (acc, single) => R.sum([acc, R.prop('value', single)]),
         0,
         listLandsObj
-      ).toFixed(4)
+      ).toFixed(2)
     }
 
     return <ValueCounter value={tot} currency="ovr" />
