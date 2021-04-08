@@ -56,7 +56,15 @@ const BannerCounter = () => {
             </div>
             <div className="o-one-label">
               <div className="o-label">{t('BannerCounter.open.auctions')}</div>
-              <div className="o-value --big">{openAuctionCount}</div>
+              <div className="o-value">{openAuctionCount}</div>
+              <div className="o-link">
+                <ArrowLink
+                  url="https://www.ovr.ai/how-to-participate-auction/"
+                  target="_blank"
+                  text={t('BannerCounter.auction.how-to-partecipate-auction')}
+                  onClick={onClickHighestBidLand}
+                />
+              </div>
             </div>
           </div>
         </div>
