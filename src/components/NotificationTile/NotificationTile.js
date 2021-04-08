@@ -11,7 +11,7 @@ import config from 'lib/config'
 import { useTranslation } from 'react-i18next'
 
 import MarketPlaceIcon01 from 'assets/img/icone-marketplace-01.png'
-import MarketPlaceIcon07 from 'assets/img/icone-marketplace-07.png'
+import MarketPlaceIcon06 from 'assets/img/icone-marketplace-06.png'
 import MarketPlaceIcon09 from 'assets/img/icone-marketplace-09.png'
 import MarketPlaceIcon05 from 'assets/img/icone-marketplace-05.png'
 import MarketPlaceIcon10 from 'assets/img/icone-marketplace-10.png'
@@ -59,16 +59,16 @@ const NotificationTile = (props) => {
       // 11 Best bidder
       // 13 win
       case 10:
-        return <img src={MarketPlaceIcon07} />
-        break
-      case 13:
         return <img src={MarketPlaceIcon01} />
         break
+      case 13:
+        return <img src={MarketPlaceIcon06} />
+        break
       case 11:
-        return <img src={MarketPlaceIcon09} />
+        return <img src={MarketPlaceIcon05} />
         break
       case 12:
-        return <img src={MarketPlaceIcon05} />
+        return <img src={MarketPlaceIcon09} />
         break
       case 14:
         return <img src={MarketPlaceIcon10} />
