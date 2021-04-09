@@ -13,6 +13,19 @@
   transform: scale(1);
   text-align: center;
 
+  &.--gray {
+    color: white;
+    border: 0;
+    background-color: $ovr-sideral-grey;
+  }
+
+  &.--x-small {
+    padding: 6px 10px;
+    width: fit-content;
+    font-size: 7px;
+    min-width: 80px;
+  }
+
   &.--orange-light {
     &:hover {
       text-decoration: none;
@@ -32,6 +45,7 @@
     }
   }
   &:hover {
+    text-decoration: none;
     transform: scale(0.98);
     cursor: pointer;
   }

@@ -98,6 +98,7 @@ body {
   margin-top: 30px;
   color: $ovr-sideral-grey;
 }
+
 @import './src/components/Breadcrumbs/style.scss';
 @import './src/components/CtaCard/style.scss';
 @import './src/components/CheckBox/style.scss';
@@ -141,5 +142,6 @@ body {
 @import './src/views/PublicSale/style.scss';
 @import './src/views/Staking/style.scss';
 @import './src/views/responsive.scss';
+@import './src/views/Overview/style.scss';
 
 @import './src/components/Notification/style.scss';
