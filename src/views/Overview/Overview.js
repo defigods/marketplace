@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import * as R from 'ramda'
+import moment from 'moment'
 import { Trans, useTranslation } from 'react-i18next'
 import download from 'downloadjs'
 
@@ -266,7 +267,6 @@ const Overview = () => {
         if (isResponseTrue) {
           setTimeout(() => {
             setPollingStarted(true)
-            setCSVGenerationLoading(false)
           }, 1000)
         }
       })
@@ -292,15 +292,20 @@ const Overview = () => {
         const csvString = R.path(['data'], csvResp)
 
         if (!R.isEmpty(csvString)) {
+          setCSVGenerationLoading(false)
           setProcessCompleted(true)
-          download(csvString, 'MyLands.csv', 'text/csv')
+          download(
+            csvString,
+            `MyLands - ${moment().format('HH:mm, dddd, MMM D, YYYY')}.csv`,
+            'text/csv'
+          )
           setTimeout(() => {
             setProcessCompleted(false)
           }, 1000)
         }
       }
     }
-  }, 1000)
+  }, 3000)
 
   let customReturn
 
