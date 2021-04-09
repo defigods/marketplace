@@ -1,5 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 import ActionCable from 'actioncable'
@@ -205,16 +206,6 @@ export const NewUserContextProvider = ({ children }) => {
     setUserState((s) => ({ ...s, showNotificationCenter: false }))
   }
 
-  const acceptIbcoTermsAndConditions = () => {
-    setUserState((s) => ({
-      ...s,
-      user: {
-        ...s.user,
-        ibcoAcceptedTerms: true,
-      },
-    }))
-  }
-
   const setNotificationAsReaded = (notification_uuid) => {
     let notifications_content = userState.user.notifications.content
     let unreaded_count = userState.user.notifications.unreadedCount
@@ -231,6 +222,32 @@ export const NewUserContextProvider = ({ children }) => {
           unreadedCount: unreaded_count,
           content: notifications_content,
         },
+      },
+    }))
+  }
+
+  const setAllNotificationsAsReaded = () => {
+    let notifications_content = userState.user.notifications.content
+    notifications_content.readAllNotifications()
+    setUserState((s) => ({
+      ...s,
+      user: {
+        ...s.user,
+        notifications: {
+          ...s.user.notifications,
+          unreadedCount: 0,
+          content: notifications_content,
+        },
+      },
+    }))
+  }
+
+  const acceptIbcoTermsAndConditions = () => {
+    setUserState((s) => ({
+      ...s,
+      user: {
+        ...s.user,
+        ibcoAcceptedTerms: true,
       },
     }))
   }
