@@ -1,4 +1,5 @@
 .Lands {
+  margin-top: 25px;
   .o-land-list {
     margin-top: 20px;
     overflow: visible;
@@ -32,6 +33,7 @@
   span {
     float: left;
     font-size: 20px;
+    margin-bottom: 10px;
   }
   .o-row {
     width: 100%;
@@ -40,6 +42,30 @@
   .HexButton {
     float: right;
     margin-top: 10px;
+  }
+
+  table {
+    width: 100%;
+    font-size: 17px;
+    text-align: left;
+    tr {
+      line-height: 35px;
+      td {
+        text-align: left;
+        .ValueCounter {
+          float: inherit;
+          margin-left: 0;
+          font-size: 17px;
+        }
+      }
+    }
+    tfoot {
+      tr {
+        td:first-child {
+          font-weight: 500;
+        }
+      }
+    }
   }
 }
 

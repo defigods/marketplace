@@ -102,7 +102,7 @@ const NavBar = () => {
           removeToken('lastVisitedPage')
           history.push(cookie)
         } else {
-          history.push('/profile')
+          history.push('/map/discover')
         }
       }
       setIsConnecting(false)
@@ -257,14 +257,7 @@ const NavBar = () => {
               >
                 {t('Navbar.profile.label')}
               </MenuItem>
-              <MenuItem
-                onClick={(e) => {
-                  handleClose(e)
-                  handleGoTo('/activity')
-                }}
-              >
-                {t('Navbar.activity.label')}
-              </MenuItem>
+
               <MenuItem
                 onClick={(e) => {
                   handleClose(e)
@@ -324,14 +317,6 @@ const NavBar = () => {
               }}
             >
               {t('Navbar.profile.label')}
-            </MenuItem>
-            <MenuItem
-              onClick={(e) => {
-                handleClose(e)
-                handleGoTo('/activity')
-              }}
-            >
-              {t('Navbar.activity.label')}
             </MenuItem>
             <MenuItem
               onClick={(e) => {

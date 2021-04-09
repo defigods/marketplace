@@ -7,18 +7,7 @@
   @include column(1/5, $cycle: 5);
   border-radius: 5px;
   overflow: hidden;
-  // .LandName__name {
-  //   width: 100%;
-  //   &:after{
-  //       opacity: 0;
-  //   }
-  // }
-  // .LandName__name:hover {
-  //     span {
-  //         transform: translateX(0);
-  //     }
 
-  // }
   .TimeCounter {
     text-align: right;
     float: right;
@@ -26,7 +15,13 @@
 
   &:hover {
     box-shadow: 0px 0px 10px 0 rgba(30, 30, 30, 0.03);
-    transform: scale(0.98);
+    transform: scale(0.98) translateZ(0);
+
+    .c-ping-layer {
+      &:before {
+        animation: pulse-ring 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+      }
+    }
   }
 }
 
@@ -78,8 +73,9 @@
     margin-left: -100%;
     margin-top: -100%;
     border-radius: 100%;
+    transform: scale(0.4);
     background-color: #ec663c;
-    animation: pulse-ring 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    // animation: pulse-ring 2.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   }
 
   &:after {
@@ -92,29 +88,16 @@
     height: 100%;
     border-radius: 15px;
     background-color: #ec663c;
-    animation: pulse-dot 2.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
   }
 }
 
 @keyframes pulse-ring {
   0% {
-    transform: scale(0.33);
+    transform: scale(2.33);
   }
   80%,
   100% {
     opacity: 0;
-  }
-}
-
-@keyframes pulse-dot {
-  0% {
-    transform: scale(0.8);
-  }
-  50% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0.8);
   }
 }
 

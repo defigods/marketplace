@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from 'react'
 import TextField from '@material-ui/core/TextField'
-import { withMapContext } from 'context/MapContext'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from '../ValueCounter/ValueCounter'

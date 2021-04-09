@@ -119,7 +119,6 @@ export class MapProvider extends Component {
               .changeMultipleLandSelectionList,
             resetMultipleLandSelectionList: this.resetMultipleLandSelectionList,
           },
-          overviewList: this.overviewList,
         }}
       >
         {this.props.children}

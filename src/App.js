@@ -9,7 +9,7 @@ import Overview from './views/Overview/Overview'
 import Land from './views/Land/Land'
 import Lands from './views/Lands/Lands'
 import Profile from './views/Profile/Profile'
-import Activity from './views/Activity/Activity'
+import NotificationView from './views/NotificationView/NotificationView'
 import Login from './views/Login/Login'
 import LoginHelper from './views/LoginHelper/LoginHelper'
 import Signup from './views/Signup/Signup'
@@ -31,7 +31,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom'
-import { MapProvider, MapContext } from './context/MapContext'
+
 import { UserProvider, UserContext } from './context/UserContext'
 import { Web3Provider, Web3Context } from './context/Web3Context'
 
@@ -116,93 +116,70 @@ function App() {
         {(t, { i18n }) => (
           <UserProvider t={t} i18n={i18n}>
             <Web3Provider t={t} i18n={i18n}>
-              <MapProvider>
-                <UserContext.Consumer>
-                  {(userValue) => {
-                    return (
-                      <Web3Context.Consumer>
-                        {(web3Value) => {
-                          return (
-                            <MapContext.Consumer>
-                              {(mapValue) => {
-                                return (
-                                  <Router history={history}>
-                                    <div className="App">
-                                      <ReactNotification />
-                                      <NavBar />
-                                      <div className="o-container">
-                                        <Route path="/map/" component={Map} />
-                                      </div>
-                                      <Switch>
-                                        <Route exact path="/">
-                                          <Redirect to="/map/discover" />
-                                        </Route>
-                                        <Route
-                                          path="/map/discover/:ref"
-                                          component={Discover}
-                                        />
-                                        <Route
-                                          path="/map/discover"
-                                          component={Discover}
-                                        />
-                                        <Route
-                                          path="/map/overview"
-                                          component={Overview}
-                                        />
-                                        <Route
-                                          path="/map/lands"
-                                          component={Lands}
-                                        />
-                                        <Route
-                                          path="/map/land/:id"
-                                          component={Land}
-                                        />
-                                        <Route
-                                          path="/profile"
-                                          component={Profile}
-                                        />
-                                        <Route
-                                          path="/activity"
-                                          component={Activity}
-                                        />
-                                        <Route
-                                          path="/login"
-                                          component={Login}
-                                        />
-                                        <Route
-                                          path="/login-helper"
-                                          component={LoginHelper}
-                                        />
-                                        <Route
-                                          path="/public-sale"
-                                          component={PublicSale}
-                                        />
-                                        <Route
-                                          path="/staking"
-                                          component={Staking}
-                                        />
-                                        <Route
-                                          path="/confirm-email"
-                                          component={ConfirmEmail}
-                                        />
-                                        <Route
-                                          path="/staking-vesting-ovrg"
-                                          component={StakingVestingOvrg}
-                                        />
-                                      </Switch>
-                                      <Footer />
-                                    </div>
-                                  </Router>
-                                )
-                              }}
-                            </MapContext.Consumer>
-                          )
-                        }}
-                      </Web3Context.Consumer>
-                    )
-                  }}
-                </UserContext.Consumer>
-              </MapProvider>
+              <UserContext.Consumer>
+                {(userValue) => {
+                  return (
+                    <Web3Context.Consumer>
+                      {(web3Value) => {
+                        return (
+                          <Router history={history}>
+                            <div className="App">
+                              <ReactNotification />
+                              <NavBar />
+                              <div className="o-container">
+                                <Route path="/map/" component={Map} />
+                              </div>
+                              <Switch>
+                                <Route exact path="/">
+                                  <Redirect to="/map/discover" />
+                                </Route>
+                                <Route
+                                  path="/map/discover/:ref"
+                                  component={Discover}
+                                />
+                                <Route
+                                  path="/map/discover"
+                                  component={Discover}
+                                />
+                                <Route
+                                  path="/map/overview"
+                                  component={Overview}
+                                />
+                                <Route path="/map/lands" component={Lands} />
+                                <Route path="/map/land/:id" component={Land} />
+                                <Route path="/profile" component={Profile} />
+                                <Route
+                                  path="/notifications-center"
+                                  component={NotificationView}
+                                />
+                                <Route path="/login" component={Login} />
+                                <Route
+                                  path="/login-helper"
+                                  component={LoginHelper}
+                                />
+                                <Route
+                                  path="/public-sale"
+                                  component={PublicSale}
+                                />
+                                <Route path="/staking" component={Staking} />
+                                <Route
+                                  path="/confirm-email"
+                                  component={ConfirmEmail}
+                                />
+                                <Route
+                                  path="/staking-vesting-ovrg"
+                                  component={StakingVestingOvrg}
+                                />
+                              </Switch>
+                              <Footer />
+                            </div>
+                          </Router>
+                        )
+                      }}
+                    </Web3Context.Consumer>
+                  )
+                }}
+              </UserContext.Consumer>
             </Web3Provider>
           </UserProvider>
         )}

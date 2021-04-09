@@ -416,6 +416,15 @@ export function hitBuyOffer(orderUuid = null) {
 }
 
 // NOTIFICATION
+
+export function getUserNotifications(pageNumber = 1) {
+  return request(
+    { url: '/user/notifications', method: 'GET' },
+    { page: pageNumber },
+    null
+  )
+}
+
 export function readNotification(notificationUuid = null) {
   return request(
     { url: '/notification/read', method: 'POST' },
@@ -575,7 +584,6 @@ export function request(
     }
     req
       .then((response) => {
-        console.log('reponse', response)
         resolve(camelCaseKeys(response))
       })
       .catch((err) => {

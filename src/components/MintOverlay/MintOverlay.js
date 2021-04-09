@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import TextField from '@material-ui/core/TextField'
-import { withMapContext } from 'context/MapContext'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from '../ValueCounter/ValueCounter'
@@ -17,10 +16,13 @@ import { auctionCreate } from 'lib/api'
 import Tooltip from '@material-ui/core/Tooltip'
 import Help from '@material-ui/icons/Help'
 import { useTranslation } from 'react-i18next'
-import { parse } from 'date-fns'
+
+import { NewMapContext } from 'context/NewMapContext'
 
 const MintOverlay = (props) => {
   const { t, i18n } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { changeActiveMintOverlay } = actions
 
   const userState = props.userProvider.state.user
   const { refreshBalanceAndAllowance } = props.userProvider.actions
@@ -68,7 +70,7 @@ const MintOverlay = (props) => {
 
   function setDeactiveOverlay(e) {
     e.preventDefault()
-    props.mapProvider.actions.changeActiveMintOverlay(false)
+    actions.changeActiveMintOverlay(false)
     setTimeout(() => {
       setOpen(false)
       setActiveStep(0)
@@ -127,7 +129,7 @@ const MintOverlay = (props) => {
 
   // Listener for fadein and fadeout animation of overlay
   useEffect(() => {
-    if (props.mapProvider.state.activeMintOverlay) {
+    if (mapState.activeMintOverlay) {
       setShowOverlay(true)
       setTimeout(() => {
         setClassShowOverlay(true)
@@ -138,7 +140,7 @@ const MintOverlay = (props) => {
         setShowOverlay(false)
       }, 500)
     }
-  }, [props.mapProvider.state.activeMintOverlay])
+  }, [mapState.activeMintOverlay])
 
   useEffect(() => {
     updateBidProjectionCurrency(bidProjectionCurrency)
@@ -649,11 +651,10 @@ const MintOverlay = (props) => {
 MintOverlay.propTypes = {
   reloadLandStatefromApi: PropTypes.func,
   userProvider: PropTypes.object,
-  mapProvider: PropTypes.object,
   web3Provider: PropTypes.object,
   land: PropTypes.object,
   className: PropTypes.string,
   url: PropTypes.string,
 }
 
-export default withUserContext(withWeb3Context(withMapContext(MintOverlay)))
+export default withUserContext(withWeb3Context(MintOverlay))

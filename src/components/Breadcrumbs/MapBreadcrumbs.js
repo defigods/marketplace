@@ -1,15 +1,18 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import * as R from 'ramda'
 
 import Breadcrumbs from './Breadcrumbs'
 
-import { MapContext } from '../../context/MapContext'
 import { useLocation } from 'react-router-dom'
 
-const MapBreadcrumbs = () => {
-  const { state } = useContext(MapContext)
-  const { pathname } = useLocation()
+const MapBreadcrumbs = ({ contextState }) => {
+  const landData = R.pathOr({}, ['landData'], contextState)
+  const hex_id = R.pathOr(null, ['hex_id'], contextState)
 
-  const { hex_id, landData: data } = state
+  const marketStatus = R.pathOr(null, ['marketStatus'], landData)
+  const userPerspective = R.pathOr(null, ['userPerspective'], landData)
+
+  const { pathname } = useLocation()
 
   let currentPageLabel = pathname.split('/')[2]
   currentPageLabel =
@@ -17,14 +20,12 @@ const MapBreadcrumbs = () => {
 
   const prevLinks = []
 
-  const isAuction = data.marketStatus === 1
-  const isUserRelated = data.userPerspective !== 0
-
-  // console.log('This is the data', data);
+  const isAuction = marketStatus === 1
+  const isUserRelated = userPerspective !== 0
 
   if (currentPageLabel === 'Land') {
     const dataIsEmpty =
-      Object.keys(data).length === 0 && data.constructor === Object
+      Object.keys(landData).length === 0 && landData.constructor === Object
     if (dataIsEmpty) {
       currentPageLabel = ''
     } else {
@@ -35,7 +36,7 @@ const MapBreadcrumbs = () => {
         }`,
       })
 
-      currentPageLabel = (data.name && data.name.sentence) || hex_id
+      currentPageLabel = (landData.name && landData.name.sentence) || hex_id
     }
   }
 

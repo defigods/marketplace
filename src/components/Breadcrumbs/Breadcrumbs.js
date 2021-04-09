@@ -1,14 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
 
 import { Breadcrumbs as MaterialBreadcrumbs } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
+import { NewMapContext } from 'context/NewMapContext'
+
 import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 
 const Breadcrumbs = ({ previousLinks, currentPageLabel, className }) => {
   const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY')
+
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+
+  // Clicking Link returning to /map/discover
+  const resetSingleLandView = () => {
+    // In this case I have to reset hex_id to avoid map zoom explosions
+    setMapState((s) => ({ ...s, hex_id: null }))
+  }
 
   return (
     <div className={`breadcrumbs ${className}`}>
@@ -23,6 +33,7 @@ const Breadcrumbs = ({ previousLinks, currentPageLabel, className }) => {
             key={`prev_link_${index}`}
             color="inherit"
             to={a.href}
+            onClick={resetSingleLandView}
           >
             {a.label}
           </Link>

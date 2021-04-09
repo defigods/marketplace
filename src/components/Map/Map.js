@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import * as R from 'ramda'
 
 import PropTypes from 'prop-types'
 import mapboxgl from 'mapbox-gl'
@@ -8,7 +9,11 @@ import * as MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
 import geojson2h3 from 'geojson2h3'
 import * as h3 from 'h3-js'
 import config from 'lib/config'
-import { withMapContext } from 'context/MapContext'
+
+import { unavailableH3 } from 'assets/constants'
+
+import { warningNotification } from 'lib/notifications'
+
 import {
   indexInterestingLands,
   getCachedOpenLandsGeojson,
@@ -18,24 +23,29 @@ import Breadcrumbs from '../Breadcrumbs/MapBreadcrumbs'
 import BannerCounter from '../BannerCounter/BannerCounter'
 import _ from 'lodash'
 
+import { NewMapContext } from 'context/NewMapContext'
+
+import { useTranslation } from 'react-i18next'
+
 let map
 
 const Map = (props) => {
-  const [lastSelectedLand, setLastSelectedLand] = useState(null)
-  const [isMapReady, setIsMapReady] = useState(false)
-
-  const { changeMultipleLandSelectionList } = props.mapProvider.actions
+  const { t } = useTranslation()
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
   const {
     onSingleView,
     onMultipleLandSelection,
     multipleLandSelectionList,
     auctionList,
     hex_id,
-  } = props.mapProvider.state
+  } = mapState
 
-  // Effects
-  ////////////////////////////////////////////////////////////
+  const [lastSelectedLand, setLastSelectedLand] = useState(null)
+  const [isMapReady, setIsMapReady] = useState(false)
 
+  const { changeMultipleLandSelectionList } = actions
+
+  // Effect []
   useEffect(() => {
     mapboxgl.accessToken = config.apis.mapboxAccessToken
     map = new mapboxgl.Map({
@@ -132,6 +142,12 @@ const Map = (props) => {
   }, [])
 
   useEffect(() => {
+    // console.debug('MAP-COMPONENTS-2', [
+    //   onMultipleLandSelection,
+    //   lastSelectedLand,
+    //   map,
+    //   hex_id,
+    // ])
     let onClickMap
     if (map) {
       onClickMap = (e) => {
@@ -151,16 +167,21 @@ const Map = (props) => {
           focusMap(clicked_hex_id)
           if (lastSelectedLand == clicked_hex_id) {
             let list = multipleLandSelectionList
-            if (list.includes(clicked_hex_id)) {
+            if (R.includes(clicked_hex_id, list) && !R.isNil(list)) {
               // Remove Land
-              _.remove(list, function (el) {
-                return el === clicked_hex_id
-              })
+              _.remove(list, (el) => el === clicked_hex_id)
               changeMultipleLandSelectionList(list)
             } else {
               // Add Land
-              list.push(clicked_hex_id)
-              changeMultipleLandSelectionList(list)
+              if (!R.includes(clicked_hex_id, unavailableH3)) {
+                list.push(clicked_hex_id)
+                changeMultipleLandSelectionList(list)
+              } else {
+                warningNotification(
+                  t('Land.unavailable.notification.title'),
+                  t('Land.unavailable.notification.subtitle')
+                )
+              }
             }
           }
           setLastSelectedLand(clicked_hex_id)
@@ -174,9 +195,15 @@ const Map = (props) => {
         map.off('click', onClickMap)
       }
     }
-  }, [onMultipleLandSelection, lastSelectedLand, map])
+  }, [onMultipleLandSelection, lastSelectedLand])
 
   useEffect(() => {
+    // console.debug('MAP-COMPONENTS-3', [
+    //   isMapReady,
+    //   onSingleView,
+    //   onMultipleLandSelection,
+    //   multipleLandSelectionList,
+    // ])
     if (isMapReady == true) {
       plotHighZoomPOI()
       if (onMultipleLandSelection == true) {
@@ -193,17 +220,18 @@ const Map = (props) => {
   ])
 
   useEffect(() => {
+    // console.debug('MAP-COMPONENTS-4', [isMapReady])
     if (isMapReady == true) {
-      if (auctionList.length > 0) {
-        // plotAuctions();
-      }
-      // Fetch and render clustered Owned Lands
       renderOwnedLandsCluster()
-      // Fetch and render clustered Open Auctions
-      // Temporary disabled
-      //renderOpenAuctionLandsCluster();
     }
   }, [isMapReady])
+
+  useEffect(() => {
+    // console.debug('MAP-COMPONENTS-5', [hex_id])
+    if (!R.isNil(hex_id) && !R.isEmpty(hex_id)) {
+      addFocusToHexId(hex_id)
+    }
+  }, [mapState.hex_id])
 
   // Functions
   ////////////////////////////////////////////////////////////
@@ -277,11 +305,86 @@ const Map = (props) => {
       if (response.data.result === true) {
         let lands = response.data.lands
         renderHighZoomMintedLands(lands.minted)
+        renderHighZoomUserMintedLands(lands.user.minted)
+
         //renderClosingAuctions(lands.auctionClosing);
         renderHighZoomOngoingAuctions(
           lands.auctionStarted.concat(lands.auctionClosing)
         )
       }
+    })
+  }
+
+  function renderHighZoomUserMintedLands(userExagons) {
+    // Prepare format
+    var data = Object.assign({}, userExagons)
+    var newData = Object.keys(data).reduce(function (obj, key) {
+      obj[data[key]] = Math.random()
+      return obj
+    }, {})
+
+    // Plot hexes
+    const geojson = geojson2h3.h3SetToFeatureCollection(
+      Object.keys(newData),
+      (hex) => ({
+        value: userExagons[hex],
+      })
+    )
+    const sourceId = 'h3-user-interesting-hexes'
+    const layerId = `${sourceId}-user-interesting-layer`
+    let source = map.getSource(sourceId)
+
+    if (!source) {
+      map.addSource(sourceId, {
+        type: 'geojson',
+        data: geojson,
+      })
+      map.addLayer({
+        id: layerId,
+        source: sourceId,
+        type: 'fill',
+        interactive: false,
+        paint: {
+          'fill-outline-color': '#3d948d',
+          'fill-color': 'rgba(73, 182, 174, 0.5)',
+          'fill-opacity': 1,
+        },
+      })
+      source = map.getSource(sourceId)
+    }
+
+    // Update the geojson data
+    source.setData(geojson)
+    // Add markers
+    geojson.features.forEach(function (marker) {
+      // create a DOM element for the marker
+
+      var el = document.createElement('div')
+      el.className = 'sold-marker'
+      el.style.backgroundImage =
+        'url(https://ovr-assets.oss-accelerate.aliyuncs.com/images/owner-label.png)'
+      el.style.width = '53px'
+      el.style.height = '52px'
+
+      map.on('zoom', () => {
+        if (map.getZoom() < 17) {
+          var paras = document.getElementsByClassName('sold-marker')
+
+          while (paras[0]) {
+            paras[0].parentNode.removeChild(paras[0])
+          }
+        }
+      })
+
+      // add marker to map
+      // console.log('marker.geometry.id',marker.id)
+      let coordi = h3.h3ToGeo(marker.id)
+
+      new mapboxgl.Marker(el, {
+        anchor: 'center',
+      })
+        .setLngLat([coordi[1], coordi[0]])
+        .addTo(map)
     })
   }
 
@@ -328,6 +431,7 @@ const Map = (props) => {
     // Add markers
     geojson.features.forEach(function (marker) {
       // create a DOM element for the marker
+
       var el = document.createElement('div')
       el.className = 'sold-marker'
       el.style.backgroundImage =
@@ -600,6 +704,8 @@ const Map = (props) => {
     // Plot graphic point into map
     let singleHexGeojson = geojson2h3.h3ToFeature(hex_id)
 
+    console.debug('focusMapfocusMap', singleHexGeojson)
+
     const selected_sourceId = 'h3-hexes_selected'
     const selected_layerId = `${selected_sourceId}-layer`
     let selected_source = map.getSource(selected_sourceId)
@@ -638,6 +744,17 @@ const Map = (props) => {
     // }
   }
 
+  function addFocusToHexId(hexId) {
+    let hexCenterCoordinates = h3.h3ToGeo(hexId)
+    const selectedSourceId = 'h3-hexes_selected'
+
+    map.flyTo({
+      center: [hexCenterCoordinates[1], hexCenterCoordinates[0]],
+      zoom: 18,
+      speed: 2.2,
+    })
+  }
+
   function plotHighZoomPOI() {
     // Zoom out map // General Map View
     if (onSingleView === false && onMultipleLandSelection === false) {
@@ -654,7 +771,8 @@ const Map = (props) => {
     // View multiple selected Land
     if (
       onMultipleLandSelection === true &&
-      multipleLandSelectionList.length > 0
+      R.length(multipleLandSelectionList) > 0 &&
+      !R.isNil(multipleLandSelectionList)
     ) {
       let featureOfSelectedLands = geojson2h3.h3SetToFeatureCollection(
         multipleLandSelectionList
@@ -778,7 +896,7 @@ const Map = (props) => {
     <>
       {/* <BannerNotification></BannerNotification> */}
       <BannerCounter />
-      <Breadcrumbs />
+      <Breadcrumbs contextState={mapState} />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
         {/* <MapNavigationBox /> */}
@@ -793,4 +911,4 @@ Map.propTypes = {
   props: PropTypes.object,
 }
 
-export default withMapContext(Map)
+export default Map

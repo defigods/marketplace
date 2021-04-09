@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import './style.scss'
-import { MapContext } from '../../context/MapContext'
+import { NewMapContext } from 'context/NewMapContext'
 import { UserContext } from '../../context/UserContext'
 
 import AuctionCard from '../../components/AuctionCard/AuctionCard'
@@ -22,7 +22,8 @@ const Overview = () => {
   const [currentLandPage, setCurrentLandPage] = useState(1)
   const [userAuthenticated, setUserAuthenticated] = useState(true)
 
-  const { actions: mapActions } = useContext(MapContext)
+  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { disableSingleView, changeAuctionList } = actions
   const { state: userState } = useContext(UserContext)
 
   React.useEffect(() => {
@@ -38,7 +39,7 @@ const Overview = () => {
       .then((response) => {
         if (response.data.result === true) {
           // Load Auctions in MapContext
-          mapActions.changeAuctionList(response.data.auctions)
+          changeAuctionList(response.data.auctions)
 
           if (response.data.auctions.length > 0) {
             // Load user data in context store
@@ -221,7 +222,7 @@ const Overview = () => {
   }
 
   useEffect(() => {
-    mapActions.disableSingleView()
+    disableSingleView()
     loadAuctionsByPage()
     loadLandsByPage()
     loadWeb3Transactions()

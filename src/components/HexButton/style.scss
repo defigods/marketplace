@@ -12,6 +12,12 @@
   transition: 350ms all cubic-bezier(0.19, 1, 0.22, 1);
   transform: scale(1);
   text-align: center;
+
+  &.--orange-light {
+    &:hover {
+      text-decoration: none;
+    }
+  }
   &.--small {
     padding: 10px 10px;
     width: fit-content;
@@ -41,17 +47,6 @@
     font-size: 13px;
   }
 }
-
-// .HexButton__text {
-// 	position: absolute;
-// 	font-size: 14px;
-// 	font-weight: 400;
-// 	top: 0px;
-// 	line-height: 35px;
-// 	text-align: center;
-// 	width: 100%;
-// 	color: #fff;
-// }
 
 .HexButton.--purple {
   background-image: linear-gradient(

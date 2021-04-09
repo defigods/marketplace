@@ -71,12 +71,15 @@ body {
 }
 .Land__heading__1 {
   @include column(2/5);
+  margin-bottom: 20px;
 }
 .Land__heading__2 {
   @include column(3/5);
+  margin-bottom: 20px;
 }
 
 .o-container {
+  overflow: hidden;
   margin: 0 auto;
   width: calc(100% - 140px);
   @media only screen and (max-width: bk('desk')) {
@@ -133,7 +136,7 @@ body {
 @import './src/views/Signup/style.scss';
 @import './src/views/ConfirmEmail/style.scss';
 @import './src/views/Profile/style.scss';
-@import './src/views/Activity/style.scss';
+@import './src/views/NotificationView/style.scss';
 @import './src/views/BuyTokens/style.scss';
 @import './src/views/PublicSale/style.scss';
 @import './src/views/Staking/style.scss';
