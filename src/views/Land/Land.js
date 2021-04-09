@@ -38,7 +38,7 @@ import { NewMapContext } from 'context/NewMapContext'
 
 const Land = (props) => {
   const { t } = useTranslation()
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
 
   const {
     changeHexId,

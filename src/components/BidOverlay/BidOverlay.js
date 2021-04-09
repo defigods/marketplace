@@ -22,7 +22,7 @@ import { NewMapContext } from 'context/NewMapContext'
 const BidOverlay = (props) => {
   const { t } = useTranslation()
 
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { changeActiveBidOverlay } = actions
   const { activeBidOverlay } = mapState
 

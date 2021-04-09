@@ -47,7 +47,7 @@ const Overview = () => {
   const [pollingStarted, setPollingStarted] = useState(false)
   const [processCompleted, setProcessCompleted] = useState(false)
 
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { disableSingleView, changeAuctionList } = actions
   const { state: userState } = useContext(UserContext)
 

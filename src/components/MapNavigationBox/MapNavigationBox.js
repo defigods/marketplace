@@ -46,7 +46,7 @@ class CircularList {
 }
 
 const MapNavigationBox = () => {
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { auctionList } = mapState
 
   const items = new CircularList(

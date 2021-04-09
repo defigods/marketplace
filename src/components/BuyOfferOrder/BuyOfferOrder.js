@@ -22,7 +22,7 @@ import { NewMapContext } from 'context/NewMapContext'
 const pathHexId = window.location.pathname.split('/')[3]
 
 const BuyOfferOrder = (props) => {
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { hex_id } = mapState
 
   const [state, setState] = useState({

@@ -12,7 +12,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 const Breadcrumbs = ({ previousLinks, currentPageLabel, className }) => {
   const currentDatetimeStamp = moment().format('HH:mm, dddd, MMM D, YYYY')
 
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
 
   // Clicking Link returning to /map/discover
   const resetSingleLandView = () => {

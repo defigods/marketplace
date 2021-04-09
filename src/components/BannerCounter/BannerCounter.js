@@ -12,7 +12,7 @@ const BannerCounter = () => {
   let history = useHistory()
 
   const [bannerState] = useContext(BannerCounterContext)
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { changeHexId } = actions
 
   const {

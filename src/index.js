@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
@@ -6,13 +6,41 @@ import * as serviceWorker from './serviceWorker'
 
 import { BannerCounterContextProvider } from 'context/BannerCounterContext'
 import { NewMapContextProvider } from 'context/NewMapContext'
+// import { NewUserContextProvider } from 'context/NewUserContext'
 
+import CircularProgress from '@material-ui/core/CircularProgress'
+
+const Preloading = () => {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <CircularProgress color="#2d245b" />
+    </div>
+  )
+}
+
+/* TODO NewUserContextProvider integration
+ Sostituire tutti i posti in cui viene utilizzato il vecchio context, il componente è pronto
+ Prima di procedere andrebbe refactorato prima il Web3 context perchè quest'ultimo ha dipendenze
+ con il UserContext
+*/
 ReactDOM.render(
-  <NewMapContextProvider>
-    <BannerCounterContextProvider>
-      <App />
-    </BannerCounterContextProvider>
-  </NewMapContextProvider>,
+  <Suspense fallback={<Preloading />}>
+    {/* <NewUserContextProvider> */}
+    <NewMapContextProvider>
+      <BannerCounterContextProvider>
+        <App />
+      </BannerCounterContextProvider>
+    </NewMapContextProvider>
+    {/* </NewUserContextProvider> */}
+  </Suspense>,
 
   document.getElementById('root')
 )

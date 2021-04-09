@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import * as h3 from 'h3-js'
@@ -104,7 +104,7 @@ export const NewMapContextProvider = ({ children }) => {
   }
 
   return (
-    <NewMapContext.Provider value={[mapState, setMapState, actions]}>
+    <NewMapContext.Provider value={{ mapState, setMapState, actions }}>
       {children}
     </NewMapContext.Provider>
   )
