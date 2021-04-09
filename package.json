@@ -39,6 +39,7 @@
     "node-sass": "^4.13.1",
     "ramda": "^0.27.1",
     "react": "^16.12.0",
+    "react-actioncable-provider": "^2.0.0",
     "react-blockies": "^1.4.1",
     "react-dom": "^16.12.0",
     "react-ga": "^3.2.1",
