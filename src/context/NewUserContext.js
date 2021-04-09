@@ -326,7 +326,7 @@ export const NewUserContextProvider = ({ children }) => {
   }
 
   return (
-    <NewUserContext.Provider value={[userState, setUserState, actions]}>
+    <NewUserContext.Provider value={{ userState, setUserState, actions }}>
       {children}
     </NewUserContext.Provider>
   )
