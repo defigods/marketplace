@@ -704,8 +704,6 @@ const Map = (props) => {
     // Plot graphic point into map
     let singleHexGeojson = geojson2h3.h3ToFeature(hex_id)
 
-    console.debug('focusMapfocusMap', singleHexGeojson)
-
     const selected_sourceId = 'h3-hexes_selected'
     const selected_layerId = `${selected_sourceId}-layer`
     let selected_source = map.getSource(selected_sourceId)
