@@ -363,7 +363,7 @@ const Overview = () => {
             </div>
           </div>
         </div>
-        <Snackbar open={processCompleted} autoHideDuration={1000}>
+        <Snackbar open={processCompleted}>
           <MuiAlert severity="success" elevation={6} variant="filled">
             {t('Overview.csv.download.success')}
           </MuiAlert>
