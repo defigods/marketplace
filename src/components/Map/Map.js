@@ -31,7 +31,7 @@ let map
 
 const Map = (props) => {
   const { t } = useTranslation()
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const {
     onSingleView,
     onMultipleLandSelection,

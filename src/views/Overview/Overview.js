@@ -22,7 +22,7 @@ const Overview = () => {
   const [currentLandPage, setCurrentLandPage] = useState(1)
   const [userAuthenticated, setUserAuthenticated] = useState(true)
 
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { disableSingleView, changeAuctionList } = actions
   const { state: userState } = useContext(UserContext)
 

@@ -104,7 +104,7 @@ export const NewMapContextProvider = ({ children }) => {
   }
 
   return (
-    <NewMapContext.Provider value={[mapState, setMapState, actions]}>
+    <NewMapContext.Provider value={{ mapState, setMapState, actions }}>
       {children}
     </NewMapContext.Provider>
   )

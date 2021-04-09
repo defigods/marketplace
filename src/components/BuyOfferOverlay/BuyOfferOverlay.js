@@ -27,7 +27,7 @@ tomorrow.setDate(tomorrow.getDate() + 1)
 
 const BuyOfferOverlay = (props) => {
   const { t, i18n } = useTranslation()
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { activeBuyOfferOverlay } = mapState
   const { changeActiveBuyOfferOverlay } = actions
 

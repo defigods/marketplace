@@ -21,7 +21,7 @@ import { NewMapContext } from 'context/NewMapContext'
 
 const Lands = (props) => {
   const { t, i18n } = useTranslation()
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
 
   const {
     enableMultipleLandSelection,
