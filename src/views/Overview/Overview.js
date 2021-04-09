@@ -336,15 +336,17 @@ const Overview = () => {
             <h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
             <Tooltip
               placement="right"
-              title="The CSV reporting process may take a few minutes. To start click the button."
+              title={t('Overview.csv.button.tooltip')}
               arrow
             >
               <div>
-                <HexButton
-                  text="Generate CSV Export"
-                  className="--gray --x-small"
-                  onClick={handleClickGenerateCSV}
-                />
+                {R.length(listLands) > 0 && !R.isNil(listLands) ? (
+                  <HexButton
+                    text={t('Overview.csv.button.title')}
+                    className="--gray --x-small"
+                    onClick={handleClickGenerateCSV}
+                  />
+                ) : null}
               </div>
             </Tooltip>
           </div>
@@ -363,7 +365,7 @@ const Overview = () => {
         </div>
         <Snackbar open={processCompleted} autoHideDuration={1000}>
           <MuiAlert severity="success" elevation={6} variant="filled">
-            CSV Download started
+            {t('Overview.csv.download.success')}
           </MuiAlert>
         </Snackbar>
       </>

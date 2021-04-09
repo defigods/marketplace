@@ -81,6 +81,9 @@
   "Overview.my.ovrlands": "My OVR Lands",
   "Overview.login.required": "You have to log in to visit My Assets",
   "Overview.login.to.browse": "Browse your OVRLands and ongoing Auctions. Login now.",
+  "Overview.csv.button.title": "Generate CSV Export",
+  "Overview.csv.button.tooltip": "The CSV reporting process may take a few minutes. To start click the button.",
+  "Overview.csv.download.success": "CSV Download started",
 
   "Land.closes.label": "Closes",
   "Land.status.label": "Status",
