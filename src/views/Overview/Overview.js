@@ -1,15 +1,34 @@
 import React, { useState, useEffect, useContext } from 'react'
-import './style.scss'
-import { NewMapContext } from 'context/NewMapContext'
-import { UserContext } from '../../context/UserContext'
-
-import AuctionCard from '../../components/AuctionCard/AuctionCard'
-import LandCard from '../../components/LandCard/LandCard'
-
-import { indexMyOpenAuctions, indexMyLands } from '../../lib/api'
-import { networkError } from '../../lib/notifications'
-import Pagination from '@material-ui/lab/Pagination'
+import * as R from 'ramda'
+import moment from 'moment'
 import { Trans, useTranslation } from 'react-i18next'
+import download from 'downloadjs'
+
+import { NewMapContext } from 'context/NewMapContext'
+import { UserContext } from 'context/UserContext'
+
+import {
+  indexMyOpenAuctions,
+  indexMyLands,
+  generateFileUserAuctionsCSV,
+  checkAuctionsFileCSV,
+  getAuctionFileCSV,
+} from 'lib/api'
+import { networkError } from 'lib/notifications'
+import Pagination from '@material-ui/lab/Pagination'
+
+import { generateRandomString, useInterval } from 'utils'
+
+import Snackbar from '@material-ui/core/Snackbar'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Backdrop from '@material-ui/core/Backdrop'
+import Tooltip from '@material-ui/core/Tooltip'
+import MuiAlert from '@material-ui/lab/Alert'
+
+import AuctionCard from 'components/AuctionCard/AuctionCard'
+import LandCard from 'components/LandCard/LandCard'
+import HexButton from 'components/HexButton/HexButton'
+import './style.scss'
 
 const Overview = () => {
   const { t, i18n } = useTranslation()
@@ -21,6 +40,12 @@ const Overview = () => {
   const [numberOfLandPages, setNumberOfLandPages] = useState(0)
   const [currentLandPage, setCurrentLandPage] = useState(1)
   const [userAuthenticated, setUserAuthenticated] = useState(true)
+
+  // Download CSV states
+  const [uniqueKey, setUniqueKey] = useState(generateRandomString())
+  const [CSVGenerationLoading, setCSVGenerationLoading] = useState(false)
+  const [pollingStarted, setPollingStarted] = useState(false)
+  const [processCompleted, setProcessCompleted] = useState(false)
 
   const [mapState, setMapState, actions] = useContext(NewMapContext)
   const { disableSingleView, changeAuctionList } = actions
@@ -105,7 +130,7 @@ const Overview = () => {
                   location={obj.address.full}
                   icon={{ url: './assets/icons/icon_deal.png', isSvg: false }}
                   date_end={obj.auction.closeAt}
-                ></LandCard>
+                />
               ))
             )
             setNumberOfLandPages(response.data.numberOfPages)
@@ -228,42 +253,120 @@ const Overview = () => {
     loadWeb3Transactions()
   }, [userState.ico, userState.ovrsOwned])
 
+  const handleClickGenerateCSV = () => {
+    if (!R.isEmpty(uniqueKey)) {
+      setCSVGenerationLoading(true)
+      // Start
+      generateFileUserAuctionsCSV(uniqueKey).then((resp) => {
+        console.debug('generateFileUserAuctionsCSV.resp', resp)
+        const isResponseTrue = R.path(['data', 'result'], resp) === true
+        console.debug(
+          'generateFileUserAuctionsCSV.isResponseTrue',
+          isResponseTrue
+        )
+        if (isResponseTrue) {
+          setTimeout(() => {
+            setPollingStarted(true)
+          }, 1000)
+        }
+      })
+    }
+  }
+
+  useInterval(async () => {
+    if (pollingStarted) {
+      const auctionFile = await checkAuctionsFileCSV(uniqueKey)
+
+      const isAuctionFileReady =
+        R.pathOr(false, ['data', 'result'], auctionFile) === true
+      console.debug('isAuctionFileReady', isAuctionFileReady)
+
+      if (isAuctionFileReady) {
+        setPollingStarted(false)
+        console.debug('isAuctionFileReady', {
+          isAuctionFileReady,
+          pollingStarted,
+        })
+
+        const csvResp = await getAuctionFileCSV(uniqueKey)
+        const csvString = R.path(['data'], csvResp)
+
+        if (!R.isEmpty(csvString)) {
+          setCSVGenerationLoading(false)
+          setProcessCompleted(true)
+          download(
+            csvString,
+            `MyLands - ${moment().format('HH:mm, dddd, MMM D, YYYY')}.csv`,
+            'text/csv'
+          )
+          setTimeout(() => {
+            setProcessCompleted(false)
+          }, 1000)
+        }
+      }
+    }
+  }, 3000)
+
   let customReturn
 
   if (userAuthenticated) {
     customReturn = (
-      <div className="Overview">
-        <div className="o-container">
-          <h2 className="o-section-title">{t('Overview.auctions.label')}</h2>
-        </div>
-        <div className="o-container">
-          <div className="o-auction-list">{listAuctions}</div>
-          <div className="o-pagination">
-            {numberOfAuctionPages > 1 && (
-              <Pagination
-                count={numberOfAuctionPages}
-                page={currentAuctionPage}
-                onChange={handleAuctionPageClick}
-              />
-            )}
+      <>
+        <div className="Overview">
+          <div className="o-container">
+            <h2 className="o-section-title">{t('Overview.auctions.label')}</h2>
+          </div>
+          <div className="o-container">
+            <div className="o-auction-list">{listAuctions}</div>
+            <div className="o-pagination">
+              {numberOfAuctionPages > 1 && (
+                <Pagination
+                  count={numberOfAuctionPages}
+                  page={currentAuctionPage}
+                  onChange={handleAuctionPageClick}
+                />
+              )}
+            </div>
+          </div>
+          <div className="o-container container-title-my-ovrlands">
+            <Backdrop style={{ zIndex: 2000 }} open={CSVGenerationLoading}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+
+            <h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
+            <Tooltip
+              placement="right"
+              title="The CSV reporting process may take a few minutes. To start click the button."
+              arrow
+            >
+              <div>
+                <HexButton
+                  text="Generate CSV Export"
+                  className="--gray --x-small"
+                  onClick={handleClickGenerateCSV}
+                />
+              </div>
+            </Tooltip>
+          </div>
+          <div className="o-container">
+            <div className="o-land-list">{listLands}</div>
+            <div className="o-pagination">
+              {numberOfLandPages > 1 && (
+                <Pagination
+                  count={numberOfLandPages}
+                  page={currentLandPage}
+                  onChange={handleLandPageClick}
+                />
+              )}
+            </div>
           </div>
         </div>
-        <div className="o-container">
-          <h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
-        </div>
-        <div className="o-container">
-          <div className="o-land-list">{listLands}</div>
-          <div className="o-pagination">
-            {numberOfLandPages > 1 && (
-              <Pagination
-                count={numberOfLandPages}
-                page={currentLandPage}
-                onChange={handleLandPageClick}
-              />
-            )}
-          </div>
-        </div>
-      </div>
+        <Snackbar open={processCompleted} autoHideDuration={1000}>
+          <MuiAlert severity="success" elevation={6} variant="filled">
+            CSV Download started
+          </MuiAlert>
+        </Snackbar>
+      </>
     )
   } else {
     customReturn = (

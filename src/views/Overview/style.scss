@@ -1,0 +1,15 @@
+.container-title-my-ovrlands {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  .MuiCircularProgress-root {
+    color: #ec663c;
+  }
+  h2 {
+    display: inline-block;
+    margin-top: 20px;
+  }
+  .HexButton {
+    margin-left: 25px;
+  }
+}
