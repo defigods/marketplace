@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
-import './style.scss'
-import { NewMapContext } from 'context/NewMapContext'
-import { UserContext } from '../../context/UserContext'
-
-import AuctionCard from '../../components/AuctionCard/AuctionCard'
-import LandCard from '../../components/LandCard/LandCard'
-
-import { indexMyOpenAuctions, indexMyLands } from '../../lib/api'
-import { networkError } from '../../lib/notifications'
-import Pagination from '@material-ui/lab/Pagination'
 import { Trans, useTranslation } from 'react-i18next'
+
+import { NewMapContext } from 'context/NewMapContext'
+import { UserContext } from 'context/UserContext'
+
+import { indexMyOpenAuctions, indexMyLands } from 'lib/api'
+import { networkError } from 'lib/notifications'
+import Pagination from '@material-ui/lab/Pagination'
+
+import AuctionCard from 'components/AuctionCard/AuctionCard'
+import LandCard from 'components/LandCard/LandCard'
+import HexButton from 'components/HexButton/HexButton'
+import './style.scss'
 
 const Overview = () => {
   const { t, i18n } = useTranslation()
@@ -21,6 +23,9 @@ const Overview = () => {
   const [numberOfLandPages, setNumberOfLandPages] = useState(0)
   const [currentLandPage, setCurrentLandPage] = useState(1)
   const [userAuthenticated, setUserAuthenticated] = useState(true)
+
+  // Download CSV states
+  const [uniqueKey, setUniqueKey] = useState('')
 
   const [mapState, setMapState, actions] = useContext(NewMapContext)
   const { disableSingleView, changeAuctionList } = actions
@@ -248,8 +253,14 @@ const Overview = () => {
             )}
           </div>
         </div>
-        <div className="o-container">
+        <div className="o-container container-title-my-ovrlands">
           <h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
+          <HexButton
+            url="/notifications-center"
+            text="Generate CSV Export"
+            className="--orange-light --small"
+            // onClick={hadleClickAllNotifications}
+          />
         </div>
         <div className="o-container">
           <div className="o-land-list">{listLands}</div>
