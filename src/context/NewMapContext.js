@@ -10,7 +10,7 @@ export const NewMapContextProvider = ({ children }) => {
   const [mapState, setMapState] = useState({
     onSingleView: false,
     hex_id: null,
-    integer_id: 632776805293768200,
+    integer_id: null,
     isAuction: false,
     isUserRelated: false,
     activeBidOverlay: false,
@@ -34,6 +34,15 @@ export const NewMapContextProvider = ({ children }) => {
         isAuction: true,
       }))
     }
+  }
+
+  const resetHexId = () => {
+    setMapState((s) => ({
+      ...s,
+      hex_id: null,
+      integer_id: null,
+      landData: {},
+    }))
   }
 
   const enableMultipleLandSelection = () => {
@@ -89,6 +98,7 @@ export const NewMapContextProvider = ({ children }) => {
 
   const actions = {
     changeHexId,
+    resetHexId,
     enableMultipleLandSelection,
     disableMultipleLandSelection,
     disableSingleView,

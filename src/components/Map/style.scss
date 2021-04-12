@@ -9,6 +9,16 @@
   position: relative;
   box-shadow: -10px 10px 20px 0 rgba(30, 30, 30, 0.03);
 
+  .mapboxgl-ctrl-attrib-inner {
+    display: none;
+  }
+
+  .set-multiple-land-selection-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 2px 10px;
+  }
   .map-navigation-box {
     width: 20rem;
     display: inline-flex;

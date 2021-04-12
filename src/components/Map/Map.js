@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import * as R from 'ramda'
 
 import PropTypes from 'prop-types'
@@ -25,11 +26,14 @@ import _ from 'lodash'
 
 import { NewMapContext } from 'context/NewMapContext'
 
+import HexButton from 'components/HexButton/HexButton'
+
 import { useTranslation } from 'react-i18next'
 
 let map
 
 const Map = (props) => {
+  let history = useHistory()
   const { t } = useTranslation()
   const { mapState, setMapState, actions } = useContext(NewMapContext)
   const {
@@ -43,7 +47,7 @@ const Map = (props) => {
   const [lastSelectedLand, setLastSelectedLand] = useState(null)
   const [isMapReady, setIsMapReady] = useState(false)
 
-  const { changeMultipleLandSelectionList } = actions
+  const { changeMultipleLandSelectionList, changeHexId } = actions
 
   // Effect []
   useEffect(() => {
@@ -183,6 +187,9 @@ const Map = (props) => {
                 )
               }
             }
+          } else {
+            changeHexId(clicked_hex_id)
+            console.debug('CLICKEEEDDD', { clicked_hex_id, lastSelectedLand })
           }
           setLastSelectedLand(clicked_hex_id)
         }
@@ -897,6 +904,15 @@ const Map = (props) => {
       <Breadcrumbs contextState={mapState} />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
+        {!onSingleView || onMultipleLandSelection ? null : (
+          <HexButton
+            url="#"
+            text={t('Lands.select.multiple.lands')}
+            className="HexButton --gray --x-small set-multiple-land-selection-button"
+            onClick={() => history.push('/map/lands')}
+          />
+        )}
+
         {/* <MapNavigationBox /> */}
       </div>
     </>
