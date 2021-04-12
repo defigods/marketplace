@@ -13,7 +13,7 @@ export const BannerCounterContextProvider = ({ children }) => {
     highestBidHexId: 0,
     highestBidWorth: 0,
     cashbackAuctionCount: 0,
-    minimal: true,
+    minimal: false,
   })
 
   const setUpTotals = () => {
