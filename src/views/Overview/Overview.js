@@ -14,10 +14,12 @@ import {
   checkAuctionsFileCSV,
   getAuctionFileCSV,
 } from 'lib/api'
-import { networkError } from 'lib/notifications'
+import { networkError, dangerNotification } from 'lib/notifications'
 import Pagination from '@material-ui/lab/Pagination'
 
 import { generateRandomString, useInterval } from 'utils'
+
+import config from 'lib/config'
 
 import Snackbar from '@material-ui/core/Snackbar'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -259,20 +261,24 @@ const Overview = () => {
     if (!R.isEmpty(uniqueKey)) {
       setCSVGenerationLoading(true)
       // Start
-      generateFileUserAuctionsCSV(uniqueKey).then((resp) => {
-        console.debug('generateFileUserAuctionsCSV.resp', resp)
-        const isResponseTrue =
-          R.pathOr(false, ['data', 'result'], resp) === true
-        console.debug(
-          'generateFileUserAuctionsCSV.isResponseTrue',
-          isResponseTrue
-        )
-        if (isResponseTrue) {
-          setTimeout(() => {
-            setPollingStarted(true)
-          }, 1000)
-        }
-      })
+      try {
+        generateFileUserAuctionsCSV(uniqueKey).then((resp) => {
+          console.debug('generateFileUserAuctionsCSV.resp', resp)
+          const isResponseTrue =
+            R.pathOr(false, ['data', 'result'], resp) === true
+          console.debug(
+            'generateFileUserAuctionsCSV.isResponseTrue',
+            isResponseTrue
+          )
+          if (isResponseTrue) {
+            setTimeout(() => {
+              setPollingStarted(true)
+            }, 1000)
+          }
+        })
+      } catch (error) {
+        dangerNotification('Download CSV Error', error)
+      }
     }
   }
 
@@ -291,17 +297,26 @@ const Overview = () => {
           pollingStarted,
         })
 
-        const csvResp = await getAuctionFileCSV(uniqueKey)
-        const csvString = R.path(['data'], csvResp)
+        // const csvResp = await getAuctionFileCSV(uniqueKey)
+        // const csvString = R.path(['data'], csvResp)
 
-        if (!R.isEmpty(csvString)) {
-          setCSVGenerationLoading(false)
-          setProcessCompleted(true)
-          fileDownload(csvString, `MyLands - ${currentDate}.csv`)
-          setTimeout(() => {
-            setProcessCompleted(false)
-          }, 1000)
-        }
+        // if (!R.isEmpty(csvString)) {
+        setCSVGenerationLoading(false)
+        setProcessCompleted(true)
+        //   fileDownload(csvString, `MyLands - ${currentDate}.csv`)
+
+        const alink = document.createElement('a')
+        alink.setAttribute('download', true)
+
+        alink.href = `${config.apis.hostname}/csv-report/get-file?unique_key=${uniqueKey}`
+        alink.target = '_blank'
+
+        alink.click()
+
+        setTimeout(() => {
+          setProcessCompleted(false)
+        }, 1000)
+        // }
       }
     }
   }, 3000)
