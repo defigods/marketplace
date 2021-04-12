@@ -904,12 +904,20 @@ const Map = (props) => {
       <Breadcrumbs contextState={mapState} />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
-        {!onSingleView || onMultipleLandSelection ? null : (
+        {!onSingleView ? null : (
           <HexButton
             url="#"
-            text={t('Lands.select.multiple.lands')}
+            text={
+              onMultipleLandSelection
+                ? t('Lands.exit.multiple.lands')
+                : t('Lands.select.multiple.lands')
+            }
             className="HexButton --gray --x-small set-multiple-land-selection-button"
-            onClick={() => history.push('/map/lands')}
+            onClick={
+              onMultipleLandSelection
+                ? () => history.push('map/discover')
+                : () => history.push('/map/lands')
+            }
           />
         )}
 

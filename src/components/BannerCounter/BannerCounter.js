@@ -20,9 +20,6 @@ import arrow from 'assets/img/arrow.svg'
 const BannerCounter = () => {
   const { state, actions: web3Actions } = useContext(Web3Context)
   const { ibcoCurrentOvrPrice } = state
-  const { getUSDValueInOvr } = web3Actions
-
-  console.debug('ibcoCurrentOvrPrice', ibcoCurrentOvrPrice)
 
   const { t } = useTranslation()
   let history = useHistory()

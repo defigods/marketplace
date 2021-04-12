@@ -440,6 +440,7 @@
   "Profile.ovr.profile.desc": "Why we need this: OVR will use your e-mail as primary means to contact you in case other users are interested in buying or renting OVRLands you own.",
   "Success.request.processing": "Your order request is being processed",
   "Lands.select.multiple.lands": "Multiple land selection",
+  "Lands.exit.multiple.lands": "Exit Multiple Selection",
   "IBCO.max.slippage.reached": "Maximum slippage reached",
   "IBCO.double.claim": "Claim above Order",
   "IBCO.double.claim.tooltip": "Orders are claimed by Batch ID, claiming the above Order will automatically include the sum of all other orders in the same Batch",
