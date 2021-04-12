@@ -13,10 +13,16 @@
     display: none;
   }
 
+  .mapboxgl-ctrl-bottom-left {
+    bottom: 0;
+    right: 10px;
+    left: inherit;
+  }
+
   .set-multiple-land-selection-button {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    left: 10px;
     padding: 2px 10px;
   }
   .map-navigation-box {

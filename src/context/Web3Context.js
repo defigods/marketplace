@@ -69,7 +69,7 @@ export class Web3Provider extends Component {
       gasLandCost: 0,
       perEth: 0,
       perUsd: 0,
-      ibcoCurrentOvrPrice: 0.06,
+      ibcoCurrentOvrPrice: null,
       lastTransaction: '0x0',
       ibcoOpenBuyOrders: [],
       ibcoOpenSellOrders: [],
@@ -694,6 +694,7 @@ export class Web3Provider extends Component {
     let priceOvr = parseFloat(
       ethers.utils.formatEther(price1).toString()
     ).toFixed(3)
+
     this.setState({
       ibcoCurrentOvrPrice: priceOvr,
     })
@@ -1113,7 +1114,7 @@ export class Web3Provider extends Component {
     getGasPrice().then((response) => {
       if (response.data.result === true) {
         if (response.data.landGasCost) {
-					this.setGasLandCost(response.data.landGasCost)
+          this.setGasLandCost(response.data.landGasCost)
         }
       }
     })
@@ -1221,7 +1222,7 @@ export class Web3Provider extends Component {
       if (response.data.result === true) {
         // Save data in store
         this.context.actions.loginUser(response.data.token, response.data.user)
-				this.setGasLandCost(response.data.gas.landGasCost)
+        this.setGasLandCost(response.data.gas.landGasCost)
 
         if (callback) {
           callback()
@@ -1235,9 +1236,9 @@ export class Web3Provider extends Component {
     })
   }
 
-	setGasLandCost = (value) => {
-		this.setState({ gasLandCost: value.toFixed(2) })
-	}
+  setGasLandCost = (value) => {
+    this.setState({ gasLandCost: value.toFixed(2) })
+  }
 
   render() {
     return (
@@ -1254,7 +1255,7 @@ export class Web3Provider extends Component {
             calculateCustomSellPrice: this.calculateCustomSellPrice,
             calculateCustomBuySlippage: this.calculateCustomBuySlippage,
             calculateCustomSellSlippage: this.calculateCustomSellSlippage,
-						setGasLandCost: this.setGasLandCost
+            setGasLandCost: this.setGasLandCost,
           },
         }}
       >
