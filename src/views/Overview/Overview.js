@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import * as R from 'ramda'
 import moment from 'moment'
 import { Trans, useTranslation } from 'react-i18next'
-import download from 'downloadjs'
+import fileDownload from 'js-file-download'
 
 import { NewMapContext } from 'context/NewMapContext'
 import { UserContext } from 'context/UserContext'
@@ -29,6 +29,8 @@ import AuctionCard from 'components/AuctionCard/AuctionCard'
 import LandCard from 'components/LandCard/LandCard'
 import HexButton from 'components/HexButton/HexButton'
 import './style.scss'
+
+const currentDate = moment().format('HH:mm, dddd, MMM D, YYYY')
 
 const Overview = () => {
   const { t, i18n } = useTranslation()
@@ -259,7 +261,8 @@ const Overview = () => {
       // Start
       generateFileUserAuctionsCSV(uniqueKey).then((resp) => {
         console.debug('generateFileUserAuctionsCSV.resp', resp)
-        const isResponseTrue = R.path(['data', 'result'], resp) === true
+        const isResponseTrue =
+          R.pathOr(false, ['data', 'result'], resp) === true
         console.debug(
           'generateFileUserAuctionsCSV.isResponseTrue',
           isResponseTrue
@@ -294,11 +297,7 @@ const Overview = () => {
         if (!R.isEmpty(csvString)) {
           setCSVGenerationLoading(false)
           setProcessCompleted(true)
-          download(
-            csvString,
-            `MyLands - ${moment().format('HH:mm, dddd, MMM D, YYYY')}.csv`,
-            'text/csv'
-          )
+          fileDownload(csvString, `MyLands - ${currentDate}.csv`)
           setTimeout(() => {
             setProcessCompleted(false)
           }, 1000)
