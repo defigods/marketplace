@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-use-before-define */
 import React, { useState, useEffect, useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { withUserContext } from 'context/UserContext'
 import { withWeb3Context } from 'context/Web3Context'
 import ValueCounter from 'components/ValueCounter/ValueCounter'
@@ -15,6 +16,8 @@ import BuyOfferOrder from 'components/BuyOfferOrder/BuyOfferOrder'
 import BuyLandOverlay from 'components/BuyLandOverlay/BuyLandOverlay'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { warningNotification } from 'lib/notifications'
+
+import { useHistory } from 'react-router-dom'
 
 import {
   getLand,
@@ -37,6 +40,7 @@ import { checkToken } from 'lib/auth'
 import { NewMapContext } from 'context/NewMapContext'
 
 const Land = (props) => {
+  let history = useHistory()
   const { t } = useTranslation()
   const { mapState, setMapState, actions } = useContext(NewMapContext)
 
@@ -48,6 +52,9 @@ const Land = (props) => {
     changeActiveSellOverlay,
     changeActiveBuyOverlay,
     changeActiveBuyOfferOverlay,
+    enableMultipleLandSelection,
+    disableSingleView,
+    resetHexId,
   } = actions
 
   const { getOffersToBuyLand, getUSDValueInOvr } = props.web3Provider.actions
@@ -605,6 +612,13 @@ const Land = (props) => {
     } else return null
   }
 
+  const handleMultipleLandSelectionClick = () => {
+    resetHexId()
+    resetMultipleLandSelectionList()
+    disableSingleView()
+    enableMultipleLandSelection()
+  }
+
   function renderBidHistory() {
     if (auction === null || auction.bidHistory.length === 0) {
       return (
@@ -641,42 +655,44 @@ const Land = (props) => {
       )
     } else {
       return (
-        <div className="o-container">
-          <div className="Title__container">
-            <h3 className="o-small-title">{t('Land.bid.history')}</h3>
-          </div>
-          <div className="Table__container">
-            <table className="Table">
-              <thead>
-                <tr>
-                  <th>{t('Land.price.label')}</th>
-                  <th>{t('Land.when.label')}</th>
-                  <th>{t('Land.from.label')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {auction.bidHistory.map((bid) => (
-                  <tr key={bid.when} className="Table__line">
-                    <td>
-                      <ValueCounter value={bid.worth}></ValueCounter>{' '}
-                    </td>
-                    <td>
-                      <TimeCounter date_end={bid.when}></TimeCounter>
-                    </td>
-                    <td>{bid.from}</td>
-                    {bid.status === '-99' && (
-                      <td>
-                        <div className="c-status-badge  --outbidded">
-                          FAILED
-                        </div>
-                      </td>
-                    )}
+        <>
+          <div className="o-container">
+            <div className="Title__container">
+              <h3 className="o-small-title">{t('Land.bid.history')}</h3>
+            </div>
+            <div className="Table__container">
+              <table className="Table">
+                <thead>
+                  <tr>
+                    <th>{t('Land.price.label')}</th>
+                    <th>{t('Land.when.label')}</th>
+                    <th>{t('Land.from.label')}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {auction.bidHistory.map((bid) => (
+                    <tr key={bid.when} className="Table__line">
+                      <td>
+                        <ValueCounter value={bid.worth}></ValueCounter>{' '}
+                      </td>
+                      <td>
+                        <TimeCounter date_end={bid.when}></TimeCounter>
+                      </td>
+                      <td>{bid.from}</td>
+                      {bid.status === '-99' && (
+                        <td>
+                          <div className="c-status-badge  --outbidded">
+                            FAILED
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </>
       )
     }
   }
@@ -741,79 +757,81 @@ const Land = (props) => {
     let custom_return
     if (isNotValidH3 == false) {
       custom_return = (
-        <div className="Land">
-          <BidOverlay
-            currentBid={value}
-            land={{
-              hexId: hexId,
-              marketStatus: marketStatus,
-              name: name,
-              location: location,
-            }}
-            auction={auction}
-          ></BidOverlay>
-          <MintOverlay
-            currentBid={value}
-            land={{
-              hexId: hexId,
-              marketStatus: marketStatus,
-              name: name,
-              location: location,
-            }}
-          ></MintOverlay>
-          <SellOverlay
-            currentBid={value}
-            land={{
-              hexId: hexId,
-              marketStatus: marketStatus,
-              name: name,
-              location: location,
-            }}
-          ></SellOverlay>
-          <BuyOfferOverlay
-            currentBid={value}
-            land={{
-              hexId: hexId,
-              marketStatus: marketStatus,
-              name: name,
-              location: location,
-            }}
-          ></BuyOfferOverlay>
-          <BuyLandOverlay
-            currentBid={value}
-            land={{
-              hexId: hexId,
-              marketStatus: marketStatus,
-              name: name,
-              location: location,
-            }}
-          ></BuyLandOverlay>
+        <>
+          <div className="Land">
+            <BidOverlay
+              currentBid={value}
+              land={{
+                hexId: hexId,
+                marketStatus: marketStatus,
+                name: name,
+                location: location,
+              }}
+              auction={auction}
+            ></BidOverlay>
+            <MintOverlay
+              currentBid={value}
+              land={{
+                hexId: hexId,
+                marketStatus: marketStatus,
+                name: name,
+                location: location,
+              }}
+            ></MintOverlay>
+            <SellOverlay
+              currentBid={value}
+              land={{
+                hexId: hexId,
+                marketStatus: marketStatus,
+                name: name,
+                location: location,
+              }}
+            ></SellOverlay>
+            <BuyOfferOverlay
+              currentBid={value}
+              land={{
+                hexId: hexId,
+                marketStatus: marketStatus,
+                name: name,
+                location: location,
+              }}
+            ></BuyOfferOverlay>
+            <BuyLandOverlay
+              currentBid={value}
+              land={{
+                hexId: hexId,
+                marketStatus: marketStatus,
+                name: name,
+                location: location,
+              }}
+            ></BuyLandOverlay>
 
-          <div className="o-container">
-            <div className="Land__heading__1">
-              <h2>
-                <span className="--nft-id">NFT ID: {integerId}</span>
-                <Textfit mode="single" max={25}>
-                  {name.sentence}
-                </Textfit>
-              </h2>
-              <div className="Land__location">{location}</div>
-            </div>
-            <div className="Land__heading__2">
-              <div className="o-fourth">
-                <LandPrice price={value} />
+            <div className="o-container">
+              <div className="Land__heading__1">
+                <h2>
+                  <span className="--nft-id">NFT ID: {integerId}</span>
+                  <Textfit mode="single" max={25}>
+                    {name.sentence}
+                  </Textfit>
+                </h2>
+                <div className="Land__location">{location}</div>
               </div>
-              <div className="o-fourth">{renderTimer()}</div>
-              <div className="o-fourth">{renderBadge()}</div>
-              <div className="o-fourth">
-                {renderVisitOnEtherscan()}
-                {renderOverlayButton()}
+              <div className="Land__heading__2">
+                <div className="o-fourth">
+                  <LandPrice price={value} />
+                </div>
+                <div className="o-fourth">{renderTimer()}</div>
+                <div className="o-fourth">{renderBadge()}</div>
+                <div className="o-fourth">
+                  {renderVisitOnEtherscan()}
+                  {renderOverlayButton()}
+                </div>
               </div>
             </div>
+            {/*  */}
+            <div className="Land__section">{renderBidHistory()}</div>
           </div>
-          {/*  */}
-          <div className="Land__section">{renderBidHistory()}</div>
-        </div>
+        </>
       )
     } else {
       custom_return = (
