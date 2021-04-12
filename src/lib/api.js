@@ -30,6 +30,19 @@ export function signIn(publicAddress, singedNonce) {
   )
 }
 
+/**
+ * @function signInToken
+ * @param {*}
+ */
+ export function signInToken(token) {
+  console.log('signIn')
+  return request(
+    { url: '/authentication/login-token', method: 'POST' },
+    { token: token },
+    null
+  )
+}
+
 export function getUserNonce(publicAddress) {
   return request(
     { url: '/user/nonce', method: 'GET' },

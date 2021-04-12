@@ -11,6 +11,7 @@ import Lands from './views/Lands/Lands'
 import Profile from './views/Profile/Profile'
 import NotificationView from './views/NotificationView/NotificationView'
 import Login from './views/Login/Login'
+import LoginToken from './views/LoginToken/LoginToken'
 import LoginHelper from './views/LoginHelper/LoginHelper'
 import Signup from './views/Signup/Signup'
 import BuyTokens from './views/BuyTokens/BuyTokens'
@@ -136,6 +137,7 @@ function App() {
                                 component={NotificationView}
                               />
                               <Route path="/login" component={Login} />
+															<Route path="/login-token/:token" component={LoginToken} />
                               <Route
                                 path="/login-helper"
                                 component={LoginHelper}

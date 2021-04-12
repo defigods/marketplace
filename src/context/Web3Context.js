@@ -1113,7 +1113,7 @@ export class Web3Provider extends Component {
     getGasPrice().then((response) => {
       if (response.data.result === true) {
         if (response.data.landGasCost) {
-          this.setState({ gasLandCost: response.data.landGasCost.toFixed(2) })
+					this.setGasLandCost(response.data.landGasCost)
         }
       }
     })
@@ -1221,7 +1221,7 @@ export class Web3Provider extends Component {
       if (response.data.result === true) {
         // Save data in store
         this.context.actions.loginUser(response.data.token, response.data.user)
-        this.setState({ gasLandCost: response.data.gas.landGasCost.toFixed(2) })
+				this.setGasLandCost(response.data.gas.landGasCost)
 
         if (callback) {
           callback()
@@ -1234,6 +1234,10 @@ export class Web3Provider extends Component {
       }
     })
   }
+
+	setGasLandCost = (value) => {
+		this.setState({ gasLandCost: value.toFixed(2) })
+	}
 
   render() {
     return (
@@ -1250,6 +1254,7 @@ export class Web3Provider extends Component {
             calculateCustomSellPrice: this.calculateCustomSellPrice,
             calculateCustomBuySlippage: this.calculateCustomBuySlippage,
             calculateCustomSellSlippage: this.calculateCustomSellSlippage,
+						setGasLandCost: this.setGasLandCost
           },
         }}
       >
