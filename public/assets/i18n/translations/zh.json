@@ -349,6 +349,7 @@
   "Warning.no.lands.title": "没有土地可购买",
   "Warning.no.ovrtokens.desc": "你没有足够的 OVR tokens",
   "Lands.select.multiple.lands": "选择多个土地",
+  "Lands.exit.multiple.lands": "退出土地选择",
   "IBCO.max.slippage.reached": "达到的最大滑点",
   "Auctions.allowance": "允许参与土地拍卖的额度",
   "Auctions.allowance.increment": "增加参与竞拍的最高限额",

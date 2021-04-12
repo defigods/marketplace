@@ -915,7 +915,7 @@ const Map = (props) => {
             className="HexButton --gray --x-small set-multiple-land-selection-button"
             onClick={
               onMultipleLandSelection
-                ? () => history.push('map/discover')
+                ? () => history.push('/map/discover')
                 : () => history.push('/map/lands')
             }
           />
