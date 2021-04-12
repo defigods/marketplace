@@ -43,7 +43,7 @@ const Map = (props) => {
   const [lastSelectedLand, setLastSelectedLand] = useState(null)
   const [isMapReady, setIsMapReady] = useState(false)
 
-  const { changeMultipleLandSelectionList } = actions
+  const { changeMultipleLandSelectionList, changeHexId } = actions
 
   // Effect []
   useEffect(() => {
@@ -183,6 +183,9 @@ const Map = (props) => {
                 )
               }
             }
+          } else {
+            changeHexId(clicked_hex_id)
+            console.debug('CLICKEEEDDD', { clicked_hex_id, lastSelectedLand })
           }
           setLastSelectedLand(clicked_hex_id)
         }
