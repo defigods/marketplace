@@ -70,6 +70,10 @@
   "Home.home.label": "主页",
   "Discover.no.auctions.open": "目前没有 <1>OPEN</1> 拍卖",
   "Overview.no.auctions.open": "目前没有 <1>OPEN</1> 拍卖",
+  "Overview.csv.button.title": "生成CSV输出文档",
+  "Overview.csv.button.tooltip": "生成CSV文档可能需要几分钟时间，点击按钮开始",
+  "Overview.csv.download.success": "CSV文档开始下载",
+
   "Discover.browse.lands": "查看浏览OVR土地：现在可以查询某个地点或者点击地图上的某个点来购买土地",
   "Discover.no.lands": "目前没有可以显示的土地",
   "Discover.browse.available": "查看可供拍卖的OVR土地: 现在就购买这块土地.",

@@ -545,6 +545,28 @@ export function getCachedCirculatingSupply() {
   return request({ url: '/cached/circulating_supply', method: 'GET' }, {}, null)
 }
 
+// Download CSV Auctions
+export function generateFileUserAuctionsCSV(key) {
+  return request(
+    { url: '/csv-report/generate-file-user-auctions', method: 'GET' },
+    { unique_key: key }
+  )
+}
+
+export function checkAuctionsFileCSV(key) {
+  return request(
+    { url: '/csv-report/check-file', method: 'GET' },
+    { unique_key: key }
+  )
+}
+
+export function getAuctionFileCSV(key) {
+  return request(
+    { url: '/csv-report/get-file', method: 'GET' },
+    { unique_key: key }
+  )
+}
+
 // GENERAL REQUEST
 // ----------------------------------------------------------------------------------------
 

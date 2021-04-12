@@ -95,14 +95,14 @@ const NotificationCenterContent = () => {
       </div>
       <div className="NotificationCenter__body">{renderNotifications()}</div>
       <div className="NotificationCenter__footer">
-        <Link to={'#'} onClick={setAllAsReaded}>
+        <Link to={'#'} onClick={setAllAsReaded} className="mark-all-link">
           {t('NotificationCenter.mark.all')}
         </Link>
 
         <HexButton
           url="/notifications-center"
           text={t('NotificationCenter.view.all')}
-          className="--orange-light --small"
+          className="--gray --x-small"
           onClick={hadleClickAllNotifications}
         />
       </div>

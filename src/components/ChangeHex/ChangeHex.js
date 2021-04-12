@@ -5,7 +5,7 @@ import { NewMapContext } from 'context/NewMapContext'
 
 const ChangeHex = (props) => {
   const { t, i18n } = useTranslation()
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { changeHexId } = actions
 
   const [hex, setHex] = useState('')

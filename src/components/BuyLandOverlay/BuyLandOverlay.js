@@ -20,7 +20,7 @@ import { NewMapContext } from 'context/NewMapContext'
 
 const BuyLandOverlay = (props) => {
   const { t, i18n } = useTranslation()
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { activeBuyOverlay } = mapState
   const { changeActiveBuyOverlay } = actions
 

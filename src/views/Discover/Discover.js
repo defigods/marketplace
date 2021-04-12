@@ -25,7 +25,7 @@ const Discover = (props) => {
   const [numberOfLandPages, setNumberOfLandPages] = useState(0)
   const [currentLandPage, setCurrentLandPage] = useState(1)
 
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { changeAuctionList, disableSingleView } = actions
 
   function loadAuctionsByPage(page) {

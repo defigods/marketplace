@@ -1,15 +1,38 @@
 import React, { useState, useEffect, useContext } from 'react'
-import './style.scss'
-import { NewMapContext } from 'context/NewMapContext'
-import { UserContext } from '../../context/UserContext'
-
-import AuctionCard from '../../components/AuctionCard/AuctionCard'
-import LandCard from '../../components/LandCard/LandCard'
-
-import { indexMyOpenAuctions, indexMyLands } from '../../lib/api'
-import { networkError } from '../../lib/notifications'
-import Pagination from '@material-ui/lab/Pagination'
+import * as R from 'ramda'
+import moment from 'moment'
 import { Trans, useTranslation } from 'react-i18next'
+import fileDownload from 'js-file-download'
+
+import { NewMapContext } from 'context/NewMapContext'
+import { UserContext } from 'context/UserContext'
+
+import {
+  indexMyOpenAuctions,
+  indexMyLands,
+  generateFileUserAuctionsCSV,
+  checkAuctionsFileCSV,
+  getAuctionFileCSV,
+} from 'lib/api'
+import { networkError, dangerNotification } from 'lib/notifications'
+import Pagination from '@material-ui/lab/Pagination'
+
+import { generateRandomString, useInterval } from 'utils'
+
+import config from 'lib/config'
+
+import Snackbar from '@material-ui/core/Snackbar'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import Backdrop from '@material-ui/core/Backdrop'
+import Tooltip from '@material-ui/core/Tooltip'
+import MuiAlert from '@material-ui/lab/Alert'
+
+import AuctionCard from 'components/AuctionCard/AuctionCard'
+import LandCard from 'components/LandCard/LandCard'
+import HexButton from 'components/HexButton/HexButton'
+import './style.scss'
+
+const currentDate = moment().format('HH:mm, dddd, MMM D, YYYY')
 
 const Overview = () => {
   const { t, i18n } = useTranslation()
@@ -22,7 +45,13 @@ const Overview = () => {
   const [currentLandPage, setCurrentLandPage] = useState(1)
   const [userAuthenticated, setUserAuthenticated] = useState(true)
 
-  const [mapState, setMapState, actions] = useContext(NewMapContext)
+  // Download CSV states
+  const [uniqueKey, setUniqueKey] = useState(generateRandomString())
+  const [CSVGenerationLoading, setCSVGenerationLoading] = useState(false)
+  const [pollingStarted, setPollingStarted] = useState(false)
+  const [processCompleted, setProcessCompleted] = useState(false)
+
+  const { mapState, setMapState, actions } = useContext(NewMapContext)
   const { disableSingleView, changeAuctionList } = actions
   const { state: userState } = useContext(UserContext)
 
@@ -105,7 +134,7 @@ const Overview = () => {
                   location={obj.address.full}
                   icon={{ url: './assets/icons/icon_deal.png', isSvg: false }}
                   date_end={obj.auction.closeAt}
-                ></LandCard>
+                />
               ))
             )
             setNumberOfLandPages(response.data.numberOfPages)
@@ -228,42 +257,132 @@ const Overview = () => {
     loadWeb3Transactions()
   }, [userState.ico, userState.ovrsOwned])
 
+  const handleClickGenerateCSV = () => {
+    if (!R.isEmpty(uniqueKey)) {
+      setCSVGenerationLoading(true)
+      // Start
+      try {
+        generateFileUserAuctionsCSV(uniqueKey).then((resp) => {
+          console.debug('generateFileUserAuctionsCSV.resp', resp)
+          const isResponseTrue =
+            R.pathOr(false, ['data', 'result'], resp) === true
+          console.debug(
+            'generateFileUserAuctionsCSV.isResponseTrue',
+            isResponseTrue
+          )
+          if (isResponseTrue) {
+            setTimeout(() => {
+              setPollingStarted(true)
+            }, 1000)
+          }
+        })
+      } catch (error) {
+        dangerNotification('Download CSV Error', error)
+      }
+    }
+  }
+
+  useInterval(async () => {
+    if (pollingStarted) {
+      const auctionFile = await checkAuctionsFileCSV(uniqueKey)
+
+      const isAuctionFileReady =
+        R.pathOr(false, ['data', 'result'], auctionFile) === true
+      console.debug('isAuctionFileReady', isAuctionFileReady)
+
+      if (isAuctionFileReady) {
+        setPollingStarted(false)
+        console.debug('isAuctionFileReady', {
+          isAuctionFileReady,
+          pollingStarted,
+        })
+
+        // const csvResp = await getAuctionFileCSV(uniqueKey)
+        // const csvString = R.path(['data'], csvResp)
+
+        // if (!R.isEmpty(csvString)) {
+        setCSVGenerationLoading(false)
+        setProcessCompleted(true)
+        //   fileDownload(csvString, `MyLands - ${currentDate}.csv`)
+
+        const alink = document.createElement('a')
+        alink.setAttribute('download', true)
+
+        alink.href = `${config.apis.hostname}/csv-report/get-file?unique_key=${uniqueKey}`
+        alink.target = '_blank'
+
+        alink.click()
+
+        setTimeout(() => {
+          setProcessCompleted(false)
+        }, 1000)
+        // }
+      }
+    }
+  }, 3000)
+
   let customReturn
 
   if (userAuthenticated) {
     customReturn = (
-      <div className="Overview">
-        <div className="o-container">
-          <h2 className="o-section-title">{t('Overview.auctions.label')}</h2>
-        </div>
-        <div className="o-container">
-          <div className="o-auction-list">{listAuctions}</div>
-          <div className="o-pagination">
-            {numberOfAuctionPages > 1 && (
-              <Pagination
-                count={numberOfAuctionPages}
-                page={currentAuctionPage}
-                onChange={handleAuctionPageClick}
-              />
-            )}
+      <>
+        <div className="Overview">
+          <div className="o-container">
+            <h2 className="o-section-title">{t('Overview.auctions.label')}</h2>
+          </div>
+          <div className="o-container">
+            <div className="o-auction-list">{listAuctions}</div>
+            <div className="o-pagination">
+              {numberOfAuctionPages > 1 && (
+                <Pagination
+                  count={numberOfAuctionPages}
+                  page={currentAuctionPage}
+                  onChange={handleAuctionPageClick}
+                />
+              )}
+            </div>
+          </div>
+          <div className="o-container container-title-my-ovrlands">
+            <Backdrop style={{ zIndex: 2000 }} open={CSVGenerationLoading}>
+              <CircularProgress color="inherit" />
+            </Backdrop>
+
+            <h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
+            <Tooltip
+              placement="right"
+              title={t('Overview.csv.button.tooltip')}
+              arrow
+            >
+              <div>
+                {R.length(listLands) > 0 && !R.isNil(listLands) ? (
+                  <HexButton
+                    text={t('Overview.csv.button.title')}
+                    className="--gray --x-small"
+                    onClick={handleClickGenerateCSV}
+                  />
+                ) : null}
+              </div>
+            </Tooltip>
+          </div>
+          <div className="o-container">
+            <div className="o-land-list">{listLands}</div>
+            <div className="o-pagination">
+              {numberOfLandPages > 1 && (
+                <Pagination
+                  count={numberOfLandPages}
+                  page={currentLandPage}
+                  onChange={handleLandPageClick}
+                />
+              )}
+            </div>
           </div>
         </div>
-        <div className="o-container">
-          <h2 className="o-section-title">{t('Overview.my.ovrlands')}</h2>
-        </div>
-        <div className="o-container">
-          <div className="o-land-list">{listLands}</div>
-          <div className="o-pagination">
-            {numberOfLandPages > 1 && (
-              <Pagination
-                count={numberOfLandPages}
-                page={currentLandPage}
-                onChange={handleLandPageClick}
-              />
-            )}
-          </div>
-        </div>
-      </div>
+        <Snackbar open={processCompleted}>
+          <MuiAlert severity="success" elevation={6} variant="filled">
+            {t('Overview.csv.download.success')}
+          </MuiAlert>
+        </Snackbar>
+      </>
     )
   } else {
     customReturn = (
