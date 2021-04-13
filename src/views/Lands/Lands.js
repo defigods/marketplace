@@ -20,7 +20,10 @@ import { useTranslation } from 'react-i18next'
 import { NewMapContext } from 'context/NewMapContext'
 
 const Lands = (props) => {
+  console.debug('Lands.props', props)
   const { t, i18n } = useTranslation()
+  const { userProvider } = props
+  const { actions: userProviderActions } = userProvider
   const { mapState, setMapState, actions } = useContext(NewMapContext)
 
   const {
@@ -29,7 +32,7 @@ const Lands = (props) => {
     resetMultipleLandSelectionList,
   } = actions
   const { multipleLandSelectionList } = mapState
-  const { refreshBalanceAndAllowance } = actions
+  const { refreshBalanceAndAllowance } = userProviderActions
 
   const [gasProjection, setGasProjection] = useState(0)
   const [listLandsObj, setListLandsObj] = useState([])
@@ -223,6 +226,7 @@ const Lands = (props) => {
   }
 
   const participateInAuctions = async (type) => {
+    console.debug('participateInAuctions', { type })
     setIsProcessing(true)
     // Ensure user is logged in
     if (!checkUserLoggedIn()) return
