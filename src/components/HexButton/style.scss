@@ -100,10 +100,13 @@
     background: #fff;
   }
 }
-.HexButton.--orange {
+.HexButton.--simple-orange {
+  background-color: $ovr-orange;
+  &:hover {
+    background-color: $ovr-sideral-grey;
+  }
 }
-.HexButton.--outline {
-}
+
 .HexButton.--orange-light {
   background: linear-gradient(to right, $ovr-orange, $ovr-yellow);
   background-clip: padding-box; /* !importanté */

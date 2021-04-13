@@ -31,10 +31,11 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
-    padding: 2px 10px;
+    padding: 3px 12px;
     transition: all ease 0.25s;
-    &:hover {
-      background-color: $ovr-orange;
+    font-size: 10px;
+    @media screen and (max-width: 769px) {
+      font-size: 8px;
     }
   }
   .map-navigation-box {
@@ -73,6 +74,9 @@
 }
 
 .mapboxgl-ctrl-geocoder {
+  @media screen and (max-width: 500px) {
+    width: 85%;
+  }
   box-shadow: 0 0 0px rgba(0, 0, 0, 0.1) !important;
 }
 

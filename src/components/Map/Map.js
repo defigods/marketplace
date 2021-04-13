@@ -925,7 +925,7 @@ const Map = (props) => {
                 ? t('Lands.exit.multiple.lands')
                 : t('Lands.select.multiple.lands')
             }
-            className="HexButton --gray --x-small set-multiple-land-selection-button"
+            className="HexButton --simple-orange --x-small set-multiple-land-selection-button"
             onClick={
               onMultipleLandSelection
                 ? () => history.push('/map/discover')
