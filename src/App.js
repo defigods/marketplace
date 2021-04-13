@@ -110,7 +110,7 @@ function App() {
                           <div className="App">
                             <ReactNotification />
                             <NavBar />
-                            <div className="o-container">
+                            <div className="o-container map-container">
                               <Route path="/map/" component={Map} />
                             </div>
                             <Switch>
@@ -137,7 +137,10 @@ function App() {
                                 component={NotificationView}
                               />
                               <Route path="/login" component={Login} />
-															<Route path="/login-token/:token" component={LoginToken} />
+                              <Route
+                                path="/login-token/:token"
+                                component={LoginToken}
+                              />
                               <Route
                                 path="/login-helper"
                                 component={LoginHelper}

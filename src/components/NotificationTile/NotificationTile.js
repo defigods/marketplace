@@ -52,7 +52,6 @@ const NotificationTile = (props) => {
   const setAsReaded = () => {}
 
   const renderIcon = () => {
-    console.log('props.data.typeOf', props.data.typeOf)
     switch (props.data.typeOf) {
       // 10 start
       // 11 outbidded

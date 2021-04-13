@@ -73,6 +73,8 @@ const Map = (props) => {
     })
     map.addControl(geocoder)
 
+    map.addControl(new mapboxgl.NavigationControl())
+
     // geocoder init
     map.on('load', () => {
       geocoder.on('result', (ev) => {
@@ -897,6 +899,17 @@ const Map = (props) => {
     }
   }
 
+  const isMapDiscoverPage =
+    R.pathOr(null, ['location', 'pathname'], history) === '/map/discover'
+
+  const isMapLandsPage =
+    R.pathOr(null, ['location', 'pathname'], history) === '/map/lands'
+
+  console.debug('isMapDiscoverPage', {
+    isMapDiscoverPage,
+    onSingleView,
+    test: onSingleView || isMapDiscoverPage || isMapLandsPage,
+  })
   return (
     <>
       {/* <BannerNotification></BannerNotification> */}
@@ -904,14 +917,22 @@ const Map = (props) => {
       <Breadcrumbs contextState={mapState} />
       <div id="Map" className="Map">
         <div id="js-map-view">Satellite</div>
-        {!onSingleView || onMultipleLandSelection ? null : (
+        {onSingleView || isMapDiscoverPage ? (
           <HexButton
             url="#"
-            text={t('Lands.select.multiple.lands')}
+            text={
+              onMultipleLandSelection
+                ? t('Lands.exit.multiple.lands')
+                : t('Lands.select.multiple.lands')
+            }
             className="HexButton --gray --x-small set-multiple-land-selection-button"
-            onClick={() => history.push('/map/lands')}
+            onClick={
+              onMultipleLandSelection
+                ? () => history.push('/map/discover')
+                : () => history.push('/map/lands')
+            }
           />
-        )}
+        ) : null}
 
         {/* <MapNavigationBox /> */}
       </div>

@@ -116,7 +116,7 @@ const NotificationsContent = () => {
   const { t, i18n } = useTranslation()
 
   //   Notifications states
-  const [notificationsList, setNotificationsList] = useState([])
+  const [notificationsList, setNotificationsList] = useState(null)
   const [notificationsPage, setNotificationsPage] = useState(1)
   const [notificationsTotalPages, setNotificationsTotalPages] = useState(null)
 
@@ -129,19 +129,33 @@ const NotificationsContent = () => {
       )
 
       const total = R.pathOr(0, ['data', 'user', 'numberOfPages'], response)
-      console.debug('PAGEEEE', total)
-      console.debug('getUserNotifications.response', response)
       setNotificationsList(notificationData)
       setNotificationsTotalPages(total)
     })
   }, [notificationsPage])
 
-  console.debug('NotificationsContent', notificationsList)
-
-  if (R.isEmpty(notificationsList)) {
+  if (R.isNil(notificationsList)) {
     return (
       <div className="container-loader">
         <CircularProgress />
+      </div>
+    )
+  }
+
+  if (R.isEmpty(notificationsList)) {
+    return (
+      <div className="o-container no-data-to-display">
+        <div className="o-land-list">
+          <div className="c-dialog --centered">
+            <div className="c-dialog-main-title">
+              There is currently no notifications to display
+            </div>
+            <div className="c-dialog-sub-title">
+              Browse the available OVRLands: mint a land and own it now.
+            </div>
+          </div>
+        </div>
+        <div className="o-pagination"></div>
       </div>
     )
   }

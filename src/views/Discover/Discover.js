@@ -3,16 +3,18 @@ import React, { useState, useEffect, useContext } from 'react'
 import './style.scss'
 import { NewMapContext } from 'context/NewMapContext'
 
-import AuctionCard from '../../components/AuctionCard/AuctionCard'
-import LandCard from '../../components/LandCard/LandCard'
+import AuctionCard from 'components/AuctionCard/AuctionCard'
+import LandCard from 'components/LandCard/LandCard'
 
-import { indexOpenAuctions, indexLands } from '../../lib/api'
-import { networkError } from '../../lib/notifications'
+import { indexOpenAuctions, indexLands } from 'lib/api'
+import { networkError } from 'lib/notifications'
 import Pagination from '@material-ui/lab/Pagination'
 import { Trans, useTranslation } from 'react-i18next'
 import { HashRouter as Router, Route, Link } from 'react-router-dom'
 
-import { saveToken } from '../../lib/auth'
+import BannerNotification from 'components/BannerNotification/BannerNotification'
+
+import { saveToken } from 'lib/auth'
 
 const Discover = (props) => {
   const { t, i18n } = useTranslation()
@@ -143,12 +145,10 @@ const Discover = (props) => {
 
   return (
     <div className="Overview">
+      <BannerNotification />
       <div className="o-container">
         <h2 className="o-section-title  --w-link">
           <span>{t('Discover.auctions.label')}</span>
-          <Link to="/map/lands" className="o-select-multiple-land-link">
-            {t('Lands.select.multiple.lands')}
-          </Link>
         </h2>
       </div>
       <div className="o-container">

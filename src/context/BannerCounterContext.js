@@ -5,6 +5,8 @@ import { getCounters, getAuctionsTotals } from 'lib/api'
 
 export const BannerCounterContext = React.createContext()
 
+const isscreenSizeMobile = screen.width < 769
+
 export const BannerCounterContextProvider = ({ children }) => {
   const [bannerState, setBannerState] = useState({
     loading: false,
@@ -13,6 +15,7 @@ export const BannerCounterContextProvider = ({ children }) => {
     highestBidHexId: 0,
     highestBidWorth: 0,
     cashbackAuctionCount: 0,
+    minimal: isscreenSizeMobile,
   })
 
   const setUpTotals = () => {
