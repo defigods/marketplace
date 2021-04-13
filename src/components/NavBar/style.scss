@@ -46,17 +46,17 @@
       text-decoration: none;
       opacity: 1;
       transition: 350ms all cubic-bezier(0.19, 1, 0.22, 1);
-      &:after {
-        width: 0px;
-        transition: 350ms all cubic-bezier(0.19, 1, 0.22, 1);
-        height: 1px;
-        left: calc(50% - 15px);
-        background: #fff;
-        opacity: 0.5;
-        bottom: 8px;
-        content: '';
-        position: absolute;
-      }
+      //   &:after {
+      //     width: 0px;
+      //     transition: 350ms all cubic-bezier(0.19, 1, 0.22, 1);
+      //     height: 1px;
+      //     left: calc(50% - 15px);
+      //     background: #fff;
+      //     opacity: 0.5;
+      //     bottom: 8px;
+      //     content: '';
+      //     position: absolute;
+      //   }
     }
   }
   .current_page_item a,
@@ -467,19 +467,20 @@
   &::after {
     position: absolute;
     bottom: 0px;
-    height: 0px;
+    height: 2px;
     content: '';
     display: block;
     width: 100%;
     background-color: rgba(40, 45, 50, 0.5);
-    transition: ease-in-out 250ms all;
+    transform: translateY(2px);
+    transition: ease 250ms all;
   }
 
   &.active,
   &:hover {
     color: rgba(40, 45, 50, 1);
     &::after {
-      height: 2px;
+      transform: translateY(0px);
     }
   }
 }
@@ -786,6 +787,7 @@
 }
 .Navbar__left_container {
   position: absolute;
+  overflow: hidden;
 }
 .js--ring-notification-bell {
   .Notifications__link {
