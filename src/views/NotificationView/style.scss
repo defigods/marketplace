@@ -1,6 +1,9 @@
 .activity {
   padding-top: 4%;
   min-height: 60vh;
+  .no-data-to-display {
+    margin-top: 40px;
+  }
 
   .o-container {
     width: 70%;
