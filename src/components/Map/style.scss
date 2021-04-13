@@ -24,6 +24,10 @@
     bottom: 10px;
     left: 10px;
     padding: 2px 10px;
+    transition: all ease 0.25s;
+    &:hover {
+      background-color: $ovr-orange;
+    }
   }
   .map-navigation-box {
     width: 20rem;

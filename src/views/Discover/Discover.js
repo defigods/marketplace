@@ -146,9 +146,6 @@ const Discover = (props) => {
       <div className="o-container">
         <h2 className="o-section-title  --w-link">
           <span>{t('Discover.auctions.label')}</span>
-          <Link to="/map/lands" className="o-select-multiple-land-link">
-            {t('Lands.select.multiple.lands')}
-          </Link>
         </h2>
       </div>
       <div className="o-container">
