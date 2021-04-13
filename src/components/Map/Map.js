@@ -73,6 +73,8 @@ const Map = (props) => {
     })
     map.addControl(geocoder)
 
+    map.addControl(new mapboxgl.NavigationControl())
+
     // geocoder init
     map.on('load', () => {
       geocoder.on('result', (ev) => {

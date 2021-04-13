@@ -13,6 +13,14 @@
     display: none;
   }
 
+  .mapboxgl-ctrl-geocoder--input:focus {
+    outline: none;
+  }
+
+  .mapboxgl-ctrl-group {
+    box-shadow: none;
+  }
+
   .mapboxgl-ctrl-bottom-left {
     bottom: 0;
     right: 10px;
