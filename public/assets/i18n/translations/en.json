@@ -114,11 +114,15 @@
   "Land.unavailable.notification.title": "Unavailable OVRLand",
   "Land.unavailable.notification.subtitle": "The selected land is reserved",
 
+  "Lands.bannerNotification.morethan5land.title": "Buy more to save more",
+  "Lands.bannerNotification.morethan5land.text": "Using the Multiple Land Selection for more than 5 lands at the same time allows you to save the additional gas fees for all of subsequent lands within the same order.",
+
   "Lands.selected.lands": "Select Lands",
   "Lands.click.to.remove": "Click again on a selected land to remove",
   "Lands.selected.label": "Selected",
   "Lands.bid.selection": "Bid selection",
   "Lands.focus.land": "Click anywhere on the map to focus on a land, click again to add in your bidding list",
+  "Lands.savedGasExpense.text": "Discount on Transfer Expense",
 
   "IndacoinResponse.trans.token": "Transferring OVR Tokens",
   "IndacoinResponse.no.leave": "Please don't leave this page.",
@@ -451,7 +455,7 @@
   "Auctions.allowance.waiting.title": "Auction allowance",
   "Auctions.allowance.waiting.desc": "Please wait the allowance transaction to succeed and try again to bid in a couple of minutes",
   "Auctions.please.reload": "Please reload the page to see the new auction values",
-  "Auctions.please.patient": "While the request was successuful, it can take up to one minute PER LAND, before trying again please wait to verify this action has reflected in the system",
+  "Auctions.please.patient": "While the request has been sent, big orders can take a couple of minutes to reflect on the system. Please be patient.",
   "Auctions.total.projection": "While your OVR amount is of {{OVRTotal}}, you have a total of {{OVRPending}} OVR invested in currently ongoin auctions. \nBuy more OVR to participate.",
   "Cashback.banner.desc": "April cashback applies to first 500 auctions from 2021/04/01 00:00 UTC. Current number of auctions: {{total}}.",
   "Generic.login.required.title": "You have to log in to visit this page",

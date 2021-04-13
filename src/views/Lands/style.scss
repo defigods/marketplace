@@ -66,6 +66,13 @@
         }
       }
     }
+
+    .savedGasExpense {
+      color: $ovr-green;
+      td:first-child {
+        font-weight: 400;
+      }
+    }
   }
 }
 

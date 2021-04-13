@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import React, { useState, useEffect, useContext } from 'react'
 import * as R from 'ramda'
 
@@ -169,16 +170,27 @@ const Lands = (props) => {
     let total = 0
     if (listLandsObj) {
       listLandsObj.map((land) => {
-        let value =
-          land.value < 100
-            ? parseFloat(getUSDValueInOvr(10))
-            : parseFloat(land.value)
+        let value = R.isNil(land.value)
+          ? parseFloat(getUSDValueInOvr(10))
+          : parseFloat(land.value)
         total = total + value
       })
     }
-    total = total + gasLandCost * listLandsObj.length
+    total = total + gasLandCost * listLandsObj.length - savedGasExpense
     return total.toFixed(2)
   }
+
+  const gasExpense =
+    R.length(multipleLandSelectionList) > 4
+      ? gasProjection * 5
+      : gasProjection * R.length(multipleLandSelectionList)
+
+  const savedGasExpense =
+    R.length(multipleLandSelectionList) > 5
+      ? R.length(multipleLandSelectionList) * gasProjection - gasExpense
+      : null
+
+  console.debug('savedGasExpense', { savedGasExpense, gasProjection })
 
   const ensureBalanceAndAllowance = async (cost) => {
     let floatCost = parseFloat(cost)
@@ -270,6 +282,7 @@ const Lands = (props) => {
 
   function renderLand() {
     let custom_return
+
     if (
       R.length(multipleLandSelectionList) > 0 &&
       !R.isNil(multipleLandSelectionList)
@@ -318,13 +331,26 @@ const Lands = (props) => {
                     <td>{t('Lands.estimated.gas.expense')}</td>
                     <td>
                       <ValueCounter
-                        value={(
-                          gasProjection * multipleLandSelectionList.length
-                        ).toFixed(2)}
+                        value={gasExpense.toFixed(2)}
                         currency="ovr"
                       />
                     </td>
                   </tr>
+                  {R.length(multipleLandSelectionList) > 5 ? (
+                    <tr className="savedGasExpense">
+                      <td>{t('Lands.savedGasExpense.text')}</td>
+                      <td>
+                        <ValueCounter
+                          value={
+                            R.isNil(savedGasExpense)
+                              ? 0
+                              : -savedGasExpense.toFixed(2)
+                          }
+                          currency="ovr"
+                        />
+                      </td>
+                    </tr>
+                  ) : null}
                 </tbody>
                 <tfoot>
                   <tr>

@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import * as R from 'ramda'
 
 import { getToken, saveToken } from 'lib/auth'
 import { useTranslation } from 'react-i18next'
@@ -7,62 +8,106 @@ import { UserContext } from 'context/UserContext'
 
 import { getAuctionsTotals } from 'lib/api'
 
-/**
- * BannerNotification component
- */
+import { withStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import MuiDialogTitle from '@material-ui/core/DialogTitle'
+import MuiDialogContent from '@material-ui/core/DialogContent'
+import MuiDialogActions from '@material-ui/core/DialogActions'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
+import Typography from '@material-ui/core/Typography'
+
+const styles = (theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+})
+
+const DialogTitle = withStyles(styles)((props) => {
+  const { children, classes, onClose, ...other } = props
+  return (
+    <MuiDialogTitle disableTypography className={classes.root} {...other}>
+      <Typography variant="h6">{children}</Typography>
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </MuiDialogTitle>
+  )
+})
+
+const DialogContent = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiDialogContent)
+
+const DialogActions = withStyles((theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(1),
+  },
+}))(MuiDialogActions)
 
 const BannerNotification = () => {
   const { t, i18n } = useTranslation()
   const { state } = useContext(UserContext)
   const { isLoggedIn: userAuthenticated } = state
   const [showBanner, setShowBanner] = useState(false)
-  const [total, setTotal] = useState(0)
-
-  const setUpTotals = () => {
-    console.log('total')
-    getAuctionsTotals()
-      .then((response) => {
-        setTotal(response.data.auctions.total)
-        setShowBanner(true)
-        console.log('RESPONSE', response)
-      })
-      .catch((error) => {
-        // console.log(error);
-        console.log('ERROR', error)
-      })
-  }
 
   useEffect(() => {
     if (userAuthenticated) {
-      let cookie = getToken('dismissBanner')
-      // if ( !cookie ){ // Check cookie
-      // 	setUpTotals();
-      // }
-      setUpTotals()
+      let cookie = getToken('showNotificationBanner')
+      console.debug('COOKIEEEE-start', cookie)
+
+      if (R.isNil(cookie)) {
+        console.debug('COOKIEEEE-2', cookie)
+        setShowBanner(true)
+      } else {
+        cookie = cookie === 'false' ? false : true
+        console.debug('COOKIEEEE-3', { cookie, userAuthenticated })
+        setShowBanner(cookie)
+      }
+    } else {
+      setShowBanner(false)
     }
   }, [userAuthenticated])
 
-  const dismissBanner = (e) => {
-    e.preventDefault()
-    saveToken('dismissBanner', true)
+  const handleClose = () => {
+    saveToken('showNotificationBanner', false)
+
     setShowBanner(false)
   }
 
   return (
     <>
-      {showBanner && (
-        <div className="BannerNotification">
-          <div className="--standard">
-            {/* <div className="BannerNotification__title">{t('BannerNotification.welcome')}{' '}🥳</div> */}
-            <div className="BannerNotification__content">
-              {t('Cashback.banner.desc', { total: total })}
-              {/* <span onClick={(e) => dismissBanner(e)}>
-								<Cancel className="Cancel" />
-							</span> */}
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={showBanner}
+      >
+        <DialogTitle id="customized-dialog-title" onClose={handleClose}>
+          {t('Lands.bannerNotification.morethan5land.title')}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography gutterBottom>
+            {t('Lands.bannerNotification.morethan5land.text')}
+          </Typography>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

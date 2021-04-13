@@ -209,9 +209,15 @@
   "Land.status.label": "状态",
   "Land.unavailable.label": "不可置信",
   "Land.when.label": "当",
+
+  "Lands.bannerNotification.morethan5land.title": "买得越多省得越多",
+  "Lands.bannerNotification.morethan5land.text": "使用多块土地选择功能在同一个订单中同时选定多块土地，超过5块土地的部分就可以省掉额外的手续费",
+
   "Lands.bid.selection": "出价选择",
   "Lands.click.to.remove": "再次点击你选择的土地来移除",
   "Lands.focus.land": "对准某块土地点击地图上的某一点，再次点击将它加入你的出价竞拍清单",
+  "Lands.savedGasExpense.text": "交易手续费的折扣",
+
   "Lands.selected.label": "已选择",
   "Lands.selected.lands": "已选择的土地",
   "MetamaskMessage.accept.sell": "正在接受出售指令...",
