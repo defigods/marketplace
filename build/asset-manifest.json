@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "./static/css/main.961a5ee5.chunk.css",
+    "main.css": "./static/css/main.1ea0e003.chunk.css",
     "main.js": "./static/js/main.d773aeef.chunk.js",
     "main.js.map": "./static/js/main.d773aeef.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.313f156c.js",
@@ -10,7 +10,7 @@
     "static/js/2.1f95ffb2.chunk.js.map": "./static/js/2.1f95ffb2.chunk.js.map",
     "index.html": "./index.html",
     "static/css/2.5099e684.chunk.css.map": "./static/css/2.5099e684.chunk.css.map",
-    "static/css/main.961a5ee5.chunk.css.map": "./static/css/main.961a5ee5.chunk.css.map",
+    "static/css/main.1ea0e003.chunk.css.map": "./static/css/main.1ea0e003.chunk.css.map",
     "static/js/2.1f95ffb2.chunk.js.LICENSE.txt": "./static/js/2.1f95ffb2.chunk.js.LICENSE.txt",
     "static/media/arrow.9b0e6fb7.svg": "./static/media/arrow.9b0e6fb7.svg",
     "static/media/closedAuctions.f0f2cb7c.svg": "./static/media/closedAuctions.f0f2cb7c.svg",
@@ -31,7 +31,7 @@
     "static/js/runtime-main.313f156c.js",
     "static/css/2.5099e684.chunk.css",
     "static/js/2.1f95ffb2.chunk.js",
-    "static/css/main.961a5ee5.chunk.css",
+    "static/css/main.1ea0e003.chunk.css",
     "static/js/main.d773aeef.chunk.js"
   ]
 }
