@@ -73,6 +73,9 @@ const BannerCounter = () => {
             <div className="text">
               <h5>{closedAuctionCount}</h5>
               <p>Closed Auctions</p>
+              <div className="o-cashback-copy">
+                {t('Cashback.banner.desc', { total: cashbackAuctionCount })}
+              </div>
             </div>
           </div>
         </div>

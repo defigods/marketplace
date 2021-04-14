@@ -38,7 +38,7 @@
       padding: 20px;
       position: absolute;
       right: 10px;
-      top: 30px;
+      top: 5px;
     }
 
     img {
@@ -101,6 +101,17 @@
             font-size: 14px;
             @media screen and (max-width: 1200px) {
               font-size: 12px;
+            }
+          }
+
+          .o-cashback-copy {
+            margin-bottom: 0;
+            margin-top: 5px;
+            color: #b6b7b8;
+            font-weight: 400;
+            font-size: 11px;
+            @media screen and (max-width: 1200px) {
+              font-size: 10px;
             }
           }
           .ArrowLink {
